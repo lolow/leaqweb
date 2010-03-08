@@ -20,6 +20,7 @@ Rails::Initializer.run do |config|
   config.gem "rubyzip", :lib => "zip/zip"
   config.gem "tenjin"
   config.gem "fastercsv", :lib => "faster_csv"
+  config.gem "acts-as-taggable-on", :source => "http://gemcutter.org"
 
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
