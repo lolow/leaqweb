@@ -1,8 +1,8 @@
 class CreateTechnologies < ActiveRecord::Migration
   def self.up
     create_table :technologies do |t|
-      t.string :name, :definition
-      t.references :location
+      t.string :name
+      t.text :description
       t.timestamps
     end
     add_index  :technologies, :name, :unique => true
