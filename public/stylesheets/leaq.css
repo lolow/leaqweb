@@ -1,0 +1,273 @@
+* {
+margin:0;
+padding:0;
+}
+
+body {
+min-width:40em;
+min-height:100%;
+-x-system-font:none;
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background-color:transparent;
+color:#000000;
+font-family:Verdana,Arial,Helvetica,sans-serif;
+font-size-adjust:none;
+font-stretch:normal;
+font-style:normal;
+font-variant:normal;
+font-weight:normal;
+font-size:10px;
+line-height:normal;
+}
+
+h1, h2, h3, h4, h5, h6 {
+background-color:transparent;
+color:#2D749C;
+font-family:Verdana,Lucida,Helvetica,Arial,sans-serif;
+font-weight:bold;
+}
+
+h1 {
+border-bottom:1px solid #E9EFCD;
+color:#00446A;
+font-size:1.5em;
+margin:0.67em 0;
+padding-bottom:0.25em;
+padding-right:4em;
+}
+
+h2 {
+border-bottom:1px solid #E9EFCD;
+font-size:1.3em;
+margin:0.83em 0;
+padding-bottom:0.25em;
+}
+
+a {
+color:#2A6495;
+}
+
+a:visited {
+color:#8E004D;
+}
+
+a:hover {
+color:#8E004D;
+}
+
+ul {
+list-style-image:url(/images/bullet.gif);
+list-style-position:inside;
+list-style-type:square;
+}
+
+li {
+}
+
+table {
+font-size:10px;
+}
+
+input{
+padding:0;
+}
+
+submit{
+padding:0;
+}
+
+#print-warning {
+display:none;
+}
+
+#wrapper {
+margin-left:auto;
+margin-right:auto;
+max-width:1280px;
+min-width:972px;
+padding:0;
+width:98%;
+}
+
+#top {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:#acbd3b url(/images/headerbg.jpg) repeat-y scroll right top;
+margin:0;
+padding:0;
+}
+
+table.table_flows {
+background-color:#CDCDCD;
+margin:10px 0 15px;
+text-align:left;
+width:60%;
+border-spacing:1px;
+border:0;
+}
+
+table.table_flows thead tr th {
+background-color:#E6EEEE;
+border:1px solid #FFFFFF;
+font-size:8pt;
+padding:4px;
+}
+
+table.table_flows tbody td {
+background-color:#FFFFFF;
+color:#3D3D3D;
+padding:4px;
+vertical-align:top;
+}
+
+table.table_flow_edit {
+background-color:#CDCDCD;
+margin:10px 0 15px;
+text-align:left;
+width:40%;
+border-spacing:1px;
+border:0;
+}
+
+table.table_flow_edit thead tr th {
+background-color:#E6EEEE;
+border:1px solid #FFFFFF;
+font-size:8pt;
+padding:4px;
+}
+
+table.table_flow_edit tbody td {
+background-color:#FFFFFF;
+color:#3D3D3D;
+padding:4px;
+vertical-align:top;
+}
+
+
+
+table.tableparameter {
+background-color:#CDCDCD;
+margin:10px 0 15px;
+text-align:left;
+width:100%;
+border-spacing:1px;
+border:0;
+}
+
+table.tableparameter thead tr th {
+background-color:#E6EEEE;
+border:1px solid #FFFFFF;
+font-size:8pt;
+padding:4px;
+}
+
+table.tableparameter tbody td {
+background-color:#FFFFFF;
+color:#3D3D3D;
+padding:4px;
+vertical-align:top;
+}
+
+table.tablecommoditylist {
+background-color:#E6EEEE;
+margin:10px 0 15px;
+text-align:left;
+width:100%;
+border-spacing:0px;
+border:0;
+}
+
+table.tablecommoditylist thead tr th {
+background-color:#E6EEEE;
+border:0px;
+font-size:8pt;
+padding:4px;
+}
+
+table.tablecommoditylist thead tr th.flow_separator {
+background-color:#FFFFFF;
+}
+
+table.tablecommoditylist tbody td tr {
+background-color:#E6EEEE;
+color:#3D3D3D;
+margin:4px;
+vertical-align:top;
+text-align:center;
+}
+
+table.tablecommoditylist select {
+width:100%;
+}
+
+table.tablecommoditylist a {
+    margin:4px;
+}
+table.tablecommoditylist div {
+    margin:auto;
+}
+
+.flow_separator {
+background-color:#FFFFFF;
+vertical-align:middle;
+text-align:center;
+}
+
+.flow_act {
+font-weight:bold;
+background-color: #FFFF66;
+}
+
+.edit {
+display: inline;
+}
+
+.idcard {
+width:100%;
+padding:0.2em;
+}
+
+.idcard_leftcol {
+width:400px;
+}
+
+.rlabel {
+text-align:right;
+}
+
+.logo {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent url(/images/logo.jpg) no-repeat scroll 0 8px;
+border:0 none;
+margin:0 0 0 7px;
+padding:0;
+}
+
+.logo a {
+border:0 none;
+cursor:pointer;
+display:block;
+height:0 !important;
+margin:0;
+overflow:hidden;
+padding:39px 0 0;
+text-decoration:none;
+width:299px;
+}
+
+.ui-tabs .ui-tabs-hide {
+     display: none;
+}
+
+#parameter_td, #parameter_tid, #general, #import_export, #constraints, #fraction_demand, #parameter_bnds {
+	margin:1em;
+}
+
+#flow_edit, #flow_efficiency, #flow_param, #flow_list {
+    margin:1em;
+}

@@ -1,0 +1,40 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta name="keywords" content="leaq,geoecu,ay" />
+    <meta name="description" content="" />
+    <meta name="author" content="Laurent Drouet" />
+
+	<%= stylesheet_link_tag "leaq", :cache => true %>
+
+    <title>LEAQ web</title>
+</head>
+<body>
+    
+    <div id="print-warning">
+      <p> Do something for our planet, print this page only if needed. Even a small action can make an enormous difference when millions of people do it! </p>
+    </div>
+    
+    <div id="wrapper"> 
+    
+    	<!-- header -->
+    	<div id="top">
+    	    <h1 id="logo" class="logo">
+    	        <a accesskey="1" href="/">GEOECU</a>
+    	    </h1>
+    	</div>
+    	
+    	<!-- content -->
+		<div id="content">
+			<%= yield %>
+		</div>
+    	
+    	<!-- footer -->
+		<div id="footer">
+			<p>&copy; 2009 <a href="http://www.crte.lu">CRTE</a></p>
+		</div>
+	   
+    </div>
+    
+</body>
+</html>
