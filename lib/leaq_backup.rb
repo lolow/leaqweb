@@ -19,24 +19,29 @@ class LeaqBackup
   # Import all data in a serie of csv files encapsulated from a zip file.
   # --
   # Must match with export
-  def self.restore(filename)
+  def self.restore_db_python(filename)
 
-    clean_database  
+    s = [Technology,Commodity,Flow,Location,Parameter,ParameterValue].map(&:count).sum
+    if s>0
+      puts "Database not empty! Do you want to continue? (y/N)"
+      res = gets
+      return unless res.chomp.upcase == "Y"
+    end
 
     #Hashes de correspondance
-    localization = Hash.new
-    technology   = Hash.new
-    commodity    = Hash.new
-    flow         = Hash.new
-    parameter    = Hash.new
+    loc    = Hash.new
+    tech   = Hash.new
+    comm   = Hash.new
+    flow   = Hash.new
+    param  = Hash.new
     
     #localization
-    read_csv_from_zip(filename,"localization") do |row|
-      localization[row[0]] = Localization.create(:name => row[1]).id  
+    read_csv_from_zip(filename,"geom.csv") do |row|
+      loc[row[0]] = Location.create!(:name => row[1]).id
     end
 
     #technology
-    read_csv_from_zip(filename,"technology") do |row|
+    read_csv_from_zip(filename,"technology.csv") do |row|
       ids = row[4].scan(/\d+/).collect{|l| localization[l]}
       t = Technology.create(:name => row[1],
                             :description => row[2],
@@ -45,21 +50,21 @@ class LeaqBackup
         t.tag_list = row[3]
         t.save
       end
-      technology[row[0]] = t.id
+      tech[row[0]] = t.id
     end
     
     #commodity
-    read_csv_from_zip(filename,"commodity") do |row|
+    read_csv_from_zip(filename,"commodity.csv") do |row|
       c = Commodity.create(:name => row[1])
       unless row[2].blank?
         c.tag_list = row[2]
         c.save
       end
-      commodity[row[0]] = c.id
+      comm[row[0]] = c.id
     end
     
     #flow
-    read_csv_from_zip(filename,"flow") do |row|
+    read_csv_from_zip(filename,"flow.csv") do |row|
       ids = row[3].scan(/\d+/).collect{|c| commodity[c]}
       case row[1]
       when 'ConsumedFlow'
@@ -74,8 +79,8 @@ class LeaqBackup
     end
     
     #parameter
-    read_csv_from_zip(filename,"parameter") do |row|
-      parameter[row[0]] = Parameter.create(:name => row[1],
+    read_csv_from_zip(filename,"parameter.csv") do |row|
+      param[row[0]] = Parameter.create(:name => row[1],
                                            :description => row[2],
                                            :default_value => row[3]
                                            ).id
@@ -89,9 +94,9 @@ class LeaqBackup
           `created_at`, `updated_at`) VALUES 
           EOL
     values = []
-    read_csv_from_zip(filename,"parameter_value") do |row|
-      row = [parameter[row[0]],technology[row[1]],commodity[row[2]],
-             flow[row[3]],flow[row[4]],flow[row[5]],localization[row[6]],
+    read_csv_from_zip(filename,"parameter_value.csv") do |row|
+      row = [param[row[0]],tech[row[1]],comm[row[2]],
+             flow[row[3]],flow[row[4]],flow[row[5]],loc[row[6]],
              row[7],row[8].to_i,row[9].to_f,now_sql,now_sql]
       row.collect!{|x| x = if x.nil? then "'NULL'" else "'#{x}'" end}
       values << "(#{row.join(',')})"

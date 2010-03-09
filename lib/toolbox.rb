@@ -1,18 +1,14 @@
 module Toolbox
 
-  def tic
-    Time.now.usec
-    @@before = Time.now
+  def say(message, subitem=false)
+    puts "#{subitem ? "   ->" : "--"} #{message}"
   end
 
-  def toc
-    "[#{Time.now - @@before} sec(s).]\n"
-  end
-
-  def tictoc
-    tic
-    yield
-    toc
+  def tictoc(message)
+      require 'benchmark'
+      say(message)
+      time = Benchmark.measure { yield }
+      say "%.4fs" % time.real, :subitem
   end
 
 end
