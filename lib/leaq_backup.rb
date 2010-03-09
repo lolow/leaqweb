@@ -42,12 +42,12 @@ class LeaqBackup
 
     #technology
     read_csv_from_zip(filename,"technology.csv") do |row|
-      ids = row[4].scan(/\d+/).collect{|l| localization[l]}
+      ids = row[4].scan(/\d+/).collect{|l| loc[l]}
       t = Technology.create(:name => row[1],
                             :description => row[2],
                             :localization_ids => ids)
       unless row[3].blank?
-        t.tag_list = row[3]
+        t.set_list = row[3]
         t.save
       end
       tech[row[0]] = t.id
@@ -55,53 +55,55 @@ class LeaqBackup
     
     #commodity
     read_csv_from_zip(filename,"commodity.csv") do |row|
-      c = Commodity.create(:name => row[1])
-      unless row[2].blank?
-        c.tag_list = row[2]
+      c = Commodity.create!(:name => row[1],
+                            :description => row[2])
+      unless row[3].blank?
+        c.tag_list = row[3]
         c.save
       end
       comm[row[0]] = c.id
     end
     
-    #flow
-    read_csv_from_zip(filename,"flow.csv") do |row|
-      ids = row[3].scan(/\d+/).collect{|c| commodity[c]}
-      case row[1]
-      when 'ConsumedFlow'
-        flow[row[0]] = ConsumedFlow.create(:technology_id => technology[row[2]],
-                                           :commodity_ids => ids
-                                          ).id
-      when 'ProducedFlow'
-        flow[row[0]] = ProducedFlow.create(:technology_id => technology[row[2]],
-                                           :commodity_ids => ids
-                                          ).id
-      end                                
+    #inflow
+    read_csv_from_zip(filename,"inflow.csv") do |row|
+      ids = row[2].scan(/\d+/).collect{|c| commodity[c]}
+      flow[row[0]] = InFlow.create!(:technology_id => technology[row[1]],
+                                    :commodity_ids => ids
+                                    ).id                      
+    end
+    
+    read_csv_from_zip(filename,"outflow.csv") do |row|
+      ids = row[2].scan(/\d+/).collect{|c| commodity[c]}
+      flow[row[0]] = OutFlow.create!(:technology_id => technology[row[1]],
+                                     :commodity_ids => ids
+                                     ).id                          
     end
     
     #parameter
-    read_csv_from_zip(filename,"parameter.csv") do |row|
-      param[row[0]] = Parameter.create(:name => row[1],
-                                           :description => row[2],
-                                           :default_value => row[3]
-                                           ).id
+    read_csv_from_zip(filename,"para.csv") do |row|
+      param[row[0]] = Parameter.create!(:name => row[1],
+                                        :definition => row[2],
+                                        :default_value => row[3],
+                                        :units => row[4]
+                                        ).id
     end
     
     #parameter_value
-    sql = <<-EOL
-          INSERT INTO `parameter_values` (`parameter_id`, `technology_id`, 
-          `commodity_id`, `flow_id`, `consumed_flow_id` , `produced_flow_id`,
-          `localization_id`, `time_slice`,`year`,`value`,
-          `created_at`, `updated_at`) VALUES 
-          EOL
-    values = []
-    read_csv_from_zip(filename,"parameter_value.csv") do |row|
-      row = [param[row[0]],tech[row[1]],comm[row[2]],
-             flow[row[3]],flow[row[4]],flow[row[5]],loc[row[6]],
-             row[7],row[8].to_i,row[9].to_f,now_sql,now_sql]
-      row.collect!{|x| x = if x.nil? then "'NULL'" else "'#{x}'" end}
-      values << "(#{row.join(',')})"
+    read_csv_from_zip(filename,"paramvalue.csv") do |row|
+      pv = ParameterValue.new
+      pv.parameter_id  = param[row[0]]
+      pv.technology_id = tech[row[1]] unless row[1]=="None"
+      pv.commodity_id  = comm[row[2]] unless row[2]=="None"
+      pv.flow_id       = flow[row[3]] unless row[3]=="None"
+      pv.in_flow_id    = flow[row[4]] unless row[4]=="None"
+      pv.out_flow_id   = flow[row[5]] unless row[5]=="None"
+      pv.location_id   = loc[row[6]]  unless row[6]=="None"
+      pv.time_slice    = row[7] unless row[7]=="None"
+      pv.year          = row[8] unless row[8]=="None"
+      pv.value         = row[9].to_f
+      pv.source        = row[10] unless row[10]=="None"
+      pv.save
     end
-    ActiveRecord::Base.connection.execute(sql + values.join(','))
     
   end
   

@@ -10,7 +10,8 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :location
       t.integer :year
       t.string  :time_slice
-      t.decimal :value, :precision => 20, :scale => 10
+      t.decimal :value, :precision => 20, :scale => 10, :null => false
+      t.text    :source
       t.timestamps
     end
   end
