@@ -1,0 +1,12 @@
+<h1>Editing commodity</h1>
+
+<% form_for(@commodity) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.submit 'Update' %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @commodity %> |
+<%= link_to 'Back', commodities_path %>
