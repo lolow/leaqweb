@@ -1,3 +1,5 @@
 class Flow < ActiveRecord::Base
-  has_and_belongs_to_many :technologies
+  belongs_to :technology
+  has_many :parameter_values
+  has_many :commodities
 end

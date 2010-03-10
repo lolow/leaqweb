@@ -19,7 +19,7 @@ class LeaqBackup
   # Import all data in a serie of csv files encapsulated from a zip file.
   # --
   # Must match with export
-  def self.restore_db_python(filename)
+  def self.restore_db_python(zipfile)
 
     s = [Technology,Commodity,Flow,Location,Parameter,ParameterValue].map(&:count).sum
     if s>0
@@ -34,53 +34,68 @@ class LeaqBackup
     comm   = Hash.new
     flow   = Hash.new
     param  = Hash.new
-    
-    #localization
-    read_csv_from_zip(filename,"geom.csv") do |row|
-      loc[row[0]] = Location.create!(:name => row[1]).id
+
+    def self.readline_zip(active_record,zipfile,fname)
+      include Toolbox
+      Toolbox::tictoc(active_record.name) {
+        active_record.transaction {
+          Zip::ZipInputStream::open(zipfile) { |file|
+          while (entry = file.get_next_entry)
+            FasterCSV.parse(file.read) {|row| yield row} if entry.name==fname
+          end
+          }
+        }
+      }
     end
 
+    #location
+    readline_zip(Location,zipfile,"geom.csv") { |row|
+      loc[row[0]] = Location.create!(:name => row[1]).id
+    }
+
+
     #technology
-    read_csv_from_zip(filename,"technology.csv") do |row|
+    readline_zip(Technology,zipfile,"technology.csv") do |row|
       ids = row[4].scan(/\d+/).collect{|l| loc[l]}
       t = Technology.create(:name => row[1],
                             :description => row[2],
-                            :localization_ids => ids)
+                            :location_ids => ids)
       unless row[3].blank?
         t.set_list = row[3]
         t.save
       end
       tech[row[0]] = t.id
     end
-    
+
+
     #commodity
-    read_csv_from_zip(filename,"commodity.csv") do |row|
+    readline_zip(Commodity,zipfile,"commodity.csv") do |row|
       c = Commodity.create!(:name => row[1],
                             :description => row[2])
       unless row[3].blank?
-        c.tag_list = row[3]
+        c.set_list = row[3]
         c.save
       end
       comm[row[0]] = c.id
     end
     
     #inflow
-    read_csv_from_zip(filename,"inflow.csv") do |row|
-      ids = row[2].scan(/\d+/).collect{|c| commodity[c]}
-      flow[row[0]] = InFlow.create!(:technology_id => technology[row[1]],
+    readline_zip(InFlow,zipfile,"inflow.csv") do |row|
+      ids = row[2].scan(/\d+/).collect{|c| comm[c]}
+      flow[row[0]] = InFlow.create!(:technology_id => tech[row[1]],
                                     :commodity_ids => ids
-                                    ).id                      
+                                    ).id
     end
-    
-    read_csv_from_zip(filename,"outflow.csv") do |row|
-      ids = row[2].scan(/\d+/).collect{|c| commodity[c]}
-      flow[row[0]] = OutFlow.create!(:technology_id => technology[row[1]],
+
+    readline_zip(OutFlow,zipfile,"outflow.csv") do |row|
+      ids = row[2].scan(/\d+/).collect{|c| comm[c]}
+      flow[row[0]] = OutFlow.create!(:technology_id => tech[row[1]],
                                      :commodity_ids => ids
-                                     ).id                          
+                                     ).id
     end
     
     #parameter
-    read_csv_from_zip(filename,"para.csv") do |row|
+    readline_zip(Parameter,zipfile,"para.csv") do |row|
       param[row[0]] = Parameter.create!(:name => row[1],
                                         :definition => row[2],
                                         :default_value => row[3],
@@ -89,7 +104,7 @@ class LeaqBackup
     end
     
     #parameter_value
-    read_csv_from_zip(filename,"paramvalue.csv") do |row|
+    readline_zip(ParameterValue,zipfile,"paramvalue.csv") do |row|
       pv = ParameterValue.new
       pv.parameter_id  = param[row[0]]
       pv.technology_id = tech[row[1]] unless row[1]=="None"
@@ -111,6 +126,11 @@ class LeaqBackup
   # --
   # Must match with import
   def self.backup(filename)
+
+    def self.write_csv_into_zip(zipfile, filename)
+      zipfile.put_next_entry(filename)
+      zipfile.print(FasterCSV.generate {|csv| yield csv})
+    end
 
     Zip::ZipOutputStream.open(filename) do |zipfile|
 
@@ -160,23 +180,6 @@ class LeaqBackup
       end
     end
 
-  end
-  
-  private
-  
-  def read_csv_from_zip(file, filename)
-    Zip::ZipInputStream::open(file) { |zipfile|
-      while (entry = zipfile.get_next_entry)
-        if entry.name==filename 
-          FasterCSV.parse(zipfile.read) {|row| yield row}
-        end
-      end
-    }
-  end
-  
-  def write_csv_into_zip(zipfile, filename)
-    zipfile.put_next_entry(filename)
-    zipfile.print(FasterCSV.generate {|csv| yield csv})
   end
 
 end
