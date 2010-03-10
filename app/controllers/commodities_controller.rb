@@ -1,12 +1,18 @@
 class CommoditiesController < ApplicationController
+  before_filter :authenticate_user!
+  
   # GET /commodities
   # GET /commodities.xml
   def index
-    @commodities = Commodity.all
-
+    ["page","per_page"].each do |p|
+      user_session["comm_#{p}"] = params[p] if params[p]
+    end
+    @commodities = Commodity.paginate :page => user_session[:comm_page],
+                                      :per_page => user_session[:comm_per_page],
+                                      :order => :name
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @commodities }
+      format.xml  { render :xml => Commodity.all }
     end
   end
 

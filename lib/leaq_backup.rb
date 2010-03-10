@@ -36,8 +36,9 @@ class LeaqBackup
     param  = Hash.new
 
     def self.readline_zip(active_record,zipfile,fname)
-      include Toolbox
-      Toolbox::tictoc(active_record.name) {
+      require 'benchmark'
+      puts "-- #{active_record.name}"
+      time = Benchmark.measure {
         active_record.transaction {
           Zip::ZipInputStream::open(zipfile) { |file|
           while (entry = file.get_next_entry)
@@ -46,6 +47,7 @@ class LeaqBackup
           }
         }
       }
+      puts "   -> %.4fs" % time.real
     end
 
     #location

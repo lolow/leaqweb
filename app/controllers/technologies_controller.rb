@@ -1,4 +1,6 @@
 class TechnologiesController < ApplicationController
+  before_filter :authenticate_user!
+  
   # GET /technologies
   # GET /technologies.xml
   def index

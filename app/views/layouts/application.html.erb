@@ -1,13 +1,17 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-    <meta name="keywords" content="leaq,geoecu,ay" />
-    <meta name="description" content="" />
+    <meta name="keywords" content="leaq,geoecu,ayltp,energy,air quality" />
+    <meta name="description" content="Web interface of the LEAQ model framework" />
     <meta name="author" content="Laurent Drouet" />
+
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 
 	<%= stylesheet_link_tag "leaq", :cache => true %>
 
-    <title>LEAQ web</title>
+    <title><%= h(yield(:title) || "LEAQ web") %></title>
+	
 </head>
 <body>
     
@@ -20,12 +24,18 @@
     	<!-- header -->
     	<div id="top">
     	    <h1 id="logo" class="logo">
-    	        <a accesskey="1" href="/">GEOECU</a>
+				<%= link_to 'Home', root_path %>
     	    </h1>
     	</div>
+		<% unless user_signed_in? -%>
+		  <p><%= link_to 'Sign in as User', new_user_session_path %></p>
+		<% end -%>
     	
     	<!-- content -->
 		<div id="content">
+			<%- flash.each do |name, msg| -%>
+	          <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
+	        <%- end -%>
 			<%= yield %>
 		</div>
     	
