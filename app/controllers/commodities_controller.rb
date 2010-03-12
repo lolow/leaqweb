@@ -7,9 +7,13 @@ class CommoditiesController < ApplicationController
     ["page","per_page"].each do |p|
       user_session["comm_#{p}"] = params[p] if params[p]
     end
-    @commodities = Commodity.paginate :page => user_session[:comm_page],
-                                      :per_page => user_session[:comm_per_page],
-                                      :order => :name
+    filter = {:page => user_session["comm_page"],
+              :per_page => user_session["comm_per_page"],
+              :order => :name}
+    if params[:search]
+       filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
+    end
+    @commodities = Commodity.paginate(filter)
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => Commodity.all }

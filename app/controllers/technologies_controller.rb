@@ -4,11 +4,19 @@ class TechnologiesController < ApplicationController
   # GET /technologies
   # GET /technologies.xml
   def index
-    @technologies = Technology.all
-
+    ["page","per_page"].each do |p|
+      user_session["tech_#{p}"] = params[p] if params[p]
+    end
+    filter = {:page => user_session["tech_page"],
+              :per_page => user_session["tech_per_page"],
+              :order => :name}
+    if params[:search]
+       filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
+    end
+    @technologies = Technology.paginate(filter)
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @technologies }
+      format.xml  { render :xml => Technology.all }
     end
   end
 
