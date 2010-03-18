@@ -2,7 +2,6 @@ class CommoditiesController < ApplicationController
   before_filter :authenticate_user!
   
   # GET /commodities
-  # GET /commodities.xml
   def index
     ["page","per_page"].each do |p|
       user_session["comm_#{p}"] = params[p] if params[p]
@@ -15,30 +14,25 @@ class CommoditiesController < ApplicationController
     end
     @commodities = Commodity.paginate(filter)
     respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => Commodity.all }
+      format.html
     end
   end
 
   # GET /commodities/1
-  # GET /commodities/1.xml
   def show
     @commodity = Commodity.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @commodity }
+      format.html
     end
   end
 
   # GET /commodities/new
-  # GET /commodities/new.xml
   def new
     @commodity = Commodity.new
 
     respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @commodity }
+      format.html
     end
   end
 
@@ -48,7 +42,6 @@ class CommoditiesController < ApplicationController
   end
 
   # POST /commodities
-  # POST /commodities.xml
   def create
     @commodity = Commodity.new(params[:commodity])
 
@@ -65,7 +58,6 @@ class CommoditiesController < ApplicationController
   end
 
   # PUT /commodities/1
-  # PUT /commodities/1.xml
   def update
     @commodity = Commodity.find(params[:id])
 
@@ -76,20 +68,17 @@ class CommoditiesController < ApplicationController
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @commodity.errors, :status => :unprocessable_entity }
       end
     end
   end
 
   # DELETE /commodities/1
-  # DELETE /commodities/1.xml
   def destroy
     @commodity = Commodity.find(params[:id])
     @commodity.destroy
 
     respond_to do |format|
       format.html { redirect_to(commodities_url) }
-      format.xml  { head :ok }
     end
   end
 end

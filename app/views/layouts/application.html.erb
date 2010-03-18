@@ -8,10 +8,23 @@
     <link rel="shortcut icon" href="/images/favicon.ico" />
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
 
-	<%= stylesheet_link_tag "leaq", :cache => true %>
+    <%= stylesheet_link_tag "leaq", "jquery-ui", :cache => true %>
+
+    <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
+    <%= javascript_include_tag 'jquery.jeditable', 'jquery.cookie' %>
+    <% if protect_against_forgery? %>
+      <script type='text/javascript'>
+        //<![CDATA[
+          window._auth_token_name = "#{request_forgery_protection_token}";
+	  window._auth_token = "#{form_authenticity_token}";
+	//]]>
+      </script>
+    <% end %>
+
+    <%= javascript_include_tag 'application' %>
 
     <title><%= h(yield(:title) || "LEAQ web") %></title>
-	
+
 </head>
 <body>
     
