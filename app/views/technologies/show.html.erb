@@ -1,3 +1,478 @@
+<%= link_to 'Edit', edit_technology_path(@technology) %> | <%= link_to 'Back', technologies_path %>
 
-<%= link_to 'Edit', edit_technology_path(@technology) %> |
-<%= link_to 'Back', technologies_path %>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    $('.edit').editable('/geoecu/technology/{{technology.id}}/update/',{
+        style   : 'inherit',
+        width   : 150,
+        height  : 18
+    });
+    $('.delete').click(function(){
+      return confirm('Are you sure?');
+    });
+    $('#flow_edit').dialog({ 
+        modal: true,
+        show: 'blind',
+        hide: 'blind',
+        width: 500,
+        autoOpen: false
+    });
+    $('#add_commodity_flow').click(function() {
+        return !$('#sel_avail_commodity option:selected').clone().appendTo('#sel_flow_commodity');
+    });
+    $('#remove_commodity_flow').click(function() {
+        return !$('#sel_flow_commodity option:selected').remove();
+    });
+});
+function delete_technology(){
+ $('<div></div>').html('Delete this technology?')
+                 .dialog({
+                     modal: true,
+                     dialogClass:alert,
+                     buttons: { "No" : function() { $(this).dialog("close"); },
+                                "Yes": function() { $ajax({url:'/geoecu/technology/{{technology.id}}/delete/',type:'POST',async:false});
+                                                    load } }
+                 });   
+}
+function add_flow(flow_type){
+    $('#sel_flow_commodity').html("");
+    $('#flow_title').text('Add a new ' + flow_type);
+    $('#flow_edit').dialog('option', 'buttons', { "Add": function() {
+        var com = $('#sel_flow_commodity option');
+        var s = "";
+        for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
+        $.ajax({url:'/geoecu/technology/{{technology.id}}/add/'+flow_type+'/',
+                type:'POST',
+                data:{'commodities':s.substring(0,s.length-1)},
+                async:false});
+        location.reload();
+    } });
+    $('#flow_edit').dialog("open");
+}
+function edit_flow(flow_type,id)
+{
+	$.getJSON("/geoecu/"+flow_type+"/"+id+"/commodities/", function(j){
+        var options = "";
+        for(var i = 0; i < j.length; i++) {
+            options += '<option>' + j[i].fields['name'] + '</option>';
+        }
+        $('#sel_flow_commodity').html(options);
+    })
+	$('#flow_title').text('Edit '+flow_type+' (' + id + ')');
+    $('#flow_edit').dialog('option', 'buttons', { "Update": function() {
+    	var com = $('#sel_flow_commodity option');
+        var s = "";
+        for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
+        $.ajax({url:'/geoecu/'+flow_type+'/'+id+'/update/',
+                type:'POST',
+                data:{'commodities':s.substring(0,s.length-1)},
+                async:false});
+        location.reload();
+    } });
+    $('#flow_edit').dialog("open");
+}
+</script>
+
+
+<table class="idcard">
+  <tr>
+    <td class="idcard_leftcol"><ul>
+        <li>Name: <span class="edit" id="name"><%=h @technology.name %></span></li>
+        <li>Definition: <span class="edit" id="description"><%=h @technology.description %></span></li>
+    </ul></td>
+    <td><ul>
+      <li>Sets: <%=h @technology.set_list.join(", ")  %></li>
+      <li>Places: <%=h @technology.locations.map(&:name).join(", ") %></li>
+    </ul></td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+    $(function() {
+        $('#tabs').tabs({ cookie: { expires: 7 }}); 
+    });
+</script>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Flows</a></li>
+        <li><a href="#tabs-2">Parameters</a></li>
+        <li><a href="#tabs-3">Bounds</a></li>
+    </ul>
+    <div id="tabs-1">
+        <div id="flow_list">
+        <h3>Flow list</h3>
+		<% form_tag({:action => "flow", :id => @technology}, :method => "post") do %>
+        <table class="table_flows">
+        	<thead><tr><th>Inflows</th><th>Outflows</th></tr></thead>
+            <tbody><tr><td>
+				<% @technology.in_flows.each do |f| %>
+               		<input type="checkbox" name="f<%=f.id%>" />
+                    <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
+						<%=f.id%>: <%= commodity_url_list f %></span>
+                    (<a href="#" onclick="edit_flow('inflow',<%=f.id%>)">edit</a>)<br />
+                <% end -%><br />
+                + <a href="#" onclick="add_flow('inflow')">Add inflow</a></td><td>
+				<% @technology.out_flows.each do |f| %>
+                	<input type="checkbox" name="f<%=f.id%>" />
+                   	<span class="<%= "flow_act" if f.flow_act_of? @technology %>">
+						<%=f.id%>: <%= commodity_url_list f %></span>
+                   	(<a href="#" onclick="edit_flow('outflow',<%=f.id%>)">edit</a>)<br />
+                <% end -%><br />
+                + <a href="" onclick="add_flow('outflow')">Add outflow</a></td>
+            </tr></tbody>
+        </table>
+        <select name="do">
+			<option value="activity">Set activity flow</option>
+            <option value="delete">Delete checked flow(s)</option>
+        </select>
+		<%= submit_tag "OK" %>
+        <% end -%>
+        </div>
+        <div id="flow_efficiency">
+        <h3>Efficiency</h3>
+		<% form_tag({:action => "param", :id => @technology}, :method => "post") do %>
+        <table class="tableparameter">
+        <thead><tr><th>Inflow</th><th>Outflow</th><th>Value</th><th>Source</th><th></th></tr></thead>
+        <tbody>
+		<% @technology.parameter_values_for("eff_flo").each do |pv| %>
+        	<tr>
+        	<td><%= commodity_url_list pv.in_flow %></td>
+        	<td><%= commodity_url_list pv.out_flow %></td>
+        	<td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
+        	<td><span class="edit" id="source_<%= pv.id %>"><%= pv.source %></span></td>
+        	<td><input type="checkbox" value="cb<%= pv.id %>"/></td>
+        	</tr>
+		<% end -%>
+        
+        <tr>
+        <td><select name="inflow"><% @technology.in_flows.each do |f| %>
+			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list f %></option><% end -%>
+		</select></td>
+        <td><select name="outflow"><% @technology.out_flows.each do |f| %>
+			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list f %></option><% end -%>
+		</select></td>
+        <td><input name="value"/></td>
+        <td><input name="source"/></td>
+        <td></td>
+        </tr>
+        
+        </tbody>
+        </table>
+        <select name="do">
+            <option value="add">Add efficiency</option>
+            <option value="delete">Delete efficiencies</option>
+        </select>
+        <input type="hidden" name="parameter" value="eff_flo" />
+        <%= submit_tag "OK" %>
+        <% end -%>
+        </div>
+        <div id="flow_param">
+        <h3>Other flows parameters</h3>
+        <script>
+        $(document).ready(function(){
+          $("#param_flo").change(function () {
+              $("#param_flo_flo").attr("disabled", true);
+              $("#param_flo_com").attr("disabled", true);
+              $("#param_flo_t").attr("disabled", true);
+              $("#param_flo_ts").attr("disabled", true);
+              if ($("#param_flo option:selected").text()=="act_flo")
+              { 
+                  $("#param_flo_com").removeAttr("disabled");
+              }
+              else if ($("#param_flo option:selected").text().substring(0,5)=="flo_b")
+              { 
+                  $("#param_flo_flo").removeAttr("disabled");
+                  $("#param_flo_t").removeAttr("disabled");
+                  $("#param_flo_ts").removeAttr("disabled");
+              }
+              else if ($("#param_flo option:selected").text().substring(0,5)=="flo_s")
+              { 
+                  $("#param_flo_flo").removeAttr("disabled");
+                  $("#param_flo_com").removeAttr("disabled");
+              }
+            })
+            .change();
+        });
+        </script>
+        <% form_tag({:action => "param", :id => @technology}, :method => "post") do %>
+        <table class="tableparameter">
+        <thead><tr><th>Parameter</th><th>Flow</th><th>Commodity</th><th>Time slice</th>
+                   <th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+        <tbody>
+		<% parameters = %w{act_flo flo_bnd_lo flo_bnd_fx flo_bnd_up flo_share_lo flo_share_fx flo_share_up} %>
+		<% @technology.parameter_values_for(parameters).each do |pv| %>
+        	<tr>
+        	<td><%=h pv.parameter.name %></td>
+        	<td><%= commodity_url_list pv.flow %></td>
+        	<td><%=h pv.commodity.name %></td>
+        	<td><%=h pv.time_slice %></td>
+        	<td><%=h pv.year %></td>
+        	<td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
+        	<td><span class="edit" id="source_<%= pv.id %>"><%=h pv.source %></span></td>
+        	<td><input type="checkbox" name="cb<%= pv.id %>}" /></td>
+        	</tr>
+        <% end -%>
+
+        <tr>
+        <td><select id="param_flo" name="parameter">
+			<% parameters.each do |p| %><option><%=h p %></option><% end -%>
+        </select></td>
+        <td><select id="param_flo_flo" name="flow">
+            <optgroup label="inflow">
+                <% @technology.in_flows.each do |f| %>
+					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list f %></option>
+				<% end -%>
+            </optgroup>
+            <optgroup label="outflow">
+                <% @technology.out_flows.each do |f| %>
+					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list f %></option>
+				<% end -%>
+            </optgroup>
+        </select></td>
+        <td><input id="param_flo_com" name="commodity"/></td>
+        <td><input id="param_flo_ts" name="time_slice"/></td>
+        <td><input id="param_flo_t" name="year"/></td>
+        <td><input name="value"/></td>
+        <td><input name="source"/></td>
+        <td></td>
+        </tr>
+        
+        </tbody>
+        </table>
+        <select name="action">
+            <option value="add">Add parameter value</option>
+            <option value="delete">Delete checked parameter value(s)</option>
+        </select>
+        <%= submit_tag "OK" %>
+        <% end -%>
+        </div>
+    </div>
+    <div id="tabs-2">
+        
+        <div id="parameter_tid">
+        <h3>General Parameters</h3>
+        <% form_tag({:action => "param", :id => @technology}, :method => "post") do %>
+        <table class="tableparameter">
+        <thead><tr><th>Parameter</th><th>Value</th><th>Source</th><th></th></tr></thead>
+        <tbody>
+		
+		<% parameters = %w{life avail cap_act} %>
+		<% @technology.parameter_values_for(parameters).each do |pv| %>
+         <tr>
+         <td><%=h pv.parameter.name %></td>
+         <td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
+         <td><span class="edit" id="source_<%= pv.id %>"><%=h pv.source %></span></td>
+         <td><input type="checkbox" name="cb<%= pv.id %>" /></td>
+         </tr>
+        <% end -%>
+  
+        <tr>
+        <td><select name="parameter">
+			<% parameters.each do |p| %><option><%=h p %></option><% end -%>
+        </select></td>
+        <td><input name="value"/></td>
+        <td><input name="source"/></td>
+        <td></td>
+        </tr>  
+        
+        </tbody>
+        </table>
+
+        <select name="action">
+            <option value="add">Add parameter value</option>
+            <option value="delete">Delete checked parameter value(s)</option>
+        </select>
+        <%= submit_tag "OK" %>
+        <% end %>
+
+        </div>
+        
+        <div id="parameter_td">
+        <h3>Time-dependent Parameters</h3>
+        <script>
+        $(document).ready(function(){
+          $("#param_td").change(function () {
+              $("#param_td_place").attr("disabled", true);
+              $("#param_td_com").attr("disabled", true);
+              $("#param_td_t").attr("disabled", true);
+              $("#param_td_ts").attr("disabled", true);
+              if ($("#param_td option:selected").text()=="fixed_cap")
+              { 
+                  $("#param_td_place").removeAttr("disabled");
+                  $("#param_td_t").removeAttr("disabled");
+              }
+              else if ($("#param_td option:selected").text().substring(0,6)=="cost_d")
+              { 
+                  $("#param_td_com").removeAttr("disabled");
+                  $("#param_td_t").removeAttr("disabled");
+                  $("#param_td_ts").removeAttr("disabled");
+              }
+              else if ($("#param_td option:selected").text().substring(0,5)=="cost_")
+              { 
+                  $("#param_td_t").removeAttr("disabled");
+              }
+              else if ($("#param_td option:selected").text()=="avail_factor")
+              { 
+                    $("#param_td_t").removeAttr("disabled");
+                    $("#param_td_ts").removeAttr("disabled");
+              }
+              else if ($("#param_td option:selected").text()=="peak_prod")
+              { 
+                    $("#param_td_com").removeAttr("disabled");
+                    $("#param_td_ts").removeAttr("disabled");
+              }
+            })
+            .change();
+        });
+        </script>
+        <% form_tag({:action => "param", :id => @technology}, :method => "post") do %>
+        <table class="tableparameter">
+        <thead><tr><th>Parameter</th><th>Place</th><th>Commodity</th><th>Time slice</th>
+                   <th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+        <tbody>
+        <% parameters = %w{cost_vom cost_fom cost_icap cost_delivery avail_factor peak_prod fixed_cap} %>
+		<% @technology.parameter_values_for(parameters).each do |pv| %>
+        <tr>
+            <td><%=h pv.parameter.name %></td>
+            <td><%=h pv.location.name %></td>
+            <td><%=h pv.commodity.name %></td>
+            <td><%=h pv.time_slice %></td>
+            <td><%=h pv.year %></td>
+            <td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
+            <td><span class="edit" id="source_<%= pv.id %>"><%=h pv.source %></span></td>
+            <td><input type="checkbox"name="cb<%= pv.id %>" /></td>
+        </tr>
+        <% end -%>
+        
+        <tr>
+        <td><select id="param_td" name="parameter">
+            <% parameters.each do |p| %><option><%=h p %></option><% end -%>
+        </select></td>
+        <td><input id="param_td_place" name="place"/></td>
+        <td><input id="param_td_com" name="commodity"/></td>
+        <td><input id="param_td_ts" name="time_slice"/></td>
+        <td><input id="param_td_t" name="year"/></td>
+        <td><input name="value"/></td>
+        <td><input name="source"/></td>
+        <td></td>
+        </tr>
+        
+        </tbody>
+        </table>
+        <select name="action">
+            <option value="add">Add parameter value</option>
+            <option value="delete">Delete checked parameter value(s)</option>
+        </select>
+        <%= submit_tag "OK" %>
+        <% end -%>
+        
+        </div>
+        
+    </div>
+    <div id="tabs-3">
+        
+        <div id="parameter_bnds">
+            <script>
+            $(document).ready(function(){
+              $("#param_bnd").change(function () {
+                  if ($("#param_bnd option:selected").text().substring(0,3)=="act")
+                  { 
+                      $("#param_bnd_ts").removeAttr("disabled");
+                  }
+                  else 
+                  { 
+                      $("#param_bnd_ts").attr("disabled", true);
+                  }
+                })
+                .change();
+            });
+            </script>
+        
+        <h3>Bounds Parameters</h3>
+        
+		<% form_tag({:action => "param", :id => @technology}, :method => "post") do %>
+        <table class="tableparameter">
+        <thead><tr><th>Parameter</th><th>Place</th><th>Time slice</th>
+                   <th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+        <tbody>
+        
+        <% parameters = %w{act_bnd_lo act_bnd_fx act_bnd_up cap_bnd_lo cap_bnd_fx cap_bnd_up icap_bnd_lo icap_bnd_fx icap_bnd_up} %>
+		<% @technology.parameter_values_for(parameters).each do |pv| %>
+        <tr>
+            <td><%=h pv.parameter.name %></td>
+            <td><%=h pv.location.name %></td>
+            <td><%=h pv.time_slice %></td>
+            <td><%=h pv.year %></td>
+            <td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
+            <td><span class="edit" id="source_<%= pv.id %>"><%=h pv.source %></span></td>
+            <td><input type="checkbox"name="cb<%= pv.id %>" /></td>
+        </tr>
+        <% end -%>
+        
+        <tr>
+        <td><select id="param_bnd" name="parameter">
+            <% parameters.each do |p| %><option><%=h p %></option><% end -%>
+        </select></td>
+        <td><input name="place"/></td>
+        <td><input id="param_bnd_ts" name="time_slice"/></td>
+        <td><input name="year"/></td>
+        <td><input name="value"/></td>
+        <td><input name="source"/></td>
+        <td></td>
+        </tr>
+        
+        </tbody>
+        </table>
+        <select name="action">
+            <option value="add">Add parameter value</option>
+            <option value="delete">Delete checked parameter value(s)</option>
+        </select>
+        <%= submit_tag "OK" %>
+        <% end -%>
+        
+        </div>
+
+    </div>
+    
+    <div id="flow_edit">
+        <div id="commodity_list">
+            <h3 id="flow_title">Flow editor (new)</h3>
+            <% form_tag({:action => "flow", :id => @technology}, :method => "post") do %>
+            <table class="tablecommoditylist">
+            <thead><tr><th>Available commodities</th><th class="flow_separator"></th><th>Flow commodities</th></tr></thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select multiple size="10" id="sel_avail_commodity">
+                            <optgroup label="Energy Carriers">
+                                {% for c in tag_enc %}
+                                <option>{{c.name}}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Pollutants">
+                                {% for c in tag_poll %}
+                                <option>{{c.name}}</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Useful demands">
+                                {% for c in tag_dem %}
+                                <option>{{c.name}}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                        <center><a href="#" id="add_commodity_flow">add &gt;&gt;</a></center>
+                    </td>
+                    <td class="flow_separator">
+                    </td>
+                    <td>
+                        <select multiple size="10" id="sel_flow_commodity">
+                        </select>
+                        <center><a href="#" id="remove_commodity_flow">&lt;&lt; remove</a></center>
+                    </td>
+            </tbody>
+            </table>
+            <% end -%>
+        </div>
+    </div>
+</div>
