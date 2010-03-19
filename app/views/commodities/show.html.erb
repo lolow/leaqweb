@@ -1,0 +1,293 @@
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+    $('.edit').editable('/geoecu/commodity/{{commodity.id}}/update/',{
+        style   : 'inherit',
+        width   : 150,
+        height  : 18
+    });
+    $('.delete').click(function(){
+      return confirm('Are you sure?');
+    });
+});
+</script>
+
+<table class="idcard">
+  <tr>
+    <td class="idcard_leftcol"><ul>
+        <li>Name: <span class="edit" id="name"><%=h @commodity.name %></span></li>
+        <li>Definition: <span class="edit" id="definition"><%=h @commodity.description %></span></li>
+    </ul></td>
+    <td><ul>
+      <li>Sets: <%=h @commodity.set_list.join(", ") %>
+      </li>
+    </ul></td>
+</tr>
+<tr><td colspan="2">
+    <ul>
+        <li>Consumed by: <%= technology_url_list @commodity.consumed_by  %></li>
+        <li>Produced by: <%= technology_url_list @commodity.produced_by  %></li>
+    </ul>
+</td></tr>
+</table>
+
+<script type="text/javascript">
+    $(function() {
+        $('#tabs').tabs({ cookie: { expires: 7 }});
+    });
+</script>
+
+<% if @commodity.demand? %>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Parameters</a></li>
+    </ul>
+    <div id="tabs-1">
+        <div id="general">
+            <h3>Demand values</h3>
+            <% form_tag({:controller=>:commodities,:action=>:param,:id=>@commodity},:method => "post") do %>
+              <table class="tableparameter">
+              <thead><tr><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+              <tbody>             
+
+              <% @commodity.parameter_values_for("demand").each do |pv| %>
+              <tr>
+              <td><%=h pv.year %></td>
+              <td><span class="edit" id="value_<%= pv.id  %>"><%= pv.value %></span></td>
+              <td><span class="edit" id="source_<%= pv.id  %>"><%= pv.source %></span></td>
+              <td><input type="checkbox" name="cb<%= pv.id  %>" /></td>
+              </tr>
+              <% end %>
+
+              <tr>
+              <td><input name="year"/></td>
+              <td><input name="value"/></td>
+              <td><input name="source"/></td>
+              <td></td>
+              </tr>
+
+              </tbody>
+              </table>
+
+              <select name="do">
+                  <option value="add">Add parameter value</option>
+                  <option value="delete">Delete checked parameter value(s)</option>
+              </select>
+
+              <input type="hidden" name="parameter" value="demand" />
+              <%= submit_tag 'OK' %>
+
+            <% end %>
+        </div>
+        <div id="fraction_demand">
+            <h3>Fraction of demand per time-slice</h3>
+            <% form_tag({:controller=>:commodities,:action=>:param,:id=>@commodity},:method => "post") do %>
+              <table class="tableparameter">
+              <thead><tr><th>Time slice</th><th>Value</th><th>Source</th><th></th></tr></thead>
+              <tbody>
+
+              <% @commodity.parameter_values_for("frac_dem").each do |pv| %>
+              <tr>
+              <td><%=h pv.time_slice %></td>
+              <td><span class="edit" id="value_<%= pv.id  %>"><%= pv.value %></span></td>
+              <td><span class="edit" id="source_<%= pv.id  %>"><%= pv.source %></span></td>
+              <td><input type="checkbox" name="cb<%= pv.id  %>" /></td>
+              </tr>
+              <% end %>
+
+              <tr>
+              <td><input name="time_slice"/></td>
+              <td><input name="value"/></td>
+              <td><input name="source"/></td>
+              <td></td>
+              </tr>
+
+              </tbody>
+              </table>
+
+              <select name="do">
+                  <option value="add">Add parameter value</option>
+                  <option value="delete">Delete checked parameter value(s)</option>
+              </select>
+
+              <input type="hidden" name="parameter" value="frac_dem" />
+              <%= submit_tag 'OK' %>
+              
+            <% end %>
+        </div>
+    </div>
+</div>
+
+<% else %>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Parameters</a></li>
+        <li><a href="#tabs-2">Constraints</a></li>
+    </ul>
+    <div id="tabs-1">
+        <div id="general">
+            <h3>General parameters</h3>
+            <script>
+            $(document).ready(function(){
+              $("#param_gen").change(function () {
+                  if ($("#param_gen option:selected").text()=="network_efficiency")
+                  {
+                      $("#param_gen_year").attr("disabled", true);
+                      $("#param_gen_time_slice").attr("disabled", true);
+                  }
+                  else if ($("#param_gen option:selected").text()=="peak_reserve")
+                  {
+                      $("#param_gen_year").removeAttr("disabled");
+                      $("#param_gen_time_slice").removeAttr("disabled");
+                  }
+                })
+                .change();
+            });
+            </script>
+            <% form_tag({:controller=>:commodities,:action=>:param,:id=>@commodity},:method => "post") do %>
+            <table class="tableparameter">
+            <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+            <tbody>
+
+            {% for pv in pv_gen %}
+            <tr>
+            <td>{{pv.1|safe}}</td>
+            <td>{{pv.2|safe}}</td>
+            <td>{{pv.3|safe}}</td>
+            <td><span class="edit" id="value_{{pv.0}}">{{pv.4|to_f}}</span></td>
+            <td><span class="edit" id="source_{{pv.0}}">{{pv.5}}</span></td>
+            <td><input type="checkbox" name="pv{{pv.0}}" /></td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+            <td><select id="param_gen" name="parameter">
+                <option>network_efficiency</option>
+                <option>peak_reserve</option>
+            </select></td>
+            <td><input id="param_gen_year" name="year"/></td>
+            <td><input id="param_gen_time_slice" name="time_slice"/></td>
+            <td><input name="value"/></td>
+            <td><input name="source"/></td>
+            <td></td>
+            </tr>
+
+            </tbody>
+            </table>
+
+            <select name="action">
+                <option value="add">Add parameter value</option>
+                <option value="delete">Delete parameter value(s)</option>
+            </select>
+            <input type="submit" value="OK" />
+            <% end  %>
+        </div>
+        <div id="import_export">
+            <h3>Import/export parameters</h3>
+            <form action="/geoecu/commodity/{{commodity.id}}/param/" method="post">
+            <table class="tableparameter">
+            <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+            <tbody>
+
+            {% for pv in pv_impexp %}
+            <tr>
+            <td>{{pv.1|safe}}</td>
+            <td>{{pv.2|safe}}</td>
+            <td>{{pv.3|safe}}</td>
+            <td><span class="edit" id="value_{{pv.0}}">{{pv.4|to_f}}</span></td>
+            <td><span class="edit" id="source_{{pv.0}}">{{pv.5}}</span></td>
+            <td><input type="checkbox" name="pv{{pv.0}}" /></td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+            <td><select name="parameter">
+                <option>cost_imp</option>
+                <option>cost_exp</option>
+                <option>imp_bnd_lo</option>
+                <option>imp_bnd_fx</option>
+                <option>imp_bnd_up</option>
+                <option>exp_bnd_lo</option>
+                <option>exp_bnd_fx</option>
+                <option>exp_bnd_up</option>
+            </select></td>
+            <td><input name="timeslice"/></td>
+            <td><input name="year"/></td>
+            <td><input name="value"/></td>
+            <td><input name="source"/></td>
+            <td></td>
+            </tr>
+
+            </tbody>
+            </table>
+
+            <select name="action">
+                <option value="add">Add parameter value</option>
+                <option value="delete">Delete parameter value(s)</option>
+            </select>
+            <input type="submit" value="OK" />
+            </form>
+        </div>
+    </div>
+
+    <div id="tabs-2">
+        <div id="constraints">
+            <h3>Constraints</h3>
+            <script>
+            $(document).ready(function(){
+              $("#param_cons").change(function () {
+                  if ($("#param_cons option:selected").text()=="com_net_bnd_up_t")
+                  {
+                      $("#param_cons_time_slice").attr("disabled", true);
+                  }
+                  else if ($("#param_cons option:selected").text()=="com_net_bnd_up_ts")
+                  {
+                      $("#param_cons_time_slice").removeAttr("disabled");
+                  }
+                })
+                .change();
+            });
+            </script>
+            <form action="/geoecu/commodity/{{commodity.id}}/param/" method="post">
+            <table class="tableparameter">
+            <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
+            <tbody>
+
+            {% for pv in pv_cons %}
+            <tr>
+            <td>{{pv.1|safe}}</td>
+            <td>{{pv.2|safe}}</td>
+            <td>{{pv.3|safe}}</td>
+            <td><span class="edit" id="value_{{pv.0}}">{{pv.4|to_f}}</span></td>
+            <td><span class="edit" id="source_{{pv.0}}">{{pv.5}}</span></td>
+            <td><input type="checkbox" name="pv{{pv.0}}" /></td>
+            </tr>
+            {% endfor %}
+
+            <tr>
+            <td><select id="param_cons" name="parameter">
+                <option>com_net_bnd_up_t</option>
+                <option>com_net_bnd_up_ts</option>
+            </select></td>
+            <td><input id="param_cons_time_slice" name="time_slice"/></td>
+            <td><input name="year"/></td>
+            <td><input name="value"/></td>
+            <td><input name="source"/></td>
+            <td></td>
+            </tr>
+
+            </tbody>
+            </table>
+
+            <select name="action">
+                <option value="add">Add parameter value</option>
+                <option value="delete">Delete parameter value(s)</option>
+            </select>
+            <input type="submit" value="OK" />
+            </form>
+        </div>
+    </div>
+</div>
+
+<% end %>
