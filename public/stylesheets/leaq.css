@@ -102,7 +102,7 @@ table.table_flows {
 background-color:#CDCDCD;
 margin:10px 0 15px;
 text-align:left;
-width:60%;
+width:500px;
 border-spacing:1px;
 border:0;
 }
@@ -110,7 +110,6 @@ border:0;
 table.table_flows thead tr th {
 background-color:#E6EEEE;
 border:1px solid #FFFFFF;
-font-size:8pt;
 padding:4px;
 }
 
@@ -133,7 +132,6 @@ border:0;
 table.table_flow_edit thead tr th {
 background-color:#E6EEEE;
 border:1px solid #FFFFFF;
-font-size:8pt;
 padding:4px;
 }
 
@@ -143,8 +141,6 @@ color:#3D3D3D;
 padding:4px;
 vertical-align:top;
 }
-
-
 
 table.tableparameter {
 background-color:#CDCDCD;
@@ -158,8 +154,8 @@ border:0;
 table.tableparameter thead tr th {
 background-color:#E6EEEE;
 border:1px solid #FFFFFF;
-font-size:8pt;
 padding:4px;
+text-align: center;
 }
 
 table.tableparameter tbody td {
@@ -167,6 +163,10 @@ background-color:#FFFFFF;
 color:#3D3D3D;
 padding:4px;
 vertical-align:top;
+}
+
+input[type="textcell"] {
+width: 100%;
 }
 
 table.tablecommoditylist {
@@ -181,7 +181,6 @@ border:0;
 table.tablecommoditylist thead tr th {
 background-color:#E6EEEE;
 border:0px;
-font-size:8pt;
 padding:4px;
 }
 

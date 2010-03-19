@@ -27,10 +27,14 @@ class Commodity < ActiveRecord::Base
     self.set_list.include? "DEM"
   end
 
-  def parameter_values_for(parameter)
-    param = Parameter.find_by_name(parameter)
-    param.parameter_values.find(:all,:conditions => { :commodity_id => self },
-                                     :order => "year")
+  def parameter_values_for(parameters)
+    parameters = [parameters] unless parameters.is_a? Array
+    param_ids = Parameter.find(:all,
+                               :conditions => ["name IN (?)",parameters],
+                               :order => "name").map &:id
+    self.parameter_values.find(:all,
+                               :conditions => ["parameter_id IN (?)",param_ids],
+                               :order => "year")
   end
 
 end

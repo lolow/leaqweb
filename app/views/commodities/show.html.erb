@@ -1,12 +1,12 @@
-<script type="text/javascript" charset="utf-8">
+<%= link_to 'Edit', edit_commodity_path(@commodity) %> | <%= link_to 'Back', commodities_path %>
+
+<script type="text/javascript">
 $(document).ready(function() {
-    $('.edit').editable('/geoecu/commodity/{{commodity.id}}/update/',{
+    $('.edit').editable('<%= commodity_path(@commodity) %>',{
         style   : 'inherit',
         width   : 150,
-        height  : 18
-    });
-    $('.delete').click(function(){
-      return confirm('Are you sure?');
+        height  : 18,
+        method  : "PUT"
     });
 });
 </script>
@@ -60,9 +60,9 @@ $(document).ready(function() {
               <% end %>
 
               <tr>
-              <td><input name="year"/></td>
-              <td><input name="value"/></td>
-              <td><input name="source"/></td>
+              <td><input type="textcell" name="year"/></td>
+              <td><input type="textcell" name="value"/></td>
+              <td><input type="textcell" name="source"/></td>
               <td></td>
               </tr>
 
@@ -96,9 +96,9 @@ $(document).ready(function() {
               <% end %>
 
               <tr>
-              <td><input name="time_slice"/></td>
-              <td><input name="value"/></td>
-              <td><input name="source"/></td>
+              <td><input type="textcell" name="time_slice"/></td>
+              <td><input type="textcell" name="value"/></td>
+              <td><input type="textcell" name="source"/></td>
               <td></td>
               </tr>
 
@@ -128,7 +128,7 @@ $(document).ready(function() {
     <div id="tabs-1">
         <div id="general">
             <h3>General parameters</h3>
-            <script>
+            <script type="text/javascript">
             $(document).ready(function(){
               $("#param_gen").change(function () {
                   if ($("#param_gen option:selected").text()=="network_efficiency")
@@ -150,38 +150,38 @@ $(document).ready(function() {
             <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
             <tbody>
 
-            {% for pv in pv_gen %}
-            <tr>
-            <td>{{pv.1|safe}}</td>
-            <td>{{pv.2|safe}}</td>
-            <td>{{pv.3|safe}}</td>
-            <td><span class="edit" id="value_{{pv.0}}">{{pv.4|to_f}}</span></td>
-            <td><span class="edit" id="source_{{pv.0}}">{{pv.5}}</span></td>
-            <td><input type="checkbox" name="pv{{pv.0}}" /></td>
-            </tr>
-            {% endfor %}
+            <% parameters = %w{network_efficiency peak_reserve} %>
+            <% @commodity.parameter_values_for(parameters).each do |pv| %>
+              <tr>
+              <td><%=h pv.parameter.name %></td>
+              <td><%=h pv.time_slice %></td>
+              <td><%=h pv.year %></td>
+              <td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
+              <td><span class="edit" id="source_<%= pv.id %>"><%= pv.source %></span></td>
+              <td><input type="checkbox" name="cb<%= pv.id %>" /></td>
+              </tr>
+            <% end -%>
 
             <tr>
             <td><select id="param_gen" name="parameter">
-                <option>network_efficiency</option>
-                <option>peak_reserve</option>
+                <% parameters.each do |p| %><option><%=h p %></option><% end -%>
             </select></td>
-            <td><input id="param_gen_year" name="year"/></td>
-            <td><input id="param_gen_time_slice" name="time_slice"/></td>
-            <td><input name="value"/></td>
-            <td><input name="source"/></td>
+            <td><input type="textcell" id="param_gen_year" name="year"/></td>
+            <td><input type="textcell" id="param_gen_time_slice" name="time_slice"/></td>
+            <td><input type="textcell" name="value"/></td>
+            <td><input type="textcell" name="source"/></td>
             <td></td>
             </tr>
 
             </tbody>
             </table>
 
-            <select name="action">
+            <select name="do">
                 <option value="add">Add parameter value</option>
-                <option value="delete">Delete parameter value(s)</option>
+                <option value="delete">Delete checked parameter value(s)</option>
             </select>
-            <input type="submit" value="OK" />
-            <% end  %>
+            <%= submit_tag 'OK' %>
+            <% end -%>
         </div>
         <div id="import_export">
             <h3>Import/export parameters</h3>
@@ -190,32 +190,26 @@ $(document).ready(function() {
             <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
             <tbody>
 
-            {% for pv in pv_impexp %}
+            <% parameters = %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up exp_bnd_lo exp_bnd_fx exp_bnd_up} %>
+            <% @commodity.parameter_values_for(parameters).each do |pv| %>
             <tr>
-            <td>{{pv.1|safe}}</td>
-            <td>{{pv.2|safe}}</td>
-            <td>{{pv.3|safe}}</td>
-            <td><span class="edit" id="value_{{pv.0}}">{{pv.4|to_f}}</span></td>
-            <td><span class="edit" id="source_{{pv.0}}">{{pv.5}}</span></td>
-            <td><input type="checkbox" name="pv{{pv.0}}" /></td>
+            <td><%=h pv.parameter.name %></td>
+            <td><%=h pv.time_slice %></td>
+            <td><%=h pv.year %></td>
+            <td><span class="edit" id="value_<%= pv.id %>"><%=h pv.value %></span></td>
+            <td><span class="edit" id="source_<%= pv.id %>"><%=h pv.source %></span></td>
+            <td><input type="checkbox" name="cb<%= pv.id %>" /></td>
             </tr>
-            {% endfor %}
+            <% end -%>
 
             <tr>
             <td><select name="parameter">
-                <option>cost_imp</option>
-                <option>cost_exp</option>
-                <option>imp_bnd_lo</option>
-                <option>imp_bnd_fx</option>
-                <option>imp_bnd_up</option>
-                <option>exp_bnd_lo</option>
-                <option>exp_bnd_fx</option>
-                <option>exp_bnd_up</option>
+                <% parameters.each do |p| %><option><%=h p %></option><% end -%>
             </select></td>
-            <td><input name="timeslice"/></td>
-            <td><input name="year"/></td>
-            <td><input name="value"/></td>
-            <td><input name="source"/></td>
+            <td><input type="text" name="timeslice"/></td>
+            <td><input type="text" name="year"/></td>
+            <td><input type="text" name="value"/></td>
+            <td><input type="text" name="source"/></td>
             <td></td>
             </tr>
 
@@ -226,7 +220,7 @@ $(document).ready(function() {
                 <option value="add">Add parameter value</option>
                 <option value="delete">Delete parameter value(s)</option>
             </select>
-            <input type="submit" value="OK" />
+            <%= submit_tag 'OK' %>
             </form>
         </div>
     </div>
@@ -234,7 +228,7 @@ $(document).ready(function() {
     <div id="tabs-2">
         <div id="constraints">
             <h3>Constraints</h3>
-            <script>
+            <script type="text/javascript">
             $(document).ready(function(){
               $("#param_cons").change(function () {
                   if ($("#param_cons option:selected").text()=="com_net_bnd_up_t")
@@ -254,26 +248,26 @@ $(document).ready(function() {
             <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
             <tbody>
 
-            {% for pv in pv_cons %}
+            <% parameters = %w{com_net_bnd_up_t com_net_bnd_up_ts} %>
+            <% @commodity.parameter_values_for(parameters).each do |pv| %>
             <tr>
-            <td>{{pv.1|safe}}</td>
-            <td>{{pv.2|safe}}</td>
-            <td>{{pv.3|safe}}</td>
-            <td><span class="edit" id="value_{{pv.0}}">{{pv.4|to_f}}</span></td>
-            <td><span class="edit" id="source_{{pv.0}}">{{pv.5}}</span></td>
-            <td><input type="checkbox" name="pv{{pv.0}}" /></td>
+            <td><%=h pv.parameter.name %></td>
+            <td><%=h pv.time_slice %></td>
+            <td><%=h pv.year %></td>
+            <td><span class="edit" id="value_<%= pv.id %>"><%=h pv.value %></span></td>
+            <td><span class="edit" id="source_<%= pv.id %>"><%=h pv.source %></span></td>
+            <td><input type="checkbox" name="cb<%= pv.id %>" /></td>
             </tr>
-            {% endfor %}
+            <% end -%>
 
             <tr>
             <td><select id="param_cons" name="parameter">
-                <option>com_net_bnd_up_t</option>
-                <option>com_net_bnd_up_ts</option>
+                <% parameters.each do |p| %><option><%=h p %></option><% end -%>
             </select></td>
-            <td><input id="param_cons_time_slice" name="time_slice"/></td>
-            <td><input name="year"/></td>
-            <td><input name="value"/></td>
-            <td><input name="source"/></td>
+            <td><input type="text" id="param_cons_time_slice" name="time_slice"/></td>
+            <td><input type="text" name="year"/></td>
+            <td><input type="text" name="value"/></td>
+            <td><input type="text" name="source"/></td>
             <td></td>
             </tr>
 
@@ -282,9 +276,9 @@ $(document).ready(function() {
 
             <select name="action">
                 <option value="add">Add parameter value</option>
-                <option value="delete">Delete parameter value(s)</option>
+                <option value="delete">Delete checked parameter value(s)</option>
             </select>
-            <input type="submit" value="OK" />
+            <%= submit_tag 'OK' %>
             </form>
         </div>
     </div>

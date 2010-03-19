@@ -1,16 +1,14 @@
 <%= link_to 'Edit', edit_technology_path(@technology) %> | <%= link_to 'Back', technologies_path %>
 
-<script type="text/javascript" charset="utf-8">
+<script type="text/javascript">
 $(document).ready(function() {
-    $('.edit').editable('/geoecu/technology/{{technology.id}}/update/',{
+    $('.edit').editable('<%= technology_path(@technology) %>',{
         style   : 'inherit',
         width   : 150,
-        height  : 18
+        height  : 18,
+        method  : "PUT"
     });
-    $('.delete').click(function(){
-      return confirm('Are you sure?');
-    });
-    $('#flow_edit').dialog({ 
+    $('#flow_edit').dialog({
         modal: true,
         show: 'blind',
         hide: 'blind',
@@ -24,16 +22,6 @@ $(document).ready(function() {
         return !$('#sel_flow_commodity option:selected').remove();
     });
 });
-function delete_technology(){
- $('<div></div>').html('Delete this technology?')
-                 .dialog({
-                     modal: true,
-                     dialogClass:alert,
-                     buttons: { "No" : function() { $(this).dialog("close"); },
-                                "Yes": function() { $ajax({url:'/geoecu/technology/{{technology.id}}/delete/',type:'POST',async:false});
-                                                    load } }
-                 });   
-}
 function add_flow(flow_type){
     $('#sel_flow_commodity').html("");
     $('#flow_title').text('Add a new ' + flow_type);
@@ -41,7 +29,7 @@ function add_flow(flow_type){
         var com = $('#sel_flow_commodity option');
         var s = "";
         for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
-        $.ajax({url:'/geoecu/technology/{{technology.id}}/add/'+flow_type+'/',
+        $.ajax({url:'<%= flows_path %>',
                 type:'POST',
                 data:{'commodities':s.substring(0,s.length-1)},
                 async:false});
@@ -51,10 +39,11 @@ function add_flow(flow_type){
 }
 function edit_flow(flow_type,id)
 {
-	$.getJSON("/geoecu/"+flow_type+"/"+id+"/commodities/", function(j){
+	$.getJSON('<%= flows_path %>/' + id + '.js', function(j){
         var options = "";
-        for(var i = 0; i < j.length; i++) {
-            options += '<option>' + j[i].fields['name'] + '</option>';
+        var c = j.flow.commodities;
+        for(var i = 0; i < c.length; i++) {
+            options += '<option>' + c[i].commodity.name + '</option>';
         }
         $('#sel_flow_commodity').html(options);
     })
@@ -63,8 +52,8 @@ function edit_flow(flow_type,id)
     	var com = $('#sel_flow_commodity option');
         var s = "";
         for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
-        $.ajax({url:'/geoecu/'+flow_type+'/'+id+'/update/',
-                type:'POST',
+        $.ajax({url:'<%= flows_path %>/' + id,
+                type:'PUT',
                 data:{'commodities':s.substring(0,s.length-1)},
                 async:false});
         location.reload();
@@ -152,8 +141,8 @@ function edit_flow(flow_type,id)
         <td><select name="outflow"><% @technology.out_flows.each do |f| %>
 			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list f %></option><% end -%>
 		</select></td>
-        <td><input name="value"/></td>
-        <td><input name="source"/></td>
+        <td><input type="textcell" name="value"/></td>
+        <td><input type="textcell" name="source"/></td>
         <td></td>
         </tr>
         
@@ -169,7 +158,7 @@ function edit_flow(flow_type,id)
         </div>
         <div id="flow_param">
         <h3>Other flows parameters</h3>
-        <script>
+        <script  type="text/javascript">
         $(document).ready(function(){
           $("#param_flo").change(function () {
               $("#param_flo_flo").attr("disabled", true);
@@ -230,11 +219,11 @@ function edit_flow(flow_type,id)
 				<% end -%>
             </optgroup>
         </select></td>
-        <td><input id="param_flo_com" name="commodity"/></td>
-        <td><input id="param_flo_ts" name="time_slice"/></td>
-        <td><input id="param_flo_t" name="year"/></td>
-        <td><input name="value"/></td>
-        <td><input name="source"/></td>
+        <td><input type="textcell" id="param_flo_com" name="commodity"/></td>
+        <td><input type="textcell" id="param_flo_ts" name="time_slice"/></td>
+        <td><input type="textcell" id="param_flo_t" name="year"/></td>
+        <td><input type="textcell" name="value"/></td>
+        <td><input type="textcell" name="source"/></td>
         <td></td>
         </tr>
         
@@ -271,8 +260,8 @@ function edit_flow(flow_type,id)
         <td><select name="parameter">
 			<% parameters.each do |p| %><option><%=h p %></option><% end -%>
         </select></td>
-        <td><input name="value"/></td>
-        <td><input name="source"/></td>
+        <td><input type="textcell" name="value"/></td>
+        <td><input type="textcell" name="source"/></td>
         <td></td>
         </tr>  
         
@@ -290,7 +279,7 @@ function edit_flow(flow_type,id)
         
         <div id="parameter_td">
         <h3>Time-dependent Parameters</h3>
-        <script>
+        <script  type="text/javascript">
         $(document).ready(function(){
           $("#param_td").change(function () {
               $("#param_td_place").attr("disabled", true);
@@ -332,11 +321,11 @@ function edit_flow(flow_type,id)
                    <th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
         <tbody>
         <% parameters = %w{cost_vom cost_fom cost_icap cost_delivery avail_factor peak_prod fixed_cap} %>
-		<% @technology.parameter_values_for(parameters).each do |pv| %>
+	<% @technology.parameter_values_for(parameters).each do |pv| %>
         <tr>
-            <td><%=h pv.parameter.name %></td>
-            <td><%=h pv.location.name %></td>
-            <td><%=h pv.commodity.name %></td>
+            <td><%=h pv.parameter.name if pv.parameter %></td>
+            <td><%=h pv.location.name if pv.location %></td>
+            <td><%=h pv.commodity.name if pv.commodity %></td>
             <td><%=h pv.time_slice %></td>
             <td><%=h pv.year %></td>
             <td><span class="edit" id="value_<%= pv.id %>"><%= pv.value %></span></td>
@@ -349,12 +338,12 @@ function edit_flow(flow_type,id)
         <td><select id="param_td" name="parameter">
             <% parameters.each do |p| %><option><%=h p %></option><% end -%>
         </select></td>
-        <td><input id="param_td_place" name="place"/></td>
-        <td><input id="param_td_com" name="commodity"/></td>
-        <td><input id="param_td_ts" name="time_slice"/></td>
-        <td><input id="param_td_t" name="year"/></td>
-        <td><input name="value"/></td>
-        <td><input name="source"/></td>
+        <td><input type="textcell" id="param_td_place" name="place"/></td>
+        <td><input type="textcell" id="param_td_com" name="commodity"/></td>
+        <td><input type="textcell" id="param_td_ts" name="time_slice"/></td>
+        <td><input type="textcell" id="param_td_t" name="year"/></td>
+        <td><input type="textcell" name="value"/></td>
+        <td><input type="textcell" name="source"/></td>
         <td></td>
         </tr>
         
@@ -373,7 +362,7 @@ function edit_flow(flow_type,id)
     <div id="tabs-3">
         
         <div id="parameter_bnds">
-            <script>
+            <script  type="text/javascript">
             $(document).ready(function(){
               $("#param_bnd").change(function () {
                   if ($("#param_bnd option:selected").text().substring(0,3)=="act")
@@ -414,11 +403,11 @@ function edit_flow(flow_type,id)
         <td><select id="param_bnd" name="parameter">
             <% parameters.each do |p| %><option><%=h p %></option><% end -%>
         </select></td>
-        <td><input name="place"/></td>
-        <td><input id="param_bnd_ts" name="time_slice"/></td>
-        <td><input name="year"/></td>
-        <td><input name="value"/></td>
-        <td><input name="source"/></td>
+        <td><input type="textcell" name="place"/></td>
+        <td><input type="textcell" id="param_bnd_ts" name="time_slice"/></td>
+        <td><input type="textcell" name="year"/></td>
+        <td><input type="textcell" name="value"/></td>
+        <td><input type="textcell" name="source"/></td>
         <td></td>
         </tr>
         
@@ -446,30 +435,31 @@ function edit_flow(flow_type,id)
                     <td>
                         <select multiple size="10" id="sel_avail_commodity">
                             <optgroup label="Energy Carriers">
-                                {% for c in tag_enc %}
-                                <option>{{c.name}}</option>
-                                {% endfor %}
+                                <% Commodity.tagged_with("ENC").each do |c| %>
+                                <option><%=h c.name %></option>
+                                <% end -%>
                             </optgroup>
                             <optgroup label="Pollutants">
-                                {% for c in tag_poll %}
-                                <option>{{c.name}}</option>
-                                {% endfor %}
+                                <% Commodity.tagged_with("POLL").each do |c| %>
+                                <option><%=h c.name %></option>
+                                <% end -%>
                             </optgroup>
                             <optgroup label="Useful demands">
-                                {% for c in tag_dem %}
-                                <option>{{c.name}}</option>
-                                {% endfor %}
+                                <% Commodity.tagged_with("DEM").each do |c| %>
+                                <option><%=h c.name %></option>
+                                <% end -%>
                             </optgroup>
                         </select>
-                        <center><a href="#" id="add_commodity_flow">add &gt;&gt;</a></center>
+                        <p style="text-align: center"><a href="#" id="add_commodity_flow">add &gt;&gt;</a></p>
                     </td>
                     <td class="flow_separator">
                     </td>
                     <td>
                         <select multiple size="10" id="sel_flow_commodity">
                         </select>
-                        <center><a href="#" id="remove_commodity_flow">&lt;&lt; remove</a></center>
+                        <p style="text-align: center"><a href="#" id="remove_commodity_flow">&lt;&lt; remove</a></p>
                     </td>
+                </tr>
             </tbody>
             </table>
             <% end -%>
