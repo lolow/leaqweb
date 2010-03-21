@@ -45,75 +45,17 @@ $(document).ready(function() {
     <div id="tabs-1">
         <div id="general">
             <h3>Demand values</h3>
-            <% form_tag({:controller=>:commodities,:action=>:param,:id=>@commodity},:method => "post") do %>
-              <table class="tableparameter">
-              <thead><tr><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
-              <tbody>             
-
-              <% @commodity.parameter_values_for("demand").each do |pv| %>
-              <tr>
-              <td><%=h pv.year %></td>
-              <td><span class="edit" id="value_<%= pv.id  %>"><%= pv.value %></span></td>
-              <td><span class="edit" id="source_<%= pv.id  %>"><%= pv.source %></span></td>
-              <td><input type="checkbox" name="cb<%= pv.id  %>" /></td>
-              </tr>
-              <% end %>
-
-              <tr>
-              <td><input type="textcell" name="year"/></td>
-              <td><input type="textcell" name="value"/></td>
-              <td><input type="textcell" name="source"/></td>
-              <td></td>
-              </tr>
-
-              </tbody>
-              </table>
-
-              <select name="do">
-                  <option value="add">Add parameter value</option>
-                  <option value="delete">Delete checked parameter value(s)</option>
-              </select>
-
-              <input type="hidden" name="parameter" value="demand" />
-              <%= submit_tag 'OK' %>
-
-            <% end %>
+            <%= render :partial => 'parameter_value_table', 
+					   :locals => {:parameters => %w{demand},
+								   :cols => %w{year value source},
+								   :editable => %w{value source}} %>
         </div>
         <div id="fraction_demand">
             <h3>Fraction of demand per time-slice</h3>
-            <% form_tag({:controller=>:commodities,:action=>:param,:id=>@commodity},:method => "post") do %>
-              <table class="tableparameter">
-              <thead><tr><th>Time slice</th><th>Value</th><th>Source</th><th></th></tr></thead>
-              <tbody>
-
-              <% @commodity.parameter_values_for("frac_dem").each do |pv| %>
-              <tr>
-              <td><%=h pv.time_slice %></td>
-              <td><span class="edit" id="value_<%= pv.id  %>"><%= pv.value %></span></td>
-              <td><span class="edit" id="source_<%= pv.id  %>"><%= pv.source %></span></td>
-              <td><input type="checkbox" name="cb<%= pv.id  %>" /></td>
-              </tr>
-              <% end %>
-
-              <tr>
-              <td><input type="textcell" name="time_slice"/></td>
-              <td><input type="textcell" name="value"/></td>
-              <td><input type="textcell" name="source"/></td>
-              <td></td>
-              </tr>
-
-              </tbody>
-              </table>
-
-              <select name="do">
-                  <option value="add">Add parameter value</option>
-                  <option value="delete">Delete checked parameter value(s)</option>
-              </select>
-
-              <input type="hidden" name="parameter" value="frac_dem" />
-              <%= submit_tag 'OK' %>
-              
-            <% end %>
+			<%= render :partial => 'parameter_value_table', 
+					   :locals => {:parameters => %w{frac_dem},
+								   :cols => %w{time_slice value source},
+								   :editable => %w{value source}} %>
         </div>
     </div>
 </div>
@@ -145,7 +87,7 @@ $(document).ready(function() {
                 .change();
             });
             </script>
-            <% form_tag({:controller=>:commodities,:action=>:param,:id=>@commodity},:method => "post") do %>
+            <% form_tag(commodity_path(@commodity),:method => "put") do %>
             <table class="tableparameter">
             <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
             <tbody>
@@ -185,7 +127,7 @@ $(document).ready(function() {
         </div>
         <div id="import_export">
             <h3>Import/export parameters</h3>
-            <form action="/geoecu/commodity/{{commodity.id}}/param/" method="post">
+            <% form_tag(commodity_path(@commodity),:method => "put") do %>
             <table class="tableparameter">
             <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
             <tbody>
@@ -221,7 +163,7 @@ $(document).ready(function() {
                 <option value="delete">Delete parameter value(s)</option>
             </select>
             <%= submit_tag 'OK' %>
-            </form>
+            <% end -%>
         </div>
     </div>
 
@@ -243,7 +185,7 @@ $(document).ready(function() {
                 .change();
             });
             </script>
-            <form action="/geoecu/commodity/{{commodity.id}}/param/" method="post">
+            <% form_tag(commodity_path(@commodity),:method => "put") do %>
             <table class="tableparameter">
             <thead><tr><th>Parameter</th><th>Time slice</th><th>Year</th><th>Value</th><th>Source</th><th></th></tr></thead>
             <tbody>
@@ -279,7 +221,7 @@ $(document).ready(function() {
                 <option value="delete">Delete checked parameter value(s)</option>
             </select>
             <%= submit_tag 'OK' %>
-            </form>
+            <% end -%>
         </div>
     </div>
 </div>
