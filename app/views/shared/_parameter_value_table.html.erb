@@ -1,0 +1,104 @@
+<% form_tag(request_path,:method => "put") do %>
+
+    <% if parameters.size > 1 %>
+        <script type="text/javascript">
+        $(document).ready(function(){
+          <% columns = cols - ["parameter"] %>
+          <% columns.each do |c| %>
+            $("#sel_param_<%= pid + c %>").removeAttr("disabled");
+          <% end %>
+          $("#sel_param_<%= pid %>").change(function () {
+              if (false) {}
+              <% parameters.each do |p| %>
+              else if ($("#sel_param_<%= pid %> option:selected").text()=="<%= p %>")
+              {
+                <% columns.each do |c| %>
+                  //$("#sel_param_<%= pid + c %>").attr("disabled", true);
+                <% end %>
+              }
+              <% end %>
+            })
+            .change();
+        });
+        </script>
+    <% end%>
+
+	<table class="tableparameter">
+		
+		<thead><tr>
+			<% cols.each do |c| %><th><%= c.humanize %></th><% end %><th></th>
+		</tr></thead>
+
+		<tbody>             
+		
+		<% object.parameter_values_for(parameters).each do |pv| %>
+		<tr>
+			<% cols.each do |c| %>
+			    <% if c=="parameter" %>
+			        <td><%=h pv.parameter.name unless pv.attributes[c] %></td>
+			    <% elsif c=="commodity" %>
+    			    <td><%=h pv.commodity.name unless pv.attributes[c] %></td>
+    			<% elsif c=="technology" %>
+        		    <td><%=h pv.technology.name unless pv.attributes[c] %></td>
+        		<% elsif c=="in_flow" %>
+            		<td><%= commodity_url_list(pv.in_flow) %></td>
+                <% elsif c=="out_flow" %>
+            		<td><%= commodity_url_list(pv.out_flow) %></td>
+                <% elsif c=="flow" %>
+            		<td><%= commodity_url_list(pv.flow) %></td>
+    		    <% else %>
+				    <td><span id="<%= c %>_<%= pv.id %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
+				<% end %>
+			<% end %>
+		<td><input type="checkbox" name="cb<%= pv.id  %>" /></td>
+		</tr>
+		<% end %>
+		
+		<tr>
+			<% cols.each do |c| %>
+			    <% if c=="parameter" %>
+			    <td><select id="sel_param_<%= pid %>" name="parameter">
+			        <% parameters.each do |p| %><option><%=h p %></option><% end -%>
+                </select></td>
+                <% elsif c=="in_flow" %>
+                <td><select id="sel_param_<%= pid + c %>" name="<%= c %>"><% object.in_flows.each do |f| %>
+        			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
+        		</select></td>
+                <% elsif c=="out_flow" %>
+                <td><select id="sel_param_<%= pid + c %>" name="<%= c %>"><% object.out_flows.each do |f| %>
+        			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
+        		</select></td>
+        		<% elsif c=="flow" %>
+        		<td><select id="sel_param_<%= pid + c %>" name="<%= c %>">
+                    <optgroup label="In flow">
+                        <% object.in_flows.each do |f| %>
+        					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option>
+        				<% end -%>
+                    </optgroup>
+                    <optgroup label="Out flow">
+                        <% object.out_flows.each do |f| %>
+        					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option>
+        				<% end -%>
+                    </optgroup>
+                </select></td>
+			    <% else %>
+				<td><input type="textcell" id="sel_param_<%= pid + c %>" name="<%= c %>"/></td>
+				<% end %>
+			<% end %>
+		<td></td>
+		</tr>
+		
+		</tbody>
+
+	</table>
+	
+	<select name="do">
+	    <option value="add_pv">Add parameter value</option>
+	    <option value="delete_pv">Delete checked parameter value(s)</option>
+	</select>
+	
+	<% if parameters.size==1 %>
+		<input type="hidden" name="parameter" value="<%= parameters[0] %>" />
+	<% end %>
+	<%= submit_tag 'OK' %>
+<% end %>
