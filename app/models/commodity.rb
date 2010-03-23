@@ -37,4 +37,8 @@ class Commodity < ActiveRecord::Base
                                :order => "year")
   end
 
+  def to_s
+    self.name
+  end
+
 end

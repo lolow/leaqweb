@@ -2,11 +2,16 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.edit').editable('<%= technology_path(@technology) %>',{
+    $('.edit').editable(<%= technology_path(@technology).to_json %>,{
         style   : 'inherit',
         width   : 150,
         height  : 18,
-        method  : "PUT"
+        method  : "PUT",
+        id      : 'field',
+        indicator : <%= image_tag("spinner.gif").to_json %>,
+        submitdata: {
+          authenticity_token: <%= form_authenticity_token.to_json %>
+        }
     });
     $('#flow_edit').dialog({
         modal: true,
@@ -64,10 +69,12 @@ function edit_flow(flow_type,id)
 
 <table class="idcard">
   <tr>
-    <td class="idcard_leftcol"><ul>
+    <td class="idcard_leftcol">
+      <ul>
         <li>Name: <span class="edit" id="name"><%=h @technology.name %></span></li>
         <li>Definition: <span class="edit" id="description"><%=h @technology.description %></span></li>
-    </ul></td>
+      </ul>
+    </td>
     <td><ul>
       <li>Sets: <%=h @technology.set_list.join(", ")  %></li>
       <li>Places: <%=h @technology.locations.map(&:name).join(", ") %></li>
@@ -124,8 +131,9 @@ function edit_flow(flow_type,id)
 				               :pid => "eff",
 				               :request_path => technology_path(@technology),
 				               :parameters => %w{eff_flo},
-							   :cols => %w{in_flow out_flow value source},
-							   :editable => %w{value source}} %>
+                               :cols => %w{in_flow out_flow value source},
+							   :editable => %w{value source},
+                               :rules => nil } %>
         </div>
         <div id="flow_param">
         <h3>Other flows parameters</h3>
@@ -135,7 +143,10 @@ function edit_flow(flow_type,id)
 				               :request_path => technology_path(@technology),
 				               :parameters => %w{act_flo flo_bnd_lo flo_bnd_fx flo_bnd_up flo_share_lo flo_share_fx flo_share_up},
 							   :cols => %w{parameter flow commodity time_slice year value source},
-							   :editable => %w{value source}} %>
+							   :editable => %w{value source},
+                               :rules => { "=act_flo" => %w{flow time_slice year},
+                                           ">flo_bnd" => %w{commodity},
+                                           ">flo_share" => %w{time_slice year} }} %>
         </div>
     </div>
     <div id="tabs-2">
@@ -147,7 +158,8 @@ function edit_flow(flow_type,id)
 				               :request_path => technology_path(@technology),
 				               :parameters => %w{life avail cap_act},
 							   :cols => %w{parameter value source},
-							   :editable => %w{value source}} %>
+							   :editable => %w{value source},
+                               :rules => nil} %>
         </div>
         <div id="parameter_td">
         <h3>Time-dependent Parameters</h3>
@@ -157,7 +169,14 @@ function edit_flow(flow_type,id)
 				               :request_path => technology_path(@technology),
 				               :parameters => %w{cost_vom cost_fom cost_icap cost_delivery avail_factor peak_prod fixed_cap},
 							   :cols => %w{parameter location commodity time_slice year value source},
-							   :editable => %w{value source}} %>
+							   :editable => %w{value source},
+                               :rules => {"=fixed_cap" => %w{commodity year},
+                                          "=peak_prod" => %w{location year},
+                                          "=avail_factor" => %w{location commodity},
+                                          "=cost_delivery" => %w{location},
+                                          "=cost_icap" => %w{location commodity time_slice},
+                                          "=cost_vom" => %w{location commodity time_slice},
+                                          "=cost_fom" => %w{location commodity time_slice} } } %>
         </div>
         
     </div>
@@ -171,7 +190,8 @@ function edit_flow(flow_type,id)
 				               :request_path => technology_path(@technology),
 				               :parameters => %w{act_bnd_lo act_bnd_fx act_bnd_up cap_bnd_lo cap_bnd_fx cap_bnd_up icap_bnd_lo icap_bnd_fx icap_bnd_up},
 							   :cols => %w{parameter location time_slice year value source},
-							   :editable => %w{value source}} %>
+							   :editable => %w{value source},
+                               :rules => nil} %>
         </div>
 
     </div>

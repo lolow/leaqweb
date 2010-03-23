@@ -29,6 +29,7 @@ class CommoditiesController < ApplicationController
 
   # GET /commodities/new
   def new
+    newname = 'NEWCOM'
     @commodity = Commodity.new
 
     respond_to do |format|
@@ -49,10 +50,8 @@ class CommoditiesController < ApplicationController
       if @commodity.save
         flash[:notice] = 'Commodity was successfully created.'
         format.html { redirect_to(@commodity) }
-        format.xml  { render :xml => @commodity, :status => :created, :location => @commodity }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @commodity.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -60,15 +59,22 @@ class CommoditiesController < ApplicationController
   # PUT /commodities/1
   def update
     @commodity = Commodity.find(params[:id])
-
+    f = params[:field].split("-")
+    if f[0]=="pv"
+      record = ParameterValue.find(f[1].to_i)
+      attributes = {f[2]=>params[:value]}
+    else
+      record = @commodity
+      attributes = {params[:field]=>params[:value]}
+    end
+    if record.update_attributes(attributes)
+      value = params[:value]
+    else
+      value = ''
+    end
     respond_to do |format|
-      if @commodity.update_attributes(params[:commodity])
-        flash[:notice] = 'Commodity was successfully updated.'
-        format.html { redirect_to(@commodity) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-      end
+      format.html { redirect_to(@commodity) }
+      format.js { render :json => value }
     end
   end
 

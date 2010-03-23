@@ -5,6 +5,7 @@ Installation
 
 sudo gem update --system
 sudo gem install rails
+sudo gem install mongrel
 sudo rake gems:install
 rake db:migrate
 

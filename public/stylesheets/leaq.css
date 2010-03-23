@@ -56,12 +56,7 @@ a:hover {
 }
 
 ul {
-list-style-image:url(/images/bullet.gif);
 list-style-position:inside;
-list-style-type:square;
-}
-
-li {
 }
 
 table {

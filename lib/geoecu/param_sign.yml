@@ -1,0 +1,157 @@
+--- 
+com_net_bnd_up_t: 
+- period
+- commodity
+peak_reserve: 
+- period
+- time_slice
+- commodity
+imp_bnd_up: 
+- period
+- time_slice
+- commodity
+cap_bnd_up: 
+- period
+- localization
+- technology
+fraction: 
+- time_slice
+demand: 
+- period
+- commodity
+avail_factor: 
+- period
+- time_slice
+- technology
+exp_bnd_fx: 
+- period
+- time_slice
+- commodity
+act_bnd_fx: 
+- period
+- time_slice
+- localization
+- technology
+flo_share_fx: 
+- flow
+- commodity
+cost_exp: 
+- period
+- time_slice
+- commodity
+flo_bnd_fx: 
+- period
+- time_slice
+- flow
+icap_bnd_fx: 
+- period
+- localization
+- technology
+frac_dem: 
+- time_slice
+- commodity
+eff_flo: 
+- consumed_flow
+- produced_flow
+exp_bnd_lo: 
+- period
+- time_slice
+- commodity
+act_bnd_lo: 
+- period
+- time_slice
+- localization
+- technology
+cost_fom: 
+- period
+- technology
+flo_bnd_lo: 
+- period
+- time_slice
+- flow
+icap_bnd_lo: 
+- period
+- localization
+- technology
+life: 
+- technology
+avail: 
+- technology
+exp_bnd_up: 
+- period
+- time_slice
+- commodity
+act_bnd_up: 
+- period
+- time_slice
+- localization
+- technology
+flo_share_lo: 
+- flow
+- commodity
+cost_icap: 
+- period
+- technology
+flo_bnd_up: 
+- period
+- time_slice
+- flow
+icap_bnd_up: 
+- period
+- localization
+- technology
+network_efficiency: 
+- commodity
+cap_act: 
+- technology
+imp_bnd_fx: 
+- period
+- time_slice
+- commodity
+cap_bnd_fx: 
+- period
+- localization
+- technology
+flo_share_up: 
+- flow
+- commodity
+cost_imp: 
+- period
+- time_slice
+- commodity
+act_flo: 
+- technology
+- commodity
+com_net_bnd_up_ts: 
+- period
+- time_slice
+- commodity
+peak_prod: 
+- technology
+- time_slice
+- commodity
+fixed_cap: 
+- period
+- localization
+- technology
+cost_delivery: 
+- period
+- time_slice
+- technology
+- commodity
+imp_bnd_lo: 
+- period
+- time_slice
+- commodity
+cap_bnd_lo: 
+- period
+- localization
+- technology
+flow_act: 
+- technology
+cost_vom:
+- period
+- technology
+nb_periods:
+period_length:
+discount_rate:

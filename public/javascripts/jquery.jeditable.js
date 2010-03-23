@@ -286,7 +286,6 @@
                     });
                 } else {
                     input.blur(function(e) {
-                      /* TODO: maybe something here */
                     });
                 }
 
@@ -311,8 +310,7 @@
                               var str = settings.target.apply(self, [input.val(), settings]);
                               $(self).html(str);
                               self.editing = false;
-                              callback.apply(self, [self.innerHTML, settings]);
-                              /* TODO: this is not dry */                              
+                              callback.apply(self, [self.innerHTML, settings]);                           
                               if (!$.trim($(self).html())) {
                                   $(self).html(settings.placeholder);
                               }

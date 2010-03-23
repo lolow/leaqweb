@@ -1,19 +1,23 @@
 <% form_tag(request_path,:method => "put") do %>
 
-    <% if parameters.size > 1 %>
+    <% if rules %>
         <script type="text/javascript">
         $(document).ready(function(){
           <% columns = cols - ["parameter"] %>
-          <% columns.each do |c| %>
-            $("#sel_param_<%= pid + c %>").removeAttr("disabled");
-          <% end %>
           $("#sel_param_<%= pid %>").change(function () {
-              if (false) {}
-              <% parameters.each do |p| %>
-              else if ($("#sel_param_<%= pid %> option:selected").text()=="<%= p %>")
+              <% columns.each do |c| %>
+                $("#sel_param_<%= pid + c %>").removeAttr("disabled");
+              <% end %>
+              <% rules.each do |key,value| %>
+                //<%= key %>
+                <% if key[0,1]==">" %>
+                  if ($("#sel_param_<%= pid %> option:selected").text().substring(0,<%= key.size-1 %>)=="<%= key[1..-1] %>")
+                <% elsif key[0,1]=="="  %>
+                  if ($("#sel_param_<%= pid %> option:selected").text()=="<%= key[1..-1] %>")
+                <% end %>
               {
-                <% columns.each do |c| %>
-                  //$("#sel_param_<%= pid + c %>").attr("disabled", true);
+                <% value.each do |c| %>
+                  $("#sel_param_<%= pid + c %>").attr("disabled", true);
                 <% end %>
               }
               <% end %>
@@ -21,7 +25,7 @@
             .change();
         });
         </script>
-    <% end%>
+    <% end %>
 
 	<table class="tableparameter">
 		
@@ -35,11 +39,11 @@
 		<tr>
 			<% cols.each do |c| %>
 			    <% if c=="parameter" %>
-			        <td><%=h pv.parameter.name unless pv.attributes[c] %></td>
+			        <td><%= pv.parameter %></td>
 			    <% elsif c=="commodity" %>
-    			    <td><%=h pv.commodity.name unless pv.attributes[c] %></td>
+    			    <td><%= pv.commodity %></td>
     			<% elsif c=="technology" %>
-        		    <td><%=h pv.technology.name unless pv.attributes[c] %></td>
+        		    <td><%= pv.technology %></td>
         		<% elsif c=="in_flow" %>
             		<td><%= commodity_url_list(pv.in_flow) %></td>
                 <% elsif c=="out_flow" %>
@@ -47,7 +51,7 @@
                 <% elsif c=="flow" %>
             		<td><%= commodity_url_list(pv.flow) %></td>
     		    <% else %>
-				    <td><span id="<%= c %>_<%= pv.id %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
+				    <td><span id="pv-<%= pv.id %>-<%= c %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
 				<% end %>
 			<% end %>
 		<td><input type="checkbox" name="cb<%= pv.id  %>" /></td>

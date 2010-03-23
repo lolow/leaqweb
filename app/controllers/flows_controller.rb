@@ -1,4 +1,5 @@
 class FlowsController < ApplicationController
+  before_filter :authenticate_user!
 
   # GET /flows/1
   # GET /flows/1.js

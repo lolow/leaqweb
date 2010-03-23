@@ -24,5 +24,9 @@ class Technology < ActiveRecord::Base
                                :conditions => ["parameter_id IN (?)",param_ids],
                                :order => "year")
   end
+
+  def to_s
+    self.name
+  end
   
 end

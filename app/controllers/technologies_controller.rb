@@ -68,28 +68,32 @@ class TechnologiesController < ApplicationController
   # PUT /technologies/1.xml
   def update
     @technology = Technology.find(params[:id])
-
+    f = params[:field].split("-")
+    if f[0]=="pv"
+      record = ParameterValue.find(f[1].to_i)
+      attributes = {f[2]=>params[:value]}
+    else
+      record = @technology
+      attributes = {params[:field]=>params[:value]}
+    end
+    if record.update_attributes(attributes)
+      value = params[:value]
+    else
+      value = ''
+    end
     respond_to do |format|
-      if @technology.update_attributes(params[:technology])
-        flash[:notice] = 'Technology was successfully updated.'
-        format.html { redirect_to(@technology) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @technology.errors, :status => :unprocessable_entity }
-      end
+      format.html { redirect_to(@technology) }
+      format.js { render :json => value }
     end
   end
 
   # DELETE /technologies/1
-  # DELETE /technologies/1.xml
   def destroy
     @technology = Technology.find(params[:id])
     @technology.destroy
 
     respond_to do |format|
       format.html { redirect_to(technologies_url) }
-      format.xml  { head :ok }
     end
   end
 end
