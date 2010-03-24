@@ -36,7 +36,9 @@ function add_flow(flow_type){
         for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
         $.ajax({url:'<%= flows_path %>',
                 type:'POST',
-                data:{'commodities':s.substring(0,s.length-1)},
+                data:{'commodities':s.substring(0,s.length-1),
+                      'technology_id':<%= @technology.id %>,
+                      'type':flow_type},
                 async:false});
         location.reload();
     } });
@@ -97,7 +99,7 @@ function edit_flow(flow_type,id)
     <div id="tabs-1">
         <div id="flow_list">
         <h3>Flow list</h3>
-		<% form_tag({:action => "flow", :id => @technology}, :method => "post") do %>
+		<% form_tag(technology_path(@technology), :method => "put") do %>
         <table class="table_flows">
         	<thead><tr><th>Inflows</th><th>Outflows</th></tr></thead>
             <tbody><tr><td>
@@ -105,21 +107,21 @@ function edit_flow(flow_type,id)
                		<input type="checkbox" name="f<%=f.id%>" />
                     <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
 						<%=f.id%>: <%= commodity_url_list f %></span>
-                    (<a href="#" onclick="edit_flow('inflow',<%=f.id%>)">edit</a>)<br />
+                    (<a href="#" onclick="edit_flow('In flow',<%=f.id%>)">edit</a>)<br />
                 <% end -%><br />
-                + <a href="#" onclick="add_flow('inflow')">Add inflow</a></td><td>
+                + <a href="#" onclick="add_flow('In flow')">Add inflow</a></td><td>
 				<% @technology.out_flows.each do |f| %>
                 	<input type="checkbox" name="f<%=f.id%>" />
                    	<span class="<%= "flow_act" if f.flow_act_of? @technology %>">
 						<%=f.id%>: <%= commodity_url_list f %></span>
-                   	(<a href="#" onclick="edit_flow('outflow',<%=f.id%>)">edit</a>)<br />
+                   	(<a href="#" onclick="edit_flow('Out flow',<%=f.id%>)">edit</a>)<br />
                 <% end -%><br />
-                + <a href="" onclick="add_flow('outflow')">Add outflow</a></td>
+                + <a href="" onclick="add_flow('Out flow')">Add outflow</a></td>
             </tr></tbody>
         </table>
         <select name="do">
-			<option value="activity">Set activity flow</option>
-            <option value="delete">Delete checked flow(s)</option>
+			<option value="set_act_flo">Set activity flow</option>
+            <option value="delete_flo">Delete checked flow(s)</option>
         </select>
 		<%= submit_tag "OK" %>
         <% end -%>

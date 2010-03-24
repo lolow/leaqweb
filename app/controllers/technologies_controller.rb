@@ -68,22 +68,46 @@ class TechnologiesController < ApplicationController
   # PUT /technologies/1.xml
   def update
     @technology = Technology.find(params[:id])
-    f = params[:field].split("-")
-    if f[0]=="pv"
-      record = ParameterValue.find(f[1].to_i)
-      attributes = {f[2]=>params[:value]}
-    else
-      record = @technology
-      attributes = {params[:field]=>params[:value]}
+    # jeditable fields
+    if params[:field]
+      f = params[:field].split("-")
+      if f[0]=="pv"
+        record = ParameterValue.find(f[1].to_i)
+        attributes = {f[2]=>params[:value]}
+      else
+        record = @technology
+        attributes = {params[:field]=>params[:value]}
+      end
+      if record.update_attributes(attributes)
+        value = params[:value]
+      else
+        value = ''
+      end
+      respond_to do |format|
+        format.js { render :json => value }
+      end
     end
-    if record.update_attributes(attributes)
-      value = params[:value]
-    else
-      value = ''
-    end
+    # action on parameter_value
+    case params[:do]
+    when "delete_pv"
+      ids = @technology.parameter_values.map(&:id).select{|i|params["cb#{i}"]}
+      ParameterValue.destroy(ids)
+    when "add_pv"
+      att = params[:pv]
+      att[:parameter] = Parameter.find_by_name(att[:parameter])
+      att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
+      att[:technology] = @technology
+      pv = ParameterValue.new(att)
+      flash[:notice] = 'Parameter value was successfully added.' if pv.save
+    when "set_act_flo"
+      ids = @technology.flows.map(&:id).select{|i|params["f#{i}"]}
+      @technology.flow_act=Flow.find(ids[0]) if ids.size>0
+    when "delete_flo"
+      ids = @technology.flows.map(&:id).select{|i|params["f#{i}"]}
+      Flow.destroy(ids)
+    end if params[:do]
     respond_to do |format|
-      format.html { redirect_to(@technology) }
-      format.js { render :json => value }
+        format.html { redirect_to(@technology) }
     end
   end
 

@@ -4,20 +4,20 @@
         <script type="text/javascript">
         $(document).ready(function(){
           <% columns = cols - ["parameter"] %>
-          $("#sel_param_<%= pid %>").change(function () {
+          $("#<%= pid %>_parameter").change(function () {
               <% columns.each do |c| %>
-                $("#sel_param_<%= pid + c %>").removeAttr("disabled");
+                $("#<%= pid %>_<%= c %>").removeAttr("disabled");
               <% end %>
               <% rules.each do |key,value| %>
                 //<%= key %>
                 <% if key[0,1]==">" %>
-                  if ($("#sel_param_<%= pid %> option:selected").text().substring(0,<%= key.size-1 %>)=="<%= key[1..-1] %>")
+                  if ($("#<%= pid %>_parameter option:selected").text().substring(0,<%= key.size-1 %>)=="<%= key[1..-1] %>")
                 <% elsif key[0,1]=="="  %>
-                  if ($("#sel_param_<%= pid %> option:selected").text()=="<%= key[1..-1] %>")
+                  if ($("#<%= pid %>_parameter option:selected").text()=="<%= key[1..-1] %>")
                 <% end %>
               {
                 <% value.each do |c| %>
-                  $("#sel_param_<%= pid + c %>").attr("disabled", true);
+                  $("#<%= pid %>_<%= c %>").attr("disabled", true);
                 <% end %>
               }
               <% end %>
@@ -61,19 +61,19 @@
 		<tr>
 			<% cols.each do |c| %>
 			    <% if c=="parameter" %>
-			    <td><select id="sel_param_<%= pid %>" name="parameter">
+			    <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>]">
 			        <% parameters.each do |p| %><option><%=h p %></option><% end -%>
                 </select></td>
                 <% elsif c=="in_flow" %>
-                <td><select id="sel_param_<%= pid + c %>" name="<%= c %>"><% object.in_flows.each do |f| %>
+                <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]"><% object.in_flows.each do |f| %>
         			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
         		</select></td>
                 <% elsif c=="out_flow" %>
-                <td><select id="sel_param_<%= pid + c %>" name="<%= c %>"><% object.out_flows.each do |f| %>
+                <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]"><% object.out_flows.each do |f| %>
         			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
         		</select></td>
         		<% elsif c=="flow" %>
-        		<td><select id="sel_param_<%= pid + c %>" name="<%= c %>">
+        		<td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
                     <optgroup label="In flow">
                         <% object.in_flows.each do |f| %>
         					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option>
@@ -86,7 +86,7 @@
                     </optgroup>
                 </select></td>
 			    <% else %>
-				<td><input type="textcell" id="sel_param_<%= pid + c %>" name="<%= c %>"/></td>
+				<td><input type="textcell" id="<%= pid %>_<%= c %>" name="pv[<%= c %>]"/></td>
 				<% end %>
 			<% end %>
 		<td></td>
@@ -102,7 +102,7 @@
 	</select>
 	
 	<% if parameters.size==1 %>
-		<input type="hidden" name="parameter" value="<%= parameters[0] %>" />
+		<input type="hidden" id="<%= pid %>_parameter" name="pv[parameter]" value="<%= parameters[0] %>" />
 	<% end %>
 	<%= submit_tag 'OK' %>
 <% end %>

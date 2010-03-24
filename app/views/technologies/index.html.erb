@@ -17,7 +17,7 @@
 <% @technologies.each do |technology| %>
   <tr>
     <td><%=h technology.name %></td>
-    <td><%= truncate(h(technology.description), :omission => "&hellip;", :length => 40) %></td>
+    <td><%= truncate(h(technology.description), :omission => "&hellip;", :length => 50) %></td>
     <td><%= link_to 'Show', technology %></td>
     <td><%= link_to 'Edit', edit_technology_path(technology) %></td>
     <td><%= link_to 'Destroy', technology, :confirm => 'Are you sure?', :method => :delete %></td>

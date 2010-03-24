@@ -6,6 +6,7 @@ class Commodity < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
+  validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
 
   def out_flows
     self.flows.select{|f| f.is_a? OutFlow}
@@ -35,6 +36,10 @@ class Commodity < ActiveRecord::Base
     self.parameter_values.find(:all,
                                :conditions => ["parameter_id IN (?)",param_ids],
                                :order => "year")
+  end
+
+  def self.find_by_list_name(list)
+    list.split(",").uniq.collect{|c|Commodity.find_by_name(c)}.compact
   end
 
   def to_s

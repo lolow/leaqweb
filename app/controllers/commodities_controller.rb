@@ -59,22 +59,39 @@ class CommoditiesController < ApplicationController
   # PUT /commodities/1
   def update
     @commodity = Commodity.find(params[:id])
-    f = params[:field].split("-")
-    if f[0]=="pv"
-      record = ParameterValue.find(f[1].to_i)
-      attributes = {f[2]=>params[:value]}
-    else
-      record = @commodity
-      attributes = {params[:field]=>params[:value]}
+    # jeditable fields
+    if params[:field]
+      f = params[:field].split("-")
+      if f[0]=="pv"
+        record = ParameterValue.find(f[1].to_i)
+        attributes = {f[2]=>params[:value]}
+      else
+        record = @commodity
+        attributes = {params[:field]=>params[:value]}
+      end
+      if record.update_attributes(attributes)
+        value = params[:value]
+      else
+        value = ''
+      end
+      respond_to do |format|
+        format.js { render :json => value }
+      end
     end
-    if record.update_attributes(attributes)
-      value = params[:value]
-    else
-      value = ''
-    end
+    # action on parameter_value
+    case params[:do]
+    when "delete_pv"
+      ids = @commodity.parameter_values.map(&:id).select{|i|params["cb#{i}"]}
+      ParameterValue.destroy(ids)
+    when "add_pv"
+      att = params[:pv]
+      att[:parameter] = Parameter.find_by_name(att[:parameter])
+      att[:commodity] = @commodity
+      pv = ParameterValue.new(att)
+      flash[:notice] = 'Parameter value was successfully added.' if pv.save
+    end if params[:do]
     respond_to do |format|
-      format.html { redirect_to(@commodity) }
-      format.js { render :json => value }
+        format.html { redirect_to(@commodity) }
     end
   end
 
