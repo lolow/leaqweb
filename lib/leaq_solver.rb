@@ -1,5 +1,6 @@
 require 'tenjin'
 require 'yaml'
+require 'benchmark'
 
 class LeaqSolver 
   
@@ -16,18 +17,22 @@ class LeaqSolver
   end
                                                                     
   # Solve the borat model.
-  def solve                      
-    context = Hash.new
-    create_context
-    # generate files
-    %w{mod dat}.each do |ext|
-      File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
+  def solve(debug=false)
+    context={}
+    say("Create context",debug) do
+      context = create_context
     end
-    # run glpsol
-    command("glpsol -m #{file("mod")} -d #{file("dat")}")
-    # Delete temporary files
-    %w{mod dat out log}.each{|ext|File.delete(file(ext))}
-
+    %w{mod dat}.each do |ext|
+      say("Generate .#{ext} file",debug) do
+        File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
+      end
+    end
+    say("Run optimization solver",debug) do
+      command("glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")}")
+    end
+    say("Delete temporary files",debug) do
+      #%w{mod dat out log}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
+    end
   end
 
   def signature
@@ -57,16 +62,18 @@ class LeaqSolver
 #  private
     
   # Extracts the context data for the generation
-  def feed(c,debug=nil)
-      
+  def create_context(debug=nil)
+    c = Hash.new("")
+    
     # sets generation
-    c[:s_s]    = "WD WN SD SN ID IN"
+    time_slices = %w{WD WN SD SN ID IN}
+    c[:s_s]    = time_slices.join(" ")
     c[:s_l]    = id_list(Location.all)
     c[:s_p]    = id_list(Technology.all)
     c[:s_c]    = id_list(Commodity.all)
-    c[:s_imp]  = id_list(Commodity.tagged_with("IMP"))
-    c[:s_exp]  = id_list(Commodity.tagged_with("EXP"))
-    c[:s_dem]  = id_list(Commodity.tagged_with("DEM"))
+    c[:s_imp]  = id_list(Commodity.tagged_with("IMP")) if Tag.find_by_name("IMP")
+    c[:s_exp]  = id_list(Commodity.tagged_with("EXP")) if Tag.find_by_name("EXP")
+    c[:s_dem]  = id_list(Commodity.tagged_with("DEM")) if Tag.find_by_name("DEM")
     c[:s_flow] = id_list(Flow.all)
     
     c[:s_p_map] = Hash.new
@@ -82,7 +89,7 @@ class LeaqSolver
     end
     
     c[:s_c_items] = Hash.new
-    Flow.all.each{|f| @context[:s_c_items][f.pid] = id_list(f.commodities)}
+    Flow.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)}
     
     # parameters generation
     signature.each_key do |param|
@@ -93,15 +100,15 @@ class LeaqSolver
     c["p_period_length_d"] = period_duration
 
     # frac_dem - fill the parameter if no value are available
-    fd = c['p_frac_dem'].split(/\w+/)
-    fraction = Hash.new
-    Parameter.find_by_name('fraction').each { |row|
-      if c[:s_s].split(" ").include?(row.time_slice)
-        fraction[row.time_slice] = row.value
-      end
-    }
-
-    
+    f = Hash.new
+    Parameter.find_by_name('fraction').parameter_values.each do |row|
+      f[row.time_slice] = row.value
+    end
+    fill_dmd = c['s_dem'].scan(/\w+/) - c['p_frac_dem'].scan(/\w+/)
+    fill_dmd.each do |d|
+      time_slices.each{|ts| c['p_frac_dem'] += " #{ts} #{d} #{f[ts]} "}
+    end
+    c
   end                    
 
   def period(year)
@@ -134,7 +141,7 @@ class LeaqSolver
         proj[p] = v[(p-1)*period_duration,period_duration].sum / period_duration
       }
       # Interpolation
-      if type==:interpolation || type==:extrapolation
+      if type == :interpolation || type == :extrapolation
         (p_k.first..p_k.last).inject(-1) { |i,p|
           if proj[p]
             i += 1
@@ -144,7 +151,7 @@ class LeaqSolver
         }
       end
       # Extrapolation
-      if type==:extrapolation
+      if type == :extrapolation
         (1..p_k.first-1).each{|x|proj[x]=proj[p_k.first]} unless p_k.first == 1
         (p_k.last+1..nb_periods).each{|x|proj[x]=proj[p_k.last]} unless p_k.last ==  9
       end
@@ -189,7 +196,7 @@ class LeaqSolver
       pv.collect{ |v|
         str = parameter_value_indexes(parameter,v)
         str <<  case parameter
-                when :flow_act then "f#{v.flow.id}"
+                when :flow_act then Flow.pid(v.flow.id)
                 when :avail    then "#{period(v.value)}"
                 when :life     then "#{v.value/period_duration}"
                 else "#{v.value}"
@@ -254,6 +261,14 @@ class LeaqSolver
     unless system cmd
      $?
     end
+  end
+  
+  def say(message,debug)
+    puts "-- #{message}"
+    time = Benchmark.measure {
+      yield
+    }
+    puts "   -> %.4fs" % time.real
   end
     
 end

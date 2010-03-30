@@ -4,7 +4,8 @@ module Toolbox
     puts "#{subitem ? "   ->" : "--"} #{message}"
   end
 
-  def tictoc(message)
+  def tictoc(message,debug=true)
+      return unless debug
       require 'benchmark'
       say(message)
       time = Benchmark.measure { yield }

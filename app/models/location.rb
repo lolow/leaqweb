@@ -4,6 +4,8 @@ class Location < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_presence_of :name
   validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
+  
+  acts_as_identifiable :prefix => "l"
 
   def to_s
     self.name

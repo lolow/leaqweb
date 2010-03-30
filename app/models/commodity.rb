@@ -1,5 +1,6 @@
 class Commodity < ActiveRecord::Base
   acts_as_taggable_on :sets
+  acts_as_identifiable :prefix => "c"
 
   has_and_belongs_to_many :flows
   has_many :parameter_values

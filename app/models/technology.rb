@@ -11,6 +11,8 @@ class Technology < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
   
+  acts_as_identifiable :prefix => "t"
+  
   def flow_act
     p = Parameter.find_by_name("flow_act")
     pv = p.parameter_values.find(:first,:conditions=>{:technology_id=>self})
