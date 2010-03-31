@@ -9,6 +9,7 @@ class LeaqSolver
                 :period_duration => 5,                  
                 :nb_periods => 9,
                 :first_year => 2005}.freeze
+    TIME_SLICES = %w{WD WN SD SN ID IN}
     
   # Create a new environment to solve borat.
   def initialize(opts={})
@@ -62,12 +63,11 @@ class LeaqSolver
 #  private
     
   # Extracts the context data for the generation
-  def create_context(debug=nil)
+  def create_context
     c = Hash.new("")
     
     # sets generation
-    time_slices = %w{WD WN SD SN ID IN}
-    c[:s_s]    = time_slices.join(" ")
+    c[:s_s]    = TIME_SLICES.join(" ")
     c[:s_l]    = id_list(Location.all)
     c[:s_p]    = id_list(Technology.all)
     c[:s_c]    = id_list(Commodity.all)
@@ -104,9 +104,9 @@ class LeaqSolver
     Parameter.find_by_name('fraction').parameter_values.each do |row|
       f[row.time_slice] = row.value
     end
-    fill_dmd = c['s_dem'].scan(/\w+/) - c['p_frac_dem'].scan(/\w+/)
+    fill_dmd = c[:s_dem].scan(/\w+/) - c[:p_frac_dem].scan(/\w+/)
     fill_dmd.each do |d|
-      time_slices.each{|ts| c['p_frac_dem'] += " #{ts} #{d} #{f[ts]} "}
+      TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{f[ts]} "}
     end
     c
   end                    
@@ -175,7 +175,7 @@ class LeaqSolver
     return unless signature[parameter]
     pv  = Parameter.find_by_name(parameter.to_s).parameter_values
     # If Values are time-dependent
-    if signature[parameter].include?(:period)
+    if signature[parameter].include?("period")
       values = Hash.new
       # Value are gathered by indexes other than period
       pv.each{ |v|
@@ -186,9 +186,16 @@ class LeaqSolver
       # Values are projected if necessary
       str = []
       values.each{ |key,k_values|
-        projection(k_values,projection_type[parameter]).each{|period,value|
-          str << key.sub(/[T]/,"#{period}")
-          str << value
+        projection(k_values,time_proj[parameter]).each{|period,value|
+          if key.index("AN")
+            TIME_SLICES.each { |ts|
+              str << key.sub("AN",ts).sub(/[T]/,period.to_s)
+              str << value
+            }
+          else
+            str << key.sub(/[T]/,period.to_s)
+            str << value
+          end
         }
       }
       str.join(" ")
@@ -196,9 +203,9 @@ class LeaqSolver
       pv.collect{ |v|
         str = parameter_value_indexes(parameter,v)
         str <<  case parameter
-                when :flow_act then Flow.pid(v.flow.id)
-                when :avail    then "#{period(v.value)}"
-                when :life     then "#{v.value/period_duration}"
+                when "flow_act" then Flow.pid(v.flow.id)
+                when "avail"    then "#{period(v.value)}"
+                when "life"     then "#{v.value/period_duration}"
                 else "#{v.value}"
                 end
         str
@@ -217,14 +224,14 @@ class LeaqSolver
   def parameter_value_indexes(parameter,row)
     signature[parameter].collect { |idx|
       case idx
-      when :period        then "T"
-      when :time_slice    then row.time_slice
-      when :commodity     then Commodity.pid(row.commodity_id)
-      when :technology    then Technology.pid(row.technology_id)
-      when :location      then Location.pid(row.location_id)
-      when :flow          then Flow.pid(row.flow.id)
-      when :in_flow then Flow.pid(row.in_flow.id)
-      when :out_flow then Flow.pid(row.out_flow.id)
+      when "period"        then "T"
+      when "time_slice"    then row.time_slice
+      when "commodity"     then Commodity.pid(row.commodity_id)
+      when "technology"    then Technology.pid(row.technology_id)
+      when "location"      then Location.pid(row.location_id)
+      when "flow"          then Flow.pid(row.flow.id)
+      when "in_flow"       then Flow.pid(row.in_flow.id)
+      when "out_flow"      then Flow.pid(row.out_flow.id)
       end
     }
   end
@@ -264,11 +271,11 @@ class LeaqSolver
   end
   
   def say(message,debug)
-    puts "-- #{message}"
+    puts "-- #{message}" if debug
     time = Benchmark.measure {
       yield
     }
-    puts "   -> %.4fs" % time.real
+    puts "   -> %.4fs" % time.real if debug
   end
     
 end
