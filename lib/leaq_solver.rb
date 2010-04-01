@@ -9,29 +9,39 @@ class LeaqSolver
                 :period_duration => 5,                  
                 :nb_periods => 9,
                 :first_year => 2005}.freeze
+    DEF_SOLVE_OPTS = {:debug => false,
+                      :ignore_equations => [],
+                      :write_output => true
+	                    }.freeze
+
     TIME_SLICES = %w{WD WN SD SN ID IN}
     
-  # Create a new environment to solve borat.
+  # Create a new environment
   def initialize(opts={})
     @opts = opts.reverse_merge(DEF_OPTS)
     ["mod","dat"].each{|ext|copy_template(ext)}
   end
                                                                     
-  # Solve the borat model.
-  def solve(debug=false)
-    context={}
-    say("Create context",debug) do
-      context = create_context
+  # Solve the model
+  def solve(opts={})
+    opts = opts.reverse_merge(DEF_SOLVE_OPTS)
+    context = Hash.new
+    say("Create context",opts[:debug]) do
+      context = create_context(opts[:debug])
+      context["write_outputs"] = opts[:write_output]
+      opts[:ignore_equations].each { |eq| context[eq] = true  }
     end
     %w{mod dat}.each do |ext|
-      say("Generate .#{ext} file",debug) do
+      say("Generate .#{ext} file",opts[:debug]) do
         File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
       end
     end
-    say("Run optimization solver",debug) do
-      command("glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")}")
+    say("Run optimization solver",opts[:debug]) do
+      `glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")}`
     end
-    say("Delete temporary files",debug) do
+    log = File.open(file("log"),"r").read
+    puts log
+    say("Delete temporary files",opts[:debug]) do
       #%w{mod dat out log}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
     end
   end
@@ -63,9 +73,44 @@ class LeaqSolver
 #  private
     
   # Extracts the context data for the generation
-  def create_context
+  def create_context(debug=false)
     c = Hash.new("")
-    
+
+    if debug
+      def create_or_find_by_name(active_record,name)
+        active_record.create!(:name => name) rescue active_record.find_by_name(name)
+      end
+
+      # create debug location
+      l_dummy = create_or_find_by_name(Location,"dummy")
+      p l_dummy
+
+      # create debug commodity
+      c_dummy = create_or_find_by_name(Commodity,"dummy")
+      c_dummy.set_list = "IMP"
+      p c_dummy
+      #p = Parameter.find_by_name("cost_imp")
+      #ParameterValue.create!(:parameter=>p,:commodity=>c_dummy,:year=>0,:time_slice=>"AN",:value=>"1e15")
+
+      # create debug commodity
+      p_eff_flo = Parameter.find_by_name("eff_flo")
+      p_flow_act = Parameter.find_by_name("flow_act")
+      pv_dummy = []
+      Technology.transaction {
+      Commodity.tagged_with("DEM").each { |dem|
+        t_dummy = create_or_find_by_name(Technology,"dummy_#{dem}")
+        t_dummy.locations = [l_dummy]
+        p t_dummy
+        f0 = InFlow.create(:technology=>t_dummy)
+        f0.commodities = [c_dummy]
+        f1 = OutFlow.create(:technology=>t_dummy)
+        f1.commodities = [dem]
+        pv_dummy << ParameterValue.create!(:parameter=>p_eff_flo,:in_flow=>f0,:technology=>t_dummy,:out_flow=>f1,:value=>"1")
+        pv_dummy << ParameterValue.create!(:parameter=>p_flow_act,:flow=>f0,:technology=>t_dummy,:value=>"0")
+      }
+      }
+    end
+
     # sets generation
     c[:s_s]    = TIME_SLICES.join(" ")
     c[:s_l]    = id_list(Location.all)
@@ -74,7 +119,7 @@ class LeaqSolver
     c[:s_imp]  = id_list(Commodity.tagged_with("IMP")) if Tag.find_by_name("IMP")
     c[:s_exp]  = id_list(Commodity.tagged_with("EXP")) if Tag.find_by_name("EXP")
     c[:s_dem]  = id_list(Commodity.tagged_with("DEM")) if Tag.find_by_name("DEM")
-    c[:s_flow] = id_list(Flow.all)
+    c[:s_flow] = id_list(Flow.all) 
     
     c[:s_p_map] = Hash.new
     Location.find(:all).each do |l|
@@ -108,6 +153,19 @@ class LeaqSolver
     fill_dmd.each do |d|
       TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{f[ts]} "}
     end
+
+    if debug
+      #Destroy dummy elements
+      Commodity.transaction{
+        l_dummy.destroy
+        c_dummy.destroy
+        Commodity.tagged_with("DEM").each { |dem|
+          Technology.find_by_name("dummy_#{dem}").destroy
+        }
+        pv_dummy.each { |pv| pv.destroy }
+      }
+    end
+    
     c
   end                    
 
@@ -262,12 +320,6 @@ class LeaqSolver
 
   def interpolate(x1,x2,y1,y2,x)
     (x.to_f-x1) / (x2-x1) * (y2-y1) + y1
-  end
-
-  def command(cmd)
-    unless system cmd
-     $?
-    end
   end
   
   def say(message,debug)

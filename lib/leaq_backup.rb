@@ -52,14 +52,14 @@ class LeaqBackup
 
     #location
     readline_zip(Location,zipfile,"geom.csv") { |row|
-      loc[row[0]] = Location.create!(:name => row[1]).id
+      loc[row[0]] = Location.create!(:name => row[1].chomp.sub(" ","_")).id
     }
 
 
     #technology
     readline_zip(Technology,zipfile,"technology.csv") do |row|
       ids = row[4].scan(/\d+/).collect{|l| loc[l]}
-      t = Technology.create(:name => row[1],
+      t = Technology.create!(:name => row[1].chomp.sub(" ","_"),
                             :description => row[2],
                             :location_ids => ids)
       unless row[3].blank?
@@ -72,7 +72,7 @@ class LeaqBackup
 
     #commodity
     readline_zip(Commodity,zipfile,"commodity.csv") do |row|
-      c = Commodity.create!(:name => row[1],
+      c = Commodity.create!(:name => row[1].chomp.sub(" ","_"),
                             :description => row[2])
       unless row[3].blank?
         c.set_list = row[3]

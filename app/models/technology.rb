@@ -9,7 +9,7 @@ class Technology < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
-  validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
+  #validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
   
   acts_as_identifiable :prefix => "t"
   

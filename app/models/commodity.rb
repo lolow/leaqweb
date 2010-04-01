@@ -7,7 +7,7 @@ class Commodity < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
-  validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
+  #validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
 
   def out_flows
     self.flows.select{|f| f.is_a? OutFlow}
@@ -46,5 +46,5 @@ class Commodity < ActiveRecord::Base
   def to_s
     self.name
   end
-
+  
 end
