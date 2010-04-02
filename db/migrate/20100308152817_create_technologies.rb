@@ -3,7 +3,7 @@ class CreateTechnologies < ActiveRecord::Migration
     create_table :technologies do |t|
       t.string :name
       t.text :description
-      t.boolean :hidden, :default => false
+      t.boolean :activated, :default => true
       t.timestamps
     end
     add_index  :technologies, :name, :unique => true

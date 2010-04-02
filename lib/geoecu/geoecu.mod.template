@@ -377,38 +377,38 @@ param total_net_amount{t in T, s in S, c in C} := procurement[t,s,c] - disposal[
 #
 #
 
-printf "attribute;T;S;L;P;C;value\n";
+printf "attribute,T,S,L,P,C,value\n";
 
 #Without index
-printf "VAR_OBJINV;;;;;;%f\n", VAR_OBJINV;
-printf "VAR_OBJFIX;;;;;;%f\n", VAR_OBJFIX;
-printf "VAR_OBJVAR;;;;;;%f\n", VAR_OBJVAR;
-printf "VAR_OBJSAL;;;;;;%f\n", VAR_OBJSAL;
+printf "VAR_OBJINV,,,,,,%f\n", VAR_OBJINV;
+printf "VAR_OBJFIX,,,,,,%f\n", VAR_OBJFIX;
+printf "VAR_OBJVAR,,,,,,%f\n", VAR_OBJVAR;
+printf "VAR_OBJSAL,,,,,,%f\n", VAR_OBJSAL;
 
 #T,L,P
 for {t in T, l in L, p in P_MAP[l]}{
-  printf "CAPACITY;%s;;%s;%s;;%f\n", t, l , p , capacity[t,l,p];
+  printf "CAPACITY,%s,,%s,%s,,%f\n", t, l , p , capacity[t,l,p];
 }
 
 #T,L,P
 for {t in T, l in L, p in P_MAP[l]}{
-  printf "VAR_ICAP;%s;;%s;%s;;%f\n", t, l , p , VAR_ICAP[t,l,p];
+  printf "VAR_ICAP,%s,,%s,%s,,%f\n", t, l , p , VAR_ICAP[t,l,p];
 }
 
 #T, S, L, P
 for {t in T, s in S, l in L, p in P_MAP[l]}{
-  printf "ACTIVITY;%s;%s;%s;%s;;%f\n", t, s, l , p , activity[t,s,l,p];
+  printf "ACTIVITY,%s,%s,%s,%s,,%f\n", t, s, l , p , activity[t,s,l,p];
 }
 for {t in T, l in L, p in P_MAP[l]}{
-  printf "ACTIVITY;%s;ANNUAL;%s;%s;;%f\n", t, l , p , sum {s in S} activity[t,s,l,p];
+  printf "ACTIVITY,%s,ANNUAL,%s,%s,,%f\n", t, l , p , sum {s in S} activity[t,s,l,p];
 }
 
 #T, S, C
 for {t in T, s in S, c in IMP}{
-  printf "VAR_IMP;%s;%s;;;%s;%f\n", t, s, c, VAR_IMP[t,s,c];
+  printf "VAR_IMP,%s,%s,,,%s,%f\n", t, s, c, VAR_IMP[t,s,c];
 }
 for {t in T, c in IMP}{
-  printf "VAR_IMP;%s;ANNUAL;;;%s;%f\n", t, c, sum {s in S}VAR_IMP[t,s,c];
+  printf "VAR_IMP,%s,ANNUAL,,,%s,%f\n", t, c, sum {s in S}VAR_IMP[t,s,c];
 }
 for {t in T, s in S, c in EXP}{
   printf "VAR_EXP;%s;%s;;;%s;%f\n", t, s, c, VAR_EXP[t,s,c];
@@ -419,17 +419,17 @@ for {t in T, c in EXP}{
 
 #T,S,L,P,C
 for {t in T, s in S, l in L, p in P_MAP[l], c in C_MAP[p]}{
-  printf "VAR_COM;%s;%s;%s;%s;%s;%f\n", t, s, l, p, c, VAR_COM[t,s,l,p,c];
+  printf "VAR_COM,%s,%s,%s,%s,%s,%f\n", t, s, l, p, c, VAR_COM[t,s,l,p,c];
 }
 
 #T,L,P,C
 for {t in T,  l in L, p in P_MAP[l], c in C_MAP[p]}{
-  printf "VAR_COM;%s;ANNUAL;%s;%s;%s;%f\n", t, l, p, c, sum{s in S} VAR_COM[t,s,l,p,c];
+  printf "VAR_COM,%s,ANNUAL,%s,%s,%s,%f\n", t, l, p, c, sum{s in S} VAR_COM[t,s,l,p,c];
 }
 
 #CHECK DEMAND
 for {t in T, dem in DEM}{
-  printf "CHK_DEM;%s;%s;;;;%f\n", t, dem , sum{s in S, l in L, p in P_PROD[dem]} (fixed_cap[t,l,p]*fraction[s]*cap_act[p]*
+  printf "CHK_DEM,%s,%s,,,,%f\n", t, dem , sum{s in S, l in L, p in P_PROD[dem]} (fixed_cap[t,l,p]*fraction[s]*cap_act[p]*
                                                                  avail_factor[t,s,p]*act_flo[p,dem]) - demand[t,dem];
 }
 

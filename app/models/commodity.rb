@@ -7,7 +7,8 @@ class Commodity < ActiveRecord::Base
   
   validates_presence_of :name
   validates_uniqueness_of :name
-  #validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
+
+  named_scope :activated, :conditions => {:activated => true}
 
   def out_flows
     self.flows.select{|f| f.is_a? OutFlow}
@@ -45,6 +46,16 @@ class Commodity < ActiveRecord::Base
 
   def to_s
     self.name
+  end
+
+  def activate(bool)
+    self.update_attributes!(:activated => bool)
+    ParameterValue.transaction{
+      self.parameter_values.find(:all).each { |pv|
+        pv.activated = self.activated
+        pv.save
+      } rescue nil
+    }
   end
   
 end

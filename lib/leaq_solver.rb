@@ -2,20 +2,36 @@ require 'tenjin'
 require 'yaml'
 require 'benchmark'
 
-class LeaqSolver 
-  
-    DEF_OPTS = {:temp_path => "/tmp",
-	              :model_path => File.join(RAILS_ROOT,'lib','geoecu'),
-                :period_duration => 5,                  
-                :nb_periods => 9,
-                :first_year => 2005}.freeze
-    DEF_SOLVE_OPTS = {:debug => false,
-                      :ignore_equations => [],
-                      :write_output => true
-	                    }.freeze
+class LeaqSolver
 
-    TIME_SLICES = %w{WD WN SD SN ID IN}
-    
+  # Constantes
+  DEF_OPTS = {:temp_path => "/tmp",
+              :model_path => File.join(RAILS_ROOT,'lib','geoecu'),
+              :period_duration => 5,
+              :nb_periods => 9,
+              :first_year => 2005}.freeze
+  DEF_SOLVE_OPTS = {:debug => false,
+                    :ignore_equations => [],
+                    :write_output => true
+                    }.freeze
+
+  TIME_SLICES = %w{WD WN SD SN ID IN}
+  NUMBER_OF_SOLVER_CLASS = 1
+
+  # State Machine
+  include Workflow
+  workflow do
+    state :new do
+      event :solve, :transitions_to => :solving
+    end
+
+    state :solving do
+      event :finish, :transitions_to => :finished
+    end
+
+    state :finished
+  end
+  
   # Create a new environment
   def initialize(opts={})
     @opts = opts.reverse_merge(DEF_OPTS)
@@ -25,25 +41,45 @@ class LeaqSolver
   # Solve the model
   def solve(opts={})
     opts = opts.reverse_merge(DEF_SOLVE_OPTS)
-    context = Hash.new
-    say("Create context",opts[:debug]) do
-      context = create_context(opts[:debug])
-      context["write_outputs"] = opts[:write_output]
-      opts[:ignore_equations].each { |eq| context[eq] = true  }
-    end
+
+    puts "Create context" if opts[:debug]
+    context = create_context(opts[:debug])
+    context["write_outputs"] = opts[:write_output]
+    opts[:ignore_equations].each { |eq| context[eq] = true  }
+
     %w{mod dat}.each do |ext|
-      say("Generate .#{ext} file",opts[:debug]) do
-        File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
+      puts "Generate .#{ext} file" if opts[:debug]
+      File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
+    end
+
+    puts "Run optimization solver" if opts[:debug]
+
+    cmd = "glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")}"
+    @pipe = IO.popen(cmd)
+  end
+
+  def finish
+    @pipe.close
+    if optimal?
+      dict = Hash[*Commodity.all.collect{|x|[x.pid,x.name]}.flatten]
+      dict.merge! Hash[*Technology.all.collect{|x|[x.pid,x.name]}.flatten]
+      dict.merge! Hash[*Location.all.collect{|x|[x.pid,x.name]}.flatten]
+      FasterCSV.open(file("csv"), "w") do |csv|
+        csv << %w[attribute T S L P C value]
+        FasterCSV.foreach(file("out")) do |row|
+          csv << [row[0],row[1],row[2],dict[row[3]],dict[row[4]],dict[row[5]],row[6]]
+        end
       end
     end
-    say("Run optimization solver",opts[:debug]) do
-      `glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")}`
-    end
-    log = File.open(file("log"),"r").read
-    puts log
-    say("Delete temporary files",opts[:debug]) do
-      #%w{mod dat out log}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
-    end
+    #%w{mod dat out log}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
+  end
+
+  def log
+    File.open(file("log")).read if File.exists?(file("log"))
+  end
+
+  def optimal?
+    log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
   end
 
   def signature
@@ -69,9 +105,7 @@ class LeaqSolver
   def period_duration
     @opts[:period_duration]
   end
-    
-#  private
-    
+  
   # Extracts the context data for the generation
   def create_context(debug=false)
     c = Hash.new("")
@@ -83,12 +117,10 @@ class LeaqSolver
 
       # create debug location
       l_dummy = create_or_find_by_name(Location,"dummy")
-      p l_dummy
 
       # create debug commodity
       c_dummy = create_or_find_by_name(Commodity,"dummy")
       c_dummy.set_list = "IMP"
-      p c_dummy
       #p = Parameter.find_by_name("cost_imp")
       #ParameterValue.create!(:parameter=>p,:commodity=>c_dummy,:year=>0,:time_slice=>"AN",:value=>"1e15")
 
@@ -97,17 +129,23 @@ class LeaqSolver
       p_flow_act = Parameter.find_by_name("flow_act")
       pv_dummy = []
       Technology.transaction {
-      Commodity.tagged_with("DEM").each { |dem|
-        t_dummy = create_or_find_by_name(Technology,"dummy_#{dem}")
-        t_dummy.locations = [l_dummy]
-        p t_dummy
-        f0 = InFlow.create(:technology=>t_dummy)
-        f0.commodities = [c_dummy]
-        f1 = OutFlow.create(:technology=>t_dummy)
-        f1.commodities = [dem]
-        pv_dummy << ParameterValue.create!(:parameter=>p_eff_flo,:in_flow=>f0,:technology=>t_dummy,:out_flow=>f1,:value=>"1")
-        pv_dummy << ParameterValue.create!(:parameter=>p_flow_act,:flow=>f0,:technology=>t_dummy,:value=>"0")
-      }
+        Commodity.tagged_with("DEM").each { |dem|
+          t_dummy = create_or_find_by_name(Technology,"dummy_#{dem}")
+          t_dummy.locations = [l_dummy]
+          f0 = InFlow.create(:technology=>t_dummy)
+          f0.commodities = [c_dummy]
+          f1 = OutFlow.create(:technology=>t_dummy)
+          f1.commodities = [dem]
+          pv_dummy << ParameterValue.create!(:parameter=>p_eff_flo,
+                                             :in_flow=>f0,
+                                             :technology=>t_dummy,
+                                             :out_flow=>f1,
+                                             :value=>"1")
+          pv_dummy << ParameterValue.create!(:parameter=>p_flow_act,
+                                             :flow=>f0,
+                                             :technology=>t_dummy,
+                                             :value=>"0")
+        }
       }
     end
 
@@ -221,8 +259,8 @@ class LeaqSolver
   def default_value_for(parameter)
     dv = Parameter.find_by_name(parameter.to_s).default_value
     case parameter
-      when :avail then period(dv)
-      when :life  then dv/period_duration
+      when "avail" then period(dv)
+      when "life"  then dv/period_duration
       else dv
     end
   end
@@ -231,7 +269,7 @@ class LeaqSolver
   # Values are projected over periods if necessary.
   def values_for(parameter)
     return unless signature[parameter]
-    pv  = Parameter.find_by_name(parameter.to_s).parameter_values
+    pv  = Parameter.find_by_name(parameter.to_s).parameter_values.activated
     # If Values are time-dependent
     if signature[parameter].include?("period")
       values = Hash.new
