@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :simulations
+
 
   map.resources :technologies
   map.resources :commodities

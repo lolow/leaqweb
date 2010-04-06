@@ -20,6 +20,7 @@ Rails::Initializer.run do |config|
   config.gem "rubyzip", :lib => "zip/zip"
   config.gem "tenjin"
   config.gem "workflow"
+  config.gem "paperclip"
   config.gem "fastercsv", :lib => "faster_csv"
   config.gem "acts-as-taggable-on", :source => "http://gemcutter.org"
   config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'

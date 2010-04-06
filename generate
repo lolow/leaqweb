@@ -1,0 +1,167 @@
+Script started on Tue 06 Apr 2010 11:53:19 AM CEST
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ exitsudo apt-get autoremoveexit[K[Kexitsudo apt-get autoremoveinstall lamevorbis-tools openjdk-6-jdk[Kklame[K[2Pautoremoveexit[K[Kscript/generate scaffold Simulation name:string -g
+      exists  app/models/
+      exists  app/controllers/
+      exists  app/helpers/
+      create  app/views/simulations
+      exists  app/views/layouts/
+      exists  test/functional/
+      exists  test/unit/
+      exists  test/unit/helpers/
+      exists  public/stylesheets/
+      create  app/views/simulations/index.html.erb
+add 'app/views/simulations/index.html.erb'
+      create  app/views/simulations/show.html.erb
+add 'app/views/simulations/show.html.erb'
+      create  app/views/simulations/new.html.erb
+add 'app/views/simulations/new.html.erb'
+      create  app/views/simulations/edit.html.erb
+add 'app/views/simulations/edit.html.erb'
+      create  app/views/layouts/simulations.html.erb
+add 'app/views/layouts/simulations.html.erb'
+   identical  public/stylesheets/scaffold.css
+      create  app/controllers/simulations_controller.rb
+add 'app/controllers/simulations_controller.rb'
+      create  test/functional/simulations_controller_test.rb
+add 'test/functional/simulations_controller_test.rb'
+      create  app/helpers/simulations_helper.rb
+add 'app/helpers/simulations_helper.rb'
+      create  test/unit/helpers/simulations_helper_test.rb
+add 'test/unit/helpers/simulations_helper_test.rb'
+       route  map.resources :simulations
+  dependency  model
+      exists    app/models/
+      exists    test/unit/
+      exists    test/fixtures/
+      create    app/models/simulation.rb
+add 'app/models/simulation.rb'
+      create    test/unit/simulation_test.rb
+add 'test/unit/simulation_test.rb'
+      create    test/fixtures/simulations.yml
+add 'test/fixtures/simulations.yml'
+      exists    db/migrate
+      create    db/migrate/20100406095338_create_simulations.rb
+add 'db/migrate/20100406095338_create_simulations.rb'
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ sudo gem install paperclip
+[sudo] password for lolow: 
+Sorry, try again.
+[sudo] password for lolow: 
+Sorry, try again.
+[sudo] password for lolow: 
+Sorry, try again.
+sudo: 3 incorrect password attempts
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ sudo gem install paperclip
+[sudo] password for lolow: 
+Successfully installed paperclip-2.3.1.1
+1 gem installed
+Installing ri documentation for paperclip-2.3.1.1...
+Installing RDoc documentation for paperclip-2.3.1.1...
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ namei[K[K[K[K[Kls
+[0m[01;34mapp[0m  [01;34mconfig[0m  [01;34mdb[0m  [01;34mdoc[0m  generate  [01;34mlib[0m  [01;34mlog[0m  [01;34mnbproject[0m  [01;34mpublic[0m  Rakefile  README  [01;34mscript[0m  [01;34mtest[0m  [01;34mtmp[0m  [01;34mvendor[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ ls[K[Kcd
+]0;lolow@lolow-laptop: ~[01;32mlolow@lolow-laptop[00m:[01;34m~[00m$ ls
+[0m[01;32marchive.sh[0m  [01;31mdbleaq.zip[0m  [01;34mDesktop[0m  [01;34mDocuments[0m  [01;34mDownloads[0m  [01;34mlotus[0m  [01;34mMusic[0m  [01;34mPictures[0m  [01;34mProjects[0m  [01;34mPublic[0m  [01;34mtmp[0m  [01;34mVideos[0m
+[m]0;lolow@lolow-laptop: ~[01;32mlolow@lolow-laptop[00m:[01;34m~[00m$ cd Projects/LEAQ/leaqweb/
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ ls
+[0m[01;34mapp[0m  [01;34mconfig[0m  [01;34mdb[0m  [01;34mdoc[0m  generate  [01;34mlib[0m  [01;34mlog[0m  [01;34mnbproject[0m  [01;34mpublic[0m  Rakefile  README  [01;34mscript[0m  [01;34mtest[0m  [01;34mtmp[0m  [01;34mvendor[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ cd public/
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ vi /tmp/temp-ACSlSMYV.out
+[?1049h[?1h=[1;50r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[50;1H"/tmp/temp-ACSlSMYV.out" 128318L, 4315434C[>c[1;1Hattribute,T,S,L,P,C,value
+VAR_OBJINV,,,,,,0.000000
+VAR_OBJFIX,,,,,,2355761743.123549
+VAR_OBJVAR,,,,,,600709545082673.125000
+VAR_OBJSAL,,,,,,0.000000
+CAPACITY,1,,l1,t1,,0.000000
+CAPACITY,1,,l1,t2,,0.000000
+CAPACITY,1,,l1,t3,,124124.000000
+CAPACITY,1,,l1,t4,,2.195600
+CAPACITY,1,,l1,t5,,0.000000
+CAPACITY,1,,l1,t6,,0.000000
+CAPACITY,1,,l1,t7,,0.000000
+CAPACITY,1,,l1,t8,,0.000000
+CAPACITY,1,,l1,t9,,0.000000
+CAPACITY,1,,l1,t10,,0.000000
+CAPACITY,1,,l1,t11,,2.194000
+CAPACITY,1,,l1,t12,,18.060000
+CAPACITY,1,,l1,t13,,1000432.801822
+CAPACITY,1,,l1,t14,,0.000000
+CAPACITY,1,,l1,t15,,4.000000
+CAPACITY,1,,l1,t16,,3.180000
+CAPACITY,1,,l1,t17,,0.000000
+CAPACITY,1,,l1,t18,,1276701.000000
+CAPACITY,1,,l1,t19,,130890.000000
+CAPACITY,1,,l1,t20,,164705.000000
+CAPACITY,1,,l1,t21,,0.000000
+CAPACITY,1,,l1,t22,,15.146361
+CAPACITY,1,,l1,t23,,10.000000
+CAPACITY,1,,l1,t24,,0.003100
+CAPACITY,1,,l1,t25,,7.040280
+CAPACITY,1,,l1,t26,,0.000000
+CAPACITY,1,,l1,t27,,0.918417
+CAPACITY,1,,l1,t28,,0.146168
+CAPACITY,1,,l1,t29,,18.000000
+CAPACITY,1,,l1,t30,,0.000000
+CAPACITY,1,,l1,t31,,0.156342
+CAPACITY,1,,l1,t32,,205.000000
+CAPACITY,1,,l1,t33,,0.000000
+CAPACITY,1,,l1,t34,,0.000000
+CAPACITY,1,,l1,t35,,19416.000000
+CAPACITY,1,,l1,t36,,0.000000
+CAPACITY,1,,l1,t37,,1.415000
+CAPACITY,1,,l1,t38,,2956.000000
+CAPACITY,1,,l1,t39,,2.440000
+CAPACITY,1,,l1,t40,,8.000000
+CAPACITY,1,,l1,t41,,42.431700
+CAPACITY,1,,l1,t42,,0.000000
+CAPACITY,1,,l1,t43,,0.000000
+CAPACITY,1,,l1,t44,,358109.628266[50;109H1,1[11CTop]2;temp-ACSlSMYV.out (/tmp) - VIM]1;temp-ACSlSMYV.out[1;1H[?12l[?25hP+q436f\P+q6b75\P+q6b64\P+q6b72\P+q6b6c\P+q2332\P+q2334\P+q2569\P+q2a37\P+q6b31\[?25l[50;99H:[1;1H[50;1H[K[50;1H:[?12l[?25hq[?25l[?12l[?25h[?25l]2;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public]1;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[50;1H[K[50;1H[?1l>[?12l[?25h[?1049l]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ ls
+[0m[01;34mapp[0m  [01;34mconfig[0m  [01;34mdb[0m  [01;34mdoc[0m  generate  [01;34mlib[0m  [01;34mlog[0m  [01;34mnbproject[0m  [01;34mpublic[0m  Rakefile  README  [01;34mscript[0m  [01;34mtest[0m  [01;34mtmp[0m  [01;34mvendor[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ cd public/
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ sudo gem install file_column
+[sudo] password for lolow: 
+Sorry, try again.
+[sudo] password for lolow: 
+ERROR:  could not find gem file_column locally or in a repository
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m  [01;34msystem[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ cd system/outs/1/original/tmp/
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system/outs/1/original/tmp[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system/outs/1/original/tmp[00m$ ls
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system/outs/1/original/tmp[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system/outs/1/original/tmp[00m$ ls
+temp-ACSlSMYV.out
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system/outs/1/original/tmp[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system/outs/1/original/tmp[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system/outs/1/original[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system/outs/1/original[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system/outs/1[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system/outs/1[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system/outs[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system/outs[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system[00m$ ls
+[0m[01;34mouts[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public/system[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public/system[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ rm -rf system/
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ ls
+404.html  422.html  500.html  favicon.ico  [0m[01;34mimages[0m  [01;34mjavascripts[0m  robots.txt  [01;34mstylesheets[0m
+[m]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb/public[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb/public[00m$ cd ..
+]0;lolow@lolow-laptop: ~/Projects/LEAQ/leaqweb[01;32mlolow@lolow-laptop[00m:[01;34m~/Projects/LEAQ/leaqweb[00m$ git status
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	[33mnew file:   app/controllers/simulations_controller.rb[m
+#	[33mnew file:   app/helpers/simulations_helper.rb[m
+#	[33mnew file:   app/models/simulation.rb[m
+#	[33mnew file:   app/views/layouts/simulations.html.erb[m
+#	[33mnew file:   app/views/simulations/edit.html.erb[m
+#	[33mnew file:   app/views/simulations/index.html.erb[m
+#	[33mnew file:   app/views/simulations/new.html.erb[m
+#	[33mnew file:   

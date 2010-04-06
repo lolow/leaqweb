@@ -54,11 +54,12 @@ class LeaqSolver
 
     puts "Run optimization solver" if opts[:debug]
 
-    cmd = "glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")}"
+    cmd = "glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")} && echo ENDSOLVER >> #{file("log")}"
     @pipe = IO.popen(cmd)
   end
 
   def finish
+    return halt! unless self.log.index('ENDSOLVER')
     @pipe.close
     if optimal?
       dict = Hash[*Commodity.all.collect{|x|[x.pid,x.name]}.flatten]
@@ -66,8 +67,10 @@ class LeaqSolver
       dict.merge! Hash[*Location.all.collect{|x|[x.pid,x.name]}.flatten]
       FasterCSV.open(file("csv"), "w") do |csv|
         csv << %w[attribute T S L P C value]
+        header = true
         FasterCSV.foreach(file("out")) do |row|
-          csv << [row[0],row[1],row[2],dict[row[3]],dict[row[4]],dict[row[5]],row[6]]
+          csv << [row[0],row[1],row[2],dict[row[3]],dict[row[4]],dict[row[5]],row[6]] unless header
+          header = false
         end
       end
     end
