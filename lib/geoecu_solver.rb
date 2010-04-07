@@ -2,7 +2,7 @@ require 'tenjin'
 require 'yaml'
 require 'benchmark'
 
-class LeaqSolver
+class GeoecuSolver
 
   # Constantes
   DEF_OPTS = {:temp_path => "/tmp",
