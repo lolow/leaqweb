@@ -2,7 +2,6 @@ class TechnologiesController < ApplicationController
   before_filter :authenticate_user!
   
   # GET /technologies
-  # GET /technologies.xml
   def index
     ["page","per_page"].each do |p|
       user_session["tech_#{p}"] = params[p] if params[p]
@@ -16,29 +15,24 @@ class TechnologiesController < ApplicationController
     @technologies = Technology.paginate(filter)
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => Technology.all }
     end
   end
 
   # GET /technologies/1
-  # GET /technologies/1.xml
   def show
     @technology = Technology.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @technology }
     end
   end
 
   # GET /technologies/new
-  # GET /technologies/new.xml
   def new
     @technology = Technology.new
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @technology }
     end
   end
 
@@ -48,7 +42,6 @@ class TechnologiesController < ApplicationController
   end
 
   # POST /technologies
-  # POST /technologies.xml
   def create
     @technology = Technology.new(params[:technology])
 
@@ -56,16 +49,13 @@ class TechnologiesController < ApplicationController
       if @technology.save
         flash[:notice] = 'Technology was successfully created.'
         format.html { redirect_to(@technology) }
-        format.xml  { render :xml => @technology, :status => :created, :location => @technology }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @technology.errors, :status => :unprocessable_entity }
       end
     end
   end
 
   # PUT /technologies/1
-  # PUT /technologies/1.xml
   def update
     @technology = Technology.find(params[:id])
     # jeditable fields

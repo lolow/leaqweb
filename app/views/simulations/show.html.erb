@@ -3,6 +3,25 @@
   <%=h @simulation.name %>
 </p>
 
+<div id="solver">
+  <h2>Solver</h2>
+  <% unless @solver %>
 
-<%= link_to 'Edit', edit_simulation_path(@simulation) %> |
+    <% form_tag start_simulation_path(@simulation), :method => :put do %>
+      <div><%= submit_tag 'Launch solver' %></div>
+    <% end %>
+
+  <% else %>
+  <p>
+    Solver current state: <%=h @solver.current_state.name %>
+    <a href="#">See log</a>
+  </p>
+  <% end %>
+</div>
+
+<div id="results">
+  <h2>Results</h2>
+  No results yet.
+</div>
+
 <%= link_to 'Back', simulations_path %>

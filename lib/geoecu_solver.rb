@@ -4,43 +4,28 @@ require 'benchmark'
 
 class GeoecuSolver
 
-  # Constantes
+  # Options
   DEF_OPTS = {:temp_path => "/tmp",
               :model_path => File.join(RAILS_ROOT,'lib','geoecu'),
+              :debug => false,
+              :ignore_equations => [],
+              :write_output => true,
               :period_duration => 5,
               :nb_periods => 9,
-              :first_year => 2005}.freeze
-  DEF_SOLVE_OPTS = {:debug => false,
-                    :ignore_equations => [],
-                    :write_output => true
-                    }.freeze
+              :first_year => 2005
+             }.freeze
 
   TIME_SLICES = %w{WD WN SD SN ID IN}
-  NUMBER_OF_SOLVER_CLASS = 1
-
-  # State Machine
-  include Workflow
-  workflow do
-    state :new do
-      event :solve, :transitions_to => :solving
-    end
-
-    state :solving do
-      event :finish, :transitions_to => :finished
-    end
-
-    state :finished
-  end
   
   # Create a new environment
   def initialize(opts={})
     @opts = opts.reverse_merge(DEF_OPTS)
-    ["mod","dat"].each{|ext|copy_template(ext)}
   end
                                                                     
   # Solve the model
   def solve(opts={})
-    opts = opts.reverse_merge(DEF_SOLVE_OPTS)
+    opts = opts.reverse_merge(DEF_OPTS)
+    ["mod","dat"].each{|ext|copy_template(ext)}
 
     puts "Create context" if opts[:debug]
     context = create_context(opts[:debug])
@@ -58,9 +43,8 @@ class GeoecuSolver
     @pipe = IO.popen(cmd)
   end
 
-  def finish
-    return halt! unless self.log.index('ENDSOLVER')
-    @pipe.close
+  def prepare_results
+    return unless solved?
     if optimal?
       dict = Hash[*Commodity.all.collect{|x|[x.pid,x.name]}.flatten]
       dict.merge! Hash[*Technology.all.collect{|x|[x.pid,x.name]}.flatten]
@@ -74,11 +58,18 @@ class GeoecuSolver
         end
       end
     end
-    #%w{mod dat out log}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
+  end
+
+  def clean_files
+    %w{mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
 
   def log
     File.open(file("log")).read if File.exists?(file("log"))
+  end
+
+  def solved?
+    log.index("ENDSOLVER") if File.exists?(file("log"))
   end
 
   def optimal?
@@ -352,7 +343,7 @@ class GeoecuSolver
   end
 
   def token
-    @token ||= (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
+    @opts[:token] ||= (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
   end
 
   def file(ext)

@@ -1,7 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :simulations
-
-
+  
+  map.resources :simulations, :except => [:edit,:update], :member => { :start => :put }
   map.resources :technologies
   map.resources :commodities
   map.resources :flows
