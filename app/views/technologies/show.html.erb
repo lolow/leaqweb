@@ -86,7 +86,8 @@ function edit_flow(flow_type,id)
 
 <script type="text/javascript">
     $(function() {
-        $('#tabs').tabs({ cookie: { expires: 7 }}); 
+        $('#tabs').tabs({ cookie: { expires: 7 }});
+        $("input:submit").button();
     });
 </script>
 
@@ -119,11 +120,11 @@ function edit_flow(flow_type,id)
                 + <a href="" onclick="add_flow('Out flow')">Add outflow</a></td>
             </tr></tbody>
         </table>
-        <select name="do">
+        <select name="do" class="ui-button ui-widget ui-state-default ui-corner-all">
 			<option value="set_act_flo">Set activity flow</option>
             <option value="delete_flo">Delete checked flow(s)</option>
         </select>
-		<%= submit_tag "OK" %>
+		<%= submit_tag "OK", :class => "ui-button ui-widget ui-state-default ui-corner-all" %>
         <% end -%>
         </div>
         <div id="flow_efficiency">
@@ -207,7 +208,7 @@ function edit_flow(flow_type,id)
             <tbody>
                 <tr>
                     <td>
-                        <select multiple size="10" id="sel_avail_commodity">
+                        <select multiple size="10" id="sel_avail_commodity" class="ui-button ui-widget ui-state-default ui-corner-all">
                             <optgroup label="Energy Carriers">
                                 <% Commodity.tagged_with("ENC").each do |c| %>
                                 <option><%=h c.name %></option>
@@ -229,7 +230,7 @@ function edit_flow(flow_type,id)
                     <td class="flow_separator">
                     </td>
                     <td>
-                        <select multiple size="10" id="sel_flow_commodity">
+                        <select multiple size="10" id="sel_flow_commodity" class="ui-button ui-widget ui-state-default ui-corner-all">
                         </select>
                         <p style="text-align: center"><a href="#" id="remove_commodity_flow">&lt;&lt; remove</a></p>
                     </td>

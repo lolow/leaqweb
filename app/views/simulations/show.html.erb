@@ -3,25 +3,78 @@
   <%=h @simulation.name %>
 </p>
 
-<div id="solver">
-  <h2>Solver</h2>
-  <% unless @solver %>
+<% if @solver && @solver.solving? %>
+<script type="text/javascript">
+setInterval(function() {location.reload();}, 5000)
+</script>
+<% end %>
 
-    <% form_tag start_simulation_path(@simulation), :method => :put do %>
-      <div><%= submit_tag 'Launch solver' %></div>
+
+
+
+<script type="text/javascript">
+    $(function() {
+        $('#tabs').tabs({ cookie: { expires: 7 }});
+        $("input:submit").button();
+    });
+</script>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Solver</a></li>
+        <li><a href="#tabs-2">Results</a></li>
+    </ul>
+
+<div id="tabs-1">
+  <div id="solver">
+    <h2>Solver</h2>
+    <% unless @solver %>
+
+      <% form_tag solver_simulation_path(@simulation), :method => :put do %>
+        <div><%= submit_tag 'Run solver', :disable_with => 'Generating problem...' %></div>
+      <% end %>
+
+    <% else %>
+    <p>
+      Status: <%=h @solver.current_state.name %><br />
+      Action:
+
+      <%=  link_to_function("update log", "update_log()") %>,
+
+      <%= link_to_if(@solver.solved?, "import results into the simulation", import_simulation_path, :method=>:put) %>,
+
+      <%= link_to_unless(@solver.new?, "reinit solver", solver_simulation_path, :method=>:put, :confirm => "Are you sure?") %>.
+    </p>
+  </div>
+      <script type="text/javascript">
+        function update_log(){
+          $.getJSON(<%= log_solver_path.to_json %>, function(json){
+                $("#display_log").html('<pre>'+json+'</pre>');
+              });
+        };
+        $(document).ready(function() {
+          update_log();
+          $('#update_log').click(function() {update_log();});
+        });
+      </script>
+
+    <div id="log" >
+      <h2>Log</h2>
+      <div id="display_log"></div>
+    </div>
+
     <% end %>
 
-  <% else %>
-  <p>
-    Solver current state: <%=h @solver.current_state.name %>
-    <a href="#">See log</a>
-  </p>
-  <% end %>
+  </div>
+
+<div id="tabs-2">
+  <div id="results">
+    <h2>Results</h2>
+    <% if @simulation.has_results? %>
+    <% else %>
+      No results yet. Please use 'import results' link in the solver section.
+    <% end %>
+  </div>
 </div>
 
-<div id="results">
-  <h2>Results</h2>
-  No results yet.
 </div>
-
-<%= link_to 'Back', simulations_path %>

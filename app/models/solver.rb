@@ -12,31 +12,44 @@ class Solver < ActiveRecord::Base
     end
 
     state :solving do
-      event :prepare_results, :transitions_to => :finished
+      event :complete, :transitions_to => :solved
     end
 
-    state :finished do
-      event :reset, :transitions_to => :new
+    state :solved
+  end
+
+  def update_status
+    if solving? && instance_solver.solved?
+      complete!
     end
   end
   
   def solve
-    return halt! unless new?
-    instance_solver.solve
+    halt! unless new?
+    self.pid = instance_solver.solve
+    self.save
   end
 
   def prepare_results
-    return halt! unless solved?
     instance_solver.prepare_results
   end
 
-  def solved?
-    instance_solver.solved?
+  def optimal?
+    solved? && instance_solver.optimal?
+  end
+
+  def log
+    instance_solver.log.sub("ENDSOLVER\n","").sub(file("mod"),"mod").sub(file("dat"),"dat") || ""
+  end
+
+  def file(ext)
+    instance_solver.file(ext)
   end
   
   private
   
   def clean
+    instance_solver.kill self.pid unless new?
     instance_solver.clean_files
   end
 

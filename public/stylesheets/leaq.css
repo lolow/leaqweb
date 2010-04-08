@@ -62,7 +62,7 @@ list-style-position:inside;
 table {
 font-size:12px;
 }
-
+/*
 input{
 padding:0;
 }
@@ -70,6 +70,7 @@ padding:0;
 submit{
 padding:0;
 }
+*/
 
 #print-warning {
 display:none;
@@ -91,6 +92,13 @@ width:98%;
 background:#acbd3b url(/images/headerbg.jpg) repeat-y scroll right top;
 margin:0;
 padding:0;
+}
+
+#display_log {
+border:1px solid #E9EFCD;
+background:#EEEEEE;
+margin-top:3px;
+font-size: 0.8em;
 }
 
 table.table_flows {

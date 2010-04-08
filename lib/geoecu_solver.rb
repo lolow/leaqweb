@@ -38,9 +38,7 @@ class GeoecuSolver
     end
 
     puts "Run optimization solver" if opts[:debug]
-
-    cmd = "glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")} && echo ENDSOLVER >> #{file("log")}"
-    @pipe = IO.popen(cmd)
+    run(command)
   end
 
   def prepare_results
@@ -360,6 +358,29 @@ class GeoecuSolver
       yield
     }
     puts "   -> %.4fs" % time.real if debug
+  end
+
+  def run(*cmd)
+    pid = fork do
+      exec(*cmd)
+      exit! 127
+    end
+  end
+  
+  def kill(pid)
+    begin
+      #glpsol
+      pids = `pidof -x glpsol`.split(" ").map(&:to_i).sort
+      Process.kill("SIGKILL",pids[0]) unless pids.empty?
+      #wait the end of the script
+      Process.waitpid(pid, 0)
+    rescue
+      nil
+    end
+  end
+
+  def command
+    "glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")} && echo ENDSOLVER >> #{file("log")}"
   end
     
 end
