@@ -1,0 +1,66 @@
+
+<% if @refresh %>
+<script type="text/javascript">
+setInterval(function() {location.reload();}, 5000)
+</script>
+<% end %>
+
+<script type="text/javascript">
+    $(function() {
+        $('#tabs').tabs({ cookie: { expires: 7 }});
+    });
+</script>
+
+<div id="tabs">
+
+    <ul>
+        <% @solvers.each_with_index do |solver,i| %>
+          <% unless solver.new?  %><li><a href="#tabs-<%= solver.id %>">Job <%= solver.id %> </a></li><% end  %>
+        <% end %>
+        <li><a href="#tabs-0">New...</a></li>
+    </ul>
+
+    <% @solvers.each_with_index do |solver,i| %>
+      <div id="tabs-<%= solver.id %>">
+        <script type="text/javascript">
+        function update_log_<%= solver.id %>(){
+          $.getJSON(<%= log_solver_path(solver).to_json %>, function(json){
+                $("#display_log_<%= solver.id %>").html('<pre>'+json+'</pre>');
+              });
+        };
+        $(document).ready(function() {
+          update_log_<%= solver.id %>();
+        });
+      </script>
+    <p>
+      Status: <%=h solver.current_state.name %><br />
+      Action:
+      <% if solver.solving? %>
+      <%=  link_to_function("update log", "update_log()") %>,
+      <%  else %>
+      update log,
+      <%  end %>
+
+      <%= link_to_if(solver.solved?, "import results into the simulation", solver_index_path, :method=>:put) %>,
+
+      <%= link_to_unless(solver.new?, "reinit solver", solver_index_path, :method=>:put, :confirm => "Are you sure?") %>.
+    </p>
+
+    <div id="log_<%= solver.id %>" >
+      <h2>Log</h2>
+      <div id="display_log_<%= solver.id %>"></div>
+    </div>
+
+      </div>
+    <% end %>
+
+
+    <div id="tabs-0">
+      <% form_tag new_solver_path, :method => :put do %>
+        <div><%= submit_tag 'Run solver', :disable_with => 'Generating problem...' %></div>
+      <% end %>
+    </div>
+
+
+
+</div>
