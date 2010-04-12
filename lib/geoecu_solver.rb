@@ -22,7 +22,7 @@ class GeoecuSolver
     @opts = opts.reverse_merge(DEF_OPTS)
   end
                                                                     
-  # Solve the model
+  # Solve the model and return pid
   def solve(opts={})
     opts = opts.reverse_merge(DEF_OPTS)
     ["mod","dat"].each{|ext|copy_template(ext)}
@@ -39,6 +39,11 @@ class GeoecuSolver
 
     puts "Run optimization solver" if opts[:debug]
     run(command)
+  end
+
+  def reset
+    kill
+    clean
   end
 
   def prepare_results
@@ -58,10 +63,6 @@ class GeoecuSolver
     end
   end
 
-  def clean_files
-    %w{mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
-  end
-
   def log
     File.open(file("log")).read if File.exists?(file("log"))
   end
@@ -72,6 +73,24 @@ class GeoecuSolver
 
   def optimal?
     log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
+  end
+  
+  private
+
+  def kill
+    begin
+      #glpsol
+      pids = `pidof -x glpsol`.split(" ").map(&:to_i).sort
+      Process.kill("SIGKILL",pids[0]) unless pids.empty?
+      #wait the end of the script
+      Process.waitpid(@opts[:pid], 0) if @opts[:pid]>0
+    rescue
+      nil
+    end
+  end
+
+  def clean
+    %w{mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
 
   def signature
@@ -345,7 +364,7 @@ class GeoecuSolver
   end
 
   def file(ext)
-    File.join(@opts[:temp_path],"temp-" + token + ".#{ext}")
+    File.join(@opts[:temp_path],"temp-#{token}.#{ext}")
   end
 
   def interpolate(x1,x2,y1,y2,x)
@@ -361,26 +380,16 @@ class GeoecuSolver
   end
 
   def run(*cmd)
-    pid = fork do
+    @opts[:pid] = fork do
       exec(*cmd)
       exit! 127
     end
   end
-  
-  def kill(pid)
-    begin
-      #glpsol
-      pids = `pidof -x glpsol`.split(" ").map(&:to_i).sort
-      Process.kill("SIGKILL",pids[0]) unless pids.empty?
-      #wait the end of the script
-      Process.waitpid(pid, 0)
-    rescue
-      nil
-    end
-  end
 
   def command
-    "glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")} && echo ENDSOLVER >> #{file("log")}"
+    "echo #{Time.now} " +
+    "&& glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")} " +
+    "&& echo ENDSOLVER >> #{file("log")}"
   end
     
 end

@@ -4,7 +4,5 @@ class User < ActiveRecord::Base
          :rememberable, :trackable, :validatable
 
   attr_accessible :email, :password, :password_confirmation
-
-  has_one :solver
   
 end

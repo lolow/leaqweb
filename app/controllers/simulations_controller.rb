@@ -13,8 +13,9 @@ class SimulationsController < ApplicationController
   # GET /simulations/1
   def show
     @simulation = Simulation.find(params[:id])
-    @solver = current_user.solver
-    @solver.update_status if @solver
+
+    #@solver = current_user.solver
+    #@solver.update_status if @solver
 
     respond_to do |format|
       format.html # show.html.erb
@@ -25,17 +26,6 @@ class SimulationsController < ApplicationController
   # launch next event for solver
   def solver
     @simulation = Simulation.find(params[:id])
-    current_user.create_solver unless current_user.solver
-    @solver = current_user.solver
-    @solver.update_status
-    case @solver.current_state.name
-      when :new
-        @solver.solve!
-      when :solving
-        @solver.destroy
-      when :solved
-        @solver.destroy
-    end
     respond_to do |format|
       format.html { redirect_to(@simulation) }
     end
@@ -44,11 +34,6 @@ class SimulationsController < ApplicationController
   # PUT /simulations/1/import
   def import
     @simulation = Simulation.find(params[:id])
-    solver = current_user.solver
-    if solver
-      solver.prepare_results
-      @simulation.store_results(solver)
-    end
     respond_to do |format|
       format.html { redirect_to(@simulation) }
     end
