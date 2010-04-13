@@ -68,14 +68,23 @@ class GeoecuSolver
   end
 
   def solved?
-    log.index("ENDSOLVER") if File.exists?(file("log"))
+    log.index("End:") if File.exists?(file("log"))
   end
 
   def optimal?
     log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
   end
   
-  private
+  def time_used
+    return unless solved?
+    t1 = Time.parse(log.grep(/Start:/).first)
+    t2 = Time.parse(log.grep(/End:/).first)
+    t2 - t1
+  end
+
+  def has_files?
+    %w{mod dat out log}.inject(true){ |enum,x| enum && File.exists?(file(x)) }
+  end
 
   def kill
     begin
@@ -380,6 +389,7 @@ class GeoecuSolver
   end
 
   def run(*cmd)
+    puts cmd
     @opts[:pid] = fork do
       exec(*cmd)
       exit! 127
@@ -387,9 +397,9 @@ class GeoecuSolver
   end
 
   def command
-    "echo #{Time.now} " +
-    "&& glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} > #{file("log")} " +
-    "&& echo ENDSOLVER >> #{file("log")}"
+    "echo Start: `date` > #{file("log")} " +
+    "&& glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} >> #{file("log")} " +
+    "&& echo End: `date` >> #{file("log")} "
   end
     
 end

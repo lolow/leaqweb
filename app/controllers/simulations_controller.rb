@@ -31,11 +31,13 @@ class SimulationsController < ApplicationController
     end
   end
 
-  # PUT /simulations/1/import
+  # PUT /simulations/1/import_solver
   def import
     @simulation = Simulation.find(params[:id])
+    @simulation.store_results(Solver.find(params[:solver_id]))
     respond_to do |format|
       format.html { redirect_to(@simulation) }
+      format.js { render :json => "" }
     end
   end
 

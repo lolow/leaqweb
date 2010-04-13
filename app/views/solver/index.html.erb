@@ -1,3 +1,9 @@
+<% if @refresh %>
+  <script type="text/javascript">
+   setTimeout(function(){location.reload();}, 10000);
+  </script>
+<% end %>
+
 <script type="text/javascript">
     $(function() {
         $('#tabs').tabs({ cookie: { expires: 7 }});
@@ -11,18 +17,49 @@
           <% unless solver.new?  %><li><a href="#tabs-<%= solver.id %>">Job <%= solver.id %> </a></li><% end  %>
         <% end %>
         <li><a href="#tabs-0">New...</a></li>
+
     </ul>
 
+    <script type="text/javascript">
+    function import_sim(id) {
+      var sim_id = $('#sim_' +id+ ' option:selected')[0].value
+      alert(sim_id);
+      if(sim_id=="0"){
+        location.replace('/simulations/new/');
+        return false;
+      }
+      $.ajax({url:'/simulations/' + sim_id + '/import',
+                type:'PUT',
+                data:{'solver_id':id},
+                async:false});
+      location.replace('/simulations/' + sim_id);
+    }
+    </script>
     <% @solvers.each_with_index do |solver,i| %>
       <div id="tabs-<%= solver.id %>">
     <p>
-      Status: <%=h solver.current_state.name %><br />
+      Status: <%=h solver.current_state.name %>
+      <%=h "but can't find temporary files, probably because they have been deleted."  if (solver.solved? && !solver.has_files?) %>
+      <%=h "(#{solver.time_used} sec)" if (solver.solved? && solver.has_files?) %><br />
 
-      Actions: <%= link_to_if(solver.solving?, "refresh", solver_index_path) %>,
+      Actions: <%= link_to_if(solver.solving?, "manual refresh", solver_index_path) %>,
+      
+      <% if solver.solved? && solver.has_files? %>
+      
+      <%= link_to_function("import results into simulation","import_sim(#{solver.id})") %>
+      
+      <%= select_tag "sim_#{solver.id}", options_for_select(@simulations.map {|s| [s.name,s.id]}+[['New...',0]]) %>
+      
+      <% else %>
+      import results into simulation,
+      <% end %>
 
-      <%= link_to_if(solver.solved?, "import results into the simulation", solver_index_path, :method=>:put) %>,
+      <%= link_to_if(solver.solved? && solver.has_files?, "import results into simulation", solver_index_path, :method=>:put) %>
 
-      <%= link_to_unless(solver.new?, "reinit solver", solver, :method=>:delete, :confirm => "Are you sure?") %>.
+      ,
+      
+
+      <%= link_to_unless(solver.new?, "destroy the job", solver, :method=>:delete, :confirm => "Are you sure?") %>.
       
     </p>
 

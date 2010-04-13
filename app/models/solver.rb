@@ -25,7 +25,31 @@ class Solver < ActiveRecord::Base
   end
   
   def log
-    geoecu.log.sub('ENDSOLVER\n','')
+    geoecu.log
+  end
+
+  def file(ext)
+    geoecu.file(ext)
+  end
+
+  def time_used
+    geoecu.time_used
+  end
+
+  def optimal?
+    geoecu.optimal?
+  end
+  
+  def prepare_results
+    geoecu.prepare_results
+  end
+
+  def has_files?
+    geoecu.has_files?
+  end
+
+  def update_status
+    complete! if solving? && geoecu.solved?
   end
 
   private
@@ -39,7 +63,7 @@ class Solver < ActiveRecord::Base
   end
 
   def check_available_slots
-    errors.add_to_base("No slot available") unless Solver.count < MAX_SOLVERS
+    errors.add_to_base("No job slot available") unless Solver.count < MAX_SOLVERS
   end
   
 end

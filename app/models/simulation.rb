@@ -6,8 +6,18 @@ class Simulation < ActiveRecord::Base
 
   EXT = %w{mod dat log out csv}
 
+  def self.auto_new
+    prefix = SIM
+    name = prefix
+    (1..999).each do |i|
+      name = prefix + i.to_s
+      break unless Simulation.find_name(name)
+    end
+    Simulation.create!(:name=>name)
+  end
+
   def store_results(solver)
-    return unless solver.optimal?
+    solver.prepare_results
     FileUtils.mkdir_p(results_path) unless File.exists?(results_path)
     EXT.each { |x| FileUtils.cp(solver.file(x),file(x)) }
   end

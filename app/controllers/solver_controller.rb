@@ -4,8 +4,10 @@ class SolverController < ApplicationController
   # GET /solver
   def index
     @solvers = Solver.all
+    @simulations = Simulation.all
+    @solvers.map(&:update_status)
     @new_solver = Solver.new
-    @refresh = false
+    @refresh = @solvers.inject(false) { |memo,s| memo || s.solving?  }
     respond_to do |format|
       format.html
     end
