@@ -1,18 +1,58 @@
-<p>
-  <b>Name:</b>
-  <%=h @simulation.name %>
-</p>
+<h1>Simulation</h1>
+
+
+<div id="idcard">
+<ul>
+<li>Name: <%=h @simulation.name %></li>
+<li>Created: <%=h @simulation.created_at %></li>
+</ul>
+</div>
 
 
 <div id="tabs">
-    <ul>
-        <li><a href="#tabs-2">Results</a></li>
-    </ul>
 
 <div id="tabs-2">
   <div id="results">
-    <h2>Results</h2>
+    <h2>Table builder</h2>
     <% if @simulation.has_results? %>
+
+    <div id="tableselector">
+      <% form_for :selector, @selector, :url => table_simulation_path, :html => {:method => :post}  do |f| %>
+      
+        <%= f.hidden_field( :name, :value => "") %>
+
+        <%= f.label :attribute %>
+        <%= f.select( :attribute, Simulation::ATTRIBUTES) %>
+      
+        <%= f.label :formula %>
+        <%= f.text_field :formula %>
+
+        <%= f.label :filter %>
+        <%= f.text_field :filter %>
+
+        <%= submit_tag 'Compute Table' %>
+      <% end %>
+      <% link_to(@simulation,"reset") %>
+    </div>
+
+    <div id="tableres">
+      <h2><%=h @name  %></h2>
+      <%= @table_result %>
+    </div>
+
+<pre>
+formula examples:
+L + P ~ T + S
+P ~ T
+C + P ~ T
+filter examples:
+P %in% grep("^TECH",P,value=TRUE)
+P %in% grep("^TECH",P,value=TRUE,invert=TRUE)
+P %in% grep("^TRA_RD_LD4C",P,value=TRUE) & S=="ANNUAL"
+C %in% grep("^RSD",C,value=TRUE) & S=="ANNUAL"
+</pre>
+
+
     <% else %>
       No results yet. Please use 'import results' link in the solver section.
     <% end %>

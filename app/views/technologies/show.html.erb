@@ -120,11 +120,11 @@ function edit_flow(flow_type,id)
                 + <a href="" onclick="add_flow('Out flow')">Add outflow</a></td>
             </tr></tbody>
         </table>
-        <select name="do" class="ui-button ui-widget ui-state-default ui-corner-all">
+        <select name="do">
 			<option value="set_act_flo">Set activity flow</option>
             <option value="delete_flo">Delete checked flow(s)</option>
         </select>
-		<%= submit_tag "OK", :class => "ui-button ui-widget ui-state-default ui-corner-all" %>
+		<%= submit_tag "OK"%>
         <% end -%>
         </div>
         <div id="flow_efficiency">

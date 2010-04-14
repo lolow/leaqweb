@@ -39,7 +39,7 @@ class Commodity < ActiveRecord::Base
                                :conditions => ["parameter_id IN (?)",param_ids],
                                :order => "year")
   end
-
+  
   def self.find_by_list_name(list)
     list.split(",").uniq.collect{|c|Commodity.find_by_name(c)}.compact
   end
@@ -57,5 +57,5 @@ class Commodity < ActiveRecord::Base
       } rescue nil
     }
   end
-  
+
 end

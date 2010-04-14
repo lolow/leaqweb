@@ -21,8 +21,7 @@
                 <% end %>
               }
               <% end %>
-            })
-            .change();
+            }).change();
         });
         </script>
     <% end %>
@@ -61,19 +60,19 @@
 		<tr>
 			<% cols.each do |c| %>
 			    <% if c=="parameter" %>
-			    <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>]" class="ui-widget ui-state-default ui-corner-all">
+			    <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>]">
 			        <% parameters.each do |p| %><option><%=h p %></option><% end -%>
                 </select></td>
                 <% elsif c=="in_flow" %>
-                <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]" class="ui-widget ui-state-default ui-corner-all"><% object.in_flows.each do |f| %>
+                <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]"><% object.in_flows.each do |f| %>
         			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
         		</select></td>
                 <% elsif c=="out_flow" %>
-                <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]" class="ui-widget ui-state-default ui-corner-all"><% object.out_flows.each do |f| %>
+                <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]"><% object.out_flows.each do |f| %>
         			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
         		</select></td>
         		<% elsif c=="flow" %>
-        		<td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]" class="ui-widget ui-state-default ui-corner-all">
+        		<td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
                     <optgroup label="In flow">
                         <% object.in_flows.each do |f| %>
         					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option>
@@ -96,7 +95,7 @@
 
 	</table>
 	
-	<select name="do" class="ui-icon-triangle-1-e ui-button ui-widget ui-state-default ui-corner-all">
+	<select name="do" >
 	    <option value="add_pv">Add parameter value</option>
 	    <option value="delete_pv">Delete checked parameter value(s)</option>
     </select>
@@ -104,5 +103,5 @@
 	<% if parameters.size==1 %>
 		<input type="hidden" id="<%= pid %>_parameter" name="pv[parameter]" value="<%= parameters[0] %>" />
 	<% end %>
-	<%= submit_tag 'OK', :class => "ui-button ui-widget ui-state-default ui-corner-all" %>
+	<%= submit_tag 'OK' %>
 <% end %>

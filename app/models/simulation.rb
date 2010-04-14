@@ -5,6 +5,7 @@ class Simulation < ActiveRecord::Base
   before_destroy :clear
 
   EXT = %w{mod dat log out csv}
+  ATTRIBUTES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP}
 
   def self.auto_new
     prefix = SIM
@@ -30,8 +31,6 @@ class Simulation < ActiveRecord::Base
     EXT.each {|x| File.delete(file(x)) if File.exists?(file(x)) }
     FileUtils.rmdir(results_path)  if File.exists?(results_path)
   end
-
-  private
 
   def results_path
     File.join(RAILS_ROOT,'public','files','sim',self.id.to_s)

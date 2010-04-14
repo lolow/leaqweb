@@ -23,16 +23,20 @@
     <script type="text/javascript">
     function import_sim(id) {
       var sim_id = $('#sim_' +id+ ' option:selected')[0].value
-      alert(sim_id);
       if(sim_id=="0"){
         location.replace('/simulations/new/');
         return false;
       }
-      $.ajax({url:'/simulations/' + sim_id + '/import',
-                type:'PUT',
-                data:{'solver_id':id},
-                async:false});
-      location.replace('/simulations/' + sim_id);
+      $.blockUI({ message: '<b>Please wait...</b>' ,
+                  css: { border: 'none',
+                         padding: '15px',
+                         backgroundColor: '#000',
+                         '-webkit-border-radius': '10px',
+                         '-moz-border-radius': '10px',
+                         opacity: .5,
+                         color: '#fff'
+                 }});
+      location.replace('/simulations/' + sim_id + '/import?solver_id=' + id);
     }
     </script>
     <% @solvers.each_with_index do |solver,i| %>
@@ -52,12 +56,7 @@
       
       <% else %>
       import results into simulation,
-      <% end %>
-
-      <%= link_to_if(solver.solved? && solver.has_files?, "import results into simulation", solver_index_path, :method=>:put) %>
-
-      ,
-      
+      <% end %>      
 
       <%= link_to_unless(solver.new?, "destroy the job", solver, :method=>:delete, :confirm => "Are you sure?") %>.
       

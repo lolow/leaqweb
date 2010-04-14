@@ -19,8 +19,8 @@ Rails::Initializer.run do |config|
   config.gem "devise", :version => "~> 1.0.4"
   config.gem "rubyzip", :lib => "zip/zip"
   config.gem "tenjin"
+  config.gem "rinruby"
   config.gem "workflow"
-  config.gem "rsruby"
   config.gem "fastercsv", :lib => "faster_csv"
   config.gem "acts-as-taggable-on", :source => "http://gemcutter.org"
   config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'

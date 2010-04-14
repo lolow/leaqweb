@@ -11,7 +11,7 @@
     <%= stylesheet_link_tag "leaq", "jquery-ui", :cache => true %>
 
     <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
-    <%= javascript_include_tag 'jquery.jeditable', 'jquery.cookie' %>
+    <%= javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
     <% if protect_against_forgery? %>
       <script type='text/javascript'>
      //<![CDATA[
@@ -27,7 +27,7 @@
 
 </head>
 <body>
-    
+
     <div id="print-warning">
       <p> Do something for our planet, print this page only if needed. Even a small action can make an enormous difference when millions of people do it! </p>
     </div>
@@ -58,6 +58,6 @@
 		</div>
 	   
     </div>
-    
+
 </body>
 </html>
