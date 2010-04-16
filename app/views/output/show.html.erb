@@ -1,0 +1,55 @@
+<h1>Output</h1>
+<div id="idcard">
+  <ul>
+    <li>Name: <%=h @output.name %></li>
+    <li>Description: <%=h @output.description %></li>
+    <li>Created: <%=h @output.created_at %></li>
+    <li>Download: <%= link_to "raw csv file", csv_output_path(@output) %></li>
+  </ul>
+</div>
+
+<% if @output.has_results? %>
+
+  <div id="table_builder">
+    <h2>Predefined tables</h2>
+    <% %w{AGR IND TRA RSD COM}.each do |sector| %>
+      <% form_tag output_path(@output), :method => :post do %>
+        <%= sector %>  -  Final Energy (PJ)
+        <%= hidden_field :selector, :name, :value => "#{sector} -  Final Energy (PJ)" %>
+        <%= hidden_field :selector, :attribute, :value => "VAR_COM" %>
+        <%= hidden_field :selector, :formula, :value => "P ~ C" %>
+        <%= hidden_field :selector, :filter, :value => "P %in% grep('^#{sector}',P,value=TRUE) & C %in% grep('_#{sector}',C,value=TRUE) & !C %in% c('CO2_#{sector}','CH4_#{sector}','NMVOC_#{sector}','NOX_#{sector}','PM10_#{sector}','PM25_#{sector}') & S=='ANNUAL' & T=='1'" %>
+        <%= submit_tag 'Show' %>
+      <% end %>
+    <% end %>
+    <h2>Tables builder</h2>
+      <div id="tableselector">
+        <% form_tag table_simulation_path(@simulation), :method => :post do %>
+
+          <%= hidden_field :selector, :name, :value => "" %>
+
+          <%= label :selector, :attribute %>
+          <%= select_tag "selector[attribute]",  options_for_select(Simulation::ATTRIBUTES,@selector[:attribute]) %>
+
+          <%= label :selector, :formula %>
+          <%= text_field :selector, :formula, :value => @selector[:formula] %>
+
+          <%= label :selector, :filter %>
+          <%= text_field :selector, :filter, :value => @selector[:filter] %>
+
+          <%= submit_tag 'Compute Table' %>
+        <% end %>
+        <%= link_to "Reset table", @simulation %>
+      </div>
+    </div>
+
+  <div id="tableres" style="padding:1em;">
+    <center><%=h @selector[:name]  %></center>
+    <%= @table_result %>
+  </div>
+</div>
+
+
+<% else %>
+      No results yet. <%= link_to "Go to solver page", solver_index_path %>.
+<% end %>

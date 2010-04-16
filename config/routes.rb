@@ -1,6 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
   
-  map.resources :simulations, :except => [:edit,:update], :member => { :table => :post, :import => :get }
+  map.resources :output, :except => [:edit,:update], :member => { :import => :get, :csv => :get }
   map.resources :solver, :except => [:edit]
   map.resources :technologies
   map.resources :commodities

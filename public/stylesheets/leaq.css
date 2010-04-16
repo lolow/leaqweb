@@ -330,3 +330,20 @@ width:299px;
 #flow_edit, #flow_efficiency, #flow_param, #flow_list {
     margin:1em;
 }
+
+.dataframe {
+    border: 1px solid black;
+    border-collapse:collapse;
+}
+
+.firstline {
+    padding:8px;
+    background-color:black;
+    color:white;
+    font-weight: strong;
+}
+
+.cellinside {
+    padding:8px;
+    vertical-align:bottom;
+}

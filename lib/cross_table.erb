@@ -1,0 +1,14 @@
+library('reshape')
+library('R2HTML')
+<% unless File.exist?(@output.file("Renv")) %>
+data <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
+save.image(file="<%= @output.file("Renv") %>")
+<% else %>
+load(file="<%= @output.file("Renv") %>")
+<% end %>
+data <- subset(data,attribute=="<%= @attribute %>")
+<% if @filter %>
+data <- subset(data,<%= @filter %>)
+<% end %>
+data <- cast(data,<%= @formula %>,fun.aggregate=sum)
+write.csv(data,file="<%= @output.file("tab") %>")
