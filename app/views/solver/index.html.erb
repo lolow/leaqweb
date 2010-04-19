@@ -1,3 +1,5 @@
+<h1>Solvers</h1>
+
 <% if @refresh %>
   <script type="text/javascript">
    setTimeout(function(){location.reload();}, 10000);
@@ -21,10 +23,10 @@
     </ul>
 
     <script type="text/javascript">
-    function import_sim(id) {
+    function import_res(id) {
       var sim_id = $('#sim_' +id+ ' option:selected')[0].value
       if(sim_id=="0"){
-        location.replace('/simulations/new/');
+        location.href=<%= new_output_path.to_json %>;
         return false;
       }
       $.blockUI({ message: '<b>Please wait...</b>' ,
@@ -36,7 +38,7 @@
                          opacity: .5,
                          color: '#fff'
                  }});
-      location.replace('/simulations/' + sim_id + '/import?solver_id=' + id);
+      location.href = '/outputs/' + sim_id + '/import?solver_id=' + id;
     }
     </script>
     <% @solvers.each_with_index do |solver,i| %>
@@ -50,9 +52,9 @@
       
       <% if solver.solved? && solver.has_files? %>
       
-      <%= link_to_function("import results into simulation","import_sim(#{solver.id})") %>
+      <%= link_to_function("import results into output","import_res(#{solver.id})") %>
       
-      <%= select_tag "sim_#{solver.id}", options_for_select(@simulations.map {|s| [s.name,s.id]}+[['New...',0]]) %>
+      <%= select_tag "sim_#{solver.id}", options_for_select(@outputs.map {|o| [o.name,o.id]}+[['New...',0]]) %>,
       
       <% else %>
       import results into simulation,

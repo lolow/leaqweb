@@ -1,4 +1,4 @@
-class OutputController < ApplicationController
+class OutputsController < ApplicationController
   before_filter :authenticate_user!
 
   # GET /outputs
@@ -10,7 +10,7 @@ class OutputController < ApplicationController
   # GET /outputs/1
   def show
     @output = Output.find(params[:id])
-    @select = Hash.new("")
+    @table = Hash.new("")
     respond_to do |format|
       format.html { render :show }
     end
@@ -20,7 +20,7 @@ class OutputController < ApplicationController
   def csv
     @output = Output.find(params[:id])
     respond_to do |format|
-      format.html { render :text => File.read(@output.file"csv") }
+      format.html { render :text => File.read(@output.csv) }
     end
   end
 

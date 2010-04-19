@@ -7,6 +7,7 @@ class Output < ActiveRecord::Base
 
   ATTRIBUTES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP}
   TMP = "/tmp"
+  EXT = %w{mod dat csv out log}
 
   def self.auto_new
     prefix = "OUT"
@@ -21,7 +22,7 @@ class Output < ActiveRecord::Base
   def store_solver(solver)
     solver.prepare_results
     FileUtils.mkdir_p(path) unless File.exists?(path)
-    File.delete(temp_renv_file) if File.exists?(temp_renv_file)
+    File.delete(file("Renv")) if File.exists?(file("Renv"))
     EXT.each { |x| FileUtils.cp(solver.file(x),file(x)) }
   end
 
@@ -42,6 +43,10 @@ class Output < ActiveRecord::Base
     File.exists?(file("csv"))
   end
 
+  def file(ext)
+    File.join(path,"file.#{ext}")
+  end
+
   private
 
   def path
@@ -49,12 +54,9 @@ class Output < ActiveRecord::Base
   end
 
   def clear
-    EXT.each {|x| File.delete(file(x)) if File.exists?(file(x)) }
-    FileUtils.rmdir(path)  if File.exists?(path)
-  end
-
-  def file(ext)
-    File.join(path,"sim.#{ext}")
+    EXT.each { |x| FileUtils.delete(file(x)) if File.exists?(file(x)) }
+    File.delete(file("Renv")) if File.exists?(file("Renv"))
+    FileUtils.rm_rf(path) if File.exists?(path)
   end
 
 end
