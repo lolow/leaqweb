@@ -26,17 +26,20 @@ class Output < ActiveRecord::Base
     EXT.each { |x| FileUtils.cp(solver.file(x),file(x)) }
   end
 
-  def compute_cross_table(attribute,formula,filter=nil)
-    @simulation = self
-    @attribute = attribute
-    @formula = formula
-    @filter = filter
-    template = File.read(File.join(RAILS_ROOT,'lib','cross_table.erb'))
-    f = Tempfile.new('R'+params[:id])
-    f.write(ERB.new(template).run)
+  def compute_cross_tab(table)
+    @output = self
+    @table = table
+    template = File.read(File.join(RAILS_ROOT,'lib','cross_tab.erb'))
+    f = Tempfile.new("R#{self.id}")
+    f.write(ERB.new(template).result(binding))
+    puts ERB.new(template).result(binding)
     f.flush
-    `R CMD BATCH #{f.path} --vanilla --no-readline`
+    `R CMD BATCH #{f.path}`
     f.close
+  end
+
+  def cross_tab
+    File.read(file("tab")) if File.exists?(file("tab"))
   end
 
   def has_results?

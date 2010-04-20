@@ -3,16 +3,21 @@ class CommoditiesController < ApplicationController
   
   # GET /commodities
   def index
-    ["page","per_page"].each do |p|
+    ["page","sets"].each do |p|
       user_session["comm_#{p}"] = params[p] if params[p]
     end
     filter = {:page => user_session["comm_page"],
-              :per_page => user_session["comm_per_page"],
+              :per_page => 100,
               :order => :name}
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
-    @commodities = Commodity.paginate(filter)
+    @sets_cloud = Commodity.tag_counts_on(:sets)
+    if params[:sets]
+      @commodities = Commodity.tagged_with(params[:sets]).paginate(filter)
+    else
+      @commodities = Commodity.paginate(filter)
+    end
     respond_to do |format|
       format.html
     end
@@ -104,4 +109,5 @@ class CommoditiesController < ApplicationController
       format.html { redirect_to(commodities_url) }
     end
   end
+
 end

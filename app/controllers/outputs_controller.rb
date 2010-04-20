@@ -10,7 +10,17 @@ class OutputsController < ApplicationController
   # GET /outputs/1
   def show
     @output = Output.find(params[:id])
-    @table = Hash.new("")
+    params[:table] = Hash.new("")
+    respond_to do |format|
+      format.html { render :show }
+    end
+  end
+
+  # PUT /outputs/1
+  def update
+    @output = Output.find(params[:id])
+    @output.compute_cross_tab(params[:table])
+    params[:table][:result] = @output.cross_tab
     respond_to do |format|
       format.html { render :show }
     end
@@ -53,7 +63,8 @@ class OutputsController < ApplicationController
     end
   end
 
-  # DELETE /ouptuts/1
+
+  # DELETE /outputs/1
   def destroy
     @output = Output.find(params[:id])
     @output.destroy

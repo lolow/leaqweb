@@ -3,9 +3,13 @@
 <div id="name_filter">
   <% form_tag request.path, :method => 'get' do %>
     <% content_tag :label do %>
-      Search term:
+      Name:
       <%= text_field_tag :search, params[:search] %>
+      Tags:
+      <%=  select_tag "sets", options_for_select(@sets_cloud.map(&:name),params[:sets]) , :multiple => true, :size => 3 %>
       <%= hidden_field_tag :page, 1 %>
+      <%= submit_tag "Filter" %>
+      <%= link_to "Reset" %>
     <% end %>
   <% end %>
 </div>
@@ -27,9 +31,6 @@
 </table>
 <%= page_entries_info @commodities %><br />
 <%= will_paginate @commodities %>
-(Change to <%= link_to '30', {:controller => "commodities", :per_page => 30, :page => 1} %>,
-  <%= link_to '50', {:controller => "commodities", :per_page => 50, :page => 1} %>,
-  <%= link_to '100', {:controller => "commodities", :per_page => 100, :page => 1} %> per page)
 </div>
 
 <br />

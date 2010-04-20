@@ -2,7 +2,7 @@ class CreateParameters < ActiveRecord::Migration
   def self.up
     create_table :parameters do |t|
       t.string :name
-      t.text :definition, :signature, :units
+      t.text :definition
       t.float :default_value
       t.timestamps
     end

@@ -6,9 +6,9 @@ save.image(file="<%= @output.file("Renv") %>")
 <% else %>
 load(file="<%= @output.file("Renv") %>")
 <% end %>
-data <- subset(data,attribute=="<%= @attribute %>")
-<% if @filter %>
-data <- subset(data,<%= @filter %>)
+data <- subset(data,attribute=="<%= @table[:attribute] %>")
+<% if @table[:filter].size > 0 %>
+data <- subset(data,<%= @table[:filter] %>)
 <% end %>
-data <- cast(data,<%= @formula %>,fun.aggregate=sum)
+data <- cast(data,<%= @table[:formula] %>,fun.aggregate=sum)
 write.csv(data,file="<%= @output.file("tab") %>")

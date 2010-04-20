@@ -141,8 +141,6 @@ class GeoecuSolver
       # create debug commodity
       c_dummy = create_or_find_by_name(Commodity,"dummy")
       c_dummy.set_list = "IMP"
-      #p = Parameter.find_by_name("cost_imp")
-      #ParameterValue.create!(:parameter=>p,:commodity=>c_dummy,:year=>0,:time_slice=>"AN",:value=>"1e15")
 
       # create debug commodity
       p_eff_flo = Parameter.find_by_name("eff_flo")

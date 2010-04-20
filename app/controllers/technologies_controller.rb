@@ -12,7 +12,12 @@ class TechnologiesController < ApplicationController
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
-    @technologies = Technology.paginate(filter)
+    @sets_cloud = Technology.tag_counts_on(:sets)
+    if params[:sets]
+      @technologies = Technology.tagged_with(params[:sets]).paginate(filter)
+    else
+      @technologies = Technology.paginate(filter)
+    end
     respond_to do |format|
       format.html # index.html.erb
     end
