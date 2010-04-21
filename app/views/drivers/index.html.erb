@@ -1,0 +1,21 @@
+<h1>Listing demand drivers</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Definition</th>
+  </tr>
+
+<% @demand_drivers.each do |driver| %>
+  <tr>
+    <td><%=h driver.name %></td>
+    <td><%=h driver.definition %></td>
+    <td><%= link_to 'Show', driver %></td>
+    <td><%= link_to 'Destroy', driver, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New demand driver', new_demand_driver_path %>

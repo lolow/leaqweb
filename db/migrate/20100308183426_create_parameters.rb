@@ -4,6 +4,7 @@ class CreateParameters < ActiveRecord::Migration
       t.string :name
       t.text :definition
       t.float :default_value
+      t.string :type
       t.timestamps
     end
     add_index :parameters, :name, :unique => true
