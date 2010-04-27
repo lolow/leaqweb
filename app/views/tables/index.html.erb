@@ -1,0 +1,30 @@
+<h1>Listing tables</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Aggregate</th>
+    <th>Variable</th>
+    <th>Rows</th>
+    <th>Columns</th>
+    <th>Filters</th>
+  </tr>
+
+<% @tables.each do |table| %>
+  <tr>
+    <td><%=h table.name %></td>
+    <td><%=h table.aggregate %></td>
+    <td><%=h table.variable %></td>
+    <td><%=h table.rows %></td>
+    <td><%=h table.columns %></td>
+    <td><%=h table.filters %></td>
+    <td><%= link_to 'Show', table %></td>
+    <td><%= link_to 'Edit', edit_table_path(table) %></td>
+    <td><%= link_to 'Destroy', table, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New table', new_table_path %>

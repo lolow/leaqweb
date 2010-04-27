@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  name: MyString
+  aggregate: MyString
+  rows: MyString
+  columns: MyString
+  filters: MyString
+
+two:
+  name: MyString
+  aggregate: MyString
+  rows: MyString
+  columns: MyString
+  filters: MyString

@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :tables
+
+  map.resources :tables
+
   
   map.resources :outputs, :except => [:edit], :member => { :import => :get, :csv => :get }
   map.resources :solver, :except => [:edit]
