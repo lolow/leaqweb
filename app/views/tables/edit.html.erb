@@ -9,23 +9,23 @@
   </p>
   <p>
     <%= f.label :aggregate %><br />
-    <%= f.text_field :aggregate %>
+    <%= f.select :aggregate, Table::AGGREGATES.collect{ |a| [a,a.downcase]  } %>
   </p>
   <p>
     <%= f.label :variable %><br />
-    <%= f.text_field :variable %>
+    <%= f.select :variable, Table::VARIABLES.collect{ |a| [a,a] } %>
   </p>
   <p>
     <%= f.label :rows %><br />
-    <%= f.text_field :rows %>
+    <%= f.hidden_field :rows %>
   </p>
   <p>
     <%= f.label :columns %><br />
-    <%= f.text_field :columns %>
+    <%= f.hidden_field :columns %>
   </p>
   <p>
     <%= f.label :filters %><br />
-    <%= f.text_field :filters %>
+    <%= f.hidden_field :filters %>
   </p>
   <p>
     <%= f.submit 'Update' %>

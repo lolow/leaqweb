@@ -10,10 +10,9 @@ class Output < ActiveRecord::Base
   EXT = %w{mod dat csv out log}
 
   def self.auto_new
-    prefix = "OUT"
-    name = prefix
+    name = "output_00"
     (1..999).each do |i|
-      name = prefix + i.to_s
+      name.succ!
       break unless Output.find_name(name)
     end
     Output.create!(:name=>name)
@@ -29,13 +28,14 @@ class Output < ActiveRecord::Base
   def compute_cross_tab(table)
     @output = self
     @table = table
-    template = File.read(File.join(RAILS_ROOT,'lib','cross_tab.erb'))
+    template = File.read(File.join(RAILS_ROOT,'lib','cross_tab.R.erb'))
     f = Tempfile.new("R#{self.id}")
+    f2 = Tempfile.new("S#{self.id}")
     f.write(ERB.new(template).result(binding))
-    puts ERB.new(template).result(binding)
     f.flush
-    `R CMD BATCH #{f.path}`
+    `R CMD BATCH --vanilla --quiet #{f.path} #{f2.path}`
     f.close
+    f2.close
   end
 
   def cross_tab
