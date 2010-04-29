@@ -1,3 +1,61 @@
+<style type="text/css">
+</style>
+
+<script type="text/javascript">
+  var filter = <%= @table.digest_filter.to_json %>;
+  function var_r(variable){
+    var s = "";
+    $('#'+ variable + ' li').each(function(index) {
+      if (index>1){s += "+";}
+      if (index>0){s += $(this).attr('id');}
+    });
+    $('#table_' + variable).attr('value',s);
+  }
+  function remove_cond(i){
+    filter.splice(i,1);
+    filter_list();
+  }
+  function filter_list(){
+    $('.conditions_list').empty();
+    last_row = "<tr>" +
+               "<td><select id=\"new_var\">" +
+                <%= options_for_select(Table::INDEX.values).to_json %> +
+               "</select></td>" +
+               "<td>must <select id=\"new_not\">" +
+               <%= options_for_select(['','not']).to_json %> + "</select> <select id=\"new_func\">" +
+               <%= options_for_select(['start with','contain','belong to']).to_json %> +
+               "<td><input type=\"text\" id=\"new_arg\" /></td>" +
+               "<td><a onclick='add_cond()'>Add</a></td>" +
+               "</select></td>" +
+               "</tr>";
+    $('.conditions_list').prepend(last_row);
+    for(i=filter.length-1;i>=0;i--){
+      row = "<tr>" +
+            "<td>" + filter[i].variable + "</td>" +
+            "<td>must " + filter[i].not + filter[i].func + "</td>" +
+            "<td>" + filter[i].arg + "</td>" +
+            "<td><a onclick='remove_cond(" + i + ")'>Remove</a></td>" +
+            "</tr>";
+      $('.conditions_list').prepend(row);
+    }
+  }
+  $(function() {
+    $("#rows, #choices, #columns").sortable({
+        items: 'li:not(.ui-state-focus)',
+        connectWith: '.table_definition',
+        dropOnEmpty: true,
+        stop: function(event, ui) {
+          var_r('rows');
+          var_r('columns');
+        }
+    });
+    $("#rows, #choices, #columns").disableSelection();
+});
+  $(document).ready(function() {
+    filter_list();
+  });
+</script>
+
 <h1>Editing table</h1>
 
 <% form_for(@table) do |f| %>
@@ -15,17 +73,48 @@
     <%= f.label :variable %><br />
     <%= f.select :variable, Table::VARIABLES.collect{ |a| [a,a] } %>
   </p>
+
   <p>
-    <%= f.label :rows %><br />
-    <%= f.hidden_field :rows %>
+    Table Definition
   </p>
-  <p>
-    <%= f.label :columns %><br />
-    <%= f.hidden_field :columns %>
-  </p>
+  <%= f.hidden_field :rows %>
+  <%= f.hidden_field :columns %>
+
+  <% choices = Table::INDEX %>
+
+  <ul id="choices" class="table_definition">
+    <li class="ui-state-focus" >Unused</li>
+    <% @table.unused.each do |i| %>
+      <li class="ui-state-default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
+    <% end %>
+  </ul>
+
+  <ul id="rows" class="table_definition">
+    <li class="ui-state-focus" >Rows</li>
+    <% @table.rows.split('+').each do |i| %>
+      <li class="ui-state-default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
+    <% end %>
+  </ul>
+
+  <ul id="columns" class="table_definition">
+    <li class="ui-state-focus" >Columns</li>
+    <% @table.columns.split('+').each do |i| %>
+      <li class="ui-state-default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
+    <% end %>
+  </ul>
+
+<br clear="both" />
+
   <p>
     <%= f.label :filters %><br />
     <%= f.hidden_field :filters %>
+  <table>
+    <thead>
+    <td>Variable</td><td>Function</td><td>Arguments</td><td>&nbsp;</td>
+    </thead>
+    <tbody class="conditions_list">
+    </tbody>
+  </table>
   </p>
   <p>
     <%= f.submit 'Update' %>
