@@ -1,5 +1,8 @@
 class Table < ActiveRecord::Base
 
+  validates_presence_of :name
+  validates_uniqueness_of :name
+
   AGGREGATES = %w{SUM MEAN}
   VARIABLES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP}
   INDEX = { "T" => "Time period",
@@ -17,7 +20,7 @@ class Table < ActiveRecord::Base
       else
         condition[:not] = ""
       end
-      condition[:variable] = INDEX[term[0].gsub('!','').strip]
+      condition[:variable] = term[0].gsub('!','').strip
       break unless term[1].index("%in%")
       if term[2].strip.index("grep('^")==0
         condition[:func] = "start with"

@@ -19,6 +19,7 @@
     <td><%=h table.columns %></td>
     <td><%=h table.filters %></td>
     <td><%= link_to 'Show', table %></td>
+    <td><%= link_to 'Clone', clone_table_path(table) %></td>
     <td><%= link_to 'Edit', edit_table_path(table) %></td>
     <td><%= link_to 'Destroy', table, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>

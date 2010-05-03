@@ -1,8 +1,6 @@
-<style type="text/css">
-</style>
-
 <script type="text/javascript">
   var filter = <%= @table.digest_filter.to_json %>;
+  var variables = <%= Table::INDEX.to_json %>;
   function var_r(variable){
     var s = "";
     $('#'+ variable + ' li').each(function(index) {
@@ -11,18 +9,60 @@
     });
     $('#table_' + variable).attr('value',s);
   }
+  function filter_r(){
+    var s ="";
+    for(i=0;i<filter.length;i++){
+      if (filter[i].not != "") {
+        s+= "!"; 
+      }
+      s+= filter[i].variable;
+      s+=" %in% ";
+      if (filter[i].func == "start with") {
+        s+= "grep('^" + filter[i].arg + "'," +
+            filter[i].variable + ",value=True)";
+      }
+      if (filter[i].func == "contain") {
+        s+= "grep('" + filter[i].arg + "'," +
+            filter[i].variable + ",value=True)";
+      }
+      if (filter[i].func == "belong to") {
+        s += "c(";
+        array = filter[i].arg.split(",")
+        for(j=0;j<array.length;j++){
+          array[j] = "'" + array[j] + "'";
+        }
+        s += array.join(",") + ")";
+      }
+      if(i<filter.length-1){
+        s += " & "
+      }
+    }
+    $('#table_filters').attr('value',s);
+  }
   function remove_cond(i){
     filter.splice(i,1);
-    filter_list();
+    display_filter_list();
+    filter_r();
   }
-  function filter_list(){
+  function add_cond(){
+    new_cond = { "not"       : $('#new_not').val(),
+                 "func"      : $('#new_func').val(),
+                 "variable"  : $('#new_var').val(),
+                 "arg"       : $('#new_arg').val()};
+    if (new_cond.arg.length>0){
+      filter.push(new_cond);
+      display_filter_list();
+      filter_r();
+    }
+  }
+  function display_filter_list(){
     $('.conditions_list').empty();
     last_row = "<tr>" +
                "<td><select id=\"new_var\">" +
-                <%= options_for_select(Table::INDEX.values).to_json %> +
+               <%= options_for_select(Table::INDEX.invert).to_json %> +
                "</select></td>" +
                "<td>must <select id=\"new_not\">" +
-               <%= options_for_select(['','not']).to_json %> + "</select> <select id=\"new_func\">" +
+               <%= options_for_select(['','not ']).to_json %> + "</select> <select id=\"new_func\">" +
                <%= options_for_select(['start with','contain','belong to']).to_json %> +
                "<td><input type=\"text\" id=\"new_arg\" /></td>" +
                "<td><a onclick='add_cond()'>Add</a></td>" +
@@ -31,7 +71,7 @@
     $('.conditions_list').prepend(last_row);
     for(i=filter.length-1;i>=0;i--){
       row = "<tr>" +
-            "<td>" + filter[i].variable + "</td>" +
+            "<td>" + variables[filter[i].variable] + "</td>" +
             "<td>must " + filter[i].not + filter[i].func + "</td>" +
             "<td>" + filter[i].arg + "</td>" +
             "<td><a onclick='remove_cond(" + i + ")'>Remove</a></td>" +
@@ -52,7 +92,7 @@
     $("#rows, #choices, #columns").disableSelection();
 });
   $(document).ready(function() {
-    filter_list();
+    display_filter_list();
   });
 </script>
 
