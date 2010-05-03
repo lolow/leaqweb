@@ -100,8 +100,7 @@ class LeaqArchive
     readline_zip(Parameter,zipfile,"param.csv") do |row|
       param[row[0]] = Parameter.create!(:name => row[1],
                                         :definition => row[2],
-                                        :default_value => row[3],
-                                        :units => row[4]
+                                        :default_value => row[3]
                                         ).id
     end
     
