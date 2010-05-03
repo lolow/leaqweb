@@ -12,6 +12,7 @@ class LeaqArchive
     Parameter.delete_all
     ParameterValue.delete_all
     Location.delete_all
+    Table.delete_all
     ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
     ActiveRecord::Base.connection.execute("DELETE FROM `locations_technologies`")
   end
@@ -173,6 +174,11 @@ class LeaqArchive
       write_csv_into_zip(zipfile, ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
+
+      headers = ["name","aggregate","variable","rows","columns","filters"]
+      write_csv_into_zip(zipfile, Table,headers) do |pv,csv|
+        csv << pv.attributes.values_at(*headers)
+      end
     end
 
   end
@@ -261,6 +267,15 @@ class LeaqArchive
       pv.value         = row["value"]
       pv.source        = row["source"]
       pv.save
+    end
+
+    readline_zip(filename,Table) do |row|
+      pv = Table.create!( :name => row["name"],
+                          :aggregate => row["aggregate"],
+                          :variable => row["variable"],
+                          :rows => row["rows"],
+                          :columns => row["columns"],
+                          :filters => row["filters"] )
     end
     
   end
