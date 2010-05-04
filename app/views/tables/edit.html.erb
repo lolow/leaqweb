@@ -1,3 +1,5 @@
+<h1>Editing table</h1>
+
 <script type="text/javascript">
   var filter = <%= @table.digest_filter.to_json %>;
   var variables = <%= Table::INDEX.to_json %>;
@@ -19,11 +21,11 @@
       s+=" %in% ";
       if (filter[i].func == "start with") {
         s+= "grep('^" + filter[i].arg + "'," +
-            filter[i].variable + ",value=True)";
+            filter[i].variable + ",value=TRUE)";
       }
       if (filter[i].func == "contain") {
         s+= "grep('" + filter[i].arg + "'," +
-            filter[i].variable + ",value=True)";
+            filter[i].variable + ",value=TRUE)";
       }
       if (filter[i].func == "belong to") {
         s += "c(";
@@ -95,8 +97,6 @@
     display_filter_list();
   });
 </script>
-
-<h1>Editing table</h1>
 
 <% form_for(@table) do |f| %>
   <%= f.error_messages %>

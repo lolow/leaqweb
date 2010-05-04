@@ -5,7 +5,6 @@ class Output < ActiveRecord::Base
 
   before_destroy :clear
 
-  ATTRIBUTES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP}
   TMP = "/tmp"
   EXT = %w{mod dat csv out log}
 
@@ -28,10 +27,13 @@ class Output < ActiveRecord::Base
   def compute_cross_tab(table)
     @output = self
     @table = table
+    File.delete(file("tab")) if File.exists?(file("tab"))
     template = File.read(File.join(RAILS_ROOT,'lib','cross_tab.R.erb'))
     f = Tempfile.new("R#{self.id}")
     f2 = Tempfile.new("S#{self.id}")
-    f.write(ERB.new(template).result(binding))
+    text = ERB.new(template).result(binding)
+    puts text
+    f.write(text)
     f.flush
     `R CMD BATCH --vanilla --quiet #{f.path} #{f2.path}`
     f.close

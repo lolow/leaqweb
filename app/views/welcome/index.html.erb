@@ -1,8 +1,4 @@
-<div id="crumble">
-GEOECU
-</div>
-
-<p>Welcome to GEOECU</p>
+<p>Welcome</p>
 
 <ul>
 <li>Energy
@@ -13,8 +9,10 @@ GEOECU
   </ul></li>
 <li>Emission sources</li>
 <li>Air quality</li>
-<li><%= link_to "Solvers", solver_index_path %></li>
 <li><%= link_to "Outputs", outputs_path %>
-    <ul><li><%= link_to "predefined tables", tables_path %></li></ul>
+    <ul>
+      <li><%= link_to "predefined tables", tables_path %></li>
+      <li><%= link_to "Solvers", solver_index_path %></li>
+    </ul>
 </li>
 </ul>

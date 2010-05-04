@@ -3,7 +3,7 @@ class TablesController < ApplicationController
 
   # GET /tables
   def index
-    @tables = Table.all
+    @tables = Table.find(:all,:order => :name)
     respond_to do |format|
       format.html # index.html.erb
     end
@@ -13,7 +13,7 @@ class TablesController < ApplicationController
   def show
     @table = Table.find(params[:id])
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { redirect_to edit_path(@table) }
     end
   end
 
@@ -27,10 +27,7 @@ class TablesController < ApplicationController
 
   # GET /tables/clone/1
   def clone
-    c_table = Table.find(params[:id])
-    @table = Table.new
-    attr = [:name,:aggregate,:variable,:rows,:columns,:filters]
-    attr.each{|a| @table[a] = c_table[a]}
+    @table = Table.find(params[:id]).clone
     respond_to do |format|
       format.html {render :action => "new"}
     end

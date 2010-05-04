@@ -10,5 +10,5 @@ data <- subset(data,attribute=="<%= @table[:attribute] %>")
 <% if @table[:filter].size > 0 %>
 data <- subset(data,<%= @table[:filter] %>)
 <% end %>
-data <- cast(data,<%= @table[:formula] %>,fun.aggregate=sum)
+data <- cast(data,<%= @table[:formula] %>,fun.aggregate=<%= @table[:aggregate] %>)
 write.csv(data,file="<%= @output.file("tab") %>")

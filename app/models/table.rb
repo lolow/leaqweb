@@ -37,7 +37,7 @@ class Table < ActiveRecord::Base
   end
 
   def unused
-    INDEX.keys - rows.split(',') - columns.split(',')
+    INDEX.keys - rows.split('+') - columns.split('+')
   end
 
 end

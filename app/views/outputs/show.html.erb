@@ -12,24 +12,22 @@
 
   <div id="table_builder">
     <h2>Predefined tables</h2>
-    <% %w{AGR IND TRA RSD COM}.each do |sector| %>
       <% form_tag output_path(@output), :method => :put do %>
-        <%= sector %>  -  Final Energy (PJ)
-        <%= hidden_field :table, :name, :value => "#{sector} -  Final Energy (PJ)" %>
-        <%= hidden_field :table, :attribute, :value => "VAR_COM" %>
-        <%= hidden_field :table, :formula, :value => "P ~ C" %>
-        <%= hidden_field :table, :filter, :value => "P %in% grep('^#{sector}',P,value=TRUE) & C %in% grep('_#{sector}',C,value=TRUE) & !C %in% c('CO2_#{sector}','CH4_#{sector}','NMVOC_#{sector}','NOX_#{sector}','PM10_#{sector}','PM25_#{sector}') & S=='ANNUAL' & T=='1'" %>
-        <%= submit_tag 'Show' %>
+        <%= select_tag "table[id]", options_for_select(@tables.map{|t|[t.name,t.id]}, params[:table][:id]) %>
+        <%= submit_tag 'Display' %>
       <% end %>
-    <% end %>
-    <h2>Table builder</h2>
+    <h2>Temporary table</h2>
       <div id="tableselector">
         <% form_tag output_path(@output), :method => :put do %>
 
           <%= hidden_field :table, :name, :value => "" %>
+          <%= hidden_field :table, :id, :value => 0 %>
 
           <%= label :table, :attribute %>
-          <%= select_tag "table[attribute]",  options_for_select(Output::ATTRIBUTES, params[:table][:attribute]) %>
+          <%= select_tag "table[attribute]", options_for_select(Table::VARIABLES.collect{ |a| [a,a]}, params[:table][:attribute]) %>
+
+          <%= label :table, :aggregate %>
+          <%= select_tag "table[aggregate]", options_for_select(Table::AGGREGATES.collect{ |a| [a,a.downcase]}, params[:table][:aggregate]) %>
 
           <%= label :table, :formula %>
           <%= text_field :table, :formula, :value => params[:table][:formula] %>
@@ -37,7 +35,7 @@
           <%= label :table, :filter %>
           <%= text_field :table, :filter, :value => params[:table][:filter] %>
 
-          <%= submit_tag 'Compute Table' %>
+          <%= submit_tag 'Display' %>
         <% end %>
         <%= link_to "Reset table", @simulation %>
       </div>

@@ -26,16 +26,14 @@ class TechnologiesController < ApplicationController
   # GET /technologies/1
   def show
     @technology = Technology.find(params[:id])
-
     respond_to do |format|
-      format.html # show.html.erb
+      format.html {redirect_to edit_technology_path(@technology)}
     end
   end
 
   # GET /technologies/new
   def new
     @technology = Technology.new
-
     respond_to do |format|
       format.html # new.html.erb
     end
@@ -102,7 +100,7 @@ class TechnologiesController < ApplicationController
       Flow.destroy(ids)
     end if params[:do]
     respond_to do |format|
-        format.html { redirect_to(@technology) }
+        format.html { redirect_to(edit_technology_path(@technology)) }
     end
   end
 

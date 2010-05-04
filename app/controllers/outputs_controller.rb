@@ -10,6 +10,7 @@ class OutputsController < ApplicationController
   # GET /outputs/1
   def show
     @output = Output.find(params[:id])
+    @tables =  Table.find(:all,:order => :name )
     params[:table] = Hash.new("")
     respond_to do |format|
       format.html { render :show }
@@ -19,6 +20,15 @@ class OutputsController < ApplicationController
   # PUT /outputs/1
   def update
     @output = Output.find(params[:id])
+    @tables = Table.find(:all,:order => :name )
+    if params[:table][:id].to_i>0
+      t = Table.find(params[:table][:id])
+      params[:table][:aggregate] = t.aggregate
+      params[:table][:name] = t.name
+      params[:table][:attribute] = t.variable
+      params[:table][:formula] = t.rows + "~" + t.columns
+      params[:table][:filter] = t.filters
+    end
     @output.compute_cross_tab(params[:table])
     params[:table][:result] = @output.cross_tab
     respond_to do |format|
