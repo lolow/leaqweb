@@ -7,14 +7,14 @@ class CommoditiesController < ApplicationController
       user_session["comm_#{p}"] = params[p] if params[p]
     end
     filter = {:page => user_session["comm_page"],
-              :per_page => 100,
+              :per_page => 30,
               :order => :name}
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
     @sets_cloud = Commodity.tag_counts_on(:sets)
-    if params[:sets]
-      @commodities = Commodity.tagged_with(params[:sets]).paginate(filter)
+    if params[:set]
+      @commodities = Commodity.tagged_with(params[:set]).paginate(filter)
     else
       @commodities = Commodity.paginate(filter)
     end
@@ -34,7 +34,6 @@ class CommoditiesController < ApplicationController
 
   # GET /commodities/new
   def new
-    newname = 'NEWCOM'
     @commodity = Commodity.new
 
     respond_to do |format|
@@ -54,7 +53,7 @@ class CommoditiesController < ApplicationController
     respond_to do |format|
       if @commodity.save
         flash[:notice] = 'Commodity was successfully created.'
-        format.html { redirect_to(@commodity) }
+        format.html { redirect_to(edit_commodity_path(@commodity)) }
       else
         format.html { render :action => "new" }
       end

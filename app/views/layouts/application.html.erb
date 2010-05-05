@@ -2,17 +2,16 @@
 <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
     <meta name="keywords" content="leaq,geoecu,ayltp,energy,air quality" />
-    <meta name="description" content="Web interface of the LEAQ model framework" />
+    <meta name="description" content="Web interface of the LEAQ meta-model" />
     <meta name="author" content="Laurent Drouet" />
+    <link rel="shortcut icon" href="/favicon.ico" />
 
-    <link rel="shortcut icon" href="/images/favicon.ico" />
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+    <% stylesheet_link_tag "leaq", "jquery-ui", :cache => true %>
+    <%= stylesheet_link_tag "reset", "text", "grid", "layout", "nav", :cache => true %>
+    <!--[if IE 6]><%= stylesheet_link_tag "ie6", :cache => true %><![endif]-->
+    <!--[if IE 7]><%= stylesheet_link_tag "ie", :cache => true %><![endif]-->
 
-    <%= stylesheet_link_tag "leaq", "jquery-ui", :cache => true %>
-
-    <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
-    <%= javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
-    <% if protect_against_forgery? %>
+   <% if protect_against_forgery? %>
       <script type='text/javascript'>
      //<![CDATA[
       window._auth_token_name = "<%=  request_forgery_protection_token %>";
@@ -20,43 +19,94 @@
 	//]]>
       </script>
     <% end %>
+    <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
+    <%= javascript_include_tag 'jquery-fluid16' %>
+    
+    <% javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
+    <% javascript_include_tag 'application' %>
 
-    <%= javascript_include_tag 'application' %>
-
-    <title><%= h(yield(:title) || "LEAQ web") %></title>
+    <title><%=h (yield(:title)||"") + " - LEAQ web " %></title>
 
 </head>
 <body>
 
-    <div id="print-warning">
-      <p> Do something for our planet, print this page only if needed. Even a small action can make an enormous difference when millions of people do it! </p>
-    </div>
-    
-    <div id="wrapper"> 
+    <div class="container_12">
     
     	<!-- header -->
-    	<div id="top">
-    	    <h1 id="logo" class="logo">
-				<%= link_to 'Home', root_path %>
-    	    </h1>
-    	</div>
-		<% unless user_signed_in? -%>
-		  <p><%= link_to 'Sign in as User', new_user_session_path %></p>
-		<% end -%>
+        <div class="grid_12">
+          <h1 id="branding">
+            <%= link_to 'LEAQ web', root_path %>
+          </h1>
+		</div>
+		<div class="clear"></div>
+
+        <!-- menu -->
+        <div class="grid_12">
+          <ul class="nav main">
+            <li>
+			 <%=  link_to 'Home', root_path %>
+			</li>
+			<li>
+			  <%= link_to 'Energy System', root_path %>
+              <ul>
+                <li>
+                  <%= link_to 'Commodities', commodities_path %>
+				</li>
+                <li>
+                  <%= link_to 'Technologies', technologies_path %>
+				</li>
+				<li>
+				  <%= link_to "Demand drivers", demand_drivers_path %>
+				</li>
+			  </ul>
+            </li>
+            <li>
+			  <%= link_to 'Optimization', root_path %>
+              <ul>
+                <li>
+                  <%= link_to 'Solver', solver_index_path %>
+				</li>
+                <li>
+                  <%= link_to 'Preferences', root_path %>
+				</li>
+			  </ul>
+            </li>
+            <li>
+			  <%= link_to 'Results', outputs_path %>
+            </li>
+			<li class="secondary">
+              <% if user_signed_in? %>
+                <%= link_to 'Sign out', destroy_user_session_path %>
+              <% else %>
+                <%= link_to 'Sign in', new_user_session_path %>
+              <% end %>
+			</li>
+		  </ul>
+	    </div>
+        <div class="clear"></div>
     	
     	<!-- content -->
-		<div id="content">
-			<%- flash.each do |name, msg| -%>
-	          <%= content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String) %>
-	        <%- end -%>
-			<%= yield %>
+        <div class="grid_12">
+			<h2 id="page-heading"><%=h yield(:title)||"title" %></h2>
 		</div>
+		<div class="clear"></div>
+
+        <div class="grid_12">
+          	<%- flash.each do |name, msg| -%>
+	          <%= content_tag :div, msg, :class=>"box", :id => "flash_#{name}" if msg.is_a?(String) %>
+	        <%- end -%>
+		</div>
+		<div class="clear"></div>
+        <%= yield %>
     	
     	<!-- footer -->
-		<div id="footer">
-			<p>&copy; 2009&ndash;2010 <a href="http://www.crte.lu">CRTE</a></p>
+        <div class="grid_12" id="site_info">
+          <div class="box">
+            <p>&copy; 2009&ndash;2010, <a href="http://www.crte.lu">CRTE</a>.</p>
+          </div>
 		</div>
-	   
+		<div class="clear"></div>
+        
     </div>
 
 </body>

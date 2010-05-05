@@ -1,7 +1,7 @@
 module TechnologiesHelper
   def commodity_url_list(flow)
     "(" + flow.commodities.collect { |c|
-      link_to(h(c.name), commodity_path(c))
+      link_to(h(c.name), edit_commodity_path(c))
     }.join(", ") + ")"
   end
   def commodity_list(flow)
