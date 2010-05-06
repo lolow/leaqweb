@@ -1,4 +1,5 @@
 ActionController::Routing::Routes.draw do |map|
+
   map.resources :tables, :member => {:clone => :get}
   map.resources :outputs, :except => [:edit], :member => { :import => :get, :csv => :get }
   map.resources :solver, :except => [:edit]

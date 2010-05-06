@@ -172,9 +172,9 @@ class GeoecuSolver
     c[:s_l]    = id_list(Location.all)
     c[:s_p]    = id_list(Technology.all)
     c[:s_c]    = id_list(Commodity.all)
-    c[:s_imp]  = id_list(Commodity.tagged_with("IMP")) if Tag.find_by_name("IMP")
-    c[:s_exp]  = id_list(Commodity.tagged_with("EXP")) if Tag.find_by_name("EXP")
-    c[:s_dem]  = id_list(Commodity.tagged_with("DEM")) if Tag.find_by_name("DEM")
+    c[:s_imp]  = id_list(Commodity.tagged_with("IMP")) 
+    c[:s_exp]  = id_list(Commodity.tagged_with("EXP"))
+    c[:s_dem]  = id_list(Commodity.tagged_with("DEM"))
     c[:s_flow] = id_list(Flow.all) 
     
     c[:s_p_map] = Hash.new

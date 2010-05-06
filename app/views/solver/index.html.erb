@@ -1,82 +1,73 @@
-<h1>Solvers</h1>
+<% content_for :title, "Solver" %>
 
 <% if @refresh %>
   <script type="text/javascript">
-   setTimeout(function(){location.reload();}, 10000);
+    setTimeout(function(){location.reload();}, 10000);
   </script>
 <% end %>
 
 <script type="text/javascript">
-    $(function() {
-        $('#tabs').tabs({ cookie: { expires: 7 }});
-    });
+  function import_res(id) {
+    var sim_id = $('#sim_' +id+ ' option:selected')[0].value
+    if(sim_id=="0"){
+      location.href=<%= new_output_path.to_json %>;
+      return false;
+    }
+    $.blockUI({ message: '<b>Please wait...</b>',
+      css: { border: 'none',
+        padding: '15px',
+        backgroundColor: '#000',
+        '-webkit-border-radius': '10px',
+        '-moz-border-radius': '10px',
+        opacity: .5,
+        color: '#fff'
+      }});
+    location.href = '/outputs/' + sim_id + '/import?solver_id=' + id;
+  }
 </script>
 
-<div id="tabs">
+<div class="grid_12">
+  <% @solvers.each_with_index do |solver,i| %>
+    <div class="box">
+      <h2>Job <%= solver.id %></h2>
+      <div class="block">
+        <p>
+          Status: <%=h solver.current_state.name %>
+          <%=h "but can't find temporary files, probably because they have been deleted."  if (solver.solved? && !solver.has_files?) %>
+          <%=h "(#{solver.time_used} sec)" if (solver.solved? && solver.has_files?) %><br />
 
-    <ul>
-        <% @solvers.each_with_index do |solver,i| %>
-          <% unless solver.new?  %><li><a href="#tabs-<%= solver.id %>">Job <%= solver.id %> </a></li><% end  %>
-        <% end %>
-        <li><a href="#tabs-0">New...</a></li>
+          Actions: <%= link_to_if(solver.solving?, "manual refresh", solver_index_path) %>,
 
-    </ul>
+          <% if solver.solved? && solver.has_files? %>
 
-    <script type="text/javascript">
-    function import_res(id) {
-      var sim_id = $('#sim_' +id+ ' option:selected')[0].value
-      if(sim_id=="0"){
-        location.href=<%= new_output_path.to_json %>;
-        return false;
-      }
-      $.blockUI({ message: '<b>Please wait...</b>' ,
-                  css: { border: 'none',
-                         padding: '15px',
-                         backgroundColor: '#000',
-                         '-webkit-border-radius': '10px',
-                         '-moz-border-radius': '10px',
-                         opacity: .5,
-                         color: '#fff'
-                 }});
-      location.href = '/outputs/' + sim_id + '/import?solver_id=' + id;
-    }
-    </script>
-    <% @solvers.each_with_index do |solver,i| %>
-      <div id="tabs-<%= solver.id %>">
-    <p>
-      Status: <%=h solver.current_state.name %>
-      <%=h "but can't find temporary files, probably because they have been deleted."  if (solver.solved? && !solver.has_files?) %>
-      <%=h "(#{solver.time_used} sec)" if (solver.solved? && solver.has_files?) %><br />
+            <%= link_to_function("import outputs into results","import_res(#{solver.id})") %>
 
-      Actions: <%= link_to_if(solver.solving?, "manual refresh", solver_index_path) %>,
-      
-      <% if solver.solved? && solver.has_files? %>
-      
-      <%= link_to_function("import results into output","import_res(#{solver.id})") %>
-      
-      <%= select_tag "sim_#{solver.id}", options_for_select(@outputs.map {|o| [o.name,o.id]}+[['New...',0]]) %>,
-      
-      <% else %>
-      import results into simulation,
-      <% end %>      
+            <%= select_tag "sim_#{solver.id}", options_for_select(@outputs.map {|o| [o.name,o.id]}+[['New...',0]]) %>,
 
-      <%= link_to_unless(solver.new?, "reinit the job", solver, :method=>:delete, :confirm => "Are you sure?") %>.
-      
-    </p>
+          <% else %>
+            import results into simulation,
+          <% end %>
 
-    <div id="log_<%= solver.id %>" >
-      <h2>Log</h2>
-      <div id="display_log_<%= solver.id %>"><pre><%= solver.log %></pre></div>
-    </div>
+          <%= link_to("reinit the job", solver, :method=>:delete, :confirm => "Are you sure?") %>.
 
+        </p>
+
+        <div id="log_<%= solver.id %>" >
+          <h5>Log</h5>
+          <div id="display_log_<%= solver.id %>"><pre><%= solver.log %></pre></div>
+        </div>
       </div>
-    <% end %>
-
-    <div id="tabs-0">
+    </div>
+  <% end %>
+  
+  <div class="box">
+    <h2>New job</h2>
+    <div class="block">
       <% form_tag solver_index_path do %>
-        <%=  error_messages_for 'new_solver', :header_message => 'Errors prohibited this solver to start', :message => nil  %>
+        <%=  error_messages_for 'new_solver', :header_message => 'Errors prohibited the solver to start', :message => nil  %>
         <p><%= submit_tag 'Run Solver', :disable_with => 'Generating problem...' %></p>
       <% end %>
     </div>
+  </div>
 
 </div>

@@ -13,7 +13,7 @@ class TablesController < ApplicationController
   def show
     @table = Table.find(params[:id])
     respond_to do |format|
-      format.html { redirect_to edit_path(@table) }
+      format.html { redirect_to edit_table_path(@table) }
     end
   end
 

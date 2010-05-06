@@ -1,4 +1,4 @@
-<h1>Editing technology</h1>
+<% content_for :title, "Editing technology" %>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -69,66 +69,113 @@ function edit_flow(flow_type,id)
 }
 </script>
 
-<table class="idcard">
-  <tr>
-    <td class="idcard_leftcol">
-      <ul>
-        <li>Name: <span class="edit" id="name"><%=h @technology.name %></span></li>
-        <li>Definition: <span class="edit" id="description"><%=h @technology.description %></span></li>
-      </ul>
-    </td>
-    <td><ul>
-      <li>Sets: <%=h @technology.set_list.join(", ")  %></li>
-      <li>Places: <%=h @technology.locations.map(&:name).join(", ") %></li>
-    </ul></td>
-  </tr>
-</table>
+<div class="grid_6">
+  <div class="box">
+    <h2>ID card</h2>
+    <div class="block"">
+    <% form_for(@technology) do |f| %>
+      <%= f.error_messages %>
+          <p> <%= f.label :name, 'Name:' %>
+            <%= f.text_field :name %>
+            <%= f.label :locations, 'Places:' %> <%=h @technology.locations.map(&:name).join(", ") %>
+            <%= f.label :sets, 'Sets:' %> <%=h @technology.set_list.join(", ") %>
+            <br />
+            <%= f.label :description, 'Description:' %>
+            <%= f.text_field :description %>
+          <%= f.submit 'Update', :class => "confirm button" %></p>
+      <% end %>
+    </div>
+  </div>
+</div>
 
-<script type="text/javascript">
-    $(function() {
-        $('#tabs').tabs({ cookie: { expires: 7 }});
-        $("input:submit").button();
-    });
-</script>
+<div class="clear"></div>
 
-<div id="tabs">
-    <ul>
-        <li><a href="#tabs-1">Flows</a></li>
-        <li><a href="#tabs-2">Parameters</a></li>
-        <li><a href="#tabs-3">Bounds</a></li>
-    </ul>
-    <div id="tabs-1">
-        <div id="flow_list">
-        <h3>Flow list</h3>
-		<% form_tag(technology_path(@technology), :method => "put") do %>
-        <table class="table_flows">
-        	<thead><tr><th>Inflows</th><th>Outflows</th></tr></thead>
-            <tbody><tr><td>
-				<% @technology.in_flows.each do |f| %>
-               		<input type="checkbox" name="f<%=f.id%>" />
-                    <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
-						<%=f.id%>: <%= commodity_url_list f %></span>
-                    (<a href="#" onclick="edit_flow('In flow',<%=f.id%>)">edit</a>)<br />
+<div class="grid_6">
+  <div class="box">
+    <h2>Flow list</h2>
+    <div class="block"">
+    <% form_tag(technology_path(@technology), :method => "put") do %>
+           <table class="table_flows">
+          <thead><tr><th>Inflows</th><th>Outflows</th></tr></thead>
+          <tbody><tr><td>
+                <% @technology.in_flows.each do |f| %>
+                  <input type="checkbox" name="f<%=f.id%>" />
+                  <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
+                    <%=f.id%>: <%= commodity_url_list f %></span>
+                  (<a href="#" onclick="edit_flow('In flow',<%=f.id%>)">edit</a>)<br />
                 <% end -%><br />
                 + <a href="#" onclick="add_flow('In flow')">Add inflow</a></td><td>
-				<% @technology.out_flows.each do |f| %>
-                	<input type="checkbox" name="f<%=f.id%>" />
-                   	<span class="<%= "flow_act" if f.flow_act_of? @technology %>">
-						<%=f.id%>: <%= commodity_url_list f %></span>
-                   	(<a href="#" onclick="edit_flow('Out flow',<%=f.id%>)">edit</a>)<br />
+                <% @technology.out_flows.each do |f| %>
+                  <input type="checkbox" name="f<%=f.id%>" />
+                  <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
+                    <%=f.id%>: <%= commodity_url_list f %></span>
+                        (<a href="#" onclick="edit_flow('Out flow',<%=f.id%>)">edit</a>)<br />
                 <% end -%><br />
                 + <a href="" onclick="add_flow('Out flow')">Add outflow</a></td>
             </tr></tbody>
         </table>
         <select name="do">
-			<option value="set_act_flo">Set activity flow</option>
-            <option value="delete_flo">Delete checked flow(s)</option>
+          <option value="set_act_flo">Set activity flow</option>
+          <option value="delete_flo">Delete checked flow(s)</option>
         </select>
-		<%= submit_tag "OK"%>
-        <% end -%>
-        </div>
-        <div id="flow_efficiency">
-        <h3>Efficiency</h3>
+        <%= submit_tag "OK"%>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="grid_6">
+  <div class="box">
+    <h2>Flow Editor</h2>
+    <div class="block">
+    <% form_tag({:action => "flow", :id => @technology}, :method => "post") do %>
+           <table class="tablecommoditylist">
+          <thead><tr><th>Available commodities</th><th class="flow_separator"></th><th>Flow commodities</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <select multiple size="10" id="sel_avail_commodity" class="ui-button ui-widget ui-state-default ui-corner-all">
+                  <optgroup label="Energy Carriers">
+                    <% Commodity.tagged_with("ENC").each do |c| %>
+                      <option><%=h c.name %></option>
+                    <% end -%>
+                  </optgroup>
+                  <optgroup label="Pollutants">
+                    <% Commodity.tagged_with("POLL").each do |c| %>
+                      <option><%=h c.name %></option>
+                    <% end -%>
+                  </optgroup>
+                  <optgroup label="Useful demands">
+                    <% Commodity.tagged_with("DEM").each do |c| %>
+                      <option><%=h c.name %></option>
+                    <% end -%>
+                  </optgroup>
+                </select>
+                <p style="text-align: center"><a href="#" id="add_commodity_flow">add &gt;&gt;</a></p>
+              </td>
+              <td class="flow_separator">
+              </td>
+              <td>
+                <select multiple size="10" id="sel_flow_commodity" class="ui-button ui-widget ui-state-default ui-corner-all">
+                </select>
+                <p style="text-align: center"><a href="#" id="remove_commodity_flow">&lt;&lt; remove</a></p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      <% end -%>
+    </div>
+  </div>
+</div>
+
+<div class="clear"></div>
+
+<div class="grid_12">
+  <div class="box">
+    <h2>Parameters</h2>
+    <div class="block">
+      <h4>Efficiency</h4>
+      <p>
         <%= render :partial => 'shared/parameter_value_table',
 				   :locals => {:object => @technology,
 				               :pid => "eff",
@@ -137,9 +184,9 @@ function edit_flow(flow_type,id)
                                :cols => %w{in_flow out_flow value source},
 							   :editable => %w{value source},
                                :rules => nil } %>
-        </div>
-        <div id="flow_param">
-        <h3>Other flows parameters</h3>
+      </p>
+      <h4>Others flow parameters</h4>
+      <p>
         <%= render :partial => 'shared/parameter_value_table',
 				   :locals => {:object => @technology,
 				               :pid => "flo",
@@ -150,11 +197,9 @@ function edit_flow(flow_type,id)
                                :rules => { "=act_flo" => %w{flow time_slice year},
                                            ">flo_bnd" => %w{commodity},
                                            ">flo_share" => %w{time_slice year} }} %>
-        </div>
-    </div>
-    <div id="tabs-2">
-        <div id="parameter_tid">
-        <h3>General Parameters</h3>
+      </p>
+      <h4>General Parameters</h4>
+      <p>
         <%= render :partial => 'shared/parameter_value_table',
 				   :locals => {:object => @technology,
 				               :pid => "gen",
@@ -163,10 +208,10 @@ function edit_flow(flow_type,id)
 							   :cols => %w{parameter value source},
 							   :editable => %w{value source},
                                :rules => nil} %>
-        </div>
-        <div id="parameter_td">
-        <h3>Time-dependent Parameters</h3>
-        <%= render :partial => 'shared/parameter_value_table',
+      </p>
+      <h4>Time-dependent Parameters</h4>
+      <p>
+       <%= render :partial => 'shared/parameter_value_table',
 				   :locals => {:object => @technology,
 				               :pid => "tdp",
 				               :request_path => edit_technology_path(@technology),
@@ -180,14 +225,10 @@ function edit_flow(flow_type,id)
                                           "=cost_icap" => %w{location commodity time_slice},
                                           "=cost_vom" => %w{location commodity time_slice},
                                           "=cost_fom" => %w{location commodity time_slice} } } %>
-        </div>
-
-    </div>
-    <div id="tabs-3">
-
-        <div id="parameter_bnds">
-        <h3>Bounds Parameters</h3>
-        <%= render :partial => 'shared/parameter_value_table',
+      </p>
+      <h4>Bounds Parameters</h4>
+      <p>
+               <%= render :partial => 'shared/parameter_value_table',
 				   :locals => {:object => @technology,
 				               :pid => "bnd",
 				               :request_path => edit_technology_path(@technology),
@@ -195,49 +236,9 @@ function edit_flow(flow_type,id)
 							   :cols => %w{parameter location time_slice year value source},
 							   :editable => %w{value source},
                                :rules => nil} %>
-        </div>
-
+      </p>
     </div>
-
-    <div id="flow_edit">
-        <div id="commodity_list">
-            <h3 id="flow_title">Flow editor (new)</h3>
-            <% form_tag({:action => "flow", :id => @technology}, :method => "post") do %>
-            <table class="tablecommoditylist">
-            <thead><tr><th>Available commodities</th><th class="flow_separator"></th><th>Flow commodities</th></tr></thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <select multiple size="10" id="sel_avail_commodity" class="ui-button ui-widget ui-state-default ui-corner-all">
-                            <optgroup label="Energy Carriers">
-                                <% Commodity.tagged_with("ENC").each do |c| %>
-                                <option><%=h c.name %></option>
-                                <% end -%>
-                            </optgroup>
-                            <optgroup label="Pollutants">
-                                <% Commodity.tagged_with("POLL").each do |c| %>
-                                <option><%=h c.name %></option>
-                                <% end -%>
-                            </optgroup>
-                            <optgroup label="Useful demands">
-                                <% Commodity.tagged_with("DEM").each do |c| %>
-                                <option><%=h c.name %></option>
-                                <% end -%>
-                            </optgroup>
-                        </select>
-                        <p style="text-align: center"><a href="#" id="add_commodity_flow">add &gt;&gt;</a></p>
-                    </td>
-                    <td class="flow_separator">
-                    </td>
-                    <td>
-                        <select multiple size="10" id="sel_flow_commodity" class="ui-button ui-widget ui-state-default ui-corner-all">
-                        </select>
-                        <p style="text-align: center"><a href="#" id="remove_commodity_flow">&lt;&lt; remove</a></p>
-                    </td>
-                </tr>
-            </tbody>
-            </table>
-            <% end -%>
-        </div>
-    </div>
+  </div>
 </div>
+
+<div class="clear"></div>

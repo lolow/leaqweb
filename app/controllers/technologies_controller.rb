@@ -3,18 +3,15 @@ class TechnologiesController < ApplicationController
   
   # GET /technologies
   def index
-    ["page","per_page"].each do |p|
-      user_session["tech_#{p}"] = params[p] if params[p]
-    end
-    filter = {:page => user_session["tech_page"],
-              :per_page => user_session["tech_per_page"],
+    filter = {:page => params[:page],
+              :per_page => 30,
               :order => :name}
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
     @sets_cloud = Technology.tag_counts_on(:sets)
     if params[:sets]
-      @technologies = Technology.tagged_with(params[:sets]).paginate(filter)
+      @technologies = Technology.tagged_with(params[:set]).paginate(filter)
     else
       @technologies = Technology.paginate(filter)
     end

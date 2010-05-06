@@ -3,7 +3,18 @@ class DriversController < ApplicationController
 
   # GET /drivers
   def index
-    @demand_drivers = DemandDriver.all
+    filter = {:page => params[:page],
+              :per_page => 30,
+              :order => :name}
+    @demand_drivers = DemandDriver.paginate(filter)
+    respond_to do |format|
+      format.html
+    end
+  end
+
+  # GET /commodities/new
+  def new
+    @demand_driver = DemandDriver.new
     respond_to do |format|
       format.html
     end

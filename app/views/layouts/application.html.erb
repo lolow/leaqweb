@@ -20,6 +20,7 @@
       </script>
     <% end %>
     <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
+    <%= javascript_include_tag 'jquery.blockui' %>
     <%= javascript_include_tag 'jquery-fluid16' %>
     
     <% javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
@@ -61,18 +62,15 @@
 			  </ul>
             </li>
             <li>
-			  <%= link_to 'Optimization', root_path %>
-              <ul>
-                <li>
-                  <%= link_to 'Solver', solver_index_path %>
-				</li>
-                <li>
-                  <%= link_to 'Preferences', root_path %>
-				</li>
-			  </ul>
+			  <%= link_to 'Solver', solver_index_path %>
             </li>
             <li>
 			  <%= link_to 'Results', outputs_path %>
+              <ul>
+                <li>
+                  <%= link_to 'Predefined tables', tables_path %>
+				</li>
+			  </ul>
             </li>
 			<li class="secondary">
               <% if user_signed_in? %>

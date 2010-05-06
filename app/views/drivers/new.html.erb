@@ -1,20 +1,14 @@
-<h1>New demand driver</h1>
+<% content_for :title, "New demand driver" %>
 
+<div class="grid_4">
 <% form_for(@demand_driver) do |f| %>
   <%= f.error_messages %>
-
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :definition %><br />
-    <%= f.text_field :definition %>
-  </p>
-
-  <p>
-    <%= f.submit 'Create' %>
-  </p>
+  <fieldset class="login">
+    <legend>Demand driver</legend>
+    <p class="notice">Enter the following information.</p>
+    <p> <%= f.label :name, 'Name:' %><%= f.text_field :name %></p>
+    <%= f.submit 'Create', :class => "confirm button" %>
+  </fieldset>
 <% end %>
-
-<%= link_to 'Back', demand_drivers_path %>
+</div>
+<div class="clear"></div>

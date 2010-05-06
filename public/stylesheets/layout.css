@@ -52,7 +52,7 @@ h1#branding {
 	font-size:3em;
 	text-align:left;
 	background:#aaa;
-	padding:.7em 1em;
+	padding:.25em 1em;
 	margin-bottom:0;
 }
 
@@ -61,7 +61,7 @@ h1#branding {
 ----------------------------------------------- */
 h2#page-heading {
 	font-weight:normal;
-	padding:.5em;
+	padding:.25em;
 	margin:0 0 10px 0;
 	border-bottom:1px solid #ccc;
 }
@@ -353,6 +353,9 @@ input.search.text {
 input.search.button {
 	width:28%;
 	margin-left:2%;
+}
+input.filter.text {
+	width:99%;
 }
 
 

@@ -3,10 +3,7 @@ class CommoditiesController < ApplicationController
   
   # GET /commodities
   def index
-    ["page","sets"].each do |p|
-      user_session["comm_#{p}"] = params[p] if params[p]
-    end
-    filter = {:page => user_session["comm_page"],
+    filter = {:page => params[:page],
               :per_page => 30,
               :order => :name}
     if params[:search]

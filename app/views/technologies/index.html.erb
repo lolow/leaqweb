@@ -1,25 +1,51 @@
-<h1>Listing technologies</h1>
+<% content_for :title, "Listing technologies" %>
 
-<div id="name_filter">
-  <% form_tag request.path, :method => 'get' do %>
-    <% content_tag :label do %>
-      Name:
-      <%= text_field_tag :search, params[:search] %>
-      Tags:
-      <%=  select_tag "sets", options_for_select(@sets_cloud.map(&:name),params[:sets]) , :multiple => true, :size => 3 %>
-      <%= hidden_field_tag :page, 1 %>
-      <%= submit_tag "Filter" %>
-      <%= link_to "Reset" %>
-    <% end %>
-  <% end %>
+<div class="grid_3">
+  
+  <div class="box">
+    <h2><a href="#" id="toggle-search">Filter</a></h2>
+    <div class="block" id="search">
+
+      <h5>By name</h5>
+      <% form_tag request.path, :method => 'get' do %>
+      <p>
+          <%= text_field_tag :search, params[:search], :class => "search text" %>
+          <%= submit_tag "Filter", :class => "search button" %>
+      </p>
+          <%= hidden_field_tag :page, 1 %>
+      <% end %>
+      <h5>By set</h5>
+      <ul class="menu">
+        <%  @sets_cloud.each do |tag| %>
+          <% c = "active" if tag.name==params[:set] %>
+          <li><%= link_to tag.name, {:controller => "technologies", :set => tag.name}, :class => c %></li>
+        <% end %>
+      </ul>
+      <%= link_to "reset filter", technologies_path  %>
+      
+    </div>
+  </div>
+  
+  <div class="box">
+    <h2>Actions</h2>
+    <div class="block"">
+      <p><%= link_to 'Add a new technology', new_commodity_path %></p>
+    </div>
+  </div>
+
 </div>
 
-<div id="technology_list">
-<table>
-  <thead><tr><th>Name</th><th>Description</th><th></th><th></th><th></th></tr></thead>
+<div class="grid_9">
+
+  <div class="box">
+    <table summary="Technology list">
+  <thead>
+    <tr><th colspan="4" class="table-head">Technologies</th></tr>
+    <tr><th>Name</th><th>Description</th><th></th><th></th></tr>
+  </thead>
   <tbody>
 <% @technologies.each do |technology| %>
-  <tr>
+  <tr class="<%= cycle("even", "odd") -%>">
     <td><%=h technology.name %></td>
     <td><%= truncate(h(technology.description), :omission => "&hellip;", :length => 100) %></td>
     <td><%= link_to 'Edit', edit_technology_path(technology) %></td>
@@ -30,10 +56,6 @@
 </table>
 <%= page_entries_info @technologies %><br />
 <%= will_paginate @technologies %>
+  </div>
+
 </div>
-
-<br />
-
-<br />
-
-<%= link_to 'New technology', new_technology_path %>

@@ -59,7 +59,7 @@ class Output < ActiveRecord::Base
   end
 
   def clear
-    EXT.each { |x| FileUtils.delete(file(x)) if File.exists?(file(x)) }
+    EXT.each { |x| File.delete(file(x)) if File.exists?(file(x)) }
     File.delete(file("Renv")) if File.exists?(file("Renv"))
     FileUtils.rm_rf(path) if File.exists?(path)
   end

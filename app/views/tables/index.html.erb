@@ -1,30 +1,48 @@
-<h1>Listing tables</h1>
+<% content_for :title, "Listing predefined tables" %>
 
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Aggregate</th>
-    <th>Variable</th>
-    <th>Rows</th>
-    <th>Columns</th>
-    <th>Filters</th>
-  </tr>
+<div class="grid_2">
 
-<% @tables.each do |table| %>
-  <tr>
-    <td><%=h table.name %></td>
-    <td><%=h table.aggregate %></td>
-    <td><%=h table.variable %></td>
-    <td><%=h table.rows %></td>
-    <td><%=h table.columns %></td>
-    <td><%=h table.filters %></td>
-    <td><%= link_to 'Clone', clone_table_path(table) %></td>
-    <td><%= link_to 'Edit', edit_table_path(table) %></td>
-    <td><%= link_to 'Destroy', table, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
-<% end %>
-</table>
+  <div class="box">
+    <h2>Actions</h2>
+    <div class="block"">
+      <p><%= link_to 'New predefined table', new_table_path %></p>
+    </div>
+  </div>
 
-<br />
+</div>
 
-<%= link_to 'New table', new_table_path %>
+<div class="grid_10">
+
+  <div class="box">
+    <table summary="Results list">
+      <thead>
+        <tr><th colspan="9" class="table-head">Results</th></tr>
+        <tr>
+          <th>Name</th>
+          <th>Aggregate</th>
+          <th>Variable</th>
+          <th>Rows</th>
+          <th>Columns</th>
+          <th>Filters</th><th></th><th></th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @tables.each do |table| %>
+          <tr>
+            <td><%=h table.name %></td>
+            <td><%=h table.aggregate %></td>
+            <td><%=h table.variable %></td>
+            <td><%=h table.rows %></td>
+            <td><%=h table.columns %></td>
+            <td><%=h table.filters %></td>
+            <td><%= link_to 'Clone', clone_table_path(table) %></td>
+            <td><%= link_to 'Edit', edit_table_path(table) %></td>
+            <td><%= link_to 'Destroy', table, :confirm => 'Are you sure?', :method => :delete %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+

@@ -16,74 +16,88 @@ $(document).ready(function() {
 });
 </script>
 
-<table class="idcard">
-  <tr>
-    <td class="idcard_leftcol"><ul>
-        <li>Name: <span class="edit" id="name"><%=h @commodity.name %></span></li>
-        <li>Definition: <span class="edit" id="description"><%=h @commodity.description %></span></li>
-    </ul></td>
-    <td><ul>
-      <li>Sets: <%=h @commodity.set_list.join(", ") %>
-      </li>
-    </ul></td>
-</tr>
-<tr><td colspan="2">
-    <ul>
-        <li>Consumed by: <%= technology_url_list @commodity.consumed_by  %></li>
-        <li>Produced by: <%= technology_url_list @commodity.produced_by  %></li>
-    </ul>
-</td></tr>
-</table>
+<div class="grid_6">
+  <div class="box">
+    <h2>ID card</h2>
+    <div class="block"">
+    <% form_for(@commodity) do |f| %>
+      <%= f.error_messages %>
+          <p> <%= f.label :name, 'Name:' %>
+            <%= f.text_field :name %>
+            <%= f.label :sets, 'Sets:' %> <%=h @commodity.set_list.join(", ") %> <br />
+            <%= f.label :description, 'Description:' %>
+            <%= f.text_field :description %>
+          <%= f.submit 'Update', :class => "confirm button" %></p>
+      <% end %>
+    </div>
+  </div>
+</div>
 
-<script type="text/javascript">
-    $(function() {
-        $('#tabs').tabs({ cookie: { expires: 7 }});
-    });
-</script>
+<div class="grid_6">
+  <div class="box">
+    <h2>Connections</h2>
+    <div class="block">
+         <p>
+          <% if @commodity.consumed_by.size > 0 %>
+            Consumed by <%= pluralize(@commodity.consumed_by.size, 'technology') %>:
+            <%= select_tag "consumed_by", options_for_select(@commodity.consumed_by) %>.
+          <% else %>
+            Not consumed.
+          <% end %><br />
+          <% if @commodity.produced_by.size > 0 %>
+            Produced by <%= pluralize(@commodity.produced_by.size, 'technology') %>:
+            <%= select_tag "produced_by", options_for_select(@commodity.produced_by) %>.
+          <% else %>
+            Not produced.
+          <% end %>
+         </p>
+    </div>
+  </div>
+</div>
+
+<div class="clear"></div>
 
 <% if @commodity.demand? %>
 
-<div id="tabs">
-    <ul>
-        <li><a href="#tabs-1">Parameters</a></li>
-    </ul>
-    <div id="tabs-1">
-        <div id="general">
-            <h3>Demand values</h3>
-            <%= render :partial => 'shared/parameter_value_table',
-					   :locals => {:object => @commodity,
-					               :pid => "dem",
-					               :request_path => edit_commodity_path(@commodity),
-					               :parameters => %w{demand},
-								   :cols => %w{year value source},
-								   :editable => %w{value source},
-                                   :rules => nil} %>
-        </div>
-        <div id="fraction_demand">
-            <h3>Fraction of demand per time-slice</h3>
-			<%= render :partial => 'shared/parameter_value_table',
-					   :locals => {:object => @commodity,
-					               :pid => "frd",
-			                       :request_path => edit_commodity_path(@commodity),
-					               :parameters => %w{frac_dem},
-								   :cols => %w{time_slice value source},
-								   :editable => %w{value source},
-                                   :rules => nil} %>
-        </div>
+  <div class="grid_12">
+    <div class="box">
+      <h2>Parameters</h2>
+      <div class="block">
+        <h4>Demand values</h4>
+        <p>
+          <%= render :partial => 'shared/parameter_value_table',
+            :locals => {:object => @commodity,
+            :pid => "dem",
+            :request_path => edit_commodity_path(@commodity),
+            :parameters => %w{demand},
+            :cols => %w{year value source},
+            :editable => %w{value source},
+            :rules => nil} %>
+        </p>
+        <h4>Fraction of demand per time-slice</h4>
+        <p>
+          <%= render :partial => 'shared/parameter_value_table',
+            :locals => {:object => @commodity,
+            :pid => "frd",
+            :request_path => edit_commodity_path(@commodity),
+            :parameters => %w{frac_dem},
+            :cols => %w{time_slice value source},
+            :editable => %w{value source},
+            :rules => nil} %>
+        </p>
+      </div>
     </div>
-</div>
+  </div>
 
 <% else %>
 
-<div id="tabs">
-    <ul>
-        <li><a href="#tabs-1">Parameters</a></li>
-        <li><a href="#tabs-2">Constraints</a></li>
-    </ul>
-    <div id="tabs-1">
-        <div id="general">
-            <h3>General parameters</h3>
-            <%= render :partial => 'shared/parameter_value_table',
+  <div class="grid_12">
+    <div class="box">
+      <h2>Parameters</h2>
+      <div class="block">
+        <h4>General parameters</h4>
+        <p>
+          <%= render :partial => 'shared/parameter_value_table',
 					   :locals => {:object => @commodity,
 					               :pid => "gen",
 					               :request_path => edit_commodity_path(@commodity),
@@ -91,10 +105,10 @@ $(document).ready(function() {
 								   :cols => %w{parameter time_slice year value source},
 								   :editable => %w{value source},
                                    :rules => {"=network_efficiency" => %w{time_slice year} } } %>
-        </div>
-        <div id="import_export">
-            <h3>Import/export parameters</h3>
-            <%= render :partial => 'shared/parameter_value_table',
+        </p>
+        <h4>Import/export parameters</h4>
+        <p>
+          <%= render :partial => 'shared/parameter_value_table',
 					   :locals => {:object => @commodity,
 					               :pid => "iep",
 			                       :request_path => edit_commodity_path(@commodity),
@@ -102,13 +116,10 @@ $(document).ready(function() {
 								   :cols => %w{parameter time_slice year value source},
 								   :editable => %w{value source},
                                    :rules => nil} %>
-        </div>
-    </div>
-
-    <div id="tabs-2">
-        <div id="constraints">
-            <h3>Constraints</h3>
-            <%= render :partial => 'shared/parameter_value_table',
+        </p>
+        <h4>Constraints</h4>
+        <p>
+          <%= render :partial => 'shared/parameter_value_table',
 					   :locals => {:object => @commodity,
 					               :pid => "con",
 					               :request_path => edit_commodity_path(@commodity),
@@ -116,8 +127,10 @@ $(document).ready(function() {
 								   :cols => %w{parameter time_slice year value source},
 								   :editable => %w{value source},
                                    :rules => {"=com_net_bnd_up_t"  => %w{time_slice} } } %>
-        </div>
+        </p>
+      </div>
     </div>
-</div>
+
+  </div>
 
 <% end %>

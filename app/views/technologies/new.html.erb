@@ -1,7 +1,14 @@
-<h1>New technology</h1>
+<% content_for :title, "New technology" %>
 
+<div class="grid_4">
 <% form_for(@technology) do |f| %>
   <%= f.error_messages %>
-  <p>Name: <%= f.text_field :name %></p>
-  <p><%= f.submit 'Create' %></p>
+  <fieldset class="login">
+    <legend>Technology</legend>
+    <p class="notice">Enter the following information.</p>
+    <p> <%= f.label :name, 'Name:' %><%= f.text_field :name %></p>
+    <%= f.submit 'Create', :class => "confirm button" %>
+  </fieldset>
 <% end %>
+</div>
+<div class="clear"></div>
