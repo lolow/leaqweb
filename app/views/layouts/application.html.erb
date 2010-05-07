@@ -20,7 +20,7 @@
       </script>
     <% end %>
     <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
-    <%= javascript_include_tag 'jquery.blockui' %>
+    <%= javascript_include_tag 'jquery.blockui', 'jquery.datatables.min' %>
     <%= javascript_include_tag 'jquery-fluid16' %>
     
     <% javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
@@ -72,13 +72,13 @@
 				</li>
 			  </ul>
             </li>
-			<li class="secondary">
+            <li class="secondary">
               <% if user_signed_in? %>
                 <%= link_to 'Sign out', destroy_user_session_path %>
               <% else %>
                 <%= link_to 'Sign in', new_user_session_path %>
               <% end %>
-			</li>
+            </li>
 		  </ul>
 	    </div>
         <div class="clear"></div>
@@ -90,11 +90,18 @@
 		<div class="clear"></div>
 
         <div class="grid_12">
-          	<%- flash.each do |name, msg| -%>
-	          <%= content_tag :div, msg, :class=>"box", :id => "flash_#{name}" if msg.is_a?(String) %>
-	        <%- end -%>
-		</div>
+          <%- flash.each do |name, msg| -%>
+            <% if msg.is_a?(String) %>
+              <div class="box">
+                <div id="flash_#{name}" class="block">
+                  <p><%=h msg %></p>
+                </div>
+              </div>
+            <%  end %>
+          <%- end -%>
+        </div>
 		<div class="clear"></div>
+        
         <%= yield %>
     	
     	<!-- footer -->

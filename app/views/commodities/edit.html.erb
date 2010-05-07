@@ -16,118 +16,87 @@ $(document).ready(function() {
 });
 </script>
 
-<div class="grid_6">
+<div class="grid_3">
+
   <div class="box">
     <h2>ID card</h2>
-    <div class="block"">
+    <div class="block">
     <% form_for(@commodity) do |f| %>
       <%= f.error_messages %>
-          <p> <%= f.label :name, 'Name:' %>
-            <%= f.text_field :name %>
-            <%= f.label :sets, 'Sets:' %> <%=h @commodity.set_list.join(", ") %> <br />
-            <%= f.label :description, 'Description:' %>
-            <%= f.text_field :description %>
-          <%= f.submit 'Update', :class => "confirm button" %></p>
+      <fieldset class="idcard" >
+          <p><%= f.label :name, 'Name:' %> <%= f.text_field :name %></p>
+          <p><%= f.label :description, 'Description:' %>
+             <%= f.text_area :description, :rows => 2 %></p>
+          <p><%= f.label :sets, 'Sets:' %> <%=h @commodity.set_list.join(", ") %></p>
+          <input type="hidden" name="do" value="update" />
+          <p><%= f.submit 'Update', :class => "button" %></p>
+       </fieldset>
       <% end %>
     </div>
   </div>
-</div>
 
-<div class="grid_6">
   <div class="box">
     <h2>Connections</h2>
     <div class="block">
          <p>
           <% if @commodity.consumed_by.size > 0 %>
             Consumed by <%= pluralize(@commodity.consumed_by.size, 'technology') %>:
-            <%= select_tag "consumed_by", options_for_select(@commodity.consumed_by) %>.
+            <%= select_tag "consumed_by", options_for_select(["Select..."] + @commodity.consumed_by.map{|c|[c.name,c.id]}),
+                {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"} %>.
           <% else %>
             Not consumed.
           <% end %><br />
           <% if @commodity.produced_by.size > 0 %>
             Produced by <%= pluralize(@commodity.produced_by.size, 'technology') %>:
-            <%= select_tag "produced_by", options_for_select(@commodity.produced_by) %>.
+            <%= select_tag "produced_by", options_for_select(["Select..."] + @commodity.produced_by.map{|c|[c.name,c.id]}),
+                {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"} %>.
           <% else %>
             Not produced.
           <% end %>
          </p>
     </div>
   </div>
-</div>
 
-<div class="clear"></div>
+</div>
 
 <% if @commodity.demand? %>
 
-  <div class="grid_12">
+  <div class="grid_9">
     <div class="box">
       <h2>Parameters</h2>
       <div class="block">
-        <h4>Demand values</h4>
-        <p>
-          <%= render :partial => 'shared/parameter_value_table',
+
+        <%= render :partial => 'shared/parameter_table',
             :locals => {:object => @commodity,
-            :pid => "dem",
+            :pid => "param",
             :request_path => edit_commodity_path(@commodity),
-            :parameters => %w{demand},
-            :cols => %w{year value source},
+            :parameters => %w{demand frac_dem},
+            :cols => %w{parameter time_slice year value source},
             :editable => %w{value source},
-            :rules => nil} %>
-        </p>
-        <h4>Fraction of demand per time-slice</h4>
-        <p>
-          <%= render :partial => 'shared/parameter_value_table',
-            :locals => {:object => @commodity,
-            :pid => "frd",
-            :request_path => edit_commodity_path(@commodity),
-            :parameters => %w{frac_dem},
-            :cols => %w{time_slice value source},
-            :editable => %w{value source},
-            :rules => nil} %>
-        </p>
+            :rules => {"=demand" => %w{time_slice},
+                       "=frac_dem" => %w{year} } } %>
+
       </div>
     </div>
   </div>
 
 <% else %>
 
-  <div class="grid_12">
+  <div class="grid_9">
     <div class="box">
       <h2>Parameters</h2>
       <div class="block">
-        <h4>General parameters</h4>
-        <p>
-          <%= render :partial => 'shared/parameter_value_table',
-					   :locals => {:object => @commodity,
-					               :pid => "gen",
-					               :request_path => edit_commodity_path(@commodity),
-					               :parameters => %w{network_efficiency peak_reserve},
-								   :cols => %w{parameter time_slice year value source},
-								   :editable => %w{value source},
-                                   :rules => {"=network_efficiency" => %w{time_slice year} } } %>
-        </p>
-        <h4>Import/export parameters</h4>
-        <p>
-          <%= render :partial => 'shared/parameter_value_table',
-					   :locals => {:object => @commodity,
-					               :pid => "iep",
-			                       :request_path => edit_commodity_path(@commodity),
-					               :parameters => %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up exp_bnd_lo exp_bnd_fx exp_bnd_up},
-								   :cols => %w{parameter time_slice year value source},
-								   :editable => %w{value source},
-                                   :rules => nil} %>
-        </p>
-        <h4>Constraints</h4>
-        <p>
-          <%= render :partial => 'shared/parameter_value_table',
-					   :locals => {:object => @commodity,
-					               :pid => "con",
-					               :request_path => edit_commodity_path(@commodity),
-					               :parameters => %w{com_net_bnd_up_t com_net_bnd_up_ts},
-								   :cols => %w{parameter time_slice year value source},
-								   :editable => %w{value source},
-                                   :rules => {"=com_net_bnd_up_t"  => %w{time_slice} } } %>
-        </p>
+
+<%= render :partial => 'shared/parameter_table',
+            :locals => {:object => @commodity,
+            :pid => "param",
+            :request_path => edit_commodity_path(@commodity),
+            :parameters => %w{network_efficiency peak_reserve cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up exp_bnd_lo exp_bnd_fx exp_bnd_up},
+            :cols => %w{parameter time_slice year value source},
+            :editable => %w{value source},
+            :rules => {"=network_efficiency" => %w{time_slice year},
+                       "=com_net_bnd_up_t"  => %w{time_slice}} } %>
+
       </div>
     </div>
 

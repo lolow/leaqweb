@@ -331,6 +331,16 @@ fieldset p input {
 fieldset p select {
 	width:99%;
 }
+
+fieldset.idcard p {
+	margin-bottom:1em;
+	margin-top:0pt;
+}
+fieldset.idcard p input.button {
+    margin-left:55%;
+    width:40%;
+}
+
 fieldset.login p label {
 	float:left;
 	line-height:2em;

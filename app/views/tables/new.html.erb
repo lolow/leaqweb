@@ -3,9 +3,7 @@
 <div class="grid_12">
   <% form_for(@table) do |f| %>
   <%= f.error_messages %>
-  <fieldset class="login">
-    <legend>Predefined table</legend>
-    <p class="notice">Enter the following information.</p>
+  <fieldset>
   <p>
     <%= f.label :name, 'Name:' %>
     <%= f.text_field :name %>

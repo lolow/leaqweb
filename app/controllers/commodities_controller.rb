@@ -81,6 +81,17 @@ class CommoditiesController < ApplicationController
     end
     # action on parameter_value
     case params[:do]
+    when "update"
+      @commodity.update_attributes(params[:commodity])
+      respond_to do |format|
+        if @commodity.update_attributes(params[:commodity])
+          flash[:notice] = 'Commodity was successfully updated.'
+          format.html { redirect_to(edit_commodity_path(@commodity)) }
+        else
+          format.html { render :action => "edit" }
+        end
+      end
+      return
     when "delete_pv"
       ids = @commodity.parameter_values.map(&:id).select{|i|params["cb#{i}"]}
       ParameterValue.destroy(ids)
@@ -92,7 +103,7 @@ class CommoditiesController < ApplicationController
       flash[:notice] = 'Parameter value was successfully added.' if pv.save
     end if params[:do]
     respond_to do |format|
-        format.html { redirect_to(@commodity) }
+        format.html { redirect_to(edit_commodity_path(@commodity)) }
     end
   end
 

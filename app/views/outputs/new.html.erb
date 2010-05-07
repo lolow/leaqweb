@@ -1,23 +1,23 @@
 <% content_for :title, "New result" %>
 
 <div class="grid_4">
-<% form_for(@output) do |f| %>
-  <%= f.error_messages %>
-  <fieldset class="login">
-    <legend>Result</legend>
-<p class="notice">Enter the following information.</p>
-  <p>
-    <%= f.label :name, 'Name:'  %>
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :description, 'Description:' %>
-    <%= f.text_field :description %>
-  </p>
+  <% form_for(@output) do |f| %>
+    <%= f.error_messages %>
+    <fieldset>
+      <legend>Result</legend>
+      <p class="notice">Enter the following information.</p>
+      <p>
+        <%= f.label :name, 'Name:'  %>
+        <%= f.text_field :name %>
+      </p>
+      <p>
+        <%= f.label :description, 'Description:' %>
+        <%= f.text_field :description %>
+      </p>
 
-    <%= f.submit 'Create', :class => "confirm button" %>
+      <%= f.submit 'Create', :class => "confirm button" %>
 
-  </fieldset>
-<% end %>
+    </fieldset>
+  <% end %>
 </div>
 <div class="clear"></div>
