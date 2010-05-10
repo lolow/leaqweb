@@ -97,22 +97,22 @@ $(document).ready(function() {
                 </select></td>
                 <% elsif c=="in_flow" %>
                 <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]"><% object.in_flows.each do |f| %>
-        			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
+        			<option value="<%=f.id%>"><%= short_flow(f) %></option><% end -%>
         		</select></td>
                 <% elsif c=="out_flow" %>
                 <td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]"><% object.out_flows.each do |f| %>
-        			<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option><% end -%>
+        			<option value="<%=f.id%>"><%= short_flow(f) %></option><% end -%>
         		</select></td>
         		<% elsif c=="flow" %>
         		<td><select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
                     <optgroup label="In flow">
                         <% object.in_flows.each do |f| %>
-        					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option>
+        					<option value="<%=f.id%>"><%= short_flow(f) %></option>
         				<% end -%>
                     </optgroup>
                     <optgroup label="Out flow">
                         <% object.out_flows.each do |f| %>
-        					<option value="<%=f.id%>"><%=f.id%>: <%= commodity_list(f) %></option>
+        					<option value="<%=f.id%>"><%= short_flow(f) %></option>
         				<% end -%>
                     </optgroup>
                 </select></td>
