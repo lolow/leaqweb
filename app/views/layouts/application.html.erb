@@ -21,7 +21,7 @@
     <% end %>
     <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
     <%= javascript_include_tag 'jquery.blockui', 'jquery.datatables.min' %>
-    <%= javascript_include_tag 'jquery-fluid16' %>
+    <%= javascript_include_tag 'jquery-fluid16', 'jquery.jeditable' %>
     
     <% javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
     <% javascript_include_tag 'application' %>
@@ -48,7 +48,7 @@
 			 <%=  link_to 'Home', root_path %>
 			</li>
 			<li>
-			  <%= link_to 'Energy System', root_path %>
+			  <%= link_to 'Energy System', "#" %>
               <ul>
                 <li>
                   <%= link_to 'Commodities', commodities_path %>
@@ -62,13 +62,28 @@
 			  </ul>
             </li>
             <li>
-			  <%= link_to 'Solver', solver_index_path %>
+			  <%= link_to 'ETEM', "#" %>
+              <ul>
+
+                <li>
+                  <%= link_to 'Solver...', solver_index_path %>
+				</li>
+                <li>
+                  <%= link_to 'Results', outputs_path %>
+				</li>
+				<li>
+				  <%= link_to 'Predefined tables', tables_path %>
+				</li>
+			  </ul>
             </li>
             <li>
-			  <%= link_to 'Results', outputs_path %>
+			  <%= link_to 'Emissions allocator', "#" %>
               <ul>
                 <li>
-                  <%= link_to 'Predefined tables', tables_path %>
+                  <%= link_to 'Sectoral maps', "#" %>
+				</li>
+                <li>
+                  <%= link_to 'Scheduling loads', "#" %>
 				</li>
 			  </ul>
             </li>

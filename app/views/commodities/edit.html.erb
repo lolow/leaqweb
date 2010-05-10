@@ -1,21 +1,5 @@
 <% content_for :title, "Editing commodity" %>
 
-<script type="text/javascript">
-$(document).ready(function() {
-    $('.edit').editable(<%= commodity_path(@commodity).to_json %>,{
-        style   : 'inherit',
-        width   : 150,
-        height  : 18,
-        method  : "PUT",
-        id      : 'field',
-        indicator : <%= image_tag("spinner.gif").to_json %>,
-        submitdata: {
-          authenticity_token: <%= form_authenticity_token.to_json %>
-        }
-    });
-});
-</script>
-
 <div class="grid_3">
 
   <div class="box">
@@ -36,24 +20,35 @@ $(document).ready(function() {
   </div>
 
   <div class="box">
-    <h2>Connections</h2>
+    <h2>Flows</h2>
     <div class="block">
          <p>
           <% if @commodity.consumed_by.size > 0 %>
             Consumed by <%= pluralize(@commodity.consumed_by.size, 'technology') %>:
-            <%= select_tag "consumed_by", options_for_select(["Select..."] + @commodity.consumed_by.map{|c|[c.name,c.id]}),
+            <%= select_tag "consumed_by", options_for_select(["Edit..."] + @commodity.consumed_by.map{|c|[c.name,c.id]}),
                 {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"} %>.
           <% else %>
             Not consumed.
           <% end %><br />
           <% if @commodity.produced_by.size > 0 %>
             Produced by <%= pluralize(@commodity.produced_by.size, 'technology') %>:
-            <%= select_tag "produced_by", options_for_select(["Select..."] + @commodity.produced_by.map{|c|[c.name,c.id]}),
+            <%= select_tag "produced_by", options_for_select(["Edit..."] + @commodity.produced_by.map{|c|[c.name,c.id]}),
                 {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"} %>.
           <% else %>
             Not produced.
           <% end %>
          </p>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Actions</h2>
+    <div class="block">
+      <p>
+        <%= link_to 'New', new_commodity_path %>,
+        <%= link_to 'Clone', clone_commodity_path, :confirm => 'Are you sure?', :method => :post %>,
+        <%= link_to 'Destroy', @commodity, :confirm => 'Are you sure?', :method => :delete %>
+      </p>
     </div>
   </div>
 
@@ -69,7 +64,7 @@ $(document).ready(function() {
         <%= render :partial => 'shared/parameter_table',
             :locals => {:object => @commodity,
             :pid => "param",
-            :request_path => edit_commodity_path(@commodity),
+            :request_path => commodity_path(@commodity),
             :parameters => %w{demand frac_dem},
             :cols => %w{parameter time_slice year value source},
             :editable => %w{value source},
@@ -90,8 +85,11 @@ $(document).ready(function() {
 <%= render :partial => 'shared/parameter_table',
             :locals => {:object => @commodity,
             :pid => "param",
-            :request_path => edit_commodity_path(@commodity),
-            :parameters => %w{network_efficiency peak_reserve cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up exp_bnd_lo exp_bnd_fx exp_bnd_up},
+            :request_path => commodity_path(@commodity),
+            :parameters => %w{network_efficiency peak_reserve} +
+              %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} +
+              %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } + 
+              %w{com_net_bnd_up_t com_net_bnd_up_ts},
             :cols => %w{parameter time_slice year value source},
             :editable => %w{value source},
             :rules => {"=network_efficiency" => %w{time_slice year},
@@ -103,3 +101,5 @@ $(document).ready(function() {
   </div>
 
 <% end %>
+
+<div class="clear"></div>

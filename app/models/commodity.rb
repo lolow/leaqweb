@@ -58,4 +58,20 @@ class Commodity < ActiveRecord::Base
     }
   end
 
+  def copy
+    c = Commodity.new
+    name = self.name + " 01"
+    while Commodity.find_by_name(name)
+      name.succ!
+    end
+    c.name = name
+    c.sets = self.sets
+    c.save
+    self.parameter_values.each { |pv|
+      attributes = pv.attributes
+      attributes.delete(["commodity_id","created_at","updated_at"])
+      c.parameter_values << ParameterValue.create(attributes)
+    }
+  end
+
 end

@@ -1,24 +1,33 @@
-<% form_tag(request_path,:method => "put") do %>
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+              	
+    $('.edit').editable(<%= request_path.to_json %>,{
+        style   : 'inherit',
+        width   : "none",
+        height  : 20,
+        method  : "PUT",
+        id      : 'field',
+        indicator : <%= image_tag("spinner.gif").to_json %>,
+        submitdata: {
+          authenticity_token: <%= form_authenticity_token.to_json %>
+        }
+      });
 
-		<script type="text/javascript" charset="utf-8">
-			$(document).ready(function() {
-				$('#parameter_table').dataTable({
-		"aaSorting": [[ 0, "asc" ]],
-		"aoColumns": [
-			null,
-			null,
-			null,
-			null,
-			null
-		]
-	});
-			} );
-		</script>
-
+      $('#parameter_table_<%= pid %>').dataTable({
+		"bPaginate": true,
+		"bLengthChange": true,
+		"bFilter": true,
+		"bSort": true,
+		"bInfo": true,
+		"bAutoWidth": true,
+        "sDom": 'flrtip<"dataTables_action">'
+      });
+      $("div.dataTables_action").html('<p><select name="do" >' +
+          '<option value="add_pv">Add parameter value</option>'+
+          '<option value="delete_pv">Delete checked parameter value(s)</option>'+
+          '</select>'+<%= submit_tag('Apply').to_json %> + '</p>');
 
     <% if rules %>
-        <script type="text/javascript">
-        $(document).ready(function(){
           <% columns = cols - ["parameter"] %>
           $("#<%= pid %>_parameter").change(function () {
               <% columns.each do |c| %>
@@ -38,11 +47,14 @@
               }
               <% end %>
             }).change();
-        });
-        </script>
     <% end %>
+} );
+</script>
 
-	<table id="parameter_table">
+
+<% form_tag(request_path,:method => "put") do %>
+
+	<table id="parameter_table_<%= pid %>" class="dataTable">
 		
 		<thead>
           <tr>
@@ -114,14 +126,12 @@
 		
 
 	</table>
-	
-	<select name="do" >
-	    <option value="add_pv">Add parameter value</option>
-	    <option value="delete_pv">Delete checked parameter value(s)</option>
-    </select>
-	
+
+<div class="clear"></div>
+    	
+
 	<% if parameters.size==1 %>
 		<input type="hidden" id="<%= pid %>_parameter" name="pv[parameter]" value="<%= parameters[0] %>" />
 	<% end %>
-	<%= submit_tag 'OK' %>
+	
 <% end %>

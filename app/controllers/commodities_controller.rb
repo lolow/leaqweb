@@ -57,6 +57,14 @@ class CommoditiesController < ApplicationController
     end
   end
 
+  # POST /commodities/1/clone
+  def clone
+    @commodity = Commodity.find(params[:id]).copy
+    respond_to do |format|
+      format.html { redirect_to(commodities_path) }
+    end
+  end
+
   # PUT /commodities/1
   def update
     @commodity = Commodity.find(params[:id])
@@ -78,6 +86,7 @@ class CommoditiesController < ApplicationController
       respond_to do |format|
         format.js { render :json => value }
       end
+      return
     end
     # action on parameter_value
     case params[:do]

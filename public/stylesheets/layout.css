@@ -535,3 +535,118 @@ input.filter.text {
 #kwick .four {
 	background: #999;
 }
+
+
+/*
+---datatable
+*/
+.dataTables_wrapper {
+	position: relative;
+	min-height: 302px;
+	clear: both;
+	_height: 302px;
+}
+.dataTables_length  {
+  float:left;
+  width:40%;
+  margin-bottom:5px;
+}
+.dataTables_filter {
+    float:right;
+    text-align:right;
+    width:50%;
+    margin-bottom:5px;
+}
+
+.dataTables_action {
+    float:right;
+    text-align:right;
+    width:40%;
+}
+
+.dataTables_info {
+    float:left;
+    width:45%;
+}
+.dataTables_paginate {
+    float:left;
+    /*text-align:right;*/
+    width:44px;
+}
+
+table.dataTable {
+    clear:both;
+    margin-bottom:5px;
+}
+table.dataTable thead th {
+	/*padding: 3px 18px 3px 10px;
+	border-bottom: 1px solid black;
+	font-weight: bold;*/
+	cursor: pointer;
+}
+
+table.dataTable tfoot th {
+	/*padding: 3px 10px;
+	border-top: 1px solid black;
+	font-weight: bold;*/
+}
+
+table.dataTable tr.heading2 td {
+	/* border-bottom: 1px solid #aaa; */
+}
+
+table.dataTable td {
+	/*padding: 3px 10px;*/
+}
+
+table.dataTable td.center {
+	/*text-align: center;*/
+}
+
+/* Pagination nested */
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	height: 19px;
+	width: 19px;
+	margin-left: 3px;
+	float: left;
+}
+
+.paginate_disabled_previous {
+	background-image: url('/images/back_disabled.jpg');
+}
+
+.paginate_enabled_previous {
+	background-image: url('/images/back_enabled.jpg');
+}
+
+.paginate_disabled_next {
+	background-image: url('/images/forward_disabled.jpg');
+}
+
+.paginate_enabled_next {
+	background-image: url('/images/forward_enabled.jpg');
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * DataTables sorting
+ */
+
+.sorting_asc {
+	background: url('/images/sort_asc.gif') no-repeat center right;
+}
+
+.sorting_desc {
+	background: url('/images/sort_desc.gif') no-repeat center right;
+}
+
+.sorting {
+	/*background: url('/images/sort_both.png') no-repeat center right;*/
+}
+
+.sorting_asc_disabled {
+	/*background: url('/images/sort_asc_disabled.png') no-repeat center right;*/
+}
+
+.sorting_desc_disabled {
+	/*background: url('/images/sort_desc_disabled.png') no-repeat center right;*/
+}

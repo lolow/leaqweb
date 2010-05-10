@@ -2,17 +2,6 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.edit').editable(<%= technology_path(@technology).to_json %>,{
-        style   : 'inherit',
-        width   : 150,
-        height  : 18,
-        method  : "PUT",
-        id      : 'field',
-        indicator : <%= image_tag("spinner.gif").to_json %>,
-        submitdata: {
-          authenticity_token: <%= form_authenticity_token.to_json %>
-        }
-    });
     $('#flow_edit').dialog({
         modal: true,
         show: 'blind',
@@ -69,60 +58,155 @@ function edit_flow(flow_type,id)
 }
 </script>
 
-<div class="grid_6">
+<div class="grid_3">
+
   <div class="box">
     <h2>ID card</h2>
-    <div class="block"">
+    <div class="block">
     <% form_for(@technology) do |f| %>
       <%= f.error_messages %>
-          <p> <%= f.label :name, 'Name:' %>
-            <%= f.text_field :name %>
-            <%= f.label :locations, 'Places:' %> <%=h @technology.locations.map(&:name).join(", ") %>
-            <%= f.label :sets, 'Sets:' %> <%=h @technology.set_list.join(", ") %>
-            <br />
-            <%= f.label :description, 'Description:' %>
-            <%= f.text_field :description %>
-          <%= f.submit 'Update', :class => "confirm button" %></p>
+      <fieldset class="idcard" >
+          <p><%= f.label :name, 'Name:' %> <%= f.text_field :name %></p>
+          <p><%= f.label :description, 'Description:' %>
+             <%= f.text_area :description, :rows => 2 %></p>
+          <p><%= f.label :sets, 'Sets:' %> <%=h @technology.set_list.join(", ") %></p>
+          <p><%= f.label :places, 'Places:' %> <%=h @technology.locations.map(&:name).join(", ") %></p>
+          <input type="hidden" name="do" value="update" />
+          <p><%= f.submit 'Update', :class => "button" %></p>
+       </fieldset>
       <% end %>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Actions</h2>
+    <div class="block">
+      <p>
+        <%= link_to 'New', new_technology_path %>,
+        <%= link_to 'Clone', clone_technology_path, :confirm => 'Are you sure?', :method => :post %>,
+        <%= link_to 'Destroy', @technology, :confirm => 'Are you sure?', :method => :delete %>
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<div class="grid_3">
+  <div class="box">
+    <h2>Flows</h2>
+    <div class="block">
+    <% form_tag(technology_path(@technology), :method => "put") do %>
+           <table>
+          <thead><tr><th>Inflows</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <% @technology.in_flows.each do |f| %>
+                  <input type="checkbox" name="f<%=f.id%>" />
+                  <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
+                    <%=f.id%>: <%= commodity_url_list f %>
+                  </span>
+                  (<a href="#" onclick="edit_flow('In flow',<%=f.id%>)">edit</a>)<br />
+                <% end -%>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                + <a href="#" onclick="add_flow('In flow')">Add inflow</a>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+        <table>
+          <thead><tr><th>Outflows</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <% @technology.out_flows.each do |f| %>
+                  <input type="checkbox" name="f<%=f.id%>" />
+                  <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
+                    <%=f.id%>: <%= commodity_url_list f %>
+                  </span>
+                  (<a href="#" onclick="edit_flow('Out flow',<%=f.id%>)">edit</a>)<br />
+                <% end -%>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                + <a href="" onclick="add_flow('Out flow')">Add outflow</a></td>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <p>
+        <select name="do">
+          <option value="set_act_flo">Set activity flow</option>
+          <option value="delete_flo">Delete checked flow(s)</option>
+        </select>
+        <%= submit_tag "OK"%>
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="grid_6">
+  <div class="box">
+    <h2>Flow editor</h2>
+    <div class="block">
+
+    </div>
+  </div>
+</div>
+
+
+<div class="grid_9">
+  <div class="box">
+    <h2>Efficiencies</h2>
+    <div class="block">
+
+      <%= render :partial => 'shared/parameter_table',
+            :locals => {:object => @technology,
+            :pid => "eff_flo",
+            :request_path => technology_path(@technology),
+            :parameters => %w{eff_flo },
+            :cols => %w{in_flow out_flow value source},
+            :editable => %w{value source},
+            :rules => nil } %>
     </div>
   </div>
 </div>
 
 <div class="clear"></div>
 
-<div class="grid_6">
+<div class="grid_12">
   <div class="box">
-    <h2>Flow list</h2>
-    <div class="block"">
-    <% form_tag(technology_path(@technology), :method => "put") do %>
-           <table class="table_flows">
-          <thead><tr><th>Inflows</th><th>Outflows</th></tr></thead>
-          <tbody><tr><td>
-                <% @technology.in_flows.each do |f| %>
-                  <input type="checkbox" name="f<%=f.id%>" />
-                  <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
-                    <%=f.id%>: <%= commodity_url_list f %></span>
-                  (<a href="#" onclick="edit_flow('In flow',<%=f.id%>)">edit</a>)<br />
-                <% end -%><br />
-                + <a href="#" onclick="add_flow('In flow')">Add inflow</a></td><td>
-                <% @technology.out_flows.each do |f| %>
-                  <input type="checkbox" name="f<%=f.id%>" />
-                  <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
-                    <%=f.id%>: <%= commodity_url_list f %></span>
-                        (<a href="#" onclick="edit_flow('Out flow',<%=f.id%>)">edit</a>)<br />
-                <% end -%><br />
-                + <a href="" onclick="add_flow('Out flow')">Add outflow</a></td>
-            </tr></tbody>
-        </table>
-        <select name="do">
-          <option value="set_act_flo">Set activity flow</option>
-          <option value="delete_flo">Delete checked flow(s)</option>
-        </select>
-        <%= submit_tag "OK"%>
-      <% end %>
+    <h2>Parameters</h2>
+    <div class="block">
+
+      <%= render :partial => 'shared/parameter_table',
+            :locals => {:object => @technology,
+            :pid => "param",
+            :request_path => technology_path(@technology),
+            :parameters => %w{act_flo flo_bnd_lo flo_bnd_fx flo_bnd_up flo_share_lo flo_share_fx flo_share_up life avail cap_act cost_vom cost_fom cost_icap cost_delivery avail_factor peak_prod fixed_cap act_bnd_lo act_bnd_fx act_bnd_up cap_bnd_lo cap_bnd_fx cap_bnd_up icap_bnd_lo icap_bnd_fx icap_bnd_up},
+            :cols => %w{parameter flow commodity time_slice year value source},
+            :editable => %w{value source},
+            :rules =>  {"=act_flo" => %w{flow time_slice year},
+                       ">flo_bnd" => %w{commodity},
+                       ">flo_share" => %w{time_slice year},
+                       "=life" => %w{flow commodity time_slice year},
+                       "=avail" => %w{flow commodity time_slice year},
+                       "=cap_act" => %w{flow commodity time_slice year} }} %>
     </div>
   </div>
 </div>
+
+<div class="clear"></div>
 
 <div class="grid_6">
   <div class="box">
@@ -170,75 +254,6 @@ function edit_flow(flow_type,id)
 
 <div class="clear"></div>
 
-<div class="grid_12">
-  <div class="box">
-    <h2>Parameters</h2>
-    <div class="block">
-      <h4>Efficiency</h4>
-      <p>
-        <%= render :partial => 'shared/parameter_value_table',
-				   :locals => {:object => @technology,
-				               :pid => "eff",
-				               :request_path => edit_technology_path(@technology),
-				               :parameters => %w{eff_flo},
-                               :cols => %w{in_flow out_flow value source},
-							   :editable => %w{value source},
-                               :rules => nil } %>
-      </p>
-      <h4>Others flow parameters</h4>
-      <p>
-        <%= render :partial => 'shared/parameter_value_table',
-				   :locals => {:object => @technology,
-				               :pid => "flo",
-				               :request_path => edit_technology_path(@technology),
-				               :parameters => %w{act_flo flo_bnd_lo flo_bnd_fx flo_bnd_up flo_share_lo flo_share_fx flo_share_up},
-							   :cols => %w{parameter flow commodity time_slice year value source},
-							   :editable => %w{value source},
-                               :rules => { "=act_flo" => %w{flow time_slice year},
-                                           ">flo_bnd" => %w{commodity},
-                                           ">flo_share" => %w{time_slice year} }} %>
-      </p>
-      <h4>General Parameters</h4>
-      <p>
-        <%= render :partial => 'shared/parameter_value_table',
-				   :locals => {:object => @technology,
-				               :pid => "gen",
-				               :request_path => edit_technology_path(@technology),
-				               :parameters => %w{life avail cap_act},
-							   :cols => %w{parameter value source},
-							   :editable => %w{value source},
-                               :rules => nil} %>
-      </p>
-      <h4>Time-dependent Parameters</h4>
-      <p>
-       <%= render :partial => 'shared/parameter_value_table',
-				   :locals => {:object => @technology,
-				               :pid => "tdp",
-				               :request_path => edit_technology_path(@technology),
-				               :parameters => %w{cost_vom cost_fom cost_icap cost_delivery avail_factor peak_prod fixed_cap},
-							   :cols => %w{parameter location commodity time_slice year value source},
-							   :editable => %w{value source},
-                               :rules => {"=fixed_cap" => %w{commodity year},
-                                          "=peak_prod" => %w{location year},
-                                          "=avail_factor" => %w{location commodity},
-                                          "=cost_delivery" => %w{location},
-                                          "=cost_icap" => %w{location commodity time_slice},
-                                          "=cost_vom" => %w{location commodity time_slice},
-                                          "=cost_fom" => %w{location commodity time_slice} } } %>
-      </p>
-      <h4>Bounds Parameters</h4>
-      <p>
-               <%= render :partial => 'shared/parameter_value_table',
-				   :locals => {:object => @technology,
-				               :pid => "bnd",
-				               :request_path => edit_technology_path(@technology),
-				               :parameters => %w{act_bnd_lo act_bnd_fx act_bnd_up cap_bnd_lo cap_bnd_fx cap_bnd_up icap_bnd_lo icap_bnd_fx icap_bnd_up},
-							   :cols => %w{parameter location time_slice year value source},
-							   :editable => %w{value source},
-                               :rules => nil} %>
-      </p>
-    </div>
-  </div>
-</div>
+
 
 <div class="clear"></div>
