@@ -61,7 +61,7 @@ class CommoditiesController < ApplicationController
   def clone
     @commodity = Commodity.find(params[:id]).copy
     respond_to do |format|
-      format.html { redirect_to(commodities_path) }
+      format.html { redirect_to(edit_commodity_path(@commodity)) }
     end
   end
 

@@ -3,7 +3,7 @@ class Commodity < ActiveRecord::Base
   acts_as_identifiable :prefix => "c"
 
   has_and_belongs_to_many :flows
-  has_many :parameter_values
+  has_many :parameter_values, :dependent => :delete_all
   
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -65,13 +65,17 @@ class Commodity < ActiveRecord::Base
       name.succ!
     end
     c.name = name
-    c.sets = self.sets
+    c.description = self.description
+    c.save
+    c.set_list = self.set_list.join(", ")
     c.save
     self.parameter_values.each { |pv|
       attributes = pv.attributes
       attributes.delete(["commodity_id","created_at","updated_at"])
       c.parameter_values << ParameterValue.create(attributes)
     }
+    c.save
+    c
   end
 
 end

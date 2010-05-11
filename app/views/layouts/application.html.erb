@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="/favicon.ico" />
 
     <% stylesheet_link_tag "leaq", "jquery-ui", :cache => true %>
-    <%= stylesheet_link_tag "reset", "text", "grid", "layout", "nav", :cache => true %>
+    <%= stylesheet_link_tag "reset", "text", "grid", "layout", "nav", "jquery-ui", :cache => true %>
     <!--[if IE 6]><%= stylesheet_link_tag "ie6", :cache => true %><![endif]-->
     <!--[if IE 7]><%= stylesheet_link_tag "ie", :cache => true %><![endif]-->
 
@@ -23,7 +23,7 @@
     <%= javascript_include_tag 'jquery.blockui', 'jquery.datatables.min' %>
     <%= javascript_include_tag 'jquery-fluid16', 'jquery.jeditable' %>
     
-    <% javascript_include_tag 'jquery.jeditable', 'jquery.cookie', 'jquery.blockui' %>
+    <% javascript_include_tag 'jquery.cookie' %>
     <% javascript_include_tag 'application' %>
 
     <title><%=h (yield(:title)||"") + " - LEAQ web " %></title>

@@ -15,17 +15,17 @@ $(document).ready(function() {
 
       $('#parameter_table_<%= pid %>').dataTable({
 		"bPaginate": true,
-		"bLengthChange": true,
-		"bFilter": true,
+		"bLengthChange": <%= lenght_change %>,
+		"bFilter": <%= filter %>,
 		"bSort": true,
 		"bInfo": true,
-		"bAutoWidth": true,
-        "sDom": 'flrtip<"dataTables_action">'
+		"bAutoWidth": false,
+        "sDom": 'lfrtip<"dataTables_action">'
       });
       $("div.dataTables_action").html('<p><select name="do" >' +
-          '<option value="add_pv">Add parameter value</option>'+
-          '<option value="delete_pv">Delete checked parameter value(s)</option>'+
-          '</select>'+<%= submit_tag('Apply').to_json %> + '</p>');
+          '<option value="add_pv">Add value</option>'+
+          '<option value="delete_pv">Delete value(s)</option>'+
+          '</select>'+<%= submit_tag('OK').to_json %> + '</p>');
 
     <% if rules %>
           <% columns = cols - ["parameter"] %>
@@ -74,16 +74,16 @@ $(document).ready(function() {
     			<% elsif c=="technology" %>
         		    <td><%= pv.technology %></td>
         		<% elsif c=="in_flow" %>
-            		<td><%= commodity_url_list(pv.in_flow) %></td>
+            		<td><%= short_flow(pv.in_flow) %></td>
                 <% elsif c=="out_flow" %>
-            		<td><%= commodity_url_list(pv.out_flow) %></td>
+            		<td><%= short_flow(pv.out_flow) %></td>
                 <% elsif c=="flow" %>
-            		<td><%= commodity_url_list(pv.flow) %></td>
+            		<td><%= short_flow(pv.flow) %></td>
     		    <% else %>
 				    <td><span id="pv-<%= pv.id %>-<%= c %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
 				<% end %>
 			<% end %>
-		<td><input type="checkbox" name="cb<%= pv.id  %>" /></td>
+		<td class="check"><input type="checkbox" name="cb<%= pv.id  %>" /></td>
 		</tr>
 		<% end %>
         </tbody>
@@ -116,6 +116,28 @@ $(document).ready(function() {
         				<% end -%>
                     </optgroup>
                 </select></td>
+                <% elsif c=="commodity" %>
+        		<td>
+                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
+                    <%= options_for_select(object.commodities.map(&:name) ) %>
+                  </select>
+                </td>
+                <% elsif c=="time_slice" %>
+                <td>
+                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
+                    <%= options_for_select(%w{AN SD SN ID IN WN WD}) %>
+                  </select>
+                </td>
+                <% elsif c=="location" %>
+                <td>
+                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
+                    <%= options_for_select(object.locations.map(&:name)) %>
+                  </select>
+                </td>
+                <% elsif c=="year" %>
+                <td><input type="textcell" id="<%= pid %>_<%= c %>" name="pv[<%= c %>]" size="5"/></td>
+                <% elsif c=="value" %>
+                <td><input type="textcell" id="<%= pid %>_<%= c %>" name="pv[<%= c %>]" size="10"/></td>
 			    <% else %>
 				<td><input type="textcell" id="<%= pid %>_<%= c %>" name="pv[<%= c %>]"/></td>
 				<% end %>

@@ -55,6 +55,14 @@ class TechnologiesController < ApplicationController
     end
   end
 
+  # POST /technologies/1/clone
+  def clone
+    @technology = Technology.find(params[:id]).copy
+    respond_to do |format|
+      format.html { redirect_to(edit_technology_path(@technology)) }
+    end
+  end
+
   # PUT /technologies/1
   def update
     @technology = Technology.find(params[:id])
@@ -76,9 +84,21 @@ class TechnologiesController < ApplicationController
       respond_to do |format|
         format.js { render :json => value }
       end
+      return
     end
     # action on parameter_value
     case params[:do]
+    when "update"
+      @technology.update_attributes(params[:technology])
+      respond_to do |format|
+        if @technology.update_attributes(params[:technology])
+          flash[:notice] = 'Technology was successfully updated.'
+          format.html { redirect_to(edit_technology_path(@technology)) }
+        else
+          format.html { render :action => "edit" }
+        end
+      end
+      return
     when "delete_pv"
       ids = @technology.parameter_values.map(&:id).select{|i|params["cb#{i}"]}
       ParameterValue.destroy(ids)

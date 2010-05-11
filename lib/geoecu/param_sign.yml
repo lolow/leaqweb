@@ -110,7 +110,7 @@ imp_bnd_fx:
 - commodity
 cap_bnd_fx: 
 - period
-- location
+- locationđlife
 - technology
 flo_share_up: 
 - flow

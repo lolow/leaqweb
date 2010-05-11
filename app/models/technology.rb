@@ -2,10 +2,10 @@ class Technology < ActiveRecord::Base
   acts_as_taggable_on :sets
   
   has_and_belongs_to_many :locations
-  has_many :out_flows
-  has_many :in_flows
-  has_many :flows
-  has_many :parameter_values
+  has_many :out_flows, :dependent => :destroy
+  has_many :in_flows, :dependent => :destroy
+  has_many :flows, :dependent => :destroy
+  has_many :parameter_values, :dependent => :delete_all
   
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -29,6 +29,10 @@ class Technology < ActiveRecord::Base
       ParameterValue.create!(:parameter=>p,:technology=>self,:flow=>flow,:value=>0)
     end
   end
+
+  def commodities
+    self.flows.collect{|f| f.commodities}.flatten.uniq
+  end
   
   def parameter_values_for(parameters)
     parameters = [parameters] unless parameters.is_a? Array
@@ -42,6 +46,38 @@ class Technology < ActiveRecord::Base
 
   def to_s
     self.name
+  end
+
+  def copy
+    t = Technology.new
+    name = self.name + " 01"
+    while Technology.find_by_name(name)
+      name.succ!
+    end
+    t.name = name
+    t.description = description
+    t.set_list = self.set_list.join(', ')
+    t.save
+    self.parameter_values.each { |pv|
+      attributes = pv.attributes
+      attributes.delete(["technology_id","created_at","updated_at"])
+      t.parameter_values << ParameterValue.create(attributes)
+    }
+    t.save
+    self.flows.each { |f|
+      case f.type
+      when "InFlow"
+        f0 = InFlow.new
+      when "OutFlow"
+        f0 = OutFlow.new
+      end
+      f.commodities.each {|c|
+        f0.commodities << c
+      }
+      t.flows << f0
+    }
+    t.save
+    t
   end
   
 end
