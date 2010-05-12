@@ -163,7 +163,7 @@ class LeaqArchive
         csv << [f.id,f.class,f.technology_id,f.commodity_ids.join(' ')]
       end
 
-      headers = ["id","name","definition","default_value"]
+      headers = ["id","type","name","definition","default_value"]
       write_csv_into_zip(zipfile, Parameter,headers) do |p,csv|
         csv << p.attributes.values_at(*headers)
       end
@@ -247,10 +247,17 @@ class LeaqArchive
     end
 
     readline_zip(filename,Parameter) do |row|
-      h[:par][row["id"]] = Parameter.create!(:name => row["name"],
-                                       :definition => row["definition"],
-                                    :default_value => row["default_value"]
-                                            ).id
+      case row["type"]
+      when "DemandDriver"
+        param = DemandDriver.new
+      else
+        param = Parameter.new
+      end
+      param.name = row["name"]
+      param.definition = row["definition"]
+      param.default_value = row["default_value"]
+      param.save!
+      h[:par][row["id"]] = param.id
     end
 
     readline_zip(filename,ParameterValue) do |row|

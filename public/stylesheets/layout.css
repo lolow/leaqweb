@@ -671,3 +671,7 @@ table.dataTable td.center {
     font-weight:bold;
     background-color: #FFFF66;
 }
+
+input.db_file {
+    width:80%;
+}

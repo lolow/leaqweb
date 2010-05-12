@@ -1,4 +1,29 @@
 <% content_for :title, "Home" %>
+<div class="grid_3">
+  <div class="box">
+    <h2>Backup</h2>
+    <div class="block">
+      <p>
+        Download the database <%= link_to "backup.zip", "/backup.zip" %>
+      </p>
+    </div>
+  </div>
+  <div class="box">
+    <h2>Restore</h2>
+    <div class="block">
+      <p>
+        <% form_tag("/restore", :multipart => true) do %>
+            <p>
+            <%= label 'upload', 'db', 'Select database file:' %>
+            <%= file_field 'upload', 'db', :class => "db_file" %>
+            <%= submit_tag "Restore", :disable_with => "Please wait..." %>
+            </p>
+        <% end %>
+      </p>
+    </div>
+  </div>
+</div>
+
 <div class="grid_4">
   <div class="box">
     <h2>Outline</h2>

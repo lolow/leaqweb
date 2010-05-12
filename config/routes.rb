@@ -11,6 +11,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => "welcome"
 
+  map.connect '/backup.zip', :controller => "welcome", :action => "backup"
+  map.connect '/restore', :controller => "welcome", :action => "restore"
+
   map.connect ':controller/:action/:id'
   map.connect ':controller/:action/:id.:format'
 end
