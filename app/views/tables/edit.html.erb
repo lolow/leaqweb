@@ -21,11 +21,11 @@
       s+=" %in% ";
       if (filter[i].func == "start with") {
         s+= "grep('^" + filter[i].arg + "'," +
-            filter[i].variable + ",value=TRUE)";
+          filter[i].variable + ",value=TRUE)";
       }
       if (filter[i].func == "contain") {
         s+= "grep('" + filter[i].arg + "'," +
-            filter[i].variable + ",value=TRUE)";
+          filter[i].variable + ",value=TRUE)";
       }
       if (filter[i].func == "belong to") {
         s += "c(";
@@ -48,9 +48,9 @@
   }
   function add_cond(){
     new_cond = { "not"       : $('#new_not').val(),
-                 "func"      : $('#new_func').val(),
-                 "variable"  : $('#new_var').val(),
-                 "arg"       : $('#new_arg').val()};
+      "func"      : $('#new_func').val(),
+      "variable"  : $('#new_var').val(),
+      "arg"       : $('#new_arg').val()};
     if (new_cond.arg.length>0){
       filter.push(new_cond);
       display_filter_list();
@@ -60,106 +60,109 @@
   function display_filter_list(){
     $('.conditions_list').empty();
     last_row = "<tr>" +
-               "<td><select id=\"new_var\">" +
-               <%= options_for_select(Table::INDEX.invert).to_json %> +
-               "</select></td>" +
-               "<td>must <select id=\"new_not\">" +
-               <%= options_for_select(['','not ']).to_json %> + "</select> <select id=\"new_func\">" +
-               <%= options_for_select(['start with','contain','belong to']).to_json %> +
-               "<td><input type=\"text\" id=\"new_arg\" /></td>" +
-               "<td><a onclick='add_cond()'>Add</a></td>" +
-               "</select></td>" +
-               "</tr>";
+      "<td><select id=\"new_var\">" +
+<%= options_for_select(Table::INDEX.invert).to_json %> +
+      "</select></td>" +
+      "<td>must <select id=\"new_not\">" +
+<%= options_for_select(['','not ']).to_json %> + "</select> <select id=\"new_func\">" +
+<%= options_for_select(['start with','contain','belong to']).to_json %> +
+      "<td><input type=\"text\" id=\"new_arg\" /></td>" +
+      "<td><a class='action' onclick='add_cond()'>Add</a></td>" +
+      "</select></td>" +
+      "</tr>";
     $('.conditions_list').prepend(last_row);
     for(i=filter.length-1;i>=0;i--){
       row = "<tr>" +
-            "<td>" + variables[filter[i].variable] + "</td>" +
-            "<td>must " + filter[i].not + filter[i].func + "</td>" +
-            "<td>" + filter[i].arg + "</td>" +
-            "<td><a onclick='remove_cond(" + i + ")'>Remove</a></td>" +
-            "</tr>";
+        "<td>" + variables[filter[i].variable] + "</td>" +
+        "<td>must " + filter[i].not + filter[i].func + "</td>" +
+        "<td>" + filter[i].arg + "</td>" +
+        "<td><a class='action' onclick='remove_cond(" + i + ")'>Remove</a></td>" +
+        "</tr>";
       $('.conditions_list').prepend(row);
     }
   }
   $(function() {
     $("#rows, #choices, #columns").sortable({
-        items: 'li:not(.ui-state-focus)',
-        connectWith: '.table_definition',
-        dropOnEmpty: true,
-        stop: function(event, ui) {
-          var_r('rows');
-          var_r('columns');
-        }
+      items: 'li:not(.table_def_head)',
+      connectWith: '.table_def',
+      dropOnEmpty: true,
+      stop: function(event, ui) {
+        var_r('rows');
+        var_r('columns');
+      }
     });
     $("#rows, #choices, #columns").disableSelection();
-});
+  });
   $(document).ready(function() {
     display_filter_list();
   });
 </script>
 
-<% form_for(@table) do |f| %>
-  <%= f.error_messages %>
+<div class="grid_12">
+  <div class="box">
+    <h2>Edit table definition</h2>
+    <div class="block">
 
-  <p>
-    <%= f.label :name %><br />
-    <%= f.text_field :name %>
-  </p>
-  <p>
-    <%= f.label :aggregate %><br />
-    <%= f.select :aggregate, Table::AGGREGATES.collect{ |a| [a,a.downcase]  } %>
-  </p>
-  <p>
-    <%= f.label :variable %><br />
-    <%= f.select :variable, Table::VARIABLES.collect{ |a| [a,a] } %>
-  </p>
+      <% form_for(@table) do |f| %>
+        <%= f.error_messages %>
 
-  <p>
-    Table Definition
-  </p>
-  <%= f.hidden_field :rows %>
-  <%= f.hidden_field :columns %>
+        <p>
+          <%= f.label :name, 'Name: ' %>
+          <%= f.text_field :name, :size => 50 %>
+        </p>
+        <p>
+          <%= f.label :aggregate, 'Aggregate: ' %>
+          <%= f.select :aggregate, Table::AGGREGATES.collect{ |a| [a,a.downcase]  } %>
+          <%= f.label :variable, 'Variable: ' %>
+          <%= f.select :variable, Table::VARIABLES.collect{ |a| [a,a] } %>
+        </p>
 
-  <% choices = Table::INDEX %>
+        <p>
+          Columns/Rows (drag and drop the elements):
+          <%= f.hidden_field :rows %>
+          <%= f.hidden_field :columns %>
 
-  <ul id="choices" class="table_definition">
-    <li class="ui-state-focus" >Unused</li>
-    <% @table.unused.each do |i| %>
-      <li class="ui-state-default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
-    <% end %>
-  </ul>
+          <% choices = Table::INDEX %>
 
-  <ul id="rows" class="table_definition">
-    <li class="ui-state-focus" >Rows</li>
-    <% @table.rows.split('+').each do |i| %>
-      <li class="ui-state-default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
-    <% end %>
-  </ul>
+        <ul id="choices" class="table_def">
+          <li class="table_def_head" >Unused</li>
+          <% @table.unused.each do |i| %>
+            <li class="table_def_default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
+          <% end %>
+        </ul>
 
-  <ul id="columns" class="table_definition">
-    <li class="ui-state-focus" >Columns</li>
-    <% @table.columns.split('+').each do |i| %>
-      <li class="ui-state-default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
-    <% end %>
-  </ul>
+        <ul id="rows" class="table_def">
+          <li class="table_def_head" >Rows</li>
+          <% @table.rows.split('+').each do |i| %>
+            <li class="table_def_default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
+          <% end %>
+        </ul>
 
-<br clear="both" />
+        <ul id="columns" class="table_def">
+          <li class="table_def_head" >Columns</li>
+          <% @table.columns.split('+').each do |i| %>
+            <li class="table_def_default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
+          <% end %>
+        </ul>
+        </p>
+        <div class="clear"></div>
 
-  <p>
-    <%= f.label :filters %><br />
-    <%= f.hidden_field :filters %>
-  <table>
-    <thead>
-    <td>Variable</td><td>Function</td><td>Arguments</td><td>&nbsp;</td>
-    </thead>
-    <tbody class="conditions_list">
-    </tbody>
-  </table>
-  </p>
-  <p>
-    <%= f.submit 'Update' %>
-  </p>
-<% end %>
-
-<%= link_to 'Show', @table %> |
-<%= link_to 'Back', tables_path %>
+        <p>
+          <%= f.label :filters, 'Filters: ' %><br />
+          <%= f.hidden_field :filters %>
+        <table>
+          <thead>
+            <tr><th>Variable</th><th>Function</th><th>Arguments</th><th>&nbsp;</th></tr>
+          </thead>
+          <tbody class="conditions_list">
+          </tbody>
+        </table>
+        </p>
+        <p>
+          <%= f.submit 'Update' %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>

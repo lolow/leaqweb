@@ -87,6 +87,17 @@
 				</li>
 			  </ul>
             </li>
+             <li>
+			  <%= link_to 'AYLTP', "#" %>
+              <ul>
+                <li>
+                  <%= link_to 'Pollution episodes', "#" %>
+				</li>
+                <li>
+                  <%= link_to 'Simulations', "#" %>
+				</li>
+			  </ul>
+            </li>
             <li class="secondary">
               <% if user_signed_in? %>
                 <%= link_to 'Sign out', destroy_user_session_path %>

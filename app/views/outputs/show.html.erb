@@ -23,31 +23,30 @@
       <div id="request" class="block">
         <h4>Load a predefined table</h4>
         <% form_tag output_path(@output), :method => :put do %>
-        <p>
-          <%= select_tag "table[id]", options_for_select(@tables.map{|t|[t.name,t.id]}, params[:table][:id]) %>
-
-          <%= submit_tag 'Load and display' %>
-        </p>
+          <p>
+            <%= select_tag "table[id]", options_for_select(@tables.map{|t|[t.name,"#{t.id}"]}, :selected => "#{params[:table][:id]}") %>
+            <%= submit_tag 'Load and display' %>
+          </p>
         <% end %>
         <h4>Define the table</h4>
         <% form_tag output_path(@output), :method => :put do %>
-<p>
-          <%= hidden_field :table, :name, :value => "" %>
-          <%= hidden_field :table, :id, :value => 0 %>
+          <p>
+            <%= hidden_field :table, :name, :value => "" %>
+            <%= hidden_field :table, :id, :value => 0 %>
 
-          <%= label :table, :attribute %>
-          <%= select_tag "table[attribute]", options_for_select(Table::VARIABLES.collect{ |a| [a,a]}, params[:table][:attribute]) %>
+            <%= label :table, :aggregate %>
+            <%= select_tag "table[aggregate]", options_for_select(Table::AGGREGATES.collect{ |a| [a,a.downcase]}, :selected => params[:table][:aggregate]) %>
 
-          <%= label :table, :aggregate %>
-          <%= select_tag "table[aggregate]", options_for_select(Table::AGGREGATES.collect{ |a| [a,a.downcase]}, params[:table][:aggregate]) %>
+            <%= label :table, :attribute %>
+            <%= select_tag "table[attribute]", options_for_select(Table::VARIABLES.collect{ |a| [a,a]}, :selected => params[:table][:attribute]) %>
 
-          <%= label :table, :formula %>
-          <%= text_field :table, :formula, :value => params[:table][:formula] %>
+            <%= label :table, :formula %>
+            <%= text_field :table, :formula, :value => params[:table][:formula] %>
 
-          <%= label :table, :filter %>
-          <%= text_field :table, :filter, :value => params[:table][:filter] %>
-          <%= submit_tag 'Display' %>
-</p>
+            <%= label :table, :filter %>
+            <%= text_field :table, :filter, :value => params[:table][:filter] %>
+            <%= submit_tag 'Display' %>
+          </p>
         <% end %>
         <%= link_to "Reset table", @output %>
       </div>

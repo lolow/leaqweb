@@ -18,6 +18,7 @@ a {
 	color: #000;
 	font-weight:bold;
 	text-decoration: none;
+    cursor: pointer;
 }
 a:hover {
 	color:#333;
@@ -674,4 +675,32 @@ table.dataTable td.center {
 
 input.db_file {
     width:80%;
+}
+
+li.table_def_default {
+    cursor: pointer;
+    border:1px solid #bbb;
+    outline:medium none;
+	background:#eee;
+    padding:3px 6px;
+}
+
+li.table_def_head {
+    outline:medium none;
+    background:#555;
+	border:1px solid #555;
+    font-size:1em;
+	font-weight:normal;
+	text-transform:uppercase;
+	color:#fff;
+    padding:3px 6px;
+
+}
+
+#choices, #rows, #columns {
+list-style-type:none;
+margin:0 0 1em 0;
+padding:0;
+width:30%;
+float: left;
 }
