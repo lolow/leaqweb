@@ -4,7 +4,8 @@ class Table < ActiveRecord::Base
   validates_uniqueness_of :name
 
   AGGREGATES = %w{SUM MEAN}
-  VARIABLES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP}
+  VARIABLES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
+              %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND}
   INDEX = { "T" => "Time period",
             "S" => "Time slice",
             "L" => "Location",

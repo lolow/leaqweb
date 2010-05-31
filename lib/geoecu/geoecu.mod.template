@@ -433,6 +433,11 @@ for {t in T, dem in DEM}{
                                                                  avail_factor[t,s,p]*act_flo[p,dem]) - demand[t,dem];
 }
 
+#T,C
+for {t in T, c in DEM}{
+  printf "DEMAND,%s,ANNUAL,,,%s,%f\n", t, c, demand[t,c];
+}
+
 <?rb end ?>
 
 end;

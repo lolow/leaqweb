@@ -363,6 +363,11 @@ for {t in T,  l in L, p in P_MAP[l], c in C_MAP[p]}{
   printf "VAR_COM,%s,ANNUAL,%s,%s,%s,%f\n", t, l, p, c, sum{s in S} VAR_COM[t,s,l,p,c];
 }
 
+#T,C
+for {t in T, c in DEM}{
+  printf "DEMAND,%s,ANNUAL,,,%s,%f\n", t, c, demand[t,c];
+}
+
 #CHECK DEMAND
 for {t in T, dem in DEM}{
   printf "CHK_DEM,%s,%s,,,,%f\n", t, dem , sum{s in S, l in L, p in P_PROD[dem]} (fixed_cap[t,l,p]*fraction[s]*cap_act[p]*

@@ -240,7 +240,7 @@ class GeoecuSolver
     if hash[0]
       periods.each{|year|proj[period(year)]=hash[0]}
     else
-      # Projection des valeurs en chaque année
+      # Projection des valeurs toute les années
       val = hash[hash.keys.min]
       v = (first_year..last_year).collect{|y|
         if hash[y]
@@ -255,19 +255,20 @@ class GeoecuSolver
         proj[p] = v[(p-1)*period_duration,period_duration].sum / period_duration
       }
       # Interpolation
-      if type == :interpolation || type == :extrapolation
-        (p_k.first..p_k.last).inject(-1) { |i,p|
+      if type == "interpolation" || type == "extrapolation"
+        (p_k.first..p_k.last).inject(-1) { |cur,p|
           if proj[p]
-            i += 1
+            cur += 1 # slide cursor position
           else
-            proj[p] = interpolate(p_k[i],p_k[i+1],proj[p_k[i]],proj[p_k[i+1]],p)
+            proj[p] = interpolate(p_k[cur],p_k[cur+1],proj[p_k[cur]],proj[p_k[cur+1]],p)
+            cur      # return cursor position
           end
         }
       end
       # Extrapolation
-      if type == :extrapolation
+      if type == "extrapolation"
         (1..p_k.first-1).each{|x|proj[x]=proj[p_k.first]} unless p_k.first == 1
-        (p_k.last+1..nb_periods).each{|x|proj[x]=proj[p_k.last]} unless p_k.last ==  9
+        (p_k.last+1..nb_periods).each{|x|proj[x]=proj[p_k.last]} unless p_k.last == nb_periods
       end
     end
     proj

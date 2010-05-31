@@ -40,7 +40,7 @@ class OutputsController < ApplicationController
   def csv
     @output = Output.find(params[:id])
     respond_to do |format|
-      format.html { render :text => File.read(@output.csv) }
+      format.html { render :text => File.read(@output.file('csv')) }
     end
   end
 
