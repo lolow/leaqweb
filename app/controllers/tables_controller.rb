@@ -45,10 +45,8 @@ class TablesController < ApplicationController
       if @table.save
         flash[:notice] = 'Table was successfully created.'
         format.html { redirect_to(@table) }
-        format.xml  { render :xml => @table, :status => :created, :location => @table }
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @table.errors, :status => :unprocessable_entity }
       end
     end
   end

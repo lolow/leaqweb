@@ -1,0 +1,68 @@
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+              	
+    $('.edit').editable(<%= request_path.to_json %>,{
+        style   : 'inherit',
+        width   : "none",
+        height  : 20,
+        method  : "PUT",
+        id      : 'field',
+        indicator : <%= image_tag("spinner.gif").to_json %>,
+        submitdata: {
+          authenticity_token: <%= form_authenticity_token.to_json %>
+        }
+      });
+
+      $('#driver_table').dataTable({
+		"bPaginate": false,
+		"bLengthChange": <%= lenght_change %>,
+		"bFilter": <%= filter %>,
+		"bSort": true,
+		"bInfo": true,
+		"bAutoWidth": false,
+        "sDom": 'lfrtip<"dataTables_action">'
+      });
+} );
+</script>
+
+
+<% form_tag(request_path,:method => "put") do %>
+
+	<table id="driver_table" class="dataTable">
+		<thead>
+          <tr>
+			<% cols.each do |c| %><th><%= c.humanize %></th><% end %><th></th>
+          </tr>
+        </thead>
+
+		<tbody>             
+		
+		<% driver.parameter_values.each do |pv| %>
+		<tr>
+			<% cols.each do |c| %>
+				<td><span id="pv-<%= pv.id %>-<%= c %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
+			<% end %>
+		<td class="check"><input type="checkbox" name="cb<%= pv.id  %>" /></td>
+		</tr>
+		<% end %>
+        </tbody>
+        <tfoot>
+		
+		<tr>
+			<% cols.each do |c| %>
+                <% if c=="year" %>
+                <td><input type="textcell" id="<%= c %>" name="pv[<%= c %>]" size="5"/></td>
+                <% elsif c=="value" %>
+                <td><input type="textcell" id="<%= c %>" name="pv[<%= c %>]" size="10"/></td>
+			    <% else %>
+				<td><input type="textcell" id="<%= c %>" name="pv[<%= c %>]"/></td>
+				<% end %>
+			<% end %>
+            <td><%= submit_tag('Add') %></td>
+		</tr>
+		</tfoot>
+		
+	</table>
+	
+<% end %>
+<div class="clear"></div>
