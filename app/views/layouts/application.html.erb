@@ -6,7 +6,7 @@
     <meta name="author" content="Laurent Drouet" />
     <link rel="shortcut icon" href="/favicon.ico" />
 
-    <% stylesheet_link_tag "leaq", "jquery-ui", :cache => true %>
+    <% stylesheet_link_tag "leaq", "jquery-ui", "jquery.jqplot.min", :cache => true %>
     <%= stylesheet_link_tag "reset", "text", "grid", "layout", "nav", "jquery-ui", :cache => true %>
     <!--[if IE 6]><%= stylesheet_link_tag "ie6", :cache => true %><![endif]-->
     <!--[if IE 7]><%= stylesheet_link_tag "ie", :cache => true %><![endif]-->
@@ -19,9 +19,10 @@
 	//]]>
       </script>
     <% end %>
+    <!--[if IE]><%= javascript_include_tag 'excanvas.min' %><![endif]-->
     <%= javascript_include_tag 'jquery.min', 'jquery-ui.min' %>
     <%= javascript_include_tag 'jquery.blockui', 'jquery.datatables.min' %>
-    <%= javascript_include_tag 'jquery-fluid16', 'jquery.jeditable' %>
+    <%= javascript_include_tag 'jquery-fluid16', 'jquery.jeditable', 'jquery.jqplot.min' %>
     
     <% javascript_include_tag 'jquery.cookie' %>
     <% javascript_include_tag 'application' %>

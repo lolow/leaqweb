@@ -14,7 +14,7 @@ $(document).ready(function() {
       });
 
       $('#driver_table').dataTable({
-		"bPaginate": false,
+		"bPaginate": true,
 		"bLengthChange": <%= lenght_change %>,
 		"bFilter": <%= filter %>,
 		"bSort": true,
@@ -22,6 +22,10 @@ $(document).ready(function() {
 		"bAutoWidth": false,
         "sDom": 'lfrtip<"dataTables_action">'
       });
+      $("div.dataTables_action").html('<p><select name="do" >' +
+          '<option value="add_pv">Add value</option>'+
+          '<option value="delete_pv">Delete value(s)</option>'+
+          '</select>'+<%= submit_tag('OK').to_json %> + '</p>');
 } );
 </script>
 
@@ -58,7 +62,7 @@ $(document).ready(function() {
 				<td><input type="textcell" id="<%= c %>" name="pv[<%= c %>]"/></td>
 				<% end %>
 			<% end %>
-            <td><%= submit_tag('Add') %></td>
+                <td></td>
 		</tr>
 		</tfoot>
 		

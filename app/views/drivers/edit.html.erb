@@ -1,5 +1,13 @@
 <% content_for :title, "Editing demand driver" %>
 
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+  $.jqplot('chartdiv',
+           <%= [@demand_driver.parameter_values.collect{|pv| [pv.year,pv.value]}].to_json %>,
+           {axes:{xaxis:{tickOptions:{formatString:'%d'}}}});
+} );
+</script>
+
 <div class="grid_3">
 
   <div class="box">
@@ -15,6 +23,13 @@
           <p><%= f.submit 'Update', :class => "button" %></p>
        </fieldset>
       <% end %>
+    </div>
+  </div>
+
+    <div class="box">
+    <h2>Preview</h2>
+    <div class="block">
+      <div id="chartdiv" style="height:200px;width:100%; "></div>
     </div>
   </div>
   

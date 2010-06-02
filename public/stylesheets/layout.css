@@ -621,7 +621,7 @@ table.dataTable td.center {
 }
 
 /* Pagination nested */
-.paginate_enabled_previous, .paginate_enabled_next {
+.paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
 	height: 16px;
 	width: 16px;
 	margin-left: 3px;
