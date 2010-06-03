@@ -14,9 +14,10 @@
       <p>
         <% form_tag("/restore", :multipart => true) do %>
             <p>
-            <%= label 'upload', 'db', 'Select database file:' %>
-            <%= file_field 'upload', 'db', :class => "db_file" %>
-            <%= submit_tag "Restore", :disable_with => "Please wait..." %>
+              <%= file_field 'upload', 'db', :class => "db_file" %>
+            </p>
+            <p>
+              <%= submit_tag "Restore", :disable_with => "Please wait..." %>
             </p>
         <% end %>
       </p>

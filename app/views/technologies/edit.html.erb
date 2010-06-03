@@ -1,59 +1,59 @@
 <% content_for :title, "Editing technology" %>
 
 <script type="text/javascript">
-$(document).ready(function() {
+  $(document).ready(function() {
     $('#add_commodity_flow').click(function() {
-        return !$('#sel_avail_commodity option:selected').clone().appendTo('#sel_flow_commodity');
+      return !$('#sel_avail_commodity option:selected').clone().appendTo('#sel_flow_commodity');
     });
     $('#remove_commodity_flow').click(function() {
-        return !$('#sel_flow_commodity option:selected').remove();
+      return !$('#sel_flow_commodity option:selected').remove();
     });
     $('#cancel').click(function() {
-            $.unblockUI();
-            return false;
-        }); 
-});
-function add_flow(flow_type){
+      $.unblockUI();
+      return false;
+    });
+  });
+  function add_flow(flow_type){
     $('#sel_flow_commodity').html("");
     $('#flow_editor_title').text('New ' + flow_type);
     $('#flow_editor_button').attr('value','Add');
     $('#flow_editor_button').click(function() {
       var com = $('#sel_flow_commodity option');
-        var s = "";
-        for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
-        $.ajax({url:'<%= flows_path %>',
-                type:'POST',
-                data:{'commodities':s.substring(0,s.length-1),
-                      'technology_id':<%= @technology.id %>,
-                      'type':flow_type},
-                async:false});
-        location.reload();
-        });
+      var s = "";
+      for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
+      $.ajax({url:'<%= flows_path %>',
+        type:'POST',
+        data:{'commodities':s.substring(0,s.length-1),
+          'technology_id':<%= @technology.id %>,
+          'type':flow_type},
+        async:false});
+      location.reload();
+    });
     $.blockUI({ message: $('#flow_editor'), css: { width: '500px', border: '0px', background: 'none' } });
-}
-function edit_flow(flow_type,id){
-	$.getJSON('<%= flows_path %>/' + id + '.js', function(j){
-        var options = "";
-        var c = j.flow.commodities;
-        for(var i = 0; i < c.length; i++) {
-            options += '<option>' + c[i].commodity.name + '</option>';
-        }
-        $('#sel_flow_commodity').html(options);
+  }
+  function edit_flow(flow_type,id){
+    $.getJSON('<%= flows_path %>/' + id + '.js', function(j){
+      var options = "";
+      var c = j.flow.commodities;
+      for(var i = 0; i < c.length; i++) {
+        options += '<option>' + c[i].commodity.name + '</option>';
+      }
+      $('#sel_flow_commodity').html(options);
     })
-	$('#flow_editor_title').text('Edit '+flow_type+' (' + id + ')');
+    $('#flow_editor_title').text('Edit '+flow_type+' (' + id + ')');
     $('#flow_editor_button').attr('value','Update');
     $('#flow_editor_button').click(function() {
       var com = $('#sel_flow_commodity option');
-        var s = "";
-        for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
-        $.ajax({url:'<%= flows_path %>/' + id,
-                type:'PUT',
-                data:{'commodities':s.substring(0,s.length-1)},
-                async:false});
-        location.reload();
-        });
-     $.blockUI({ message: $('#flow_editor'), css: { width: '500px', border: '0px', background: 'none' } });
-}
+      var s = "";
+      for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
+      $.ajax({url:'<%= flows_path %>/' + id,
+        type:'PUT',
+        data:{'commodities':s.substring(0,s.length-1)},
+        async:false});
+      location.reload();
+    });
+    $.blockUI({ message: $('#flow_editor'), css: { width: '500px', border: '0px', background: 'none' } });
+  }
 </script>
 
 <div class="grid_3">
@@ -61,26 +61,31 @@ function edit_flow(flow_type,id){
   <div class="box">
     <h2>ID card</h2>
     <div class="block">
-    <% form_for(@technology) do |f| %>
-      <%= f.error_messages %>
-      <fieldset class="idcard" >
+      <% form_for(@technology) do |f| %>
+        <%= f.error_messages %>
+        <fieldset class="idcard" >
           <p><%= f.label :name, 'Name:' %> <%= f.text_field :name %></p>
           <p><%= f.label :description, 'Description:' %>
-             <%= f.text_area :description, :rows => 2 %></p>
+            <%= f.text_area :description, :rows => 2 %></p>
           <p><%= f.label :sets, 'Sets:' %> <%=h @technology.set_list.join(", ") %></p>
           <p><%= f.label :places, 'Places:' %> <%=h @technology.locations.map(&:name).join(", ") %></p>
           <input type="hidden" name="do" value="update" />
           <p><%= f.submit 'Update', :class => "button" %></p>
-       </fieldset>
+        </fieldset>
       <% end %>
+      <p>Actions:
+        <%= link_to 'New', new_technology_path %>,
+        <%= link_to 'Clone', clone_technology_path, :confirm => 'Are you sure?', :method => :post %>,
+        <%= link_to 'Destroy', @technology, :confirm => 'Are you sure?', :method => :delete %>
+      </p>
     </div>
   </div>
 
   <div class="box">
     <h2>Flows</h2>
     <div class="block">
-    <% form_tag(technology_path(@technology), :method => "put") do %>
-           <table>
+      <% form_tag(technology_path(@technology), :method => "put") do %>
+        <table>
           <thead><tr><th>Inflows</th></tr></thead>
           <tbody>
             <tr>
@@ -128,24 +133,13 @@ function edit_flow(flow_type,id){
         </table>
 
         <p>
-        <select name="do">
-          <option value="set_act_flo">Set activity flow</option>
-          <option value="delete_flo">Delete checked flow(s)</option>
-        </select>
-        <%= submit_tag "OK"%>
+          <select name="do">
+            <option value="set_act_flo">Set activity flow</option>
+            <option value="delete_flo">Delete checked flow(s)</option>
+          </select>
+          <%= submit_tag "OK"%>
         </p>
       <% end %>
-    </div>
-  </div>
-
-  <div class="box">
-    <h2>Actions</h2>
-    <div class="block">
-      <p>
-        <%= link_to 'New', new_technology_path %>,
-        <%= link_to 'Clone', clone_technology_path, :confirm => 'Are you sure?', :method => :post %>,
-        <%= link_to 'Destroy', @technology, :confirm => 'Are you sure?', :method => :delete %>
-      </p>
     </div>
   </div>
 
@@ -157,110 +151,110 @@ function edit_flow(flow_type,id){
     <div class="block">
 
       <%= render :partial => 'shared/parameter_table',
-            :locals => {:object => @technology,
-            :pid => "eff_flo",
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => technology_path(@technology),
-            :parameters => %w{eff_flo },
-            :cols => %w{in_flow out_flow value source},
-            :editable => %w{value source},
-            :rules => nil } %>
-    </div>
-  </div>
-
-      <div class="box">
-    <h2>Flow constraints</h2>
-    <div class="block">
-      <%= render :partial => 'shared/parameter_table',
-            :locals => {:object => @technology,
-            :pid => "flo",
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => technology_path(@technology),
-            :parameters => %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
-                      %w{flo_share_lo flo_share_fx flo_share_up} +
-                      %w{peak_prod cost_delivery act_flo},
-            :cols => %w{parameter flow commodity time_slice year value source},
-            :editable => %w{value source},
-            :rules =>  {">flo_bnd" => %w{commodity},
-                       ">flo_share" => %w{time_slice year},
-                       "=peak_prod" => %w{flow year},
-                       "=cost_delivery" => %w{flow},
-                       "=act_flo" => %w{flow time_slice year}}} %>
-    </div>
-  </div>
-
-    <div class="box">
-      <h2>Fixed capacities</h2>
-    <div class="block">
-
-      <%= render :partial => 'shared/parameter_table',
-            :locals => {:object => @technology,
-            :pid => "cap",
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => technology_path(@technology),
-            :parameters => %w{fixed_cap},
-            :cols => %w{location time_slice year value source},
-            :editable => %w{value source},
-            :rules =>  nil } %>
-    </div>
-  </div>
-  
- <div class="box">
-    <h2>General</h2>
-    <div class="block">
-
-      <%= render :partial => 'shared/parameter_table',
-            :locals => {:object => @technology,
-            :pid => "gen",
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => technology_path(@technology),
-            :parameters => %w{act_flo life avail cap_act  avail_factor},
-            :cols => %w{parameter  time_slice year value source},
-            :editable => %w{value source},
-            :rules =>  {"=life" => %w{time_slice year},
-                       "=avail" => %w{time_slice year},
-                       "=cap_act" => %w{time_slice year} }} %>
+        :locals => {:object => @technology,
+        :pid => "eff_flo",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters => %w{eff_flo },
+        :cols => %w{in_flow out_flow value source},
+        :editable => %w{value source},
+        :rules => nil } %>
     </div>
   </div>
 
   <div class="box">
-      <h2>Costs</h2>
+    <h2>Flow constraints</h2>
+    <div class="block">
+      <%= render :partial => 'shared/parameter_table',
+        :locals => {:object => @technology,
+        :pid => "flo",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters => %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
+          %w{flo_share_lo flo_share_fx flo_share_up} +
+          %w{peak_prod cost_delivery act_flo},
+        :cols => %w{parameter flow commodity time_slice year value source},
+        :editable => %w{value source},
+        :rules =>  {">flo_bnd" => %w{commodity},
+          ">flo_share" => %w{time_slice year},
+          "=peak_prod" => %w{flow year},
+          "=cost_delivery" => %w{flow},
+          "=act_flo" => %w{flow time_slice year}}} %>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Fixed capacities</h2>
     <div class="block">
 
       <%= render :partial => 'shared/parameter_table',
-            :locals => {:object => @technology,
-            :pid => "cos",
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => technology_path(@technology),
-            :parameters => %w{cost_vom cost_fom cost_icap},
-            :cols => %w{parameter year value source},
-            :editable => %w{value source},
-            :rules => nil } %>
+        :locals => {:object => @technology,
+        :pid => "cap",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters => %w{fixed_cap},
+        :cols => %w{location time_slice year value source},
+        :editable => %w{value source},
+        :rules =>  nil } %>
     </div>
   </div>
-  
+
+  <div class="box">
+    <h2>General</h2>
+    <div class="block">
+
+      <%= render :partial => 'shared/parameter_table',
+        :locals => {:object => @technology,
+        :pid => "gen",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters => %w{act_flo life avail cap_act  avail_factor},
+        :cols => %w{parameter  time_slice year value source},
+        :editable => %w{value source},
+        :rules =>  {"=life" => %w{time_slice year},
+          "=avail" => %w{time_slice year},
+          "=cap_act" => %w{time_slice year} }} %>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2>Costs</h2>
+    <div class="block">
+
+      <%= render :partial => 'shared/parameter_table',
+        :locals => {:object => @technology,
+        :pid => "cos",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters => %w{cost_vom cost_fom cost_icap},
+        :cols => %w{parameter year value source},
+        :editable => %w{value source},
+        :rules => nil } %>
+    </div>
+  </div>
+
   <div class="box">
     <h2>Bounds</h2>
     <div class="block">
 
       <%= render :partial => 'shared/parameter_table',
-            :locals => {:object => @technology,
-            :pid => "bnd",
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => technology_path(@technology),
-            :parameters =>  %w{act_bnd_lo act_bnd_fx act_bnd_up} +
-               %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
-               %w{icap_bnd_lo icap_bnd_fx icap_bnd_up},
-            :cols => %w{parameter location time_slice year value source},
-            :editable => %w{value source},
-            :rules =>  {">cap_bnd" => %w{ time_slice},
-                        ">icap_bnd" => %w{ time_slice} }} %>
+        :locals => {:object => @technology,
+        :pid => "bnd",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters =>  %w{act_bnd_lo act_bnd_fx act_bnd_up} +
+          %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
+          %w{icap_bnd_lo icap_bnd_fx icap_bnd_up},
+        :cols => %w{parameter location time_slice year value source},
+        :editable => %w{value source},
+        :rules =>  {">cap_bnd" => %w{ time_slice},
+          ">icap_bnd" => %w{ time_slice} }} %>
     </div>
   </div>
 

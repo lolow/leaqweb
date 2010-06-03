@@ -153,9 +153,9 @@ class LeaqArchive
                t.location_ids.join(' ')]
       end
 
-      headers = ["id","name","description","sets"]
+      headers = ["id","name","description","sets","demand_driver_id","demand_elasticity"]
       write_csv_into_zip(zipfile, Commodity, headers) do |c,csv|
-        csv << [c.id,c.name,c.description,c.set_list.join(',')]
+        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver,c.demand_elasticity]
       end
 
       headers = ["id","type","technology_id","commodities"]
@@ -226,9 +226,25 @@ class LeaqArchive
       h[:tec][row["id"]] = t.id
     end
 
+    readline_zip(filename,Parameter) do |row|
+      case row["type"]
+      when "DemandDriver"
+        param = DemandDriver.new
+      else
+        param = Parameter.new
+      end
+      param.name = row["name"]
+      param.definition = row["definition"]
+      param.default_value = row["default_value"]
+      param.save!
+      h[:par][row["id"]] = param.id
+    end
+
     readline_zip(filename,Commodity) do |row|
       c = Commodity.create!(:name => row["name"],
-                     :description => row["description"])
+                     :description => row["description"],
+                     :demand_driver_id => h[:par][row["demand_driver_id"]],
+                     :demand_elasticity => row["demand_elasticity"])
       c.set_list = row["sets"]
       c.save
       h[:com][row["id"]] = c.id
@@ -244,20 +260,6 @@ class LeaqArchive
       when "OutFlow"
         h[:flo][row["id"]]=OutFlow.create!(attributes).id
       end
-    end
-
-    readline_zip(filename,Parameter) do |row|
-      case row["type"]
-      when "DemandDriver"
-        param = DemandDriver.new
-      else
-        param = Parameter.new
-      end
-      param.name = row["name"]
-      param.definition = row["definition"]
-      param.default_value = row["default_value"]
-      param.save!
-      h[:par][row["id"]] = param.id
     end
 
     readline_zip(filename,ParameterValue) do |row|

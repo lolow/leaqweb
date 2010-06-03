@@ -1,11 +1,12 @@
 <% content_for :title, "Editing demand driver" %>
 
 <script type="text/javascript" charset="utf-8">
-$(document).ready(function() {
-  $.jqplot('chartdiv',
-           <%= [@demand_driver.parameter_values.collect{|pv| [pv.year,pv.value]}].to_json %>,
-           {axes:{xaxis:{tickOptions:{formatString:'%d'}}}});
-} );
+  $(document).ready(function() {
+    xticks = <%=  (0..5).collect{|x| 10*x+2000}.to_json %>;
+    $.jqplot('chartdiv',
+<%= [@demand_driver.parameter_values.collect{|pv| [pv.year,pv.value]}].to_json %>,
+    {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
+  } );
 </script>
 
 <div class="grid_3">
@@ -13,26 +14,30 @@ $(document).ready(function() {
   <div class="box">
     <h2>ID card</h2>
     <div class="block">
-    <% form_for(@demand_driver) do |f| %>
-      <%= f.error_messages %>
-      <fieldset class="idcard" >
-          <p><%= f.label :name, 'Name:' %> <%= f.text_field :name %></p>
-          <p><%= f.label :definition, 'Definition:' %>
-             <%= f.text_area :definition, :rows => 2 %></p>
+      <% form_for(@demand_driver) do |f| %>
+        <%= f.error_messages %>
+        <fieldset class="idcard" >
+          <p><%= f.label :name, 'Name:' %><br /><%= f.text_field :name, :size=>nil %></p>
+          <p><%= f.label :definition, 'Definition:' %><br />
+            <%= f.text_area :definition, :rows => 2, :cols=>nil %></p>
           <input type="hidden" name="do" value="update" />
           <p><%= f.submit 'Update', :class => "button" %></p>
-       </fieldset>
+        </fieldset>
       <% end %>
+      <p>Actions:
+        <%= link_to 'New', new_demand_driver_path %>,
+        <%= link_to 'Destroy', @demand_driver, :confirm => 'Are you sure?', :method => :delete %>
+      </p>
     </div>
   </div>
 
-    <div class="box">
+  <div class="box">
     <h2>Preview</h2>
     <div class="block">
       <div id="chartdiv" style="height:200px;width:100%; "></div>
     </div>
   </div>
-  
+
 </div>
 
 <div class="grid_9">
@@ -41,13 +46,13 @@ $(document).ready(function() {
     <h2>Demand drivers values</h2>
     <div class="block">
       <%= render :partial => 'shared/driver_table',
-            :locals => {:driver => @demand_driver,
-            :lenght_change => "false",
-            :filter => "false",
-            :request_path => demand_driver_path(@demand_driver),
-            :cols => %w{year value source},
-            :editable => %w{value source}
-            } %>
+        :locals => {:driver => @demand_driver,
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => demand_driver_path(@demand_driver),
+        :cols => %w{year value source},
+        :editable => %w{value source}
+      } %>
     </div>
   </div>
 

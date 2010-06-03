@@ -1,10 +1,11 @@
 class Commodity < ActiveRecord::Base
-  acts_as_taggable_on :sets
+  acts_as_taggable_on :sets, :sectors
   acts_as_identifiable :prefix => "c"
 
   has_and_belongs_to_many :flows
   has_many :parameter_values, :dependent => :delete_all
-  
+  belongs_to :demand_driver, :class_name => Parameter
+
   validates_presence_of :name
   validates_uniqueness_of :name
 
@@ -28,6 +29,12 @@ class Commodity < ActiveRecord::Base
 
   def demand?
     self.set_list.include? "DEM"
+  end
+
+  def demand_values
+    return [] unless demand?
+    dm = Parameter.find_by_name('demand')
+    self.parameter_values.find(:all, :conditions=>{:parameter_id=>dm}).collect{|pv| [pv.year,pv.value]}
   end
 
   def parameter_values_for(parameters)

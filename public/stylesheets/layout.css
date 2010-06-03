@@ -329,6 +329,9 @@ fieldset p label {
 fieldset p input {
 	width:98%;
 }
+fieldset p textarea {
+	width:98%;
+}
 fieldset p select {
 	width:99%;
 }
