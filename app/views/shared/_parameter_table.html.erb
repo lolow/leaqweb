@@ -124,7 +124,7 @@ $(document).ready(function() {
                 </td>
                 <% elsif c=="time_slice" %>
                 <td>
-                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
+                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>]">
                     <%= options_for_select(%w{AN SD SN ID IN WN WD}) %>
                   </select>
                 </td>

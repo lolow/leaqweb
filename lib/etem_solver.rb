@@ -2,29 +2,19 @@ require 'tenjin'
 require 'yaml'
 require 'benchmark'
 
-class GeoecuSolver
+class EtemSolver
+  include Etem
 
-  # Options
-  DEF_OPTS = {:temp_path => "/tmp",
-              :model_path => File.join(RAILS_ROOT,'lib','geoecu'),
-              :debug => false,
-              :ignore_equations => [],
-              :write_output => true,
-              :period_duration => 5,
-              :nb_periods => 9,
-              :first_year => 2005
-             }.freeze
-
-  TIME_SLICES = %w{WD WN SD SN ID IN}
-  
   # Create a new environment
-  def initialize(opts={})
-    @opts = opts.reverse_merge(DEF_OPTS)
+  def initialize(token=nil,pid=0,opts={})
+    opts = update_etem_options(opts)
+    @token = token || (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
+    @pid = pid
   end
                                                                     
   # Solve the model and return pid
   def solve(opts={})
-    opts = opts.reverse_merge(DEF_OPTS)
+    opts = update_etem_options(opts)
     ["mod","dat"].each{|ext|copy_template(ext)}
 
     puts "Create context" if opts[:debug]
@@ -89,10 +79,10 @@ class GeoecuSolver
   def kill
     begin
       #glpsol
-      pids = `pidof -x glpsol`.split(" ").map(&:to_i).sort
+      pids = `pidof -x glpsoldot`.split(" ").map(&:to_i).sort
       Process.kill("SIGKILL",pids[0]) unless pids.empty?
       #wait the end of the script
-      Process.waitpid(@opts[:pid], 0) if @opts[:pid]>0
+      Process.waitpid(@pid, 0) if @pid>0
     rescue
       nil
     end
@@ -101,71 +91,47 @@ class GeoecuSolver
   def clean
     %w{mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
-
-  def signature
-    @signature ||= YAML.load_file(File.join(@opts[:model_path],'param_sign.yml'))
-  end
-    
-  def time_proj
-    @time_proj ||= YAML.load_file(File.join(@opts[:model_path],'param_proj_period.yml'))
-  end
-  
-  def first_year
-    @opts[:first_year]
-  end
-  
-  def last_year
-    @opts[:first_year]+@opts[:period_duration]*@opts[:nb_periods]-1
-  end
-  
-  def nb_periods
-    @opts[:nb_periods]
-  end
-  
-  def period_duration
-    @opts[:period_duration]
-  end
   
   # Extracts the context data for the generation
   def create_context(debug=false)
     c = Hash.new("")
 
-    if debug
-      def create_or_find_by_name(active_record,name)
-        active_record.create!(:name => name) rescue active_record.find_by_name(name)
-      end
-
-      # create debug location
-      l_dummy = create_or_find_by_name(Location,"dummy")
-
-      # create debug commodity
-      c_dummy = create_or_find_by_name(Commodity,"dummy")
-      c_dummy.set_list = "IMP"
-
-      # create debug commodity
-      p_eff_flo = Parameter.find_by_name("eff_flo")
-      p_flow_act = Parameter.find_by_name("flow_act")
-      pv_dummy = []
-      Technology.transaction {
-        Commodity.tagged_with("DEM").each { |dem|
-          t_dummy = create_or_find_by_name(Technology,"dummy_#{dem}")
-          t_dummy.locations = [l_dummy]
-          f0 = InFlow.create(:technology=>t_dummy)
-          f0.commodities = [c_dummy]
-          f1 = OutFlow.create(:technology=>t_dummy)
-          f1.commodities = [dem]
-          pv_dummy << ParameterValue.create!(:parameter=>p_eff_flo,
-                                             :in_flow=>f0,
-                                             :technology=>t_dummy,
-                                             :out_flow=>f1,
-                                             :value=>"1")
-          pv_dummy << ParameterValue.create!(:parameter=>p_flow_act,
-                                             :flow=>f0,
-                                             :technology=>t_dummy,
-                                             :value=>"0")
-        }
-      }
-    end
+#    if debug
+#      def create_or_find_by_name(active_record,name)
+#        active_record.create!(:name => name) rescue active_record.find_by_name(name)
+#      end
+#
+#      # create debug location
+#      l_dummy = create_or_find_by_name(Location,"dummy")
+#
+#      # create debug commodity
+#      c_dummy = create_or_find_by_name(Commodity,"dummy")
+#      c_dummy.set_list = "IMP"
+#
+#      # create debug commodity
+#      p_eff_flo = Parameter.find_by_name("eff_flo")
+#      p_flow_act = Parameter.find_by_name("flow_act")
+#      pv_dummy = []
+#      Technology.transaction {
+#        Commodity.tagged_with("DEM").each { |dem|
+#          t_dummy = create_or_find_by_name(Technology,"dummy_#{dem}")
+#          t_dummy.locations = [l_dummy]
+#          f0 = InFlow.create(:technology=>t_dummy)
+#          f0.commodities = [c_dummy]
+#          f1 = OutFlow.create(:technology=>t_dummy)
+#          f1.commodities = [dem]
+#          pv_dummy << ParameterValue.create!(:parameter=>p_eff_flo,
+#                                             :in_flow=>f0,
+#                                             :technology=>t_dummy,
+#                                             :out_flow=>f1,
+#                                             :value=>"1")
+#          pv_dummy << ParameterValue.create!(:parameter=>p_flow_act,
+#                                             :flow=>f0,
+#                                             :technology=>t_dummy,
+#                                             :value=>"0")
+#        }
+#      }
+#    end
 
     # sets generation
     c[:s_s]    = TIME_SLICES.join(" ")
@@ -210,69 +176,20 @@ class GeoecuSolver
       TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{f[ts]} "}
     end
 
-    if debug
-      #Destroy dummy elements
-      Commodity.transaction{
-        l_dummy.destroy
-        c_dummy.destroy
-        Commodity.tagged_with("DEM").each { |dem|
-          Technology.find_by_name("dummy_#{dem}").destroy
-        }
-        pv_dummy.each { |pv| pv.destroy }
-      }
-    end
+#    if debug
+#      #Destroy dummy elements
+#      Commodity.transaction{
+#        l_dummy.destroy
+#        c_dummy.destroy
+#        Commodity.tagged_with("DEM").each { |dem|
+#          Technology.find_by_name("dummy_#{dem}").destroy
+#        }
+#        pv_dummy.each { |pv| pv.destroy }
+#      }
+#    end
     
     c
   end                    
-
-  def period(year)
-    [[((year - first_year) / period_duration + 1).to_i,1].max,nb_periods].min
-  end
-
-  def periods
-    @periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
-  end
-
-  # Project (year,value) in the time periods of ETEM (1..nb_periods)
-  def projection(hash,type=nil)
-    proj = Hash.new
-    # Si l'année `0` est défini, on répète la valeur
-    if hash[0]
-      periods.each{|year|proj[period(year)]=hash[0]}
-    else
-      # Projection des valeurs toute les années
-      val = hash[hash.keys.min]
-      v = (first_year..last_year).collect{|y|
-        if hash[y]
-          val = hash[y]
-        else
-          val
-        end
-      }
-      # Calcul pour les seules périodes renseignées
-      p_k = hash.keys.collect{|x|period(x)}.uniq.sort
-      p_k.each{|p|
-        proj[p] = v[(p-1)*period_duration,period_duration].sum / period_duration
-      }
-      # Interpolation
-      if type == "interpolation" || type == "extrapolation"
-        (p_k.first..p_k.last).inject(-1) { |cur,p|
-          if proj[p]
-            cur += 1 # slide cursor position
-          else
-            proj[p] = interpolate(p_k[cur],p_k[cur+1],proj[p_k[cur]],proj[p_k[cur+1]],p)
-            cur      # return cursor position
-          end
-        }
-      end
-      # Extrapolation
-      if type == "extrapolation"
-        (1..p_k.first-1).each{|x|proj[x]=proj[p_k.first]} unless p_k.first == 1
-        (p_k.last+1..nb_periods).each{|x|proj[x]=proj[p_k.last]} unless p_k.last == nb_periods
-      end
-    end
-    proj
-  end
 
   # Returns the default value of the parameter
   def default_value_for(parameter)
@@ -293,11 +210,22 @@ class GeoecuSolver
     if signature[parameter].include?("period")
       values = Hash.new
       # Value are gathered by indexes other than period
-      pv.each{ |v|
-        key = parameter_value_indexes(parameter,v).join(" ")
-        values[key] = Hash.new if not values[key]
-        values[key][v.year] = v.value
-      }
+      case parameter
+      when "demand"
+        Commodity.tagged_with("DEM").each{|dem|
+          key = "T " + Commodity.pid(dem.id)
+          values[key] = Hash.new
+          dem.demand_values.each{|dv|
+            values[key][dv[0]] = dv[1]
+          }
+        }
+      else
+        pv.each{ |v|
+          key = parameter_value_indexes(parameter,v).join(" ")
+          values[key] = Hash.new if not values[key]
+          values[key][v.year] = v.value
+        }
+      end
       # Values are projected if necessary
       str = []
       values.each{ |key,k_values|
@@ -356,7 +284,7 @@ class GeoecuSolver
   end
 
   def copy_template(ext)
-    origin = File.join(@opts[:model_path],"geoecu.#{ext}.template")
+    origin = File.join(model_path,"etem.#{ext}.template")
     destination = template(ext)
     if !File.exist?(destination) || (File.ctime(origin)-File.ctime(destination))>0
       FileUtils.cp(origin,destination)
@@ -364,19 +292,11 @@ class GeoecuSolver
   end
 
   def template(ext)
-    File.join(@opts[:temp_path],"geoecu.#{ext}.template")
-  end
-
-  def token
-    @opts[:token] ||= (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
+    File.join(temp_path,"etem.#{ext}.template")
   end
 
   def file(ext)
-    File.join(@opts[:temp_path],"temp-#{token}.#{ext}")
-  end
-
-  def interpolate(x1,x2,y1,y2,x)
-    (x.to_f-x1) / (x2-x1) * (y2-y1) + y1
+    File.join(temp_path,"temp-#{@token}.#{ext}")
   end
   
   def say(message,debug)
@@ -389,7 +309,7 @@ class GeoecuSolver
 
   def run(*cmd)
     puts cmd
-    @opts[:pid] = fork do
+    @pid = fork do
       exec(*cmd)
       exit! 127
     end
@@ -397,7 +317,7 @@ class GeoecuSolver
 
   def command
     "echo Start: `date` > #{file("log")} " +
-    "&& glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} >> #{file("log")} " +
+    "&& glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} >> #{file("log")} " +
     "&& echo End: `date` >> #{file("log")} "
   end
     

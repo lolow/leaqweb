@@ -155,7 +155,7 @@ class LeaqArchive
 
       headers = ["id","name","description","sets","demand_driver_id","demand_elasticity"]
       write_csv_into_zip(zipfile, Commodity, headers) do |c,csv|
-        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver,c.demand_elasticity]
+        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.demand_elasticity]
       end
 
       headers = ["id","type","technology_id","commodities"]

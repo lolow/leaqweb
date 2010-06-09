@@ -20,46 +20,46 @@ class Solver < ActiveRecord::Base
   end
   
   def solve
-    self.pid = geoecu.solve
+    self.pid = etem.solve
     self.save
   end
   
   def log
-    geoecu.log
+    etem.log
   end
 
   def file(ext)
-    geoecu.file(ext)
+    etem.file(ext)
   end
 
   def time_used
-    geoecu.time_used
+    etem.time_used
   end
 
   def optimal?
-    geoecu.optimal?
+    etem.optimal?
   end
   
   def prepare_results
-    geoecu.prepare_results
+    etem.prepare_results
   end
 
   def has_files?
-    geoecu.has_files?
+    etem.has_files?
   end
 
   def update_status
-    complete! if solving? && geoecu.solved?
+    complete! if solving? && etem.solved?
   end
 
   private
 
-  def geoecu
-    @geoecu ||= GeoecuSolver.new(:token=>self.id, :pid=>self.pid)
+  def etem
+    @etem ||= EtemSolver.new(token=self.id, pid=self.pid)
   end
 
   def reset
-    geoecu.reset
+    etem.reset
   end
 
   def check_available_slots

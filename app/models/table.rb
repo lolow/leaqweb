@@ -5,7 +5,8 @@ class Table < ActiveRecord::Base
 
   AGGREGATES = %w{SUM MEAN}
   VARIABLES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
-              %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND}
+              %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
+              %w{C_PRICE}
   INDEX = { "T" => "Time period",
             "S" => "Time slice",
             "L" => "Location",

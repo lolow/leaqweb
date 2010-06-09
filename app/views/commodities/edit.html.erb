@@ -31,15 +31,15 @@
       <p>
         <% if @commodity.consumed_by.size > 0 %>
           Consumed by <%= pluralize(@commodity.consumed_by.size, 'technology') %>:
-          <%= select_tag "consumed_by", options_for_select(["Edit..."] + @commodity.consumed_by.map{|c|[c.name,c.id]}),
-            {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"} %>.
+          <%= collection_select(:consumed_by, :technology, @commodity.consumed_by, :id, :name, {:prompt => true},
+            {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"}) %>
         <% else %>
           Not consumed.
         <% end %><br />
         <% if @commodity.produced_by.size > 0 %>
           Produced by <%= pluralize(@commodity.produced_by.size, 'technology') %>:
-          <%= select_tag "produced_by", options_for_select(["Edit..."] + @commodity.produced_by.map{|c|[c.name,c.id]}),
-            {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"} %>.
+          <%= collection_select(:produced_by, :technology, @commodity.produced_by, :id, :name, {:prompt => true},
+            {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"}) %>
         <% else %>
           Not produced.
         <% end %>
@@ -50,19 +50,18 @@
 </div>
 
 <% if @commodity.demand? %>
-<script type="text/javascript" charset="utf-8">
-  $(document).ready(function() {
-    xticks = <%=  (0...10).collect{|x| 5*x+2005}.to_json %>;
-    $.jqplot('chartdiv',
-<%= [@commodity.demand_values].to_json %>,
-    {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
-  } );
-</script>
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+      xticks = <%=  (0...10).collect{|x| 5*x+2005}.to_json %>;
+      $.jqplot('chartdiv',
+  <%= [@commodity.demand_values].to_json %>,
+      {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
+    } );
+  </script>
   <div class="grid_9">
     <div class="box">
       <h2>Demand definition</h2>
       <div class="block">
-
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @commodity,
           :pid => "param",
@@ -79,8 +78,24 @@
     </div>
     <div class="box">
       <h2>Demand Projection</h2>
-      <div class="block">
-        <div id="chartdiv" style="height:200px;width:90%;margin:auto;"></div>
+      <div class="block" >
+        <div class="block" id="demand_projection">
+          <% form_for(@commodity) do |f| %>
+            <%= f.error_messages %>
+            <fieldset class="demand_projection" >
+              <p><%= f.label :demand_driver_id, 'Follow demand driver:' %>
+                <%=  f.collection_select(:demand_driver_id, DemandDriver.all, :id, :name, {:include_blank=>true}) %>
+                <%= f.label :demand_elasticity, 'Demand elasticity:', :disabled => (@commodity.demand_driver_id ? nil: "disabled") %>
+                <%= f.text_field :demand_elasticity, :size=>nil, :class=>'demand_elasticity', :disabled => (@commodity.demand_driver_id ? nil: "disabled") %>
+                <input type="hidden" name="do" value="update" />
+                <%= f.submit 'Update', :class => "button" %></p>
+            </fieldset>
+          <% end %>
+        </div>
+
+        <div class="block" id="demand_graph">
+          <div id="chartdiv" style="height:200px;"></div>
+        </div>
       </div>
     </div>
   </div>

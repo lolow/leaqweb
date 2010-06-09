@@ -345,6 +345,22 @@ fieldset.idcard p input.button {
     width:40%;
 }
 
+fieldset.demand_projection p label {
+    width:25%;
+}
+fieldset.demand_projection p select {
+    width:30%;
+}
+fieldset.demand_projection p input {
+    width:10%;
+}
+
+fieldset.demand_projection p input.button {
+    width:10%;
+}
+
+
+
 fieldset.login p label {
 	float:left;
 	line-height:2em;

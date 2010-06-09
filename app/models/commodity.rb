@@ -1,4 +1,6 @@
 class Commodity < ActiveRecord::Base
+  include Etem
+  
   acts_as_taggable_on :sets, :sectors
   acts_as_identifiable :prefix => "c"
 
@@ -34,7 +36,21 @@ class Commodity < ActiveRecord::Base
   def demand_values
     return [] unless demand?
     dm = Parameter.find_by_name('demand')
-    self.parameter_values.find(:all, :conditions=>{:parameter_id=>dm}).collect{|pv| [pv.year,pv.value]}
+    dv =
+    if self.demand_driver_id
+      update_etem_options
+      dv =  self.parameter_values.find(:first,
+               :conditions=>{:parameter_id=>dm,:year=>first_year})
+      base_year_value = dv ? dv.value : 0
+      driver_values=ParameterValue.find(:all,
+              :conditions => {:parameter_id=>self.demand_driver_id},
+              :order => :year).collect{|pv| [pv.year,pv.value]}
+      demand_projection(driver_values,base_year_value,self.demand_elasticity)
+    else
+      self.parameter_values.find(:all,
+               :conditions=>{:parameter_id=>dm},
+               :order => :year).collect{|pv| [pv.year,pv.value]}
+    end
   end
 
   def parameter_values_for(parameters)

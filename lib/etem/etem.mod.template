@@ -417,6 +417,11 @@ for {t in T, c in EXP}{
   printf "VAR_EXP;%s;ANNUAL;;;%s;%f\n", t, c, sum {s in S}VAR_EXP[t,s,c];
 }
 
+#T, S, C
+for {t in T, s in S, c in C}{
+  printf "C_PRICE,%s,%s,,,%s,%f\n", t, s, c, EQ_COMBAL[t,s,c].dual;
+}
+
 #T,S,L,P,C
 for {t in T, s in S, l in L, p in P_MAP[l], c in C_MAP[p]}{
   printf "VAR_COM,%s,%s,%s,%s,%s,%f\n", t, s, l, p, c, VAR_COM[t,s,l,p,c];
