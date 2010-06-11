@@ -65,13 +65,17 @@
             <li>
 			  <%= link_to 'ETEM', "#" %>
               <ul>
-
                 <li>
-                  <%= link_to 'Solver...', solver_index_path %>
+                  <%= link_to 'Solver', solver_index_path %>
 				</li>
                 <li>
                   <%= link_to 'Results', outputs_path %>
 				</li>
+                <li>
+                  <%= link_to 'General Parameters', :controller => 'etem',
+                                                    :action => 'parameters' %>
+				</li>
+
 				<li>
 				  <%= link_to 'Predefined tables', tables_path %>
 				</li>

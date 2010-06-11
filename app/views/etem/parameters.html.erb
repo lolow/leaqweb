@@ -1,0 +1,26 @@
+<% content_for :title, "Editing general parameters" %>
+
+<div class="grid_12">
+  <div class="box">
+    <div class="block">
+      <% form_tag :controller=> 'etem', :action => 'parameters' do %>
+      <fieldset class="login">
+        <legend>General parameters</legend>
+        <p>
+          <%= label_tag :base_year, 'Base year:' %>
+          <%= text_field_tag :base_year, params[:base_year] %>
+        </p>
+        <p>
+          <%= label_tag :nb_periods, 'Number of periods:' %>
+          <%= text_field_tag :nb_periods, params[:nb_periods] %>
+        </p>
+        <p>
+          <%= label_tag :period_length, 'Period duration (years):' %>
+          <%= text_field_tag :period_length, params[:period_length] %>
+        </p>
+        <%= submit_tag 'Update', :class => "confirm button" %>
+      </fieldset>
+      <% end -%>
+    </div>
+  </div>
+</div>

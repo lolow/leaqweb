@@ -28,19 +28,19 @@ module Etem
   end
 
   def first_year
-    @opts[:first_year]
+    @etem_first_year ||=  Parameter.find_by_name('base_year').default_value.to_i
   end
 
   def last_year
-    @opts[:first_year]+@opts[:period_duration]*@opts[:nb_periods]-1
+    first_year+period_duration*nb_periods-1
   end
 
   def nb_periods
-    @opts[:nb_periods]
+    @etem_nb_periods ||=  Parameter.find_by_name('nb_periods').default_value.to_i
   end
 
   def period_duration
-    @opts[:period_duration]
+    @etem_period_duration ||=  Parameter.find_by_name('period_length').default_value.to_i
   end
   
   def period(year)
@@ -48,7 +48,7 @@ module Etem
   end
 
   def periods
-    @periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
+    @etem_periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
   end
 
   def model_path
