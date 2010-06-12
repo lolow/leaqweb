@@ -1,29 +1,5 @@
 <% content_for :title, "Home" %>
-<div class="grid_3">
-  <div class="box">
-    <h2>Backup</h2>
-    <div class="block">
-      <p>
-        Download the database <%= link_to "backup.zip", "/backup.zip" %>
-      </p>
-    </div>
-  </div>
-  <div class="box">
-    <h2>Restore</h2>
-    <div class="block">
-      <p>
-        <% form_tag("/restore", :multipart => true) do %>
-            <p>
-              <%= file_field 'upload', 'db', :class => "db_file" %>
-            </p>
-            <p>
-              <%= submit_tag "Restore", :disable_with => "Please wait..." %>
-            </p>
-        <% end %>
-      </p>
-    </div>
-  </div>
-</div>
+
 
 <div class="grid_4">
   <div class="box">
@@ -45,6 +21,32 @@
         </ul>
       </li>
     </ul>
+    </div>
+  </div>
+</div>
+
+<div class="grid_8">
+  <div class="box">
+    <h2>Backup database</h2>
+    <div class="block">
+      <p>
+        Download the database <%= link_to "backup.zip", "/backup.zip" %>
+      </p>
+    </div>
+  </div>
+  <div class="box">
+    <h2>Restore database</h2>
+    <div class="block">
+      <p>
+        <% form_tag("/restore", :multipart => true) do %>
+            <p>
+              <%= file_field 'upload', 'db', :class => "db_file", :size => nil %>
+            </p>
+            <p>
+              <%= submit_tag "Restore", :disable_with => "Please wait..." %>
+            </p>
+        <% end %>
+      </p>
     </div>
   </div>
 </div>

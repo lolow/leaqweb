@@ -13,7 +13,7 @@
 
 <div class="grid_5">
   <div class="box"><h2>Information</h2>
-    <div class="block">
+    <div class="block" class="login">
       <% form_for resource_name, resource, :url => session_path(resource_name) do |f| -%>
         <fieldset>
           <p><%= f.label :email, "Email:" %> <%= f.text_field :email %></p>

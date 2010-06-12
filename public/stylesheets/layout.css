@@ -685,10 +685,6 @@ table.dataTable td.center {
     background-color: #FFFF66;
 }
 
-input.db_file {
-    width:80%;
-}
-
 li.table_def_default {
     cursor: pointer;
     border:1px solid #bbb;

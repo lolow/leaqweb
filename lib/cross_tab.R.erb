@@ -1,5 +1,4 @@
 library('reshape')
-library('R2HTML')
 <% unless File.exist?(@output.file("Renv")) %>
 data <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
 save.image(file="<%= @output.file("Renv") %>")
