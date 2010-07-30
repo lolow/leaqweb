@@ -79,6 +79,8 @@ $(document).ready(function() {
             		<td><%= short_flow(pv.out_flow) %></td>
                 <% elsif c=="flow" %>
             		<td><%= short_flow(pv.flow) %></td>
+                <% elsif c=="location" %>
+            		<td><%= pv.location %></td>
     		    <% else %>
 				    <td><span id="pv-<%= pv.id %>-<%= c %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
 				<% end %>
