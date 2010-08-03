@@ -120,7 +120,7 @@ $(document).ready(function() {
                 </select></td>
                 <% elsif c=="commodity" %>
         		<td>
-                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>_id]">
+                  <select id="<%= pid %>_<%= c %>" name="pv[<%= c %>]">
                     <%= options_for_select(object.commodities.map(&:name) ) %>
                   </select>
                 </td>

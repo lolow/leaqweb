@@ -1,4 +1,4 @@
-<% content_for :title, "Solver" %>
+<% content_for :title, "ETEM Solver" %>
 
 <% if @refresh %>
   <script type="text/javascript">
@@ -29,7 +29,6 @@
 <div class="grid_12">
   <% @solvers.each_with_index do |solver,i| %>
     <div class="box">
-      <h2>Job <%= solver.id %></h2>
       <div class="block">
         <p>
           Status: <%=h solver.current_state.name %>
@@ -59,15 +58,16 @@
       </div>
     </div>
   <% end %>
-  
+
+  <% if @solvers.size==0 %>
   <div class="box">
-    <h2>New job</h2>
     <div class="block">
       <% form_tag solver_index_path do %>
         <%=  error_messages_for 'new_solver', :header_message => 'Errors prohibited the solver to start', :message => nil  %>
-        <p><%= submit_tag 'Run Solver', :disable_with => 'Generating problem...' %></p>
+        <p><%= submit_tag 'Launch Solver', :disable_with => 'Generating problem...' %></p>
       <% end %>
     </div>
   </div>
+  <% end %>
 
 </div>

@@ -164,7 +164,7 @@
   </div>
 
   <div class="box">
-    <h2>Flow constraints</h2>
+    <h2>Flow parameters</h2>
     <div class="block">
       <%= render :partial => 'shared/parameter_table',
         :locals => {:object => @technology,
@@ -212,7 +212,7 @@
         :lenght_change => "false",
         :filter => "false",
         :request_path => technology_path(@technology),
-        :parameters => %w{act_flo life avail cap_act  avail_factor},
+        :parameters => %w{life avail cap_act  avail_factor},
         :cols => %w{parameter  time_slice year value source},
         :editable => %w{value source},
         :rules =>  {"=life" => %w{time_slice year},
@@ -266,7 +266,6 @@
   <div class="box">
     <h2 id="flow_editor_title">Flow Editor</h2>
     <div class="block">
-      <% form_tag({:action => "flow", :id => @technology}, :method => "post") do %>
         <p>
         <table>
           <thead><tr><th>Available commodities</th><th>Flow commodities</th></tr></thead>
@@ -305,7 +304,6 @@
           <%= submit_tag 'Add', :id => "flow_editor_button" %>
           <input type="button" id="cancel" value="Cancel" />
         </p>
-      <% end -%>
     </div>
   </div>
 </div>
