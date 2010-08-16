@@ -33,6 +33,14 @@ class Technology < ActiveRecord::Base
   def commodities
     self.flows.collect{|f| f.commodities}.flatten.uniq
   end
+
+  def outputs
+    self.out_flows.collect{|f| f.commodities}.flatten.uniq
+  end
+
+  def inputs
+    self.in_flows.collect{|f| f.commodities}.flatten.uniq
+  end
   
   def parameter_values_for(parameters)
     parameters = [parameters] unless parameters.is_a? Array
