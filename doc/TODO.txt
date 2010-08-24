@@ -1,0 +1,14 @@
+COLOR:
+
+/*
+Color summary
+xxxxxxx   : original samsara
+white     : #fff;
+background: #eee;    #AAAD3F;
+box       : #ddd;    #FF972D;
+heading   : #ccc;
+logo      : #aaa;    #FFC84A;
+main color: #333;    #2B6E3B;
+h2 a hover : #111;   #092326;
+link      : #000 ;
+*/
