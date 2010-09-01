@@ -41,14 +41,13 @@
     <table summary="Commodity list">
   <thead>
     <tr><th colspan="4" class="table-head">Commodities</th></tr>
-    <tr><th>Name</th><th>Description</th><th></th><th></th></tr>
+    <tr><th>Name</th><th>Description</th><th></th></tr>
   </thead>
   <tbody>
 <% @commodities.each do |commodity| %>
   <tr class="<%= cycle("even", "odd") -%>">
-    <td><%=h commodity.name %></td>
-    <td><%= truncate(h(commodity.description), :omission => "&hellip;", :length => 100) %></td>
-    <td><%= link_to 'Edit', edit_commodity_path(commodity) %></td>
+    <td><%= link_to (h commodity.name), edit_commodity_path(commodity)  %></td>
+    <td><%= link_to truncate(h(commodity.description), :omission => "&hellip;", :length => 100), edit_commodity_path(commodity) %></td>
     <td><%= link_to 'Destroy', commodity, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>

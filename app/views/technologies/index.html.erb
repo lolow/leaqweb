@@ -41,14 +41,13 @@
     <table summary="Technology list">
   <thead>
     <tr><th colspan="4" class="table-head">Technologies</th></tr>
-    <tr><th>Name</th><th>Description</th><th></th><th></th></tr>
+    <tr><th>Name</th><th>Description</th><th></th></tr>
   </thead>
   <tbody>
 <% @technologies.each do |technology| %>
   <tr class="<%= cycle("even", "odd") -%>">
-    <td><%=h technology.name %></td>
-    <td><%= truncate(h(technology.description), :omission => "&hellip;", :length => 100) %></td>
-    <td><%= link_to 'Edit', edit_technology_path(technology) %></td>
+    <td><%= link_to (h technology.name), edit_technology_path(technology) %></td>
+    <td><%= link_to truncate(h(technology.description), :omission => "&hellip;", :length => 100), edit_technology_path(technology) %></td>
     <td><%= link_to 'Destroy', technology, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
