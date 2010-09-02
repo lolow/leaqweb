@@ -146,6 +146,29 @@
 </div>
 
 <div class="grid_9">
+    <div class="box">
+    <h2>Input/Output [Preprocess]</h2>
+    <div class="block">
+
+      <%= render :partial => 'shared/parameter_table',
+        :locals => {:object => @technology,
+        :pid => "in_out",
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => technology_path(@technology),
+        :parameters => %w{input output},
+        :cols => %w{parameter in_flow out_flow commodity value source},
+        :editable => %w{value source},
+        :rules => nil } %>
+
+     <% form_tag(technology_path(@technology), :method => "put") do %>
+      <input type="hidden" name="do" value="preprocess_input_output" />
+      <%= submit_tag "Preprocess &raquo;"%>
+     <% end %>
+    </div>
+  </div>
+
+
   <div class="box">
     <h2>Efficiencies</h2>
     <div class="block">

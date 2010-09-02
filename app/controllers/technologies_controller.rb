@@ -88,6 +88,8 @@ class TechnologiesController < ApplicationController
     end
     # action on parameter_value
     case params[:do]
+    when "preprocess_input_output"
+      @technology.preprocess_input_output
     when "update"
       @technology.update_attributes(params[:technology])
       respond_to do |format|
