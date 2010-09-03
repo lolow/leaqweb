@@ -1,6 +1,6 @@
 class Commodity < ActiveRecord::Base
   include Etem
-  
+
   acts_as_taggable_on :sets, :sectors
   acts_as_identifiable :prefix => "c"
 
@@ -10,6 +10,8 @@ class Commodity < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :name
+
+  validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
 
   named_scope :activated, :conditions => {:activated => true}
 

@@ -1,6 +1,6 @@
 class CommoditiesController < ApplicationController
   before_filter :authenticate_user!
-  
+
   # GET /commodities
   def index
     filter = {:page => params[:page],

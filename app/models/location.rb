@@ -3,8 +3,8 @@ class Location < ActiveRecord::Base
 
   validates_uniqueness_of :name
   validates_presence_of :name
-  validates_format_of  :name , :with => /^[A-Za-z_0-9]*\z/, :message => "Cannot contain White Space"
-  
+  validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
+
   acts_as_identifiable :prefix => "l"
 
   def to_s
