@@ -96,43 +96,6 @@ class EtemSolver
   def create_context(debug=false)
     c = Hash.new("")
 
-#    if debug
-#      def create_or_find_by_name(active_record,name)
-#        active_record.create!(:name => name) rescue active_record.find_by_name(name)
-#      end
-#
-#      # create debug location
-#      l_dummy = create_or_find_by_name(Location,"dummy")
-#
-#      # create debug commodity
-#      c_dummy = create_or_find_by_name(Commodity,"dummy")
-#      c_dummy.set_list = "IMP"
-#
-#      # create debug commodity
-#      p_eff_flo = Parameter.find_by_name("eff_flo")
-#      p_flow_act = Parameter.find_by_name("flow_act")
-#      pv_dummy = []
-#      Technology.transaction {
-#        Commodity.tagged_with("DEM").each { |dem|
-#          t_dummy = create_or_find_by_name(Technology,"dummy_#{dem}")
-#          t_dummy.locations = [l_dummy]
-#          f0 = InFlow.create(:technology=>t_dummy)
-#          f0.commodities = [c_dummy]
-#          f1 = OutFlow.create(:technology=>t_dummy)
-#          f1.commodities = [dem]
-#          pv_dummy << ParameterValue.create!(:parameter=>p_eff_flo,
-#                                             :in_flow=>f0,
-#                                             :technology=>t_dummy,
-#                                             :out_flow=>f1,
-#                                             :value=>"1")
-#          pv_dummy << ParameterValue.create!(:parameter=>p_flow_act,
-#                                             :flow=>f0,
-#                                             :technology=>t_dummy,
-#                                             :value=>"0")
-#        }
-#      }
-#    end
-
     # sets generation
     c[:s_s]    = TIME_SLICES.join(" ")
     c[:s_l]    = id_list(Location.all)
@@ -175,19 +138,6 @@ class EtemSolver
     fill_dmd.each do |d|
       TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{f[ts]} "}
     end
-
-#    if debug
-#      #Destroy dummy elements
-#      Commodity.transaction{
-#        l_dummy.destroy
-#        c_dummy.destroy
-#        Commodity.tagged_with("DEM").each { |dem|
-#          Technology.find_by_name("dummy_#{dem}").destroy
-#        }
-#        pv_dummy.each { |pv| pv.destroy }
-#      }
-#    end
-    
     c
   end                    
 

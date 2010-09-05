@@ -4,7 +4,7 @@
 module Etem
 
   DEF_OPTS = {:temp_path => "/tmp",
-              :model_path => File.join(RAILS_ROOT,'lib','etem'),
+              :model_path => File.join(Rails.root,'lib','etem'),
               :debug => false,
               :ignore_equations => [],
               :write_output => true,

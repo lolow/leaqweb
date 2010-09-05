@@ -7,7 +7,7 @@
     <div class="block" id="search">
 
       <h5>By name</h5>
-      <% form_tag request.path, :method => 'get' do %>
+      <%= form_tag request.path, :method => 'get' do %>
       <p>
           <%= text_field_tag :search, params[:search], :class => "search text" %>
           <%= submit_tag "Filter", :class => "search button" %>
@@ -47,7 +47,7 @@
 <% @technologies.each do |technology| %>
   <tr class="<%= cycle("even", "odd") -%>">
     <td><%= link_to (h technology.name), edit_technology_path(technology) %></td>
-    <td><%= link_to truncate(h(technology.description), :omission => "&hellip;", :length => 100), edit_technology_path(technology) %></td>
+    <td><%= link_to truncate(h(technology.description), :omission => "...", :length => 100), edit_technology_path(technology) %></td>
     <td><%= link_to 'Destroy', technology, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>

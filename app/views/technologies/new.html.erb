@@ -1,8 +1,8 @@
 <% content_for :title, "New technology" %>
 
 <div class="grid_4">
-<% form_for(@technology) do |f| %>
-  <%= f.error_messages %>
+<%= form_for(@technology) do |f| %>
+  <%= render "shared/error_messages", :target => @technology %> 
   <fieldset class="login">
     <legend>Technology</legend>
     <p class="notice">Enter the following information.</p>

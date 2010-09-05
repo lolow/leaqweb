@@ -19,15 +19,14 @@
         <tr><th colspan="9" class="table-head">Results</th></tr>
         <tr>
           <th>Name</th>
-          <th></th><th></th><th></th>
+          <th></th><th></th>
         </tr>
       </thead>
       <tbody>
         <% @tables.each do |table| %>
           <tr>
-            <td><%=h table.name %></td>
+            <td><%= link_to table.name, edit_table_path(table) %></td>
             <td><%= link_to 'Clone', clone_table_path(table) %></td>
-            <td><%= link_to 'Edit', edit_table_path(table) %></td>
             <td><%= link_to 'Destroy', table, :confirm => 'Are you sure?', :method => :delete %></td>
           </tr>
         <% end %>

@@ -22,14 +22,14 @@
       <h2><a id="toggle-request" >Request definition</a></h2>
       <div id="request" class="block">
         <h4>Load a predefined table</h4>
-        <% form_tag output_path(@output), :method => :put do %>
+        <%= form_tag output_path(@output), :method => :put do %>
           <p>
             <%= select_tag "table[id]", options_for_select(@tables.map{|t|[t.name,"#{t.id}"]}, :selected => "#{params[:table][:id]}") %>
             <%= submit_tag 'Load and display' %>
           </p>
         <% end %>
         <h4>Define the table</h4>
-        <% form_tag output_path(@output), :method => :put do %>
+        <%= form_tag output_path(@output), :method => :put do %>
           <p>
             <%= hidden_field :table, :name, :value => "" %>
             <%= hidden_field :table, :id, :value => 0 %>

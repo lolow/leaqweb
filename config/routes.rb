@@ -1,19 +1,96 @@
-ActionController::Routing::Routes.draw do |map|
+Leaqweb::Application.routes.draw do |map|
 
-  map.resources :tables, :member => {:clone => :get}
-  map.resources :outputs, :except => [:edit], :member => { :import => :get, :csv => :get }
-  map.resources :solver, :except => [:edit]
-  map.resources :demand_drivers, :controller => :drivers
-  map.resources :technologies, :member => { :clone => :post }
-  map.resources :commodities, :member => { :clone => :post }
-  map.resources :flows
-  map.devise_for :users
+  devise_for :users
 
-  map.root :controller => "welcome"
+  resources :tables do  
+    member do
+      get :clone
+    end
+  end
 
-  map.connect '/backup.zip', :controller => "welcome", :action => "backup"
-  map.connect '/restore', :controller => "welcome", :action => "restore"
+  resources :outputs do  
+    member do
+      get :csv
+      get :import
+    end 
+  end
 
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+  resources :technologies do  
+    member do
+      post :clone
+    end  
+  end
+
+  resources :commodities do  
+    member do
+      post :clone
+    end
+  end
+
+  resources :flows
+  resources :solver
+  resources :demand_drivers
+  
+  match '/backup.zip' => 'welcome#backup'
+  match '/restore' => 'welcome#restore'
+  root :to => 'welcome#index'
+
+  match ':controller(/:action(/:id(.:format)))'
 end
+
+  # The priority is based upon order of creation:
+  # first created -> highest priority.
+
+  # Sample of regular route:
+  #   match 'products/:id' => 'catalog#view'
+  # Keep in mind you can assign values other than :controller and :action
+
+  # Sample of named route:
+  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
+  # This route can be invoked with purchase_url(:id => product.id)
+
+  # Sample resource route (maps HTTP verbs to controller actions automatically):
+  #   resources :products
+
+  # Sample resource route with options:
+  #   resources :products do
+  #     member do
+  #       get 'short'
+  #       post 'toggle'
+  #     end
+  #
+  #     collection do
+  #       get 'sold'
+  #     end
+  #   end
+
+  # Sample resource route with sub-resources:
+  #   resources :products do
+  #     resources :comments, :sales
+  #     resource :seller
+  #   end
+
+  # Sample resource route with more complex sub-resources
+  #   resources :products do
+  #     resources :comments
+  #     resources :sales do
+  #       get 'recent', :on => :collection
+  #     end
+  #   end
+
+  # Sample resource route within a namespace:
+  #   namespace :admin do
+  #     # Directs /admin/products/* to Admin::ProductsController
+  #     # (app/controllers/admin/products_controller.rb)
+  #     resources :products
+  #   end
+
+  # You can have the root of your site routed with "root"
+  # just remember to delete public/index.html.
+  # root :to => "welcome#index"
+
+  # See how all your routes lay out with "rake routes"
+
+  # This is a legacy wild controller route that's not recommended for RESTful applications.
+  # Note: This route will make all actions in every controller accessible via GET requests.
+  # match ':controller(/:action(/:id(.:format)))'

@@ -12,19 +12,19 @@ class Technology < ActiveRecord::Base
 
   validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
 
-  named_scope :activated, :conditions => {:activated => true}
+  scope :activated, :conditions => {:activated => true}
   
   acts_as_identifiable :prefix => "t"
   
   def flow_act
     p = Parameter.find_by_name("flow_act")
-    pv = p.parameter_values.find(:first,:conditions=>{:technology_id=>self})
+    pv = p.parameter_values.where(:technology_id=>self).first
     pv.flow
   end
 
   def flow_act=(flow)
     p = Parameter.find_by_name("flow_act")
-    pv = p.parameter_values.find(:first,:conditions=>{:technology_id=>self})
+    pv = p.parameter_values.where(:technology_id=>self).first
     if pv
       ParameterValue.update(pv.id,:flow=>flow)
     else
@@ -45,13 +45,9 @@ class Technology < ActiveRecord::Base
   end
   
   def parameter_values_for(parameters)
-    parameters = [parameters] unless parameters.is_a? Array
-    param_ids = Parameter.find(:all,
-      :conditions => ["name IN (?)",parameters],
-      :order => "name").map &:id
-    self.parameter_values.find(:all, 
-      :conditions => ["parameter_id IN (?)",param_ids],
-      :order => "year")
+    parameters = Array(parameters)
+    param_ids = Parameter.where("name IN (?)",parameters).order(:name)
+    self.parameter_values.where("parameter_id IN (?)",param_ids).order(:year)
   end
 
   def to_s
@@ -130,7 +126,7 @@ class Technology < ActiveRecord::Base
         #eff-flo
         efficiency = value[1].values.sum/value[0].values.sum
         param = Parameter.find_by_name("eff_flo")
-        pv = ParameterValue.find(:first,:conditions=>{:parameter_id=>param.id,:in_flow_id=>kk[0],:out_flow_id=>kk[1]})
+        pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?",param.id,kk[0],kk[1]).first 
         if pv
           pv.update_attributes(:value=>efficiency,:source=>"Preprocessed")
         else

@@ -1,15 +1,15 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
               	
-    $('.edit').editable(<%= request_path.to_json %>,{
+    $('.edit').editable(<%= raw request_path.to_json %>,{
         style   : 'inherit',
         width   : "none",
         height  : 20,
         method  : "PUT",
         id      : 'field',
-        indicator : <%= image_tag("spinner.gif").to_json %>,
+        indicator : <%= raw image_tag("spinner.gif").to_json %>,
         submitdata: {
-          authenticity_token: <%= form_authenticity_token.to_json %>
+          authenticity_token: <%= raw form_authenticity_token.to_json %>
         }
       });
 
@@ -25,7 +25,7 @@ $(document).ready(function() {
       $("div.dataTables_action").html('<p><select name="do" >' +
           '<option value="add_pv">Add value</option>'+
           '<option value="delete_pv">Delete value(s)</option>'+
-          '</select>'+<%= submit_tag('OK').to_json %> + '</p>');
+          '</select>'+<%= raw submit_tag('OK').to_json %> + '</p>');
 
     <% if rules %>
           <% columns = cols - ["parameter"] %>
@@ -52,7 +52,7 @@ $(document).ready(function() {
 </script>
 
 
-<% form_tag(request_path,:method => "put") do %>
+<%= form_tag(request_path,:method => "put") do %>
 
 	<table id="parameter_table_<%= pid %>" class="dataTable">
 		
@@ -82,7 +82,7 @@ $(document).ready(function() {
                 <% elsif c=="location" %>
             		<td><%= pv.location %></td>
     		    <% else %>
-				    <td><span id="pv-<%= pv.id %>-<%= c %>" <%= 'class="edit"' if editable.include? c %> ><%=h pv.attributes[c] %></span></td>
+				    <td><span id="pv-<%= pv.id %>-<%= c %>" class='<%= "edit" if editable.include? c %>'><%= pv.attributes[c] %></span></td>
 				<% end %>
 			<% end %>
 		<td class="check"><input type="checkbox" name="cb<%= pv.id  %>" /></td>
@@ -152,7 +152,6 @@ $(document).ready(function() {
 	</table>
 
 <div class="clear"></div>
-    	
 
 	<% if parameters.size==1 %>
 		<input type="hidden" id="<%= pid %>_parameter" name="pv[parameter]" value="<%= parameters[0] %>" />

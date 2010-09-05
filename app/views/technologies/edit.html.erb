@@ -61,8 +61,8 @@
   <div class="box">
     <h2>ID card</h2>
     <div class="block">
-      <% form_for(@technology) do |f| %>
-        <%= f.error_messages %>
+      <%= form_for(@technology) do |f| %>
+        <%= render "shared/error_messages", :target => @technology %> 
         <fieldset class="idcard" >
           <p><%= f.label :name, 'Name:' %> <%= f.text_field :name %></p>
           <p><%= f.label :description, 'Description:' %>
@@ -84,7 +84,7 @@
   <div class="box">
     <h2>Flows</h2>
     <div class="block">
-      <% form_tag(technology_path(@technology), :method => "put") do %>
+      <%= form_tag(technology_path(@technology), :method => "put") do %>
         <table>
           <thead><tr><th>Inflows</th></tr></thead>
           <tbody>
@@ -93,7 +93,7 @@
                 <% @technology.in_flows.each do |f| %>
                   <input type="checkbox" name="f<%=f.id%>" />
                   <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
-                    <%=f.id%>: <%= commodity_url_list f %>
+                    <%=f.id%>: <%= raw commodity_url_list(f) %>
                   </span>
                   (<a href="#" onclick="edit_flow('In flow',<%=f.id%>)">edit</a>)<br />
                 <% end -%>
@@ -116,7 +116,7 @@
                 <% @technology.out_flows.each do |f| %>
                   <input type="checkbox" name="f<%=f.id%>" />
                   <span class="<%= "flow_act" if f.flow_act_of? @technology %>">
-                    <%=f.id%>: <%= commodity_url_list f %>
+                    <%=f.id%>: <%= raw commodity_url_list(f) %>
                   </span>
                   (<a href="#" onclick="edit_flow('Out flow',<%=f.id%>)">edit</a>)<br />
                 <% end -%>
@@ -161,7 +161,7 @@
         :editable => %w{value source},
         :rules => nil } %>
 
-     <% form_tag(technology_path(@technology), :method => "put") do %>
+     <%= form_tag(technology_path(@technology), :method => "put") do %>
       <input type="hidden" name="do" value="preprocess_input_output" />
       <%= submit_tag "Preprocess &raquo;"%>
      <% end %>

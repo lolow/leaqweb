@@ -5,8 +5,8 @@
   <div class="box">
     <h2>ID card</h2>
     <div class="block">
-      <% form_for(@commodity) do |f| %>
-        <%= f.error_messages %>
+      <%= form_for(@commodity) do |f| %>
+        <%= render "shared/error_messages", :target => @commodity %> 
         <fieldset class="idcard" >
           <p><%= f.label :name, 'Name:' %><br />
             <%= f.text_field :name, :size=>nil %></p>
@@ -80,8 +80,8 @@
       <h2>Demand Projection</h2>
       <div class="block" >
         <div class="block" id="demand_projection">
-          <% form_for(@commodity) do |f| %>
-            <%= f.error_messages %>
+          <%= form_for(@commodity) do |f| %>
+            <%= render "shared/error_messages", :target => @commodity %> 
             <fieldset class="demand_projection" >
               <p><%= f.label :demand_driver_id, 'Follow demand driver:' %>
                 <%=  f.collection_select(:demand_driver_id, DemandDriver.all, :id, :name, {:include_blank=>true}) %>

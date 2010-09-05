@@ -10,7 +10,7 @@ class OutputsController < ApplicationController
   # GET /outputs/1
   def show
     @output = Output.find(params[:id])
-    @tables =  Table.find(:all,:order => :name )
+    @tables = Table.order(:name)
     params[:table] = Hash.new("")
     respond_to do |format|
       format.html { render :show }
@@ -20,7 +20,7 @@ class OutputsController < ApplicationController
   # PUT /outputs/1
   def update
     @output = Output.find(params[:id])
-    @tables = Table.find(:all,:order => :name )
+    @tables = Table.order(:name)
     if params[:table][:id].to_i>0
       t = Table.find(params[:table][:id])
       params[:table][:aggregate] = t.aggregate

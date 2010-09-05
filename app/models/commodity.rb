@@ -1,3 +1,5 @@
+require 'etem'
+
 class Commodity < ActiveRecord::Base
   include Etem
 
@@ -13,7 +15,7 @@ class Commodity < ActiveRecord::Base
 
   validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
 
-  named_scope :activated, :conditions => {:activated => true}
+  scope :activated, where(:activated => true)
 
   def out_flows
     self.flows.select{|f| f.is_a? OutFlow}
@@ -41,28 +43,21 @@ class Commodity < ActiveRecord::Base
     dv =
     if self.demand_driver_id
       update_etem_options
-      dv =  self.parameter_values.find(:first,
-               :conditions=>{:parameter_id=>dm,:year=>first_year})
+
+      dv = self.parameter_values.where("parameter_id = ? AND year = ?", dm, first_year).first      
       base_year_value = dv ? dv.value : 0
-      driver_values=ParameterValue.find(:all,
-              :conditions => {:parameter_id=>self.demand_driver_id},
-              :order => :year).collect{|pv| [pv.year,pv.value]}
+      
+      driver_values = ParameterValue.where(:parameter_id=>self.demand_driver_id).order(:year).collect{|pv| [pv.year,pv.value]}
       demand_projection(driver_values,base_year_value,self.demand_elasticity)
     else
-      self.parameter_values.find(:all,
-               :conditions=>{:parameter_id=>dm},
-               :order => :year).collect{|pv| [pv.year,pv.value]}
+      self.parameter_values.where(:parameter_id=>dm).order(:year).collect{|pv| [pv.year,pv.value]}
     end
   end
 
   def parameter_values_for(parameters)
-    parameters = [parameters] unless parameters.is_a? Array
-    param_ids = Parameter.find(:all,
-                               :conditions => ["name IN (?)",parameters],
-                               :order => "name").map &:id
-    self.parameter_values.find(:all,
-                               :conditions => ["parameter_id IN (?)",param_ids],
-                               :order => "year")
+    parameters = Array(parameters)
+    param_ids = Parameter.where("name IN (?)",parameters).order(:name).map(&:id)
+    self.parameter_values.where("parameter_id IN (?)",param_ids).order(:year)
   end
   
   def self.find_by_list_name(list)
@@ -76,7 +71,7 @@ class Commodity < ActiveRecord::Base
   def activate(bool)
     self.update_attributes!(:activated => bool)
     ParameterValue.transaction{
-      self.parameter_values.find(:all).each { |pv|
+      self.parameter_values.all.each { |pv|
         pv.activated = self.activated
         pv.save
       } rescue nil

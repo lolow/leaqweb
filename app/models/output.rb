@@ -28,7 +28,7 @@ class Output < ActiveRecord::Base
     @output = self
     @table = table
     File.delete(file("tab")) if File.exists?(file("tab"))
-    template = File.read(File.join(RAILS_ROOT,'lib','cross_tab.R.erb'))
+    template = File.read(File.join(Rails.root,'lib','cross_tab.R.erb'))
     f = Tempfile.new("R#{self.id}")
     f2 = Tempfile.new("S#{self.id}")
     text = ERB.new(template).result(binding)
@@ -55,7 +55,7 @@ class Output < ActiveRecord::Base
   private
 
   def path
-    File.join(RAILS_ROOT,'public','files','out',self.id.to_s)
+    File.join(Rails.root,'public','files','out',self.id.to_s)
   end
 
   def clear

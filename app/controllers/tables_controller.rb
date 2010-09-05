@@ -3,7 +3,7 @@ class TablesController < ApplicationController
 
   # GET /tables
   def index
-    @tables = Table.find(:all,:order => :name)
+    @tables = Table.order(:name)
     respond_to do |format|
       format.html # index.html.erb
     end

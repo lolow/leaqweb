@@ -16,6 +16,6 @@ class ParameterValue < ActiveRecord::Base
 
   validates_inclusion_of :time_slice, :in => %w(AN IN ID SN SD WN WD), :allow_nil => true
 
-  named_scope :activated, :conditions => {:activated => true}
+  scope :activated, :conditions => {:activated => true}
 
 end

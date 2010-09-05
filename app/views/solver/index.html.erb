@@ -10,7 +10,7 @@
   function import_res(id) {
     var sim_id = $('#sim_' +id+ ' option:selected')[0].value
     if(sim_id=="0"){
-      location.href=<%= new_output_path.to_json %>;
+      location.href=<%= raw new_output_path.to_json %>;
       return false;
     }
     $.blockUI({ message: '<b>Please wait...</b>',
@@ -31,7 +31,7 @@
     <div class="box">
       <div class="block">
         <p>
-          Status: <%=h solver.current_state.name %>
+          Status: <%= solver.current_state.name %>
           <%=h "but can't find temporary files, probably because they have been deleted."  if (solver.solved? && !solver.has_files?) %>
           <%=h "(#{solver.time_used} sec)" if (solver.solved? && solver.has_files?) %><br />
 
@@ -62,8 +62,7 @@
   <% if @solvers.size==0 %>
   <div class="box">
     <div class="block">
-      <% form_tag solver_index_path do %>
-        <%=  error_messages_for 'new_solver', :header_message => 'Errors prohibited the solver to start', :message => nil  %>
+      <%= form_tag solver_index_path do %>
         <p><%= submit_tag 'Launch Solver', :disable_with => 'Generating problem...' %></p>
       <% end %>
     </div>

@@ -7,7 +7,7 @@
     <div class="block" id="search">
 
       <h5>Name</h5>
-      <% form_tag request.path, :method => 'get' do %>
+      <%= form_tag request.path, :method => 'get' do %>
       <p>
           <%= text_field_tag :search, params[:search], :class => "search text" %>
           <%= submit_tag "Filter", :class => "search button" %>

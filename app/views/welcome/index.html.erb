@@ -38,7 +38,7 @@
     <h2>Restore database</h2>
     <div class="block">
       <p>
-        <% form_tag("/restore", :multipart => true) do %>
+        <%= form_tag("/restore", :multipart => true) do %>
             <p>
               <%= file_field 'upload', 'db', :class => "db_file", :size => nil %>
             </p>

@@ -1,0 +1,14 @@
+<% content_for :title, "New demand driver" %>
+
+<div class="grid_4">
+<%= form_for(@demand_driver) do |f| %>
+  <%= render "shared/error_messages", :target => @demand_driver %> 
+  <fieldset class="login">
+    <legend>Demand driver</legend>
+    <p class="notice">Enter the following information.</p>
+    <p> <%= f.label :name, 'Name:' %><%= f.text_field :name %></p>
+    <%= f.submit 'Create', :class => "confirm button" %>
+  </fieldset>
+<% end %>
+</div>
+<div class="clear"></div>

@@ -12,6 +12,13 @@ class SolverController < ApplicationController
       format.html
     end
   end
+  
+  # GET /solver
+  def show
+    respond_to do |format|
+      format.html {render 'index' }
+    end
+  end
 
   # POST /solver
   def create

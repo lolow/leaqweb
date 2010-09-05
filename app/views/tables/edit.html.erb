@@ -103,8 +103,8 @@
     <h2>Edit table definition</h2>
     <div class="block">
 
-      <% form_for(@table) do |f| %>
-        <%= f.error_messages %>
+      <%= form_for(@table) do |f| %>
+        <%= render "shared/error_messages", :target => @table %> 
 
         <p>
           <%= f.label :name, 'Name: ' %>

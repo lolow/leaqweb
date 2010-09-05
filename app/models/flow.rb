@@ -6,7 +6,6 @@ class Flow < ActiveRecord::Base
   has_and_belongs_to_many :commodities
   
   def flow_act_of?(technology)
-    Parameter.find_by_name("flow_act").parameter_values.
-              find(:first,:conditions=>{:technology_id=>technology,:flow_id=>self})
+    Parameter.find_by_name("flow_act").parameter_values.where("technology_id=? AND flow_id=?",technology,self).first
   end
 end

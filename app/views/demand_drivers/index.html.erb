@@ -1,0 +1,37 @@
+<% content_for :title, "Listing demand drivers" %>
+
+<div class="grid_3">
+
+  <div class="box">
+    <h2>Actions</h2>
+    <div class="block"">
+      <p><%= link_to 'Add a new demand driver', new_demand_driver_path %></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="grid_9">
+
+  <div class="box">
+    <table summary="Demand drivers list">
+  <thead>
+    <tr><th colspan="4" class="table-head">Demand drivers</th></tr>
+    <tr><th>Name</th><th>Definition</th><th></th><th></th></tr>
+  </thead>
+  <tbody>
+<% @demand_drivers.each do |demand_driver| %>
+  <tr class="<%= cycle("even", "odd") -%>">
+    <td><%= link_to (h demand_driver.name), edit_demand_driver_path(demand_driver) %></td>
+    <td><%= link_to truncate(h(demand_driver.definition), :omission => "&hellip;", :length => 100), edit_demand_driver_path(demand_driver) %></td>
+    <td><%= link_to 'Edit', edit_demand_driver_path(demand_driver) %></td>
+    <td><%= link_to 'Destroy', demand_driver, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<%= page_entries_info @demand_drivers %><br />
+<%= will_paginate @demand_drivers %>
+  </div>
+
+</div>
