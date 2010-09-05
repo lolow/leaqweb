@@ -23,7 +23,7 @@
 <% @demand_drivers.each do |demand_driver| %>
   <tr class="<%= cycle("even", "odd") -%>">
     <td><%= link_to (h demand_driver.name), edit_demand_driver_path(demand_driver) %></td>
-    <td><%= link_to truncate(h(demand_driver.definition), :omission => "&hellip;", :length => 100), edit_demand_driver_path(demand_driver) %></td>
+    <td><%= link_to truncate(h(demand_driver.definition), :omission => "...", :length => 100), edit_demand_driver_path(demand_driver) %></td>
     <td><%= link_to 'Edit', edit_demand_driver_path(demand_driver) %></td>
     <td><%= link_to 'Destroy', demand_driver, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>

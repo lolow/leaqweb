@@ -47,7 +47,7 @@
 <% @commodities.each do |commodity| %>
   <tr class="<%= cycle("even", "odd") -%>">
     <td><%= link_to (h commodity.name), edit_commodity_path(commodity)  %></td>
-    <td><%= link_to truncate(h(commodity.description), :omission => "&hellip;", :length => 100), edit_commodity_path(commodity) %></td>
+    <td><%= link_to truncate(h(commodity.description), :omission => "...", :length => 100), edit_commodity_path(commodity) %></td>
     <td><%= link_to 'Destroy', commodity, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
