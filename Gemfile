@@ -8,6 +8,7 @@ gem 'tenjin'
 gem 'mysql2'
 gem 'mongrel'
 gem 'workflow'
+gem 'mongrel'
 gem 'acts_as_audited'
 gem 'acts-as-taggable-on'
 gem 'will_paginate', "~> 3.0.pre2"
