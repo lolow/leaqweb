@@ -1,0 +1,13 @@
+.grid_3
+  =render :partial => 'shortcuts', :locals => { :page => :new }
+.grid_6
+  .box
+    %h2 New commodity
+    .block
+      = form_for(@commodity) do |f|
+        = render "shared/error_messages", :target => @commodity
+        %p
+          = f.label :name
+          = f.text_field :name
+          = f.submit 'Create', :class => "confirm button"
+.clear

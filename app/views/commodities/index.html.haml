@@ -1,0 +1,52 @@
+.grid_3
+
+  =render :partial => 'shortcuts', :locals => { :page => :index }
+  
+  .box
+    %h2
+      %a#toggle-search Filter
+    .block#search
+      %h5 Name
+      = form_tag request.path, :method => 'get' do
+        %p
+          = text_field_tag :search, params[:search], :class => "search text"
+          = submit_tag "Filter", :class => "search button"
+        = hidden_field_tag :page, 1
+      %h5 Set
+      %ul.menu
+        - @sets_cloud.each do |tag|
+          - c = "active" if tag.name==params[:set]
+          %li= link_to tag.name, {:controller => "commodities", :set => tag.name}, :class => c
+      = link_to "reset filter", commodities_path
+      
+  - if @last_visited.size > 0
+    .box
+      %h2 Last visited
+      .block
+      %p
+        - @last_visited.each do |item|
+          =link_to (h item.name), edit_commodity_path(item)
+          %br
+
+.grid_9
+
+  .box
+    %h2 Browse
+    %p
+      %table(summary="Commodity list")
+        %thead
+          %tr
+            %th Name
+            %th Description
+            %th
+        %tbody
+          - @commodities.each do |commodity|
+            %tr{ :class => cycle('even', 'odd') }
+              %td= link_to commodity.name, edit_commodity_path(commodity)
+              %td= link_to truncate(commodity.description, :omission => "...", :length => 100), edit_commodity_path(commodity)
+              %td= link_to 'Destroy', commodity, :confirm => 'Are you sure?', :method => :delete
+      = page_entries_info @commodities
+      %br
+      = will_paginate @commodities
+      
+.clear

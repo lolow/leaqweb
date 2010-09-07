@@ -1,0 +1,51 @@
+.grid_3
+  =render :partial => 'shortcuts', :locals => { :page => :edit }
+  .box
+    %h2 Commodity
+    .block
+      = form_for(@commodity) do |f|
+        = render "shared/error_messages", :target => @commodity
+        %fieldset.idcard
+          %p
+            = f.label :name, 'Name:'
+            %br
+            = f.text_field :name, :size=>nil
+            %br
+            = f.label :description, 'Description:'
+            %br
+            = f.text_area :description, :rows => 2, :cols=>nil
+            %br
+            = f.label :sets, 'Sets:'
+            = @commodity.set_list.join(", ")
+          %input{:type=>"hidden",:name=>"button",:class=>"button"}
+        %p
+          = link_to 'Duplicate,', clone_commodity_path, :confirm => 'Are you sure?', :method => :post
+          = link_to 'Destroy', @commodity, :confirm => 'Are you sure?', :method => :delete
+  .box
+    %h2 Flows
+    .block
+      - if @commodity.consumed_by.size > 0
+        %p
+          Consumed by #{pluralize(@commodity.consumed_by.size, 'technology')}:
+          :erb
+            <%= collection_select(:consumed_by, :technology, @commodity.consumed_by, :id, :name,
+                      {:prompt => true},
+                      {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"}) %>
+      - else
+        %p Not consumed.
+      - if @commodity.produced_by.size > 0
+        %p
+          Produced by #{pluralize(@commodity.produced_by.size, 'technology')}:
+          :erb
+            <%= collection_select(:produced_by, :technology, @commodity.produced_by, :id, :name,
+                      {:prompt => true},
+                      {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"}) %>
+      -else
+        %p Not produced.
+
+- if @commodity.demand?
+  = render :partial => 'edit_demand', :locals => {:object=>@commodity}
+- else
+  = render :partial => 'edit_commodity', :locals => {:object=>@commodity}
+
+.clear

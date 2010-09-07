@@ -9,6 +9,7 @@ class TechnologiesController < ApplicationController
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
+    @last_visited = Technology.find(Array(session[:last_tech]))
     @sets_cloud = Technology.tag_counts_on(:sets)
     if params[:set]
       @technologies = Technology.tagged_with(params[:set]).paginate(filter)
@@ -38,6 +39,9 @@ class TechnologiesController < ApplicationController
 
   # GET /technologies/1/edit
   def edit
+    last = Array(session[:last_tech])
+    last.unshift(params[:id])[0,10] unless last.include? params[:id]
+    session[:last_tech] = last
     @technology = Technology.find(params[:id])
   end
 

@@ -1,0 +1,10 @@
+.box
+  %h2 Shortcut
+  .block
+    %p 
+      - unless page == :index
+        = link_to 'Browse technologies', technologies_path
+        %br
+      - unless page == :new
+        = link_to 'New technology', new_technology_path
+        %br

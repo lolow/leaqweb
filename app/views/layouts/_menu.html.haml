@@ -1,0 +1,35 @@
+.grid_12
+  %ul.nav.main
+    %li
+      = link_to 'Energy System', '#'
+      %ul
+        %li= link_to 'Commodities', commodities_path
+        %li= link_to 'Technologies', technologies_path
+        %li= link_to "Demand drivers", demand_drivers_path
+    %li
+      = link_to 'ETEM', '#'
+      %ul
+        %li= link_to 'Solve', solver_index_path
+        %li= link_to 'Results', outputs_path
+        %li= link_to 'General Parameters', :controller => 'etem', :action => 'parameters'
+        %li= link_to 'Predefined tables', tables_path
+    %li
+      = link_to 'Emissions allocation', "#"
+      %ul
+        %li= link_to 'Sectoral maps', "#"
+        %li= link_to 'Sectoral load profiles', "#"
+    %li
+      = link_to 'AYLTP', "#"
+      %ul
+        %li= link_to 'Pollution episodes', "#"
+        %li= link_to 'Simulation', "#"
+    %li.secondary
+      - if user_signed_in?
+        = link_to 'Sign out', destroy_user_session_path
+      - else
+        = link_to 'Sign in', new_user_session_path
+.clear
+
+.grid_12
+  %p
+.clear

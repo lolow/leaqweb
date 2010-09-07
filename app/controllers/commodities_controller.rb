@@ -10,6 +10,7 @@ class CommoditiesController < ApplicationController
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
+    @last_visited = Commodity.find(Array(session[:last_com]))
     @sets_cloud = Commodity.tag_counts_on(:sets)
     if params[:set]
       @commodities = Commodity.tagged_with(params[:set]).paginate(filter)
@@ -24,16 +25,14 @@ class CommoditiesController < ApplicationController
   # GET /commodities/1
   def show
     @commodity = Commodity.find(params[:id])
-
     respond_to do |format|
-      format.html
+      format.html {redirect_to edit_commodity_path(@commodity)}
     end
   end
 
   # GET /commodities/new
   def new
     @commodity = Commodity.new
-
     respond_to do |format|
       format.html
     end
@@ -41,6 +40,9 @@ class CommoditiesController < ApplicationController
 
   # GET /commodities/1/edit
   def edit
+    last = Array(session[:last_com])
+    last.unshift(params[:id])[0,10] unless last.include? params[:id]
+    session[:last_com] = last
     @commodity = Commodity.find(params[:id])
   end
 

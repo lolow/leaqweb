@@ -1,0 +1,11 @@
+.box
+  %h2 Shortcut
+  .block
+    %p 
+      - unless page == :index
+        = link_to 'Browse commodities', commodities_path
+        %br
+      - unless page == :new
+        = link_to 'New commodity', new_commodity_path
+        %br
+          
