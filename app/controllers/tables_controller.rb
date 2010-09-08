@@ -26,8 +26,8 @@ class TablesController < ApplicationController
   end
 
   # GET /tables/clone/1
-  def clone
-    @table = Table.find(params[:id]).clone
+  def duplicate
+    @table = Table.find(params[:id]).duplicate
     respond_to do |format|
       format.html {render :action => "new"}
     end

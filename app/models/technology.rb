@@ -54,9 +54,9 @@ class Technology < ActiveRecord::Base
     self.name
   end
 
-  def copy
+  def duplicate
     t = Technology.new
-    name = self.name + " 01"
+    name = self.name + "-01"
     while Technology.find_by_name(name)
       name.succ!
     end
@@ -79,7 +79,15 @@ class Technology < ActiveRecord::Base
       t.flows << f0
     }
     t.save
-    self.parameter_values.each { |pv|
+    params_list = %w{input output} + %w{eff_flo } + %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
+      %w{flo_share_lo flo_share_fx flo_share_up} +
+      %w{peak_prod cost_delivery act_flo} + %w{fixed_cap} + 
+      %w{life avail cap_act  avail_factor} + %w{cost_vom cost_fom cost_icap} +
+      %w{act_bnd_lo act_bnd_fx act_bnd_up} +
+      %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
+      %w{icap_bnd_lo icap_bnd_fx icap_bnd_up}
+    params = Parameter.where(:name=>params_list).map(&:id)
+    self.parameter_values.where(:parameter_id=>params).each { |pv|
       attributes = pv.attributes
       attributes[:flow_id] = flow_corr[attributes[:flow_id]]
       attributes[:in_flow_id] = flow_corr[attributes[:in_flow_id]]

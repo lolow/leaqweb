@@ -10,7 +10,7 @@ class CommoditiesController < ApplicationController
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
-    @last_visited = Commodity.find(Array(session[:last_com]))
+    @last_visited = Commodity.where(:id=>Array(session[:last_com]))
     @sets_cloud = Commodity.tag_counts_on(:sets)
     if params[:set]
       @commodities = Commodity.tagged_with(params[:set]).paginate(filter)
@@ -61,8 +61,8 @@ class CommoditiesController < ApplicationController
   end
 
   # POST /commodities/1/clone
-  def clone
-    @commodity = Commodity.find(params[:id]).copy
+  def duplicate
+    @commodity = Commodity.find(params[:id]).duplicate
     respond_to do |format|
       format.html { redirect_to(edit_commodity_path(@commodity)) }
     end

@@ -4,7 +4,7 @@ Leaqweb::Application.routes.draw do |map|
 
   resources :tables do  
     member do
-      get :clone
+      get :duplicate
     end
   end
 
@@ -17,13 +17,13 @@ Leaqweb::Application.routes.draw do |map|
 
   resources :technologies do  
     member do
-      post :clone
+      post :duplicate
     end  
   end
 
   resources :commodities do  
     member do
-      post :clone
+      post :duplicate
     end
   end
 

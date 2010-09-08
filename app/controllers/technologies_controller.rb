@@ -9,7 +9,7 @@ class TechnologiesController < ApplicationController
     if params[:search]
        filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
     end
-    @last_visited = Technology.find(Array(session[:last_tech]))
+    @last_visited = Technology.where(:id=>Array(session[:last_tech]))
     @sets_cloud = Technology.tag_counts_on(:sets)
     if params[:set]
       @technologies = Technology.tagged_with(params[:set]).paginate(filter)
@@ -60,8 +60,8 @@ class TechnologiesController < ApplicationController
   end
 
   # POST /technologies/1/clone
-  def clone
-    @technology = Technology.find(params[:id]).copy
+  def duplicate
+    @technology = Technology.find(params[:id]).duplicate
     respond_to do |format|
       format.html { redirect_to(edit_technology_path(@technology)) }
     end

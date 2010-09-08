@@ -78,9 +78,9 @@ class Commodity < ActiveRecord::Base
     }
   end
 
-  def copy
+  def duplicate
     c = Commodity.new
-    name = self.name + " 01"
+    name = self.name + "-01"
     while Commodity.find_by_name(name)
       name.succ!
     end
@@ -89,10 +89,15 @@ class Commodity < ActiveRecord::Base
     c.save
     c.set_list = self.set_list.join(", ")
     c.save
-    self.parameter_values.each { |pv|
-      attributes = pv.attributes
-      attributes.delete(["commodity_id","created_at","updated_at"])
-      c.parameter_values << ParameterValue.create(attributes)
+    params_list = %w{demand frac_dem} + %w{network_efficiency peak_reserve} + 
+                  %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} + 
+                  %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } + 
+                  %w{com_net_bnd_up_t com_net_bnd_up_ts}
+    params = Parameter.where(:name=>params_list).map(&:id)
+    self.parameter_values.where(:parameter_id => params).each { |pv|
+        attributes = pv.attributes
+        attributes.delete(["commodity_id","created_at","updated_at"])
+        c.parameter_values << ParameterValue.create(attributes)
     }
     c.save
     c
