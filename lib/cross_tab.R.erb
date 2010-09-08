@@ -1,10 +1,12 @@
 library('reshape')
 <% unless File.exist?(@output.file("Renv")) %>
+#data <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
+#save.image(file="<%= @output.file("Renv") %>")
+<% else %>
+#load(file="<%= @output.file("Renv") %>")
+<% end %>
 data <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
 save.image(file="<%= @output.file("Renv") %>")
-<% else %>
-load(file="<%= @output.file("Renv") %>")
-<% end %>
 data <- subset(data,attribute=="<%= @table[:attribute] %>")
 <% if @table[:filter].size > 0 %>
 data <- subset(data,<%= @table[:filter] %>)

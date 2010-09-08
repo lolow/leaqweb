@@ -1,8 +1,6 @@
-<% content_for :title, "Editing predefined tables" %>
-
-<script type="text/javascript">
-  var filter = <%= @table.digest_filter.to_json %>;
-  var variables = <%= Table::INDEX.to_json %>;
+:javascript
+  var filter = #{@table.digest_filter.to_json};
+  var variables = #{Table::INDEX.to_json};
   function var_r(variable){
     var s = "";
     $('#'+ variable + ' li').each(function(index) {
@@ -61,11 +59,11 @@
     $('.conditions_list').empty();
     last_row = "<tr>" +
       "<td><select id=\"new_var\">" +
-<%= options_for_select(Table::INDEX.invert).to_json %> +
+  #{options_for_select(Table::INDEX.invert).to_json} +
       "</select></td>" +
       "<td>must <select id=\"new_not\">" +
-<%= options_for_select(['','not ']).to_json %> + "</select> <select id=\"new_func\">" +
-<%= options_for_select(['start with','contain','belong to']).to_json %> +
+  #{options_for_select(['','not ']).to_json} + "</select> <select id=\"new_func\">" +
+  #{options_for_select(['start with','contain','belong to']).to_json} +
       "<td><input type=\"text\" id=\"new_arg\" /></td>" +
       "<td><a class='action' onclick='add_cond()'>Add</a></td>" +
       "</select></td>" +
@@ -96,73 +94,56 @@
   $(document).ready(function() {
     display_filter_list();
   });
-</script>
 
-<div class="grid_12">
-  <div class="box">
-    <h2>Edit table definition</h2>
-    <div class="block">
+.grid_3
+  = render :partial => 'shortcuts', :locals => { :page => :edit }
 
-      <%= form_for(@table) do |f| %>
-        <%= render "shared/error_messages", :target => @table %> 
+.grid_9
+  .box
+    %h2 Query fields
+    .block
+      = form_for(@table) do |f|
+        = render "shared/error_messages", :target => @table
+        %p
+          = f.label :name
+          = f.text_field :name, :size => 50
+        %p
+          = f.label :aggregate
+          = f.select :aggregate, Table::AGGREGATES.collect{ |a| [a,a.downcase]  }
+          = f.label :variable
+          = f.select :variable, Table::VARIABLES.collect{ |a| [a,a] }
+        %p
+          Columns/Rows (drag and drop elements)
+          = f.hidden_field :rows
+          = f.hidden_field :columns
 
-        <p>
-          <%= f.label :name, 'Name: ' %>
-          <%= f.text_field :name, :size => 50 %>
-        </p>
-        <p>
-          <%= f.label :aggregate, 'Aggregate: ' %>
-          <%= f.select :aggregate, Table::AGGREGATES.collect{ |a| [a,a.downcase]  } %>
-          <%= f.label :variable, 'Variable: ' %>
-          <%= f.select :variable, Table::VARIABLES.collect{ |a| [a,a] } %>
-        </p>
+          %ul#choices.table_def
+            %li.table_def_head Unused
+            - @table.unused.each do |item|
+              %li{:class=>"table_def_default",:id=>"#{item}"}= Table::INDEX[item.strip]
 
-        <p>
-          Columns/Rows (drag and drop the elements):
-          <%= f.hidden_field :rows %>
-          <%= f.hidden_field :columns %>
+          %ul#rows.table_def
+            %li.table_def_head Rows
+            - @table.rows.split('+').each do |i|
+              %li.table_def_default{:id=>"#{i}"}= Table::INDEX[i.strip]
 
-          <% choices = Table::INDEX %>
+          %ul#rows.table_def
+            %li.table_def_head Columns
+            - @table.columns.split('+').each do |i|
+              %li.table_def_default{:id=>"#{i}"}= Table::INDEX[i.strip]
 
-        <ul id="choices" class="table_def">
-          <li class="table_def_head" >Unused</li>
-          <% @table.unused.each do |i| %>
-            <li class="table_def_default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
-          <% end %>
-        </ul>
-
-        <ul id="rows" class="table_def">
-          <li class="table_def_head" >Rows</li>
-          <% @table.rows.split('+').each do |i| %>
-            <li class="table_def_default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
-          <% end %>
-        </ul>
-
-        <ul id="columns" class="table_def">
-          <li class="table_def_head" >Columns</li>
-          <% @table.columns.split('+').each do |i| %>
-            <li class="table_def_default" id="<%= i %>" ><%=h Table::INDEX[i.strip] %></li>
-          <% end %>
-        </ul>
-        </p>
-        <div class="clear"></div>
-
-        <p>
-          <%= f.label :filters, 'Filters: ' %><br />
-          <%= f.hidden_field :filters %>
-        <table>
-          <thead>
-            <tr><th>Variable</th><th>Function</th><th>Arguments</th><th>&nbsp;</th></tr>
-          </thead>
-          <tbody class="conditions_list">
-          </tbody>
-        </table>
-        </p>
-        <p>
-          <%= f.submit 'Update' %>
-        </p>
-      <% end %>
-    </div>
-  </div>
-</div>
-<div class="clear"></div>
+        .clear
+        %p
+          = f.label :filters
+          %br
+          = f.hidden_field :filters, :value => raw(@table[:filters])
+          %table
+            %thead
+              %tr
+                %th Variable
+                %th Function
+                %th Arguments
+                %th& &nbsp;
+            %tbody.conditions_list
+        %p= f.submit 'Update'
+.clear

@@ -1,0 +1,62 @@
+- if @refresh
+  :javascript
+    setTimeout(function(){location.reload();}, 10000);
+
+:javascript
+  function import_res(new_output_path,id) {
+    var sim_id = $('#sim_' +id+ ' option:selected')[0].value
+    if(sim_id=="0"){
+      location.href=new_output_path;
+      return false;
+    }
+    $.blockUI({ message: '<b>Please wait...</b>',
+      css: { border: 'none',
+        padding: '15px',
+        backgroundColor: '#000',
+        '-webkit-border-radius': '10px',
+        '-moz-border-radius': '10px',
+        opacity: .5,
+        color: '#fff'
+      }});
+    location.href = '/outputs/' + sim_id + '/import?solver_id=' + id;
+  }
+
+- if @solvers.size > 0
+  .grid_3
+    .box
+      %h2 Shortcuts
+      .block
+        %p
+          = link_to_if(@solvers[0].solving?, "manual refresh", solver_index_path)
+          %br
+          - if @solvers[0].solved? && @solvers[0].has_files?
+            = link_to_function("import outputs into a resultset",
+                "import_res(#{new_output_path.to_json},#{@solvers[0].id})")
+            = select_tag "sim_#{@solvers[0].id}", options_for_select(@outputs.map {|o| [o.name,o.id]}+[['New...',0]])
+          - else
+            import results into simulation
+          %br
+          = link_to("Reinit solver", @solvers[0], :method=>:delete, :confirm => "Are you sure?")
+
+  .grid_9
+    .box
+      %h2
+        Status:
+        = @solvers[0].current_state.name
+      .block
+        - if (@solvers[0].solved? && @solvers[0].has_files?)
+          %p Total time resolution: (#{@solvers[0].time_used} sec)
+        #log
+          %h5 Log
+          #display_log
+            - if (@solvers[0].solved? && !@solvers[0].has_files?)
+              log file should have been deleted because of its age. Please reinit the solver
+            %pre= @solvers[0].log
+- else
+  .grid_3
+    .box
+      %h2 Shortcuts
+      .block
+        = form_tag solver_index_path do
+          = submit_tag 'Launch Solver', :disable_with => 'Generating problem...'
+        %br

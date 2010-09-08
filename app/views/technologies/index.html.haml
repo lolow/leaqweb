@@ -1,5 +1,5 @@
 .grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :new }
+  =render :partial => 'shortcuts', :locals => { :page => :index }
   
   .box
     %h2
@@ -30,7 +30,7 @@
 .grid_9
 
   .box
-    %h2 Browse
+    %h2 Browse technologies
     %p
       %table(summary="Technology list")
         %thead
@@ -45,7 +45,7 @@
               %td= link_to truncate(technology.description, :omission => "...",
                               :length => 100),
                               edit_technology_path(technology)
-              %td= link_to 'Destroy', technology, :confirm => 'Are you sure?', :method => :delete
+              %td= link_to 'Delete', technology, :confirm => 'Are you sure?', :method => :delete
       = page_entries_info @technologies
       %br
       = will_paginate @technologies

@@ -1,0 +1,25 @@
+.grid_3
+  =render :partial => 'shortcuts', :locals => { :page => :index }
+
+.grid_9
+
+  .box
+    %h2 Browse
+    %p
+      %table(summary="Demand drivers list")
+        %thead
+          %tr
+            %th Name
+            %th Description
+            %th
+        %tbody
+          - @demand_drivers.each do |demand_driver|
+            %tr{ :class => cycle('even', 'odd') }
+              %td= link_to demand_driver.name, edit_demand_driver_path(demand_driver)
+              %td= link_to truncate(demand_driver.definition, :omission => "...", :length => 100), edit_demand_driver_path(demand_driver)
+              %td= link_to 'Delete', demand_driver, :confirm => 'Are you sure?', :method => :delete
+      = page_entries_info @demand_drivers
+      %br
+      = will_paginate @demand_drivers
+
+.clear

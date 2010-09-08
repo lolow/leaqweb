@@ -1,0 +1,97 @@
+:javascript
+  function custom_query(){
+    $.blockUI({
+        message: $('#query_editor'),
+        css: {
+            width: '500px',
+            border: '0px',
+            background: 'none'
+        }
+    });
+  }
+  $(document).ready(function() {
+    $('#cancel').click(function() {
+          $.unblockUI();
+          return false;
+      });
+  });
+
+.grid_3
+  .box
+    %h2 Resultset
+    .block
+      %p Name: #{@output.name}
+      %p
+        = link_to_if @output.has_results?, "Download csv file", csv_output_path(@output)
+        %br
+        = link_to 'Browse resultsets', outputs_path
+        %br
+        - unless @output.has_results?
+          = link_to "Import new results from solver", solver_index_path
+
+- if @output.has_results?
+  .grid_9
+    .box
+      %h2#toggle-request
+        %a Query
+      .block#request
+        %h5 Stored queries
+        %p
+          = form_tag output_path(@output), :method => :put do
+            = select_tag "table[id]", options_for_select(@tables.map{|t|[t.name,"#{t.id}"]}, :selected => "#{params[:table][:id]}")
+            = submit_tag 'Load'
+            %a(href="#" onclick="custom_query()") custom query
+          %br         
+  .clear
+  .grid_12
+    .box
+      %h2 Query result
+      - if params[:table][:result]
+        .block
+          %div(id="tableres" style="padding:1em;")
+            - header = true
+            %table
+              - FasterCSV.parse(params[:table][:result]) do |row|
+                - if header
+                  %thead
+                    %tr
+                      %th(colspan="#{row.size() - 1}" class="table-head")
+                        - if params[:table][:name]==""
+                          Custom query
+                        - else
+                          = params[:table][:name]
+                    %tr
+                      - row[1...row.size].each do |x|
+                        %td= x
+                  <tbody>
+                  - header = false
+                - else
+                  %tr
+                    - row[1...row.size].each do |x|
+                      %td= x
+              </tbody>
+.clear
+%div(id="query_editor" style="display:none; cursor: default")
+  .box
+    %h2 Query Editor
+    .block
+      %p
+        = form_tag output_path(@output), :method => :put do
+          = hidden_field :table, :name, :value => ""
+          = hidden_field :table, :id, :value => 0
+          %table
+            %tr
+              %td= label :table, :aggregate
+              %td= select_tag "table[aggregate]", options_for_select(Table::AGGREGATES.collect{ |a| [a,a.downcase]}, :selected => params[:table][:aggregate])
+            %tr
+              %td= label :table, :attribute
+              %td= select_tag "table[attribute]", options_for_select(Table::VARIABLES.collect{ |a| [a,a]}, :selected => params[:table][:attribute])
+            %tr
+              %td= label :table, :formula
+              %td= text_field :table, :formula, :value => params[:table][:formula]
+            %tr
+              %td= label :table, :filter
+              %td= text_field :table, :filter, :value => params[:table][:filter]
+          %p
+            = submit_tag 'Display'
+            %input(type="button" id="cancel" value="Cancel")

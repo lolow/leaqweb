@@ -1,0 +1,10 @@
+.box
+  %h2 Shortcut
+  .block
+    %p
+      - unless page == :index
+        = link_to 'Browse resultsets', outputs_path
+        %br
+      - unless page == :new
+        = link_to 'New resultset', new_output_path
+        %br

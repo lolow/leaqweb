@@ -1,60 +1,8 @@
-:javascript
-  $(document).ready(function() {
-    $('#add_commodity_flow').click(function() {
-      return !$('#sel_avail_commodity option:selected').clone().appendTo('#sel_flow_commodity');
-    });
-    $('#remove_commodity_flow').click(function() {
-      return !$('#sel_flow_commodity option:selected').remove();
-    });
-    $('#cancel').click(function() {
-      $.unblockUI();
-      return false;
-    });
-  });
-  function add_flow(flow_type){
-    $('#sel_flow_commodity').html("");
-    $('#flow_editor_title').text('New ' + flow_type);
-    $('#flow_editor_button').attr('value','Add');
-    $('#flow_editor_button').click(function() {
-      var com = $('#sel_flow_commodity option');
-      var s = "";
-      for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
-      $.ajax({url:'<%= flows_path %>',
-        type:'POST',
-        data:{'commodities':s.substring(0,s.length-1),
-          'technology_id':<%= @technology.id %>,
-          'type':flow_type},
-        async:false});
-      location.reload();
-    });
-    $.blockUI({ message: $('#flow_editor'), css: { width: '500px', border: '0px', background: 'none' } });
-  }
-  function edit_flow(flow_type,id){
-    $.getJSON('<%= flows_path %>/' + id + '.js', function(j){
-      var options = "";
-      var c = j.flow.commodities;
-      for(var i = 0; i < c.length; i++) {
-        options += '<option>' + c[i].commodity.name + '</option>';
-      }
-      $('#sel_flow_commodity').html(options);
-    })
-    $('#flow_editor_title').text('Edit '+flow_type+' (' + id + ')');
-    $('#flow_editor_button').attr('value','Update');
-    $('#flow_editor_button').click(function() {
-      var com = $('#sel_flow_commodity option');
-      var s = "";
-      for(var i = 0; i < com.length; i++) {s += com[i].text + ",";}
-      $.ajax({url:'<%= flows_path %>/' + id,
-        type:'PUT',
-        data:{'commodities':s.substring(0,s.length-1)},
-        async:false});
-      location.reload();
-    });
-    $.blockUI({ message: $('#flow_editor'), css: { width: '500px', border: '0px', background: 'none' } });
-  }
-
+%script{:type => "text/javascript",
+        :src  => "/javascripts/technology_edit.js"}
+  
 .grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :new }
+  =render :partial => 'shortcuts', :locals => { :page => :edit }
   
   .box
     %h2 ID card
@@ -94,17 +42,18 @@
                   %input(type="checkbox" name="f#{f.id}")
                   - if f.flow_act_of? @technology
                     %span.flow_act
-                      = f.id + ":" + commodity_url_list(f)
+                      = f.id.to_s + ":"
+                      = raw commodity_url_list(f)
                   -else
                     %span
-                      = f.id + ":" + commodity_url_list(f)
-                  %a(href="#" onclick="edit_flow('In flow',#{f.id})")
-                    (edit)
+                      = f.id.to_s + ":"
+                      = raw commodity_url_list(f)
+                  %a(href="#" onclick="edit_flow('#{flow_path(f)}','In flow',#{f.id})") edit
                   %br
           %tfoot
             %tr
               %td
-                %a(href="#" onclick="add_flow('In flow')")
+                %a(href="#" onclick="add_flow('#{flows_path}','In flow',#{@technology.id})")
                   + Add inflow
         %table
           %thead
@@ -117,23 +66,30 @@
                   %input(type="checkbox" name="f#{f.id}")
                   - if f.flow_act_of? @technology
                     %span.flow_act
-                      = f.id + ":" + commodity_url_list(f)
+                      = #{f.id} + ":"
+                      = raw commodity_url_list(f)
                   -else
                     %span
-                      = f.id + ":" + commodity_url_list(f)
-                  %a(href="#" onclick="edit_flow('Out flow',#{f.id})")
-                    (edit)
+                      = #{f.id} + ":"
+                      = raw commodity_url_list(f)
+                  %a(href="#" onclick="edit_flow('#{flow_path(f)}','Out flow',#{f.id})") edit
                   %br
           %tfoot
             %tr
               %td
-                %a(href="#" onclick="add_flow('Out flow')")
-                  + Add outflow        
+                %a(href="#" onclick="add_flow('#{flows_path}','Out flow',#{@technology.id})")
+                  + Add outflow
+        %p
+          %select(name="do")
+            %option(value="set_act_flo") Set activity flow
+            %option(value="delete_flo") Delete checked flow(s)
+          = submit_tag "OK"
 
 .grid_9
   .box
-    %h2 Input/Output [Preprocess]
-    .block
+    %h2
+      %a#toggle-g Input/Output [Preprocess]
+    .block#g
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -149,8 +105,9 @@
         %input(type="hidden" name="do" value="preprocess_input_output")
         = submit_tag "Preprocess..."
   .box
-    %h2 Efficiencies
-    .block
+    %h2
+      %a#toggle-a Efficiencies
+    .block#a
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -163,8 +120,9 @@
           :editable => %w{value source},
           :rules => nil } %>
   .box
-    %h2 Flow parameters
-    .block
+    %h2
+      %a#toggle-b Flow parameters
+    .block#b
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -183,8 +141,9 @@
             "=cost_delivery" => %w{flow},
             "=act_flo" => %w{flow time_slice year}}} %>
   .box
-    %h2 Fixed capacities
-    .block
+    %h2
+      %a#toggle-c Fixed capacities
+    .block#c
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -197,8 +156,9 @@
           :editable => %w{value source},
           :rules =>  nil } %>
   .box
-    %h2 General
-    .block
+    %h2
+      %a#toggle-d General
+    .block#d
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -213,8 +173,9 @@
             "=avail" => %w{time_slice year},
             "=cap_act" => %w{time_slice year} }} %>
   .box
-    %h2 Costs
-    .block
+    %h2
+      %a#toggle-e Costs
+    .block#e
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -227,8 +188,9 @@
           :editable => %w{value source},
           :rules => nil } %>
   .box
-    %h2 Bounds
-    .block
+    %h2
+      %a#toggle-f Bounds
+    .block#f
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -264,9 +226,9 @@
                     - Commodity.tagged_with("ENC").order(:name).each do |c|
                       %option= c.name
                   %optgroup(label="Pollutants")
-                     - Commodity.tagged_with("POLL").order(:name).each do |c|
-                       %option= c.name
-                 %optgroup(label="Useful demands")
+                    - Commodity.tagged_with("POLL").order(:name).each do |c|
+                      %option= c.name
+                  %optgroup(label="Useful demands")
                     - Commodity.tagged_with("DEM").order(:name).each do |c|
                       %option= c.name
                 %p(style="text-align: center")

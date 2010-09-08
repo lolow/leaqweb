@@ -32,7 +32,7 @@ class Table < ActiveRecord::Base
         condition[:arg] = term[2].strip.split("'")[1]
       elsif term[2].strip.index("c('")==0
         condition[:func] = "belong to"
-        condition[:arg] = term[2].scan(/'\w+'/).collect{|w|w[1..-2]}.join(",")
+        condition[:arg] = term[2].scan(/'[a-zA-Z\d-]+'/).collect{|w|w[1..-2]}.join(",")
       end
       condition
     }

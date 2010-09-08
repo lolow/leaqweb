@@ -1,0 +1,19 @@
+.grid_3
+  =render :partial => 'shortcuts', :locals => { :page => :edit }
+
+.grid_9
+  .box
+    %h2 Browse resultsets
+    %p
+      %table(summary="Resultsets list")
+        %thead
+          %tr
+            %th Name
+            %th
+            %th
+        %tbody
+          - @outputs.each do |output|
+            %tr{ :class => cycle('even', 'odd') }
+              %td= link_to output.name, output
+              %td
+              %td= link_to 'Delete', output, :confirm => 'Are you sure?', :method => :delete
