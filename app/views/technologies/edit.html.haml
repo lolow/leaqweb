@@ -5,7 +5,7 @@
   =render :partial => 'shortcuts', :locals => { :page => :edit }
   
   .box
-    %h2 ID card
+    %h2 Technology
     .block
       = form_for(@technology) do |f|
         = render "shared/error_messages", :target => @technology
@@ -18,13 +18,15 @@
             = f.text_area :description, :rows => 2
             %br
             = f.label :sets, 'Sets:'
-            = @technology.set_list.join(", ")
+            %br
+            = f.text_field :set_list, :size=>nil
             %br
             = f.label :places, 'Places:'
             = @technology.locations.map(&:name).join(", ")
             %input(type="hidden" name="do" value="update")
+            = f.submit 'Update', :class => "button" 
         %p
-          = link_to 'Duplicate,', clone_technology_path, :confirm => 'Are you sure?', :method => :post
+          = link_to 'Duplicate,', duplicate_technology_path, :confirm => 'Are you sure?', :method => :post
           = link_to 'Delete', @technology, :confirm => 'Are you sure?', :method => :delete
           
   .box
@@ -66,11 +68,11 @@
                   %input(type="checkbox" name="f#{f.id}")
                   - if f.flow_act_of? @technology
                     %span.flow_act
-                      = #{f.id} + ":"
+                      = f.id.to_s + ":"
                       = raw commodity_url_list(f)
                   -else
                     %span
-                      = #{f.id} + ":"
+                      = f.id.to_s + ":"
                       = raw commodity_url_list(f)
                   %a(href="#" onclick="edit_flow('#{flow_path(f)}','Out flow',#{f.id})") edit
                   %br

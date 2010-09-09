@@ -41,8 +41,8 @@ class CommoditiesController < ApplicationController
   # GET /commodities/1/edit
   def edit
     last = Array(session[:last_com])
-    last.unshift(params[:id])[0,10] unless last.include? params[:id]
-    session[:last_com] = last
+    last.unshift(params[:id]) unless last.include? params[:id]
+    session[:last_com] = last[0,10]
     @commodity = Commodity.find(params[:id])
   end
 
@@ -96,6 +96,7 @@ class CommoditiesController < ApplicationController
     when "update"
       @commodity.update_attributes(params[:commodity])
       respond_to do |format|
+        p params[:commodity]
         if @commodity.update_attributes(params[:commodity])
           flash[:notice] = 'Commodity was successfully updated.'
           format.html { redirect_to(edit_commodity_path(@commodity)) }

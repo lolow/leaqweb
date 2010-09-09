@@ -29,7 +29,7 @@
                          :size=>nil, 
                          :class=>'demand_elasticity',
                          :disabled => (@commodity.demand_driver_id ? nil: "disabled")
-          %input{:type=>"hidden",:name=>"do",:class=>"button"}
+          %input(type="hidden" name="do" value="update")
           = f.submit 'Update', :class => "button"
       .block#demand_graph
         #chartdiv{:style=>"height:200px;"}

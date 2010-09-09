@@ -16,8 +16,10 @@
             = f.text_area :description, :rows => 2, :cols=>nil
             %br
             = f.label :sets, 'Sets:'
-            = @commodity.set_list.join(", ")
-          %input{:type=>"hidden",:name=>"button",:class=>"button"}
+            %br
+            = f.text_field :set_list, :size=>nil
+          %input(type="hidden" name="do" value="update")
+          = f.submit 'Update', :class => "button" 
         %p
           = link_to 'Duplicate,', duplicate_commodity_path, :confirm => 'Are you sure?', :method => :post
           = link_to 'Destroy', @commodity, :confirm => 'Are you sure?', :method => :delete

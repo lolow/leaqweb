@@ -54,6 +54,7 @@ class Technology < ActiveRecord::Base
     self.name
   end
 
+  # Duplicate the technology
   def duplicate
     t = Technology.new
     name = self.name + "-01"
@@ -162,8 +163,52 @@ class Technology < ActiveRecord::Base
 
       end
     end
-
-
   end
-  
+
+  # Create a fuel tech and its input/output if necessary
+  def self.create_fuel_tech(input,output)
+
+    #find_or_create commodities
+    com = {}
+    [input,output].each do |c|
+      if Commodity.where(:name=>c).empty?
+        com[c] = Commodity.create(:name=>c,:description=>"")
+      else
+        com[c] = Commodity.find_by_name(c)
+      end
+    end
+    
+    #check if a fuel tech already exists?
+    if (com[input].consumed_by & com[output].produced_by).size > 0
+      return nil
+    end
+    
+    t = Technology.new
+    name = "TECH-" + output
+    while Technology.find_by_name(name)
+      name.succ!
+    end
+    t.name = name
+    t.description = "Fuel tech [" + input+"->"+output+"]"
+    t.set_list = "FUELTECH"
+    t.save
+    t.locations << Location.first
+    t.save
+    fi = InFlow.create
+    fi.commodities << com[input]
+    t.flows << fi
+    fo = OutFlow.create
+    fo.commodities << com[output]
+    t.flows << fo
+    t.save
+    p = Parameter.find_by_name("eff_flo")
+    ParameterValue.create(:parameter  => p,
+                          :technology => t,
+                          :in_flow =>fi,
+                          :out_flow =>fo,
+                          :value => 1,
+                          :source => "Fuel tech")
+    t.flow_act = fi
+    t
+  end
 end
