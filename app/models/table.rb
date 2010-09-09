@@ -9,7 +9,6 @@ class Table < ActiveRecord::Base
               %w{C_PRICE}
   INDEX = { "T" => "Time period",
             "S" => "Time slice",
-            "L" => "Location",
             "P" => "Processes",
             "C" => "Commodities" }.freeze
 
@@ -40,6 +39,27 @@ class Table < ActiveRecord::Base
 
   def unused
     INDEX.keys - rows.split('+') - columns.split('+')
+  end
+
+      def clone_from(model)
+      model.attributes.each {|attr, value| eval("self.#{attr}= model.#{attr}")}
+    end
+
+  def duplicate_as_new
+    table = Table.new
+    name = self.name + " 01"
+    while Table.find_by_name(name)
+      name.succ!
+    end
+    attributes = { :name => name,
+                   :aggregate => self.aggregate,
+                   :variable => self.variable,
+                   :columns => self.columns,
+                   :rows => self.rows,
+                   :filters => self.filters
+    }
+    table.attributes = attributes
+    table
   end
 
 end

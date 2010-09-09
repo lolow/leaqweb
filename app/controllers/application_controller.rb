@@ -14,4 +14,4 @@ protected
 end
 
 #TODO
-#audit Commodity, Location, Technology, Parameter, ParameterValue, Table
+#audit Commodity, Technology, Parameter, ParameterValue, Table

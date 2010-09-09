@@ -41,12 +41,11 @@ class EtemSolver
     if optimal?
       dict = Hash[*Commodity.all.collect{|x|[x.pid,x.name]}.flatten]
       dict.merge! Hash[*Technology.all.collect{|x|[x.pid,x.name]}.flatten]
-      dict.merge! Hash[*Location.all.collect{|x|[x.pid,x.name]}.flatten]
       FasterCSV.open(file("csv"), "w") do |csv|
-        csv << %w[attribute T S L P C value]
+        csv << %w[attribute T S P C value]
         header = true
         FasterCSV.foreach(file("out")) do |row|
-          csv << [row[0],row[1],row[2],dict[row[3]],dict[row[4]],dict[row[5]],row[6]] unless header
+          csv << [row[0],row[1],row[2],dict[row[3]],dict[row[4]],row[5]] unless header
           header = false
         end
       end
@@ -98,18 +97,12 @@ class EtemSolver
 
     # sets generation
     c[:s_s]    = TIME_SLICES.join(" ")
-    c[:s_l]    = id_list(Location.all)
     c[:s_p]    = id_list(Technology.all)
     c[:s_c]    = id_list(Commodity.all)
     c[:s_imp]  = id_list(Commodity.tagged_with("IMP")) 
     c[:s_exp]  = id_list(Commodity.tagged_with("EXP"))
     c[:s_dem]  = id_list(Commodity.tagged_with("DEM"))
     c[:s_flow] = id_list(Flow.all) 
-    
-    c[:s_p_map] = Hash.new
-    Location.find(:all).each do |l|
-      c[:s_p_map][l.pid] = id_list(l.technologies)
-    end
     
     c[:s_in_flow]  = Hash.new
     c[:s_out_flow] = Hash.new
@@ -221,7 +214,6 @@ class EtemSolver
       when "time_slice"    then row.time_slice
       when "commodity"     then Commodity.pid(row.commodity_id)
       when "technology"    then Technology.pid(row.technology_id)
-      when "location"      then Location.pid(row.location_id)
       when "flow"          then Flow.pid(row.flow.id)
       when "in_flow"       then Flow.pid(row.in_flow.id)
       when "out_flow"      then Flow.pid(row.out_flow.id)

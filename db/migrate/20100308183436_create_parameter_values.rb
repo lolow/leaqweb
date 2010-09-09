@@ -7,7 +7,6 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :flow
       t.belongs_to :out_flow
       t.belongs_to :in_flow
-      t.belongs_to :location
       t.integer :year
       t.string  :time_slice
       t.decimal :value, :precision => 20, :scale => 10, :null => false

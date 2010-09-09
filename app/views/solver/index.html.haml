@@ -43,6 +43,8 @@
       %h2
         Status:
         = @solvers[0].current_state.name
+        - if @solvers[0].solving?
+          =  image_tag("solving.gif",:align=>:absmiddle,:height=>"9px")
       .block
         - if (@solvers[0].solved? && @solvers[0].has_files?)
           %p Total time resolution: (#{@solvers[0].time_used} sec)
@@ -58,5 +60,4 @@
       %h2 Shortcuts
       .block
         = form_tag solver_index_path do
-          = submit_tag 'Launch Solver', :disable_with => 'Generating problem...'
-        %br
+          %p= submit_tag 'Launch Solver', :disable_with => 'Generating problem...'

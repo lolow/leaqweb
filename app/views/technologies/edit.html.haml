@@ -20,9 +20,6 @@
             = f.label :sets, 'Sets:'
             %br
             = f.text_field :set_list, :size=>nil
-            %br
-            = f.label :places, 'Places:'
-            = @technology.locations.map(&:name).join(", ")
             %input(type="hidden" name="do" value="update")
             = f.submit 'Update', :class => "button" 
         %p

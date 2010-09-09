@@ -12,7 +12,6 @@ imp_bnd_up:
 - commodity
 cap_bnd_up: 
 - period
-- location
 - technology
 fraction: 
 - time_slice
@@ -30,7 +29,6 @@ exp_bnd_fx:
 act_bnd_fx: 
 - period
 - time_slice
-- location
 - technology
 flo_share_fx: 
 - flow
@@ -45,7 +43,6 @@ flo_bnd_fx:
 - flow
 icap_bnd_fx: 
 - period
-- location
 - technology
 frac_dem: 
 - time_slice
@@ -60,7 +57,6 @@ exp_bnd_lo:
 act_bnd_lo: 
 - period
 - time_slice
-- location
 - technology
 cost_fom: 
 - period
@@ -71,7 +67,6 @@ flo_bnd_lo:
 - flow
 icap_bnd_lo: 
 - period
-- location
 - technology
 life: 
 - technology
@@ -84,7 +79,6 @@ exp_bnd_up:
 act_bnd_up: 
 - period
 - time_slice
-- location
 - technology
 flo_share_lo: 
 - flow
@@ -98,7 +92,6 @@ flo_bnd_up:
 - flow
 icap_bnd_up: 
 - period
-- location
 - technology
 network_efficiency: 
 - commodity
@@ -110,7 +103,6 @@ imp_bnd_fx:
 - commodity
 cap_bnd_fx: 
 - period
-- locationđlife
 - technology
 flo_share_up: 
 - flow
@@ -132,7 +124,6 @@ peak_prod:
 - commodity
 fixed_cap: 
 - period
-- location
 - technology
 cost_delivery: 
 - period
@@ -145,7 +136,6 @@ imp_bnd_lo:
 - commodity
 cap_bnd_lo: 
 - period
-- location
 - technology
 flow_act: 
 - technology

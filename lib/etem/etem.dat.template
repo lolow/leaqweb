@@ -2,13 +2,7 @@ data;
 
 set S:= #{@s_s};
 
-set L:= #{@s_l};
-
 set P:= #{@s_p};
-
-<?rb @s_p_map.each do |loc,techs|  ?>
-set P_MAP[#{loc}]:=#{techs};
-<?rb end ?>
 
 set C:= #{@s_c};
 

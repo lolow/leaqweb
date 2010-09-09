@@ -1,7 +1,6 @@
 class Technology < ActiveRecord::Base
   acts_as_taggable_on :sets, :sectors
 
-  has_and_belongs_to_many :locations
   has_many :out_flows, :dependent => :destroy
   has_many :in_flows, :dependent => :destroy
   has_many :flows, :dependent => :destroy

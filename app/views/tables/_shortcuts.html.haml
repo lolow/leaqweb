@@ -3,7 +3,7 @@
   .block
     %p
       - if page == :edit
-        = link_to 'Duplicate query', clone_table_path
+        = link_to 'Duplicate query', duplicate_table_path
         %br
       - unless page == :index
         = link_to 'Browse stored queries', tables_path
