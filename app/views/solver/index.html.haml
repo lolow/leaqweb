@@ -34,7 +34,7 @@
                 "import_res(#{new_output_path.to_json},#{@solvers[0].id})")
             = select_tag "sim_#{@solvers[0].id}", options_for_select(@outputs.map {|o| [o.name,o.id]}+[['New...',0]])
           - else
-            import results into simulation
+            check energy system integrity
           %br
           = link_to("Reinit solver", @solvers[0], :method=>:delete, :confirm => "Are you sure?")
 

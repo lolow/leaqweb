@@ -1,3 +1,5 @@
+require 'etem_debug'
+
 class SolverController < ApplicationController
   before_filter :authenticate_user!
 
@@ -10,13 +12,6 @@ class SolverController < ApplicationController
     @refresh = @solvers.inject(false) { |memo,s| memo || s.solving?  }
     respond_to do |format|
       format.html
-    end
-  end
-  
-  # GET /solver
-  def show
-    respond_to do |format|
-      format.html {render 'index' }
     end
   end
 

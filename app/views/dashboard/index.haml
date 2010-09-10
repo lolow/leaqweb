@@ -1,0 +1,47 @@
+.grid_3
+  .box
+    %h2 Energy System
+    .block
+      %p
+        Empty database
+        %br
+        = link_to "Check energy system integrity", "/dashboard/check_db"
+
+.grid_6
+  .box
+    %h2 Main Database
+    .block
+      %h5 Backup
+      %p= link_to "Download the complete database", "/backup.zip"
+    .block
+      %h5 Restore
+      %p
+        = form_tag("/restore", :multipart => true) do
+          %p= file_field 'upload', 'db', :class => "db_file", :size => nil
+          %p= submit_tag "Restore", :disable_with => "Please wait..."
+
+
+.grid_3
+  .box
+    %h2 Main Info
+    .block
+      %h5 Activity
+      %p
+        Last changes: #{distance_of_time_in_words(Time.new, @last_change,true)}
+        %br
+      %h5 Energy system database
+      %p
+        #{@nb_commodities} commodities
+        %br
+        #{@nb_technologies} technologies
+        %br
+        #{@nb_demand_drivers} demand drivers
+        %br
+        #{@nb_parameter_values}  parameter values
+
+.clear
+.grid_12
+  .box
+    %h2 Log
+    .block
+      %p Last changes

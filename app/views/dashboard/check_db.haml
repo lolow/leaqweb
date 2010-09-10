@@ -1,0 +1,13 @@
+.grid_12
+  .box
+    %h2 Check integrity of the energy system
+    .block
+      %p
+        - if @errors.size==0
+          No problems have been detected!
+        - else
+          %ul
+            - @errors.each do |error|
+              %li= error[1]
+.clear
+

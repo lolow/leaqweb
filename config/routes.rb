@@ -31,9 +31,9 @@ Leaqweb::Application.routes.draw do |map|
   resources :solver
   resources :demand_drivers
   
-  match '/backup.zip' => 'welcome#backup'
-  match '/restore' => 'welcome#restore'
-  root :to => 'welcome#index'
+  match '/backup.zip' => 'dashboard#backup'
+  match '/restore' => 'dashboard#restore'
+  root :to => 'dashboard#index'
 
   match ':controller(/:action(/:id(.:format)))'
 end

@@ -148,13 +148,19 @@ class Technology < ActiveRecord::Base
           if c.size > 1
             ParameterValue.destroy_all(:parameter_id=>param.id,:flow_id=>kk[x])
             total = value[x].values.sum
+            #ensure sum is equal to 1
+            coef = {}
+            c.each {|j| coef[j.id]= (value[x][j.id]/total * 10**10).round.to_f / 10**10 }
+            if coef.values.sum > 1
+              coef[coef.keys.first] -= coef.values.sum - 1
+            end
+            #set coefficients
             c.each do |j|
-              v = value[x][j.id]/total
               ParameterValue.create(:parameter_id=>param.id,
                 :technology_id=>self.id,
                 :flow_id=>kk[x],
                 :commodity_id=>j.id,
-                :value=> v,
+                :value=> coef[j.id],
                 :source=>"Preprocessed")
             end
           end

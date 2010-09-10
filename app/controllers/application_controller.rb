@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 protected
 
   def first_filter
-    @title         = %w(Leaqweb)
+    @title         = %w(LEAQ)
     @author        = "Laurent Drouet"
     @keywords      = %w(leaq geoecu ayltp energy air quality)
     @description   = "LEAQ web interface"
