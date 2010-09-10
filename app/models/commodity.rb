@@ -2,6 +2,8 @@ require 'etem'
 
 class Commodity < ActiveRecord::Base
   include Etem
+  
+  versioned
 
   acts_as_taggable_on :sets, :sectors
   acts_as_identifiable :prefix => "c"

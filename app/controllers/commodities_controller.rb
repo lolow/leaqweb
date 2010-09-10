@@ -94,9 +94,7 @@ class CommoditiesController < ApplicationController
     # action on parameter_value
     case params[:do]
     when "update"
-      @commodity.update_attributes(params[:commodity])
       respond_to do |format|
-        p params[:commodity]
         if @commodity.update_attributes(params[:commodity])
           flash[:notice] = 'Commodity was successfully updated.'
           format.html { redirect_to(edit_commodity_path(@commodity)) }

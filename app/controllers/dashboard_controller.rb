@@ -1,3 +1,4 @@
+require 'leaq_archive'
 class DashboardController < ApplicationController
 
   # GET /
@@ -8,6 +9,7 @@ class DashboardController < ApplicationController
     @last_change = ParameterValue.order(:updated_at).last.updated_at
     @nb_demand_drivers = DemandDriver.count
     @nb_parameter_values = ParameterValue.count
+    @log = VestalVersions::Version.order("created_at DESC").limit(25)
   end
 
   # GET /res/check_db

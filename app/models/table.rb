@@ -1,5 +1,7 @@
 class Table < ActiveRecord::Base
 
+  versioned
+
   validates_presence_of :name
   validates_uniqueness_of :name
 

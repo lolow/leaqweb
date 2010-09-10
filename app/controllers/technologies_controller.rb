@@ -95,7 +95,6 @@ class TechnologiesController < ApplicationController
     when "preprocess_input_output"
       @technology.preprocess_input_output
     when "update"
-      @technology.update_attributes(params[:technology])
       respond_to do |format|
         if @technology.update_attributes(params[:technology])
           flash[:notice] = 'Technology was successfully updated.'

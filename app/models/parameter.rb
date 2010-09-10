@@ -1,4 +1,7 @@
 class Parameter < ActiveRecord::Base
+
+  versioned
+
   has_many :parameter_values
 
   validates_presence_of :name

@@ -1,4 +1,7 @@
 class Technology < ActiveRecord::Base
+
+  versioned
+
   acts_as_taggable_on :sets, :sectors
 
   has_many :out_flows, :dependent => :destroy

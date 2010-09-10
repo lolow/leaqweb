@@ -77,7 +77,6 @@ class DemandDriversController < ApplicationController
     # action on parameter_value
     case params[:do]
     when "update"
-      @demand_driver.update_attributes(params[:demand_driver])
       respond_to do |format|
         if @demand_driver.update_attributes(params[:demand_driver])
           flash[:notice] = 'Demand driver was successfully updated.'

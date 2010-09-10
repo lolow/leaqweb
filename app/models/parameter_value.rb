@@ -1,4 +1,7 @@
 class ParameterValue < ActiveRecord::Base
+
+  versioned
+
   belongs_to :parameter
   belongs_to :technology
   belongs_to :commodity
