@@ -222,13 +222,13 @@
               %td.col50
                 %select(multiple size="10" id="sel_avail_commodity" class="flow_list")
                   %optgroup(label="Energy Carriers")
-                    - Commodity.tagged_with("ENC").order(:name).each do |c|
+                    - Commodity.energy_carrier.order(:name).each do |c|
                       %option= c.name
                   %optgroup(label="Pollutants")
-                    - Commodity.tagged_with("POLL").order(:name).each do |c|
+                    - Commodity.pollutant.order(:name).each do |c|
                       %option= c.name
                   %optgroup(label="Useful demands")
-                    - Commodity.tagged_with("DEM").order(:name).each do |c|
+                    - Commodity.demand.order(:name).each do |c|
                       %option= c.name
                 %p(style="text-align: center")
                   %a(href="#" id="add_commodity_flow")

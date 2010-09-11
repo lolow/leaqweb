@@ -11,7 +11,6 @@ class CreateParameterValues < ActiveRecord::Migration
       t.string  :time_slice
       t.decimal :value, :precision => 20, :scale => 10, :null => false
       t.text    :source
-      t.boolean :activated, :default => true
       t.timestamps
     end
   end

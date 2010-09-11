@@ -1,0 +1,80 @@
+:javascript
+  $(document).ready(function() {
+    $('.edit').editable(#{raw combustions_path.to_json},{
+        style   : 'inherit',
+        width   : "none",
+        height  : 20,
+        method  : "PUT",
+        id      : 'field',
+        submitdata: {
+          authenticity_token: #{raw form_authenticity_token.to_json}
+        }
+      });
+      
+      $('#parameter_table').dataTable({
+      "bPaginate": true,
+      "bLengthChange": true,
+      "bFilter": true,
+      "bSort": true,
+      "bInfo": true,
+      "bAutoWidth": false,
+      "sDom": 'lfrtip<"dataTables_action">'
+      });
+      
+      $("div.dataTables_action").html('<p><select name="do" >' +
+          '<option value="create">Add value</option>'+
+          '<option value="delete">Delete value(s)</option>'+
+          '</select>'+#{raw submit_tag('OK').to_json}+ '</p>');
+  } );
+
+.grid_3
+  .box
+    %h2 Combustion coefficients
+    .block
+      %p The combustion coefficients can be use to automatically compute parameter <em>eff_flo</em> between fuels and pollutants. 
+      %p To process, click on the "emission automatic calculation" in a technology page.
+
+.grid_9
+  .box
+    %h2 Browse/edit combustion coefficients
+    .block
+      = form_for(@combustion) do |f|
+        %table.dataTable#parameter_table
+          %thead
+            %tr
+              %th Fuel
+              %th Pollutant
+              %th Value
+              %th Source
+              %th
+          %tbody
+            - @combustions.each do |combustion|
+              %tr
+                %td= combustion.fuel
+                %td= combustion.pollutant
+                %td
+                  %span.edit(id="#{combustion.id}-value")= combustion.value
+                %td
+                  %span.edit(id="#{combustion.id}-source")= combustion.source
+                %td.check
+                  %input(type="checkbox" name="cb#{combustion.id}")
+          %tfoot
+            %tr
+              %td
+                = select(:combustion, :fuel_id, Commodity.energy_carrier.order(:name).collect {|c| [ c.name, c.id ] })
+              %td
+                = select(:combustion, :pollutant_id, Commodity.pollutant.order(:name).collect {|c| [ c.name, c.id ] })
+              %td
+                = f.text_field :value, :size=>10, :type => "textcell"
+              %td
+                = f.text_field :source, :type => "textcell"
+              %td
+        .clear
+        - if @combustion.errors.any?
+          #error_explanation
+            %h5
+              = pluralize(@combustion.errors.count, "error")
+              prohibited this combustion from being saved:
+            %ul
+              - @combustion.errors.full_messages.each do |msg|
+                %li= msg

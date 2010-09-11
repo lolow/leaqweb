@@ -1,0 +1,2 @@
+module CombustionsHelper
+end

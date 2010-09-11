@@ -1,12 +1,17 @@
 require 'leaq_archive'
+require 'etem_debug'
 class DashboardController < ApplicationController
 
   # GET /
   def index
     @nb_commodities = Commodity.count
     @nb_technologies = Technology.count
+    @nb_combustions = Combustion.count
     @from_time = Time.now
-    @last_change = ParameterValue.order(:updated_at).last.updated_at
+    klasses = [ParameterValue,Parameter,Combustion,Technology,Commodity,Flow]
+    last_changes = klasses.collect {|k| k.order(:updated_at).last.updated_at if k.count > 0} 
+    last_changes.compact!
+    @last_change = last_changes.max
     @nb_demand_drivers = DemandDriver.count
     @nb_parameter_values = ParameterValue.count
     @log = VestalVersions::Version.order("created_at DESC").limit(25)

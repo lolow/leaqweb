@@ -4,7 +4,7 @@
     .block
       %h5 Activity
       %p
-        Last changes: #{distance_of_time_in_words(Time.new, @last_change,true)}
+        Last change: #{distance_of_time_in_words(Time.new, @last_change,true)}
         %br
       %h5 Energy system database
       %p
@@ -15,6 +15,8 @@
         #{@nb_demand_drivers} demand drivers
         %br
         #{@nb_parameter_values}  parameter values
+        %br
+        #{@nb_combustions}  combustion coefficients
 
 
 .grid_6
@@ -40,7 +42,7 @@
 .grid_12
   .box
     %h2
-      %a#toggle-a Log
+      %a#toggle-a Revision log
     .block#a
       %p
         - @log.each do |version|

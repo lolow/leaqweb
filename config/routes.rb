@@ -1,5 +1,5 @@
 Leaqweb::Application.routes.draw do |map|
-
+  
   devise_for :users
 
   resources :tables do  
@@ -26,7 +26,12 @@ Leaqweb::Application.routes.draw do |map|
       post :duplicate
     end
   end
-
+  
+  resources :combustions do
+    collection do
+      put :update
+    end
+  end
   resources :flows
   resources :solver
   resources :demand_drivers

@@ -12,8 +12,9 @@ class LeaqArchive
     Parameter.delete_all
     ParameterValue.delete_all
     Table.delete_all
+    Combustion.delete_all
     ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
-    ActiveRecord::Base.connection.execute("DELETE FROM `locations_technologies`")
+    VestalVersions::Version.delete_all
   end
 
   # Backup data in a zipped file containing csv files.
@@ -35,36 +36,42 @@ class LeaqArchive
     Zip::ZipOutputStream.open(filename) do |zipfile|
 
       headers = ["id","name","description","sets"]
-      write_csv_into_zip(zipfile, Technology, headers) do |t,csv|
+      write_csv_into_zip(zipfile,Technology, headers) do |t,csv|
         csv << [t.id,t.name,t.description,t.set_list.join(',')]
       end
 
       headers = ["id","name","description","sets","demand_driver_id","demand_elasticity"]
-      write_csv_into_zip(zipfile, Commodity, headers) do |c,csv|
+      write_csv_into_zip(zipfile,Commodity, headers) do |c,csv|
         csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.demand_elasticity]
       end
 
       headers = ["id","type","technology_id","commodities"]
-      write_csv_into_zip(zipfile, Flow, headers) do |f,csv|
+      write_csv_into_zip(zipfile,Flow, headers) do |f,csv|
         csv << [f.id,f.class,f.technology_id,f.commodity_ids.join(' ')]
       end
 
       headers = ["id","type","name","definition","default_value"]
-      write_csv_into_zip(zipfile, Parameter,headers) do |p,csv|
+      write_csv_into_zip(zipfile,Parameter,headers) do |p,csv|
         csv << p.attributes.values_at(*headers)
       end
 
       headers = ["parameter_id","technology_id","commodity_id","flow_id",
                  "in_flow_id","out_flow_id","time_slice",
                  "year","value","source"]
-      write_csv_into_zip(zipfile, ParameterValue,headers) do |pv,csv|
+      write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
 
       headers = ["name","aggregate","variable","rows","columns","filters"]
-      write_csv_into_zip(zipfile, Table,headers) do |pv,csv|
+      write_csv_into_zip(zipfile,Table,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
+      
+      headers = ["fuel_id","pollutant_id","value","source"]
+      write_csv_into_zip(zipfile,Combustion,headers) do |pv,csv|
+        csv << pv.attributes.values_at(*headers)
+      end
+      
     end
 
   end
@@ -158,7 +165,14 @@ class LeaqArchive
                           :variable => row["variable"],
                           :rows => row["rows"],
                           :columns => row["columns"],
-                          :filters => row["filters"] )
+                          :filters => row["filters"])
+    end
+    
+    readline_zip(filename,Combustion) do |row|
+      pv = Combustion.create!(:fuel_id      => h[:com][row["fuel_id"]],
+                              :pollutant_id => h[:com][row["pollutant_id"]],
+                              :value        => row["value"],
+                              :source       => row["source"])
     end
     
   end

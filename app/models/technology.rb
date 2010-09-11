@@ -13,8 +13,6 @@ class Technology < ActiveRecord::Base
   validates_uniqueness_of :name
 
   validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
-
-  scope :activated, :conditions => {:activated => true}
   
   acts_as_identifiable :prefix => "t"
   
@@ -35,21 +33,23 @@ class Technology < ActiveRecord::Base
   end
 
   def commodities
-    self.flows.collect{|f| f.commodities}.flatten.uniq
+    collect_commodities(self.flows)
   end
 
   def outputs
-    self.out_flows.collect{|f| f.commodities}.flatten.uniq
+    collect_commodities(self.out_flows)
   end
 
   def inputs
-    self.in_flows.collect{|f| f.commodities}.flatten.uniq
+    collect_commodities(self.in_flows)
+  end
+  
+  def collect_commodities(flows)
+    flows.includes(:commodities).collect{|f| f.commodities}.flatten.uniq
   end
   
   def parameter_values_for(parameters)
-    parameters = Array(parameters)
-    param_ids = Parameter.where("name IN (?)",parameters).order(:name)
-    self.parameter_values.where("parameter_id IN (?)",param_ids).order(:year)
+    self.parameter_values.joins(:parameter).where("parameters.name"=>Array(parameters)).order("parameters.name").order(:year)
   end
 
   def to_s

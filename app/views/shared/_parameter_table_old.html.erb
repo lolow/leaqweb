@@ -1,3 +1,54 @@
+:javascript
+  $(document).ready(function() {
+
+      $('.edit').editable(<%= raw request_path.to_json %>,{
+          style   : 'inherit',
+          width   : "none",
+          height  : 20,
+          method  : "PUT",
+          id      : 'field',
+          indicator : #{raw image_tag("spinner.gif").to_json},
+          submitdata: {
+            authenticity_token: #{raw form_authenticity_token.to_json}
+          }
+        });
+
+        $('#parameter_table_#{pid}').dataTable({
+        "bPaginate": true,
+        "bLengthChange": #{lenght_change},
+        "bFilter": #{filter},
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
+          "sDom": 'lfrtip<"dataTables_action">'
+        });
+        $("div.dataTables_action").html('<p><select name="do" >' +
+            '<option value="add_pv">Add value</option>'+
+            '<option value="delete_pv">Delete value(s)</option>'+
+            '</select>'+#{raw submit_tag('OK').to_json}+ '</p>');
+- if rules
+  - columns = cols - ["parameter"]
+  %script
+            $("#<%= pid %>_parameter").change(function () {
+                <% columns.each do |c| %>
+                  $("#<%= pid %>_<%= c %>").removeAttr("disabled");
+                <% end %>
+                <% rules.each do |key,value| %>
+                  //<%= key %>
+                  <% if key[0,1]==">" %>
+                    if ($("#<%= pid %>_parameter option:selected").text().substring(0,<%= key.size-1 %>)=="<%= key[1..-1] %>")
+                  <% elsif key[0,1]=="="  %>
+                    if ($("#<%= pid %>_parameter option:selected").text()=="<%= key[1..-1] %>")
+                  <% end %>
+                {
+                  <% value.each do |c| %>
+                    $("#<%= pid %>_<%= c %>").attr("disabled", true);
+                  <% end %>
+                }
+                <% end %>
+              }).change();
+      <% end %>
+  } );
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
               	

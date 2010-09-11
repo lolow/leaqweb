@@ -10,21 +10,26 @@ class Commodity < ActiveRecord::Base
 
   has_and_belongs_to_many :flows
   has_many :parameter_values, :dependent => :delete_all
+  
   belongs_to :demand_driver, :class_name => Parameter
+  has_many :combustions, :dependent => :delete_all
 
   validates_presence_of :name
   validates_uniqueness_of :name
 
   validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
-
-  scope :activated, where(:activated => true)
+  
+  scope :pollutant, tagged_with("POLL")
+  scope :energy_carrier, tagged_with("ENC")
+  scope :demand, tagged_with("DEM")
+  
 
   def out_flows
-    self.flows.select{|f| f.is_a? OutFlow}
+    OutFlow.joins(:commodities).where("commodities.id"=>self)
   end
 
   def in_flows
-    self.flows.select{|f| f.is_a? InFlow}
+    InFlow.joins(:commodities).where("commodities.id"=>self)
   end
 
   def produced_by
@@ -42,10 +47,9 @@ class Commodity < ActiveRecord::Base
   def demand_values
     return [] unless demand?
     dm = Parameter.find_by_name('demand')
-    dv =
     if self.demand_driver_id
       update_etem_options
-
+      
       dv = self.parameter_values.where("parameter_id = ? AND year = ?", dm, first_year).first      
       base_year_value = dv ? dv.value : 0
       
@@ -57,9 +61,7 @@ class Commodity < ActiveRecord::Base
   end
 
   def parameter_values_for(parameters)
-    parameters = Array(parameters)
-    param_ids = Parameter.where("name IN (?)",parameters).order(:name).map(&:id)
-    self.parameter_values.where("parameter_id IN (?)",param_ids).order(:year)
+    self.parameter_values.joins(:parameter).where("parameters.name"=>Array(parameters)).order("parameters.name").order(:year)
   end
   
   def self.find_by_list_name(list)
@@ -68,16 +70,6 @@ class Commodity < ActiveRecord::Base
 
   def to_s
     self.name
-  end
-
-  def activate(bool)
-    self.update_attributes!(:activated => bool)
-    ParameterValue.transaction{
-      self.parameter_values.all.each { |pv|
-        pv.activated = self.activated
-        pv.save
-      } rescue nil
-    }
   end
 
   def duplicate
@@ -97,9 +89,7 @@ class Commodity < ActiveRecord::Base
                   %w{com_net_bnd_up_t com_net_bnd_up_ts}
     params = Parameter.where(:name=>params_list).map(&:id)
     self.parameter_values.where(:parameter_id => params).each { |pv|
-        attributes = pv.attributes
-        attributes.delete(["commodity_id","created_at","updated_at"])
-        c.parameter_values << ParameterValue.create(attributes)
+        c.parameter_values << ParameterValue.create(pv.attributes.delete(["commodity_id","created_at","updated_at"]))
     }
     c.save
     c
