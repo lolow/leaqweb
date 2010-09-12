@@ -9,5 +9,9 @@
         %p
           = f.label :name
           = f.text_field :name
+        %p
+          = f.label :set_list, 'Sets'
+          = f.select :set_list, %w{DEM POLL ENC ENC,IMP ENC,IMP,EXP}, {:include_blank => true}
+        %p
           = f.submit 'Create', :class => "confirm button"
 .clear

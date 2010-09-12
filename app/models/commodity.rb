@@ -12,7 +12,8 @@ class Commodity < ActiveRecord::Base
   has_many :parameter_values, :dependent => :delete_all
   
   belongs_to :demand_driver, :class_name => Parameter
-  has_many :combustions, :dependent => :delete_all
+  has_many :combustions, :dependent => :delete_all, :foreign_key => :fuel_id
+  has_many :combustions, :dependent => :delete_all, :foreign_key => :pollutant_id
 
   validates_presence_of :name
   validates_uniqueness_of :name
@@ -23,7 +24,6 @@ class Commodity < ActiveRecord::Base
   scope :energy_carrier, tagged_with("ENC")
   scope :demand, tagged_with("DEM")
   
-
   def out_flows
     OutFlow.joins(:commodities).where("commodities.id"=>self)
   end
@@ -42,6 +42,10 @@ class Commodity < ActiveRecord::Base
 
   def demand?
     self.set_list.include? "DEM"
+  end
+  
+  def pollutant?
+    self.set_list.include? "POLL"
   end
 
   def demand_values

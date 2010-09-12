@@ -6,6 +6,7 @@ class DashboardController < ApplicationController
   def index
     @nb_commodities = Commodity.count
     @nb_technologies = Technology.count
+    @nb_flows = Flow.count
     @nb_combustions = Combustion.count
     @from_time = Time.now
     klasses = [ParameterValue,Parameter,Combustion,Technology,Commodity,Flow]

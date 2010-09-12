@@ -107,6 +107,21 @@ class TechnologiesController < ApplicationController
     when "delete_pv"
       ids = @technology.parameter_values.map(&:id).select{|i|params["cb#{i}"]}
       ParameterValue.destroy(ids)
+    when "combustion_flo"
+      in_flow_ids = @technology.in_flows.map(&:id).select{|i|params["f#{i}"]}
+      out_flows_ids = @technology.out_flows.map(&:id).select{|i|params["f#{i}"]}
+      out_flows_ids.each do |f|
+        in_flow = InFlow.find(in_flow_ids.first)
+        out_flow = OutFlow.find(f)
+        coef = @technology.combustion_factor(in_flow,out_flow)
+        param = Parameter.find_by_name("eff_flo")
+        pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?",param,in_flow,out_flow).first 
+        if pv
+          pv.update_attributes(:value=>coef,:source=>"Combustion coefficients")
+        else
+          ParameterValue.create(:parameter_id=>param,:technology_id=>@technology,:in_flow_id=>in_flow,:out_flow_id=>out_flow,:value=>coef,:source=>"Combustion coefficients")
+        end
+      end
     when "add_pv"
       att = params[:pv]
       att[:parameter] = Parameter.find_by_name(att[:parameter])

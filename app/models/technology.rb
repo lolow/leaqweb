@@ -172,6 +172,22 @@ class Technology < ActiveRecord::Base
       end
     end
   end
+  
+  # Compute eff_flo between two flows when out_flow is a pollutant
+  def combustion_factor(in_flow,out_flow)
+    in_flow = self.in_flows.first unless in_flow
+    fuels = in_flow.commodities
+    pollutant = out_flow.commodities.first
+    coefs = Hash.new(0)
+    Combustion.where(:pollutant_id=>pollutant).each{|c| coefs[c.fuel_id] = c.value }
+    if fuels.size == 1
+      return coefs[fuels.first.id]
+    else
+      share = self.parameter_values_for("flo_share_fx").where(:flow_id=>in_flow)
+      share.collect!{ |s| coefs[s.commodity_id] * s.value }
+      return share.inject(0){|sum,x| sum+x }
+    end
+  end
 
   # Create a fuel tech and its input/output if necessary
   def self.create_fuel_tech(input,output)
@@ -219,4 +235,5 @@ class Technology < ActiveRecord::Base
     t.flow_act = fi
     t
   end
+    
 end

@@ -18,6 +18,7 @@ Leaqweb::Application.routes.draw do |map|
   resources :technologies do  
     member do
       post :duplicate
+      post :emission
     end  
   end
 
