@@ -2,6 +2,8 @@ require 'tenjin'
 require 'yaml'
 require 'benchmark'
 
+require 'etem'
+
 class EtemSolver
   include Etem
 
@@ -172,6 +174,8 @@ class EtemSolver
       # Values are projected if necessary
       str = []
       values.each{ |key,k_values|
+        p key
+        p k_values
         projection(k_values,time_proj[parameter]).each{|period,value|
           if key.index("AN")
             TIME_SLICES.each { |ts|

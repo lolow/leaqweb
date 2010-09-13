@@ -160,19 +160,19 @@ class LeaqArchive
     end
 
     readline_zip(filename,Table) do |row|
-      pv = Table.create!( :name => row["name"],
-                          :aggregate => row["aggregate"],
-                          :variable => row["variable"],
-                          :rows => row["rows"],
-                          :columns => row["columns"],
-                          :filters => row["filters"])
+      Table.create!( :name => row["name"],
+                     :aggregate => row["aggregate"],
+                     :variable => row["variable"],
+                     :rows => row["rows"],
+                     :columns => row["columns"],
+                     :filters => row["filters"])
     end
     
     readline_zip(filename,Combustion) do |row|
-      pv = Combustion.create!(:fuel_id      => h[:com][row["fuel_id"]],
-                              :pollutant_id => h[:com][row["pollutant_id"]],
-                              :value        => row["value"],
-                              :source       => row["source"])
+      c = Combustion.create!(:fuel_id      => h[:com][row["fuel_id"]],
+                             :pollutant_id => h[:com][row["pollutant_id"]],
+                             :value        => row["value"],
+                             :source       => row["source"])
     end
     
   end

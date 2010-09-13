@@ -152,7 +152,7 @@
           :filter => "false",
           :request_path => technology_path(@technology),
           :parameters => %w{fixed_cap},
-          :cols => %w{location year value source},
+          :cols => %w{year value source},
           :editable => %w{value source},
           :rules =>  nil } %>
   .box
@@ -201,7 +201,7 @@
           :parameters =>  %w{act_bnd_lo act_bnd_fx act_bnd_up} +
             %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
             %w{icap_bnd_lo icap_bnd_fx icap_bnd_up},
-          :cols => %w{parameter location time_slice year value source},
+          :cols => %w{parameter time_slice year value source},
           :editable => %w{value source},
           :rules =>  {">cap_bnd" => %w{ time_slice},
             ">icap_bnd" => %w{ time_slice} }} %>

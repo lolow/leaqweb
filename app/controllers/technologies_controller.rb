@@ -33,7 +33,7 @@ class TechnologiesController < ApplicationController
   def new
     @technology = Technology.new
     respond_to do |format|
-      format.html # new.html.erb
+      format.html
     end
   end
 
@@ -109,21 +109,33 @@ class TechnologiesController < ApplicationController
       ParameterValue.destroy(ids)
     when "combustion_flo"
       in_flow_ids = @technology.in_flows.map(&:id).select{|i|params["f#{i}"]}
-      out_flows_ids = @technology.out_flows.map(&:id).select{|i|params["f#{i}"]}
-      out_flows_ids.each do |f|
+      in_flow_ids << @technology.in_flows.first.id
+      out_flow_ids = @technology.out_flows.map(&:id).select{|i|params["f#{i}"]}
+      out_flow_ids.each do |f|
         in_flow = InFlow.find(in_flow_ids.first)
         out_flow = OutFlow.find(f)
         coef = @technology.combustion_factor(in_flow,out_flow)
         param = Parameter.find_by_name("eff_flo")
-        pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?",param,in_flow,out_flow).first 
+        pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?",param,in_flow.id,out_flow.id).first
         if pv
-          pv.update_attributes(:value=>coef,:source=>"Combustion coefficients")
+          puts "update"
+          pv.update_attributes(:value=>coef,
+                               :source=>"Combustion coefficients")
         else
-          ParameterValue.create(:parameter_id=>param,:technology_id=>@technology,:in_flow_id=>in_flow,:out_flow_id=>out_flow,:value=>coef,:source=>"Combustion coefficients")
+          puts "create"
+          ParameterValue.create(:parameter=>param,
+                                :technology=>@technology,
+                                :in_flow=>in_flow,
+                                :out_flow=>out_flow,
+                                :value=>coef,
+                                :source=>"Combustion coefficients")
         end
       end
     when "add_pv"
       att = params[:pv]
+      att[:flow] = Flow.find(att[:flow].to_i) if att[:flow]
+      att[:in_flow] = InFlow.find(att[:in_flow].to_i) if att[:in_flow]
+      att[:out_flow] = OutFlow.find(att[:out_flow].to_i)  if att[:out_flow]
       att[:parameter] = Parameter.find_by_name(att[:parameter])
       att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
       att[:technology] = @technology

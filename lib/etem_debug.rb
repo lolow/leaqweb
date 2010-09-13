@@ -22,6 +22,7 @@ class EtemDebug
     self.check_validity_of_flo_share_fx
     self.check_in_flow_and_demand
     self.check_dmd_and_demand
+    self.check_orphan_demand
     self.check_presence_of_set
     @errors
   end
@@ -109,6 +110,16 @@ class EtemDebug
     ids = techs - dmd
     if ids.size > 0
       @errors << [:check_dmd_and_demand,"DMD set should contain Technology: " + ids.join(",")]
+    end
+    @errors
+  end
+
+    def check_orphan_demand
+    demands = Commodity.tagged_with("DEM").map(&:id)
+    demands.each do |dem|
+      if dem.produced_by.size == 0
+        @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.id]
+      end
     end
     @errors
   end

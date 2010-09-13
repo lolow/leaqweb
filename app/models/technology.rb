@@ -99,10 +99,6 @@ class Technology < ActiveRecord::Base
       t.parameter_values << ParameterValue.create(attributes)
     }
     t.save
-    self.locations.each { |l|
-      t.locations << l
-    }
-    t.save
     t
   end
 
@@ -213,10 +209,8 @@ class Technology < ActiveRecord::Base
       name.succ!
     end
     t.name = name
-    t.description = "Fuel tech [" + input+"->"+output+"]"
+    t.description = "Fuel tech"
     t.set_list = "FUELTECH"
-    t.save
-    t.locations << Location.first
     t.save
     fi = InFlow.create
     fi.commodities << com[input]
