@@ -4,7 +4,11 @@
   %meta(name="keywords" content="#{@keywords.join ', '}")
   %meta(name="author" content=@author)
   %title= @title.join ' - '
-  = stylesheet_link_tag "reset", "text", "grid", "layout", "nav", "jquery-ui", :cache => true
+  = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
+  = stylesheet_link_tag 'print.css', :media => 'print'
+  /[if IE]
+    = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
+  = stylesheet_link_tag  "jquery-ui", :cache => true
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
   = common_js
   = csrf_meta_tag
