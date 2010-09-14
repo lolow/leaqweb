@@ -58,42 +58,44 @@ param act_flo default #{@p_act_flo_d} := #{@p_act_flo};
 
 param cost_imp default #{@p_cost_imp_d} := #{@p_cost_imp};
 
-param cost_exp     default #{@p_cost_exp_d};
-param peak_reserve default #{@p_peak_reserve_d};
-param peak_prod    default #{@p_peak_prod_d};
+param cost_exp     default #{@p_cost_exp_d} := #{@p_cost_exp};
+param peak_reserve default #{@p_peak_reserve_d} := #{@p_peak_reserve};
+param peak_prod    default #{@p_peak_prod_d} := #{@p_peak_prod};
 
 param eff_flo      default #{@p_eff_flo_d} := #{@p_eff_flo};
 
-param flo_share_lo default #{@p_flo_share_lo_d};
+param flo_share_lo default #{@p_flo_share_lo_d} := #{@p_flo_share_lo};
 param flo_share_up default #{@p_flo_share_up_d} := #{@p_flo_share_up};
 param flo_share_fx default #{@p_flo_share_fx_d} := #{@p_flo_share_fx};
 
-param act_bnd_fx  default #{@p_act_bnd_fx_d};
-param act_bnd_lo  default #{@p_act_bnd_lo_d};
-param act_bnd_up  default #{@p_act_bnd_up_d};
-param cap_bnd_fx  default #{@p_cap_bnd_fx_d};
-param exp_bnd_fx   default #{@p_exp_bnd_fx_d};
-param exp_bnd_lo   default #{@p_exp_bnd_lo_d};
-param exp_bnd_up   default #{@p_exp_bnd_up_d};
-param flo_bnd_fx   default #{@p_flo_bnd_fx_d};
-param flo_bnd_lo   default #{@p_flo_bnd_lo_d};
-param flo_bnd_up   default #{@p_flo_bnd_up_d};
-param icap_bnd_fx  default #{@p_icap_bnd_fx_d};
-param icap_bnd_lo  default #{@p_icap_bnd_lo_d};
-param imp_bnd_fx   default #{@p_imp_bnd_fx_d};
-param imp_bnd_lo   default #{@p_imp_bnd_lo_d};
-param imp_bnd_up   default #{@p_imp_bnd_up_d};
+param act_bnd_fx  default #{@p_act_bnd_fx_d} := #{@p_act_bnd_fx};
+param act_bnd_lo  default #{@p_act_bnd_lo_d} := #{@p_act_bnd_lo};
+param act_bnd_up  default #{@p_act_bnd_up_d} := #{@p_act_bnd_up};
 
-param com_net_bnd_up_t default #{@p_com_net_bnd_up_t_d};
-param com_net_bnd_up_ts default #{@p_com_net_bnd_up_ts_d};
-
-param frac_dem := #{@p_frac_dem};
-
-param icap_bnd_up default #{@p_icap_bnd_up_d} := #{@p_icap_bnd_up};
-
+param cap_bnd_fx  default #{@p_cap_bnd_fx_d} :=  #{@p_cap_bnd_fx};
+param cap_bnd_lo  default #{@p_cap_bnd_lo_d} := #{@p_cap_bnd_lo};
 param cap_bnd_up  default #{@p_cap_bnd_up_d} := #{@p_cap_bnd_up};
 
-param cap_bnd_lo  default #{@p_cap_bnd_lo_d} := #{@p_cap_bnd_lo};
+param exp_bnd_fx   default #{@p_exp_bnd_fx_d} := #{@p_exp_bnd_fx};
+param exp_bnd_lo   default #{@p_exp_bnd_lo_d} := #{@p_exp_bnd_lo};
+param exp_bnd_up   default #{@p_exp_bnd_up_d} := #{@p_exp_bnd_up};
+
+param flo_bnd_fx   default #{@p_flo_bnd_fx_d} := #{@p_flo_bnd_fx};
+param flo_bnd_lo   default #{@p_flo_bnd_lo_d} := #{@p_flo_bnd_lo};
+param flo_bnd_up   default #{@p_flo_bnd_up_d} := #{@p_flo_bnd_up};
+
+param icap_bnd_fx  default #{@p_icap_bnd_fx_d} := #{@p_icap_bnd_fx};
+param icap_bnd_lo  default #{@p_icap_bnd_lo_d} := #{@p_icap_bnd_lo};
+param icap_bnd_up default #{@p_icap_bnd_up_d} := #{@p_icap_bnd_up};
+
+param imp_bnd_fx   default #{@p_imp_bnd_fx_d} := #{@p_imp_bnd_fx};
+param imp_bnd_lo   default #{@p_imp_bnd_lo_d} := #{@p_imp_bnd_lo};
+param imp_bnd_up   default #{@p_imp_bnd_up_d} := #{@p_imp_bnd_up};
+
+param com_net_bnd_up_t default #{@p_com_net_bnd_up_t_d} :=  #{@p_com_net_bnd_up_t};
+param com_net_bnd_up_ts default #{@p_com_net_bnd_up_ts_d} := #{@p_com_net_bnd_up_ts};
+
+param frac_dem := #{@p_frac_dem};
 
 param network_efficiency default #{@p_network_efficiency_d} := #{@p_network_efficiency};
 

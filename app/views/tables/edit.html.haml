@@ -127,7 +127,7 @@
             - @table.rows.split('+').each do |i|
               %li.table_def_default{:id=>"#{i}"}= Table::INDEX[i.strip]
 
-          %ul#rows.table_def
+          %ul#columns.table_def
             %li.table_def_head Columns
             - @table.columns.split('+').each do |i|
               %li.table_def_default{:id=>"#{i}"}= Table::INDEX[i.strip]

@@ -27,6 +27,20 @@ module Etem
     @time_proj ||= YAML.load_file(File.join(@opts[:model_path],'param_proj_period.yml'))
   end
 
+  def fraction
+    unless @fraction
+      @fraction = {}
+      Parameter.find_by_name('fraction').parameter_values.each do |row|
+        @fraction[row.time_slice] = row.value
+      end
+    end
+    @fraction
+  end
+
+  def inherit_ts
+    @inherit_ts ||= YAML.load_file(File.join(@opts[:model_path],'param_inherit_ts.yml'))
+  end
+
   def first_year
     @etem_first_year ||=  Parameter.find_by_name('base_year').default_value.to_i
   end

@@ -125,13 +125,9 @@ class EtemSolver
     c["p_period_length_d"] = period_duration
 
     # frac_dem - fill the parameter if no value are available
-    f = Hash.new
-    Parameter.find_by_name('fraction').parameter_values.each do |row|
-      f[row.time_slice] = row.value
-    end
     fill_dmd = c[:s_dem].scan(/\w+/) - c[:p_frac_dem].scan(/\w+/)
     fill_dmd.each do |d|
-      TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{f[ts]} "}
+      TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{fraction[ts]} "}
     end
     c
   end                    
@@ -171,7 +167,7 @@ class EtemSolver
           values[key][v.year] = v.value
         }
       end
-      # Values are projected if necessary
+      # Values are projected/desagregated if necessary
       str = []
       values.each{ |key,k_values|
         p key
@@ -180,7 +176,11 @@ class EtemSolver
           if key.index("AN")
             TIME_SLICES.each { |ts|
               str << key.sub("AN",ts).sub(/[T]/,period.to_s)
-              str << value
+              if inherit_ts[parameter]==:same
+                str << value
+              elsif inherit_ts[parameter]==:fraction
+                str << value * fraction[ts]
+              end
             }
           else
             str << key.sub(/[T]/,period.to_s)

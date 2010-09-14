@@ -1,0 +1,19 @@
+---
+act_bnd_fx: :fraction
+act_bnd_lo: :fraction
+act_bnd_up: :fraction
+avail_factor: :fraction
+com_net_bnd_up_ts: :fraction
+cost_delivery: :same
+cost_exp: :same
+cost_imp: :same
+exp_bnd_fx: :fraction
+exp_bnd_lo: :fraction
+exp_bnd_up: :fraction
+flo_bnd_fx: :fraction
+flo_bnd_lo: :fraction
+flo_bnd_up: :fraction
+imp_bnd_fx: :fraction
+imp_bnd_lo: :fraction
+imp_bnd_up: :fraction
+peak_reserve: :fraction
