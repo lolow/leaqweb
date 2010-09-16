@@ -15,9 +15,9 @@ class EtemDebug
 
   # Execute all checks
   def check_everything
+    self.check_empty_flow
     self.check_presence_of_flow_act
     self.check_orphan_parameter_value
-    self.check_empty_flow
     self.check_disconnected_flow
     self.check_validity_of_flo_share_fx
     self.check_in_flow_and_demand
@@ -54,7 +54,7 @@ class EtemDebug
       pv = ParameterValue.group(field).map(&field).compact
       pv_ids = pv - klass.select(:id).map(&:id)
       if pv_ids.size > 0
-        ids = ParameterValue.where(field=>pv_ids)
+        ids = ParameterValue.where(field=>pv_ids).map(&:id)
         @errors << [:check_orphan_parameter_value,"Wrong value in #{field} for ParameterValue: " + ids.join(",")]
       end
     }
