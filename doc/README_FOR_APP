@@ -1,18 +1,2 @@
 Use this README file to introduce your application and point to useful places in the API for learning more.
 Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.
-
-*Main Installation
-
-sudo gem update --system
-sudo gem install rails
-sudo gem install mongrel
-cp config/database.yml.default config/database.yml
-sudo apt-get install sqlite3 libsqlite3-dev
-sudo rake gems:install
-rake db:migrate
-
-*Installation of R to compute result cross-tables
-
-sudo apt-get install r-base
-sudo R
-install.packages('reshape',dependencies=TRUE)
