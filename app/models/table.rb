@@ -1,28 +1,16 @@
+require 'etem'
 class Table < ActiveRecord::Base
+  include Etem
 
   versioned
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
-
-  AGGREGATES = %w{SUM MEAN}
-  VARIABLES = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
-              %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
-              %w{C_PRICE}
-  INDEX = { "T" => "Time period",
-            "S" => "Time slice",
-            "P" => "Processes",
-            "C" => "Commodities" }.freeze
+  validates :name, :presence => true, :uniqueness => true
 
   def digest_filter
     filters.split('&').collect { |term|
       term = term.split(" ",3)
       condition = Hash.new
-      if term.first.first=="!"
-        condition[:not] = "not "
-      else
-        condition[:not] = ""
-      end
+      condition[:not] = term.first.first=="!" ? "not " : ""
       condition[:variable] = term[0].gsub('!','').strip
       break unless term[1].index("%in%")
       if term[2].strip.index("grep('^")==0
@@ -43,25 +31,13 @@ class Table < ActiveRecord::Base
     INDEX.keys - rows.split('+') - columns.split('+')
   end
 
-      def clone_from(model)
-      model.attributes.each {|attr, value| eval("self.#{attr}= model.#{attr}")}
-    end
-
   def duplicate_as_new
-    table = Table.new
-    name = self.name + " 01"
-    while Table.find_by_name(name)
-      name.succ!
-    end
-    attributes = { :name => name,
-                   :aggregate => self.aggregate,
-                   :variable => self.variable,
-                   :columns => self.columns,
-                   :rows => self.rows,
-                   :filters => self.filters
-    }
-    table.attributes = attributes
-    table
+    Table.new( :name      => next_available_name(Table,name),
+               :aggregate => aggregate,
+               :variable  => variable,
+               :columns   => columns,
+               :rows      => rows,
+               :filters   => filters )
   end
 
 end

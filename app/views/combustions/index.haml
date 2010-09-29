@@ -61,9 +61,9 @@
           %tfoot
             %tr
               %td
-                = select(:combustion, :fuel_id, Commodity.energy_carrier.order(:name).collect {|c| [ c.name, c.id ] })
+                = select(:combustion, :fuel_id, Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
               %td
-                = select(:combustion, :pollutant_id, Commodity.pollutant.order(:name).collect {|c| [ c.name, c.id ] })
+                = select(:combustion, :pollutant_id, Commodity.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
               %td
                 = f.text_field :value, :size=>10, :type => "textcell"
               %td

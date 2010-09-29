@@ -115,8 +115,7 @@ class EtemDebug
   end
 
     def check_orphan_demand
-    demands = Commodity.tagged_with("DEM").map(&:id)
-    demands.each do |dem|
+    Commodity.demands.each do |dem|
       if dem.produced_by.size == 0
         @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.id]
       end

@@ -9,15 +9,11 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :out_flow
   belongs_to :in_flow
 
-  validates_presence_of :value
-  validates_numericality_of :value
+  validates :value, :presence => true, :numericality => true
+  validates :parameter, :presence => true
+  validates :year, :numericality => {:only_integer => true, :minimum => -1}, :allow_nil => true
+  validates :time_slices, :inclusion => { :in => %w(AN IN ID SN SD WN WD) }, :allow_nil => true
 
-  validates_presence_of :parameter
-  
-  validates_numericality_of :year, :allow_nil => true, :only_integer => true, :greater_than => -1
-
-  validates_inclusion_of :time_slice, :in => %w(AN IN ID SN SD WN WD), :allow_nil => true
-
-  scope :activated, :conditions => {:activated => true}
-
+  scope :of, lambda { |names| joins(:parameter).where("parameters.name"=>names).order("parameters.name") }
+  scope :technology, lambda { |tech| where(:technology_id=>tech) }
 end

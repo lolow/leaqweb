@@ -15,14 +15,14 @@ class Commodity < ActiveRecord::Base
   has_many :combustions, :dependent => :delete_all, :foreign_key => :fuel_id
   has_many :combustions, :dependent => :delete_all, :foreign_key => :pollutant_id
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
-
-  validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
+  validates :name, :presence => true,
+                   :uniqueness => true,
+                   :format => { :with => /\A[a-zA-Z\d-]+\z/,
+                                :message => "Please use only regular letters, numbers or symbol '-' in name" }
   
-  scope :pollutant, tagged_with("POLL")
-  scope :energy_carrier, tagged_with("ENC")
-  scope :demand, tagged_with("DEM")
+  scope :pollutants, tagged_with("POLL")
+  scope :energy_carriers, tagged_with("ENC")
+  scope :demands, tagged_with("DEM")
   
   def out_flows
     OutFlow.joins(:commodities).where("commodities.id"=>self)
@@ -65,7 +65,7 @@ class Commodity < ActiveRecord::Base
   end
 
   def parameter_values_for(parameters)
-    self.parameter_values.joins(:parameter).where("parameters.name"=>Array(parameters)).order("parameters.name").order(:year)
+    ParameterValue.for(Array(parameters)).where(:commodity_id=>self).order(:year)
   end
   
   def self.find_by_list_name(list)
@@ -73,25 +73,14 @@ class Commodity < ActiveRecord::Base
   end
 
   def to_s
-    self.name
+    name
   end
 
   def duplicate
-    c = Commodity.new
-    name = self.name + "-01"
-    while Commodity.find_by_name(name)
-      name.succ!
-    end
-    c.name = name
-    c.description = self.description
-    c.save
-    c.set_list = self.set_list.join(", ")
-    c.save
-    params_list = %w{demand frac_dem} + %w{network_efficiency peak_reserve} + 
-                  %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} + 
-                  %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } + 
-                  %w{com_net_bnd_up_t com_net_bnd_up_ts}
-    params = Parameter.where(:name=>params_list).map(&:id)
+    c = Commodity.create( :name        => next_available_name(Commodity,name),
+                          :description => description,
+                          :set_list    => set_list.join(", ") )
+    params = Parameter.where(:name=>PARAM_COMMODITIES).map(&:id)
     self.parameter_values.where(:parameter_id => params).each { |pv|
         c.parameter_values << ParameterValue.create(pv.attributes.delete(["commodity_id","created_at","updated_at"]))
     }

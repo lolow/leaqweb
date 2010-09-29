@@ -8,48 +8,46 @@ class Technology < ActiveRecord::Base
   has_many :in_flows, :dependent => :destroy
   has_many :flows, :dependent => :destroy
   has_many :parameter_values, :dependent => :delete_all
-  
-  validates_presence_of :name
-  validates_uniqueness_of :name
 
-  validates_format_of :name, :with => /\A[a-zA-Z\d-]+\z/,  :message => "Please use only regular letters, numbers or symbol '-' in name"
+  validates :name, :presence => true,
+                   :uniqueness => true,
+                   :format => { :with => /\A[a-zA-Z\d-]+\z/,
+                                :message => "Please use only regular letters, numbers or symbol '-' in name" }
   
   acts_as_identifiable :prefix => "t"
   
   def flow_act
-    p = Parameter.find_by_name("flow_act")
-    pv = p.parameter_values.where(:technology_id=>self).first
-    pv.flow
+    ParameterValue.of("flow_act").technology(self).first.flow
   end
 
   def flow_act=(flow)
-    p = Parameter.find_by_name("flow_act")
-    pv = p.parameter_values.where(:technology_id=>self).first
+    pv = ParameterValue.of("flow_act").technology(self).first
     if pv
       ParameterValue.update(pv.id,:flow=>flow)
     else
+      p = Parameter.find_by_name("flow_act")
       ParameterValue.create!(:parameter=>p,:technology=>self,:flow=>flow,:value=>0)
     end
   end
 
   def commodities
-    collect_commodities(self.flows)
+    collect_commodities(flows)
   end
 
   def outputs
-    collect_commodities(self.out_flows)
+    collect_commodities(out_flows)
   end
 
   def inputs
-    collect_commodities(self.in_flows)
+    collect_commodities(in_flows)
   end
   
   def collect_commodities(flows)
-    flows.includes(:commodities).collect{|f| f.commodities}.flatten.uniq
+    Commodity.joins(:flows).where("flows.id"=>flows.map(&:id))
   end
   
   def parameter_values_for(parameters)
-    self.parameter_values.joins(:parameter).where("parameters.name"=>Array(parameters)).order("parameters.name").order(:year)
+    ParameterValue.for(Array(parameters)).technology(self).order(:year)
   end
 
   def to_s
@@ -58,43 +56,23 @@ class Technology < ActiveRecord::Base
 
   # Duplicate the technology
   def duplicate
-    t = Technology.new
-    name = self.name + "-01"
-    while Technology.find_by_name(name)
-      name.succ!
-    end
-    t.name = name
-    t.description = description
-    t.set_list = self.set_list.join(', ')
-    t.save
-    flow_corr = Hash.new
+    t = Technology.create( :name => next_available_name(Technology,self.name),
+                           :description => self.description,
+                           :set_list => self.set_list.join(', ') )
+    flow_hash = {}
     self.flows.each { |f|
-      case f.type
-      when "InFlow"
-        f0 = InFlow.create
-      when "OutFlow"
-        f0 = OutFlow.create
-      end
-      flow_corr[f.id] = f0.id
-      f.commodities.each {|c|
-        f0.commodities << c
-      }
-      t.flows << f0
+      eval("ff = #{f.type}.create")
+      flow_hash[f.id] = ff.id
+      f.commodities.each {|c| ff.commodities << c }
+      t.flows << ff
     }
     t.save
-    params_list = %w{input output} + %w{eff_flo } + %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
-      %w{flo_share_lo flo_share_fx flo_share_up} +
-      %w{peak_prod cost_delivery act_flo} + %w{fixed_cap} + 
-      %w{life avail cap_act  avail_factor} + %w{cost_vom cost_fom cost_icap} +
-      %w{act_bnd_lo act_bnd_fx act_bnd_up} +
-      %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
-      %w{icap_bnd_lo icap_bnd_fx icap_bnd_up}
-    params = Parameter.where(:name=>params_list).map(&:id)
+    params = Parameter.where(:name=>PARAM_TECHNOLOGIES).map(&:id)
     self.parameter_values.where(:parameter_id=>params).each { |pv|
       attributes = pv.attributes
-      attributes[:flow_id] = flow_corr[attributes[:flow_id]]
-      attributes[:in_flow_id] = flow_corr[attributes[:in_flow_id]]
-      attributes[:out_flow_id] = flow_corr[attributes[:out_flow_id]]
+      [:flow_id,:in_flow_id,:out_flow_id].each do |att|
+        attributes[att] = flow_hash[attributes[att]]
+      end
       attributes.delete(["technology_id","created_at","updated_at"])
       t.parameter_values << ParameterValue.create(attributes)
     }

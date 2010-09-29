@@ -1,7 +1,31 @@
 # Module ETEM
-# Collection of methods useful for EtemSolver
+# common methods and constant
 
 module Etem
+
+  AGGREGATES = %w{SUM MEAN}
+  VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
+               %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
+               %w{C_PRICE}
+  PARAM_COMMODITIES = %w{demand frac_dem} +
+                      %w{network_efficiency peak_reserve} +
+                      %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} +
+                      %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } +
+                      %w{com_net_bnd_up_t com_net_bnd_up_ts}
+  PARAM_TECHNOLOGIES = %w{input output} + %w{eff_flo } +
+                       %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
+                       %w{flo_share_lo flo_share_fx flo_share_up} +
+                       %w{peak_prod cost_delivery act_flo} + %w{fixed_cap} +
+                       %w{life avail cap_act  avail_factor} +
+                       %w{cost_vom cost_fom cost_icap} +
+                       %w{act_bnd_lo act_bnd_fx act_bnd_up} +
+                       %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
+                       %w{icap_bnd_lo icap_bnd_fx icap_bnd_up}
+  INDEX = { "T" => "Time period",
+            "S" => "Time slice",
+            "P" => "Processes",
+            "C" => "Commodities" }.freeze
+
 
   DEF_OPTS = {:temp_path => "/tmp",
               :model_path => File.join(Rails.root,'lib','etem'),
@@ -123,6 +147,16 @@ module Etem
 
   def interpolate(x1,x2,y1,y2,x)
     (x.to_f-x1) / (x2-x1) * (y2-y1) + y1
+  end
+
+  def next_available_name(klass,name)
+    index = 0
+    fname=name
+    while klass.find_by_name(fname)
+      index+=1
+      fname=name + "#{index+=1}"
+    end
+    fname
   end
 
 end
