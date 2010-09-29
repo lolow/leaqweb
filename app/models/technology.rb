@@ -1,4 +1,7 @@
+require 'etem'
+
 class Technology < ActiveRecord::Base
+  include Etem
 
   versioned
 
@@ -12,7 +15,7 @@ class Technology < ActiveRecord::Base
   validates :name, :presence => true,
                    :uniqueness => true,
                    :format => { :with => /\A[a-zA-Z\d-]+\z/,
-                                :message => "Please use only regular letters, numbers or symbol '-' in name" }
+                                :message => NAME_MESSAGE }
   
   acts_as_identifiable :prefix => "t"
   
@@ -47,7 +50,7 @@ class Technology < ActiveRecord::Base
   end
   
   def parameter_values_for(parameters)
-    ParameterValue.for(Array(parameters)).technology(self).order(:year)
+    ParameterValue.of(Array(parameters)).technology(self).order(:year)
   end
 
   def to_s
@@ -84,11 +87,8 @@ class Technology < ActiveRecord::Base
   def preprocess_input_output
     
     #Read parameters
-    io = []
-    io << self.parameter_values_for("input")
-    return if io[0].size==0
-    io << self.parameter_values_for("output")
-    return if io[1].size==0
+    io = ["input","output"].collect{|p|parameter_values_for(p)}
+    return if io[0].size*io[1].size==0
 
     #Classify inflow-outflow
     p = Hash.new
@@ -110,12 +110,17 @@ class Technology < ActiveRecord::Base
 
         #eff-flo
         efficiency = value[1].values.sum/value[0].values.sum
-        param = Parameter.find_by_name("eff_flo")
-        pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?",param.id,kk[0],kk[1]).first 
+        pv = ParameterValue.of("eff_flo").where("in_flow_id=? AND out_flow_id=?",kk[0],kk[1]).first
         if pv
           pv.update_attributes(:value=>efficiency,:source=>"Preprocessed")
         else
-          ParameterValue.create(:parameter_id=>param.id,:technology_id=>self.id,:in_flow_id=>kk[0],:out_flow_id=>kk[1],:value=>efficiency,:source=>"Preprocessed")
+          param = Parameter.find_by_name("eff_flo")
+          ParameterValue.create(:parameter_id=>param.id,
+                                :technology_id=>self.id,
+                                :in_flow_id=>kk[0],
+                                :out_flow_id=>kk[1],
+                                :value=>efficiency,
+                                :source=>"Preprocessed")
         end
 
         #flo_share_fx
@@ -127,7 +132,7 @@ class Technology < ActiveRecord::Base
             total = value[x].values.sum
             #ensure sum is equal to 1
             coef = {}
-            c.each {|j| coef[j.id]= (value[x][j.id]/total * 10**10).round.to_f / 10**10 }
+            c.each {|j| coef[j.id] = (value[x][j.id]/total * 10**10).round.to_f / 10**10 }
             if coef.values.sum > 1
               coef[coef.keys.first] -= coef.values.sum - 1
             end

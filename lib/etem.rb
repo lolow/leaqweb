@@ -25,6 +25,7 @@ module Etem
             "S" => "Time slice",
             "P" => "Processes",
             "C" => "Commodities" }.freeze
+  NAME_MESSAGE = "Please use only letters, numbers or symbol '-' in name"
 
 
   DEF_OPTS = {:temp_path => "/tmp",
@@ -153,7 +154,6 @@ module Etem
     index = 0
     fname=name
     while klass.find_by_name(fname)
-      index+=1
       fname=name + "#{index+=1}"
     end
     fname

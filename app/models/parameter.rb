@@ -1,4 +1,5 @@
 class Parameter < ActiveRecord::Base
+
   versioned
 
   has_many :parameter_values
@@ -8,4 +9,5 @@ class Parameter < ActiveRecord::Base
   def to_s
     name
   end
+  
 end

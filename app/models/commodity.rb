@@ -11,14 +11,14 @@ class Commodity < ActiveRecord::Base
   has_and_belongs_to_many :flows
   has_many :parameter_values, :dependent => :delete_all
   
-  belongs_to :demand_driver, :class_name => Parameter
+  belongs_to :demand_driver
   has_many :combustions, :dependent => :delete_all, :foreign_key => :fuel_id
   has_many :combustions, :dependent => :delete_all, :foreign_key => :pollutant_id
 
   validates :name, :presence => true,
                    :uniqueness => true,
                    :format => { :with => /\A[a-zA-Z\d-]+\z/,
-                                :message => "Please use only regular letters, numbers or symbol '-' in name" }
+                                :message => NAME_MESSAGE }
   
   scope :pollutants, tagged_with("POLL")
   scope :energy_carriers, tagged_with("ENC")
@@ -33,11 +33,11 @@ class Commodity < ActiveRecord::Base
   end
 
   def produced_by
-    self.out_flows.map{|f| f.technology}
+    Technology.joins(:flows).where("flows.id"=>out_flows)
   end
 
   def consumed_by
-    self.in_flows.map{|f| f.technology}
+    Technology.joins(:flows).where("flows.id"=>in_flows)
   end
 
   def demand?
@@ -50,26 +50,26 @@ class Commodity < ActiveRecord::Base
 
   def demand_values
     return [] unless demand?
-    dm = Parameter.find_by_name('demand')
-    if self.demand_driver_id
+    if demand_driver
       update_etem_options
       
-      dv = self.parameter_values.where("parameter_id = ? AND year = ?", dm, first_year).first      
+      dv = parameter_values.of("demand").where(:year=>first_year).first
       base_year_value = dv ? dv.value : 0
       
-      driver_values = ParameterValue.where(:parameter_id=>self.demand_driver_id).order(:year).collect{|pv| [pv.year,pv.value]}
+      driver_values = ParameterValue.of(demand_driver.to_s).order(:year)
+      driver_values.collect!{|pv| [pv.year,pv.value]}
       demand_projection(driver_values,base_year_value,self.demand_elasticity)
     else
-      self.parameter_values.where(:parameter_id=>dm).order(:year).collect{|pv| [pv.year,pv.value]}
+      parameter_values.of("demand").order(:year).collect{|pv| [pv.year,pv.value]}
     end
   end
 
   def parameter_values_for(parameters)
-    ParameterValue.for(Array(parameters)).where(:commodity_id=>self).order(:year)
+    ParameterValue.of(Array(parameters)).where(:commodity_id=>self).order(:year)
   end
   
   def self.find_by_list_name(list)
-    list.split(",").uniq.collect{|c|Commodity.find_by_name(c)}.compact
+    Commodity.where(:name=>list.split(","))
   end
 
   def to_s
@@ -77,12 +77,12 @@ class Commodity < ActiveRecord::Base
   end
 
   def duplicate
-    c = Commodity.create( :name        => next_available_name(Commodity,name),
-                          :description => description,
-                          :set_list    => set_list.join(", ") )
-    params = Parameter.where(:name=>PARAM_COMMODITIES).map(&:id)
-    self.parameter_values.where(:parameter_id => params).each { |pv|
-        c.parameter_values << ParameterValue.create(pv.attributes.delete(["commodity_id","created_at","updated_at"]))
+    c = Commodity.create( :name          => next_available_name(Commodity,name),
+                          :description   => description,
+                          :set_list      => set_list.join(", "),
+                          :demand_driver => demand_driver )
+    parameter_values.of(PARAM_COMMODITIES).each { |pv|
+        c.parameter_values << ParameterValue.create(pv.attributes)
     }
     c.save
     c

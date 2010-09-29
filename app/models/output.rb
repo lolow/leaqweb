@@ -1,7 +1,6 @@
 class Output < ActiveRecord::Base
 
-  validates_presence_of :name
-  validates_uniqueness_of :name
+  validates :name, :presence => true, :uniqueness => true
 
   before_destroy :clear
 
