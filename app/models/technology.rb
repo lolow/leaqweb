@@ -5,7 +5,7 @@ class Technology < ActiveRecord::Base
 
   versioned
 
-  acts_as_taggable_on :sets, :sectors
+  acts_as_taggable_on :sets
 
   has_many :out_flows, :dependent => :destroy
   has_many :in_flows, :dependent => :destroy
@@ -112,7 +112,8 @@ class Technology < ActiveRecord::Base
         efficiency = value[1].values.sum/value[0].values.sum
         pv = ParameterValue.of("eff_flo").where("in_flow_id=? AND out_flow_id=?",kk[0],kk[1]).first
         if pv
-          pv.update_attributes(:value=>efficiency,:source=>"Preprocessed")
+          ParameterValue.update(pv.id,:value=>efficiency,
+                                      :source=>"Preprocessed")
         else
           param = Parameter.find_by_name("eff_flo")
           ParameterValue.create(:parameter_id=>param.id,

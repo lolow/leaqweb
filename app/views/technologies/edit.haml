@@ -103,7 +103,7 @@
           :rules => nil } %>
       = form_tag(technology_path(@technology), :method => "put") do
         %input(type="hidden" name="do" value="preprocess_input_output")
-        = submit_tag "Preprocess..."
+        = submit_tag "Preprocess ..."
   .box
     %h2
       %a#toggle-a Efficiencies
@@ -140,6 +140,9 @@
             "=peak_prod" => %w{flow year},
             "=cost_delivery" => %w{flow},
             "=act_flo" => %w{flow time_slice year}}} %>
+      = form_tag(technology_path(@technology), :method => "put") do
+        %input(type="hidden" name="do" value="preprocess_act_flo")
+        = submit_tag "Preprocess act_flo"
   .box
     %h2
       %a#toggle-c Fixed capacities

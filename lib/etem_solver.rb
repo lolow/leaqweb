@@ -98,28 +98,39 @@ class EtemSolver
     c = Hash.new("")
 
     # sets generation
+    technologies = Technology.tagged_with("P")
+    commodities  = Commodity.tagged_with("C")
+    flows = Flow.joins(:technology).where(:technology_id=>technologies)
     c[:s_s]    = TIME_SLICES.join(" ")
-    c[:s_p]    = id_list(Technology.all)
-    c[:s_c]    = id_list(Commodity.all)
-    c[:s_imp]  = id_list(Commodity.tagged_with("IMP")) 
-    c[:s_exp]  = id_list(Commodity.tagged_with("EXP"))
-    c[:s_dem]  = id_list(Commodity.tagged_with("DEM"))
-    c[:s_flow] = id_list(Flow.all) 
+    c[:s_p]    = id_list(technologies.all)
+    c[:s_c]    = id_list(commodities.all)
+    c[:s_imp]  = id_list(commodities.tagged_with("IMP"))
+    c[:s_exp]  = id_list(commodities.tagged_with("EXP"))
+    c[:s_dem]  = id_list(commodities.tagged_with("DEM"))
+    c[:s_flow] = id_list(flows.all)
     
     c[:s_in_flow]  = Hash.new
     c[:s_out_flow] = Hash.new
-    Technology.all.each do |t|
+    technologies.each do |t|
       c[:s_in_flow][t.pid]  = id_list(t.in_flows)
       c[:s_out_flow][t.pid] = id_list(t.out_flows)
     end
     
     c[:s_c_items] = Hash.new
-    Flow.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)}
+    flows.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)}
     
     # parameters generation
     signature.each_key do |param|
       c["p_#{param}_d".to_sym] = default_value_for(param)
-      c["p_#{param}".to_sym]   = values_for(param)
+      if signature[param]
+        pv = ParameterValue.of(param.to_s)
+        pv = pv.where(:technology_id=> technologies) if signature[param].include?("technology")
+        pv = pv.where(:commodity_id=> commodities) if signature[param].include?("commodity")
+        pv = pv.where(:in_flow_id => flows) if signature[param].include?("in_flow")
+        pv = pv.where(:out_flow_id => flows) if signature[param].include?("out_flow")
+        pv = pv.where(:flow_id => flows) if signature[param].include?("flow")
+        c["p_#{param}".to_sym]   = values_for(param,pv)
+      end
     end
     c["p_nb_periods_d"]    = nb_periods
     c["p_period_length_d"] = period_duration
@@ -144,16 +155,15 @@ class EtemSolver
 
   # Returns a string of the parameter values written in GMPL.
   # Values are projected over periods if necessary.
-  def values_for(parameter)
-    return unless signature[parameter]
-    pv  = Parameter.find_by_name(parameter.to_s).parameter_values.activated
+  def values_for(parameter,parameter_values)
+    pv = parameter_values
     # If Values are time-dependent
     if signature[parameter].include?("period")
       values = Hash.new
       # Value are gathered by indexes other than period
       case parameter
       when "demand"
-        Commodity.tagged_with("DEM").each{|dem|
+        Commodity.tagged_with("DEM").tagged_with("C").each{|dem|
           key = "T " + Commodity.pid(dem.id)
           values[key] = Hash.new
           dem.demand_values.each{|dv|
