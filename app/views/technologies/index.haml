@@ -13,9 +13,9 @@
         = hidden_field_tag :page, 1
     %h5 Set
     %ul.menu
-      - @sets_cloud.each do |tag|
-        - c = "active" if tag.name==params[:set]
-        %li= link_to tag.name, {:controller => "technologies", :set => tag.name}, :class => c
+      - %w{DMD FUELTECH}.each do |tag|
+        - c = "active" if tag==params[:set]
+        %li= link_to tag, {:controller => "technologies", :set => tag}, :class => c
       = link_to "reset filter", technologies_path
 
   - if @last_visited.size > 0

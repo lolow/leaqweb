@@ -32,10 +32,7 @@ class CombustionsController < ApplicationController
   end
 
   def update
-    @combustion = Combustion.find(field[:id])
-
-    value = @combustion.update_attributes(field[:field]=>params[:value]) ? params[:value] : "" 
-
+    value = Combustion.update(field[:id],field[:field]=>params[:value]) ? params[:value] : ""
     render :json => value
   end
 
@@ -51,10 +48,6 @@ class CombustionsController < ApplicationController
       :id    => f.first.to_i,
       :field => f.last
     }
-  end
-
-  def checkbox_ids
-    params.keys.select{|x|x=~/cb\d+/}.collect{|x|x[2..-1].to_i}
   end
 
 end

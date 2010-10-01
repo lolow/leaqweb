@@ -33,6 +33,13 @@ Leaqweb::Application.routes.draw do |map|
       put :update
     end
   end
+
+  resources :parameter_values do
+    collection do
+      put :update
+    end
+  end
+
   resources :flows
   resources :solver
   resources :demand_drivers
