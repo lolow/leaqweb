@@ -1,8 +1,11 @@
+# Copyright (c) 2009-2010, Laurent Drouet. This file is
+# licensed under the Affero General Public License version 3. See
+# the COPYRIGHT file.
+
 class CommoditiesController < ApplicationController
   
   before_filter :authenticate_user!
 
-  # GET /commodities
   def index
     filter = {:page => params[:page],
               :per_page => 30,

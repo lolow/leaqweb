@@ -5,5 +5,4 @@ class Combustion < ActiveRecord::Base
   belongs_to :pollutant, :class_name => "Commodity"
 
   validates :value, :presence => true, :numericality => true
-  
 end

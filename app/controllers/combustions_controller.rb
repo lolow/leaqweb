@@ -1,49 +1,60 @@
-class CombustionsController < ApplicationController
+# Copyright (c) 2009-2010, Laurent Drouet. This file is
+# licensed under the Affero General Public License version 3. See
+# the COPYRIGHT file.
 
+class CombustionsController < ApplicationController
   before_filter :authenticate_user!
-  
-  # GET /combustions
+
+  respond_to :html, :except => [:update]
+  respond_to :json, :only => [:update]
+
   def index
-    @combustions = Combustion.all
-    @combustion = Combustion.new
+    @combustions = combustions_all
+    @combustion  = Combustion.new
   end
 
-  # POST /combustions
   def create
     case params[:do]
     when "create"
       @combustion = Combustion.new(params[:combustion])
-      respond_to do |format|
-        if @combustion.save
-          format.html { redirect_to(combustions_path, :notice => 'Combustion coefficient was successfully added.') }
-        else
-          @combustions = Combustion.all
-          format.html { render :action => "index" }
-        end
+      if @combustion.save
+        flash[:notice]='Combustion coefficient was successfully added.'
+      else
+        @combustions = combustions_all
+        render :action => "index"
+        return
       end
-      return
     when "delete"
-      ids = Combustion.all.map(&:id).select{|i|params["cb#{i}"]}
-      Combustion.destroy(ids)
+      Combustion.destroy(checkbox_ids)
       flash[:notice]='Combustion coefficients has been deleted.'
     end
-    respond_to do |format|
-      format.html { redirect_to(combustions_path) }
-    end
+    redirect_to(combustions_path)
   end
 
-  # PUT /combustions
   def update
+    @combustion = Combustion.find(field[:id])
+
+    value = @combustion.update_attributes(field[:field]=>params[:value]) ? params[:value] : "" 
+
+    render :json => value
+  end
+
+  private
+
+  def combustions_all
+    Combustion.includes(:fuel).includes(:pollutant).all
+  end
+
+  def field
     f = params[:field].split("-")
-    @combustion = Combustion.find(f[0].to_i)
-    if @combustion.update_attributes(f[1]=>params[:value])
-      value = params[:value]
-    else
-      value = ''
-    end
-    respond_to do |format|
-      format.js { render :json => value }
-    end
+    return {
+      :id    => f.first.to_i,
+      :field => f.last
+    }
+  end
+
+  def checkbox_ids
+    params.keys.select{|x|x=~/cb\d+/}.collect{|x|x[2..-1].to_i}
   end
 
 end
