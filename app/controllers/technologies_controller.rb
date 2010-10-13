@@ -29,22 +29,16 @@ class TechnologiesController < ApplicationController
   end
 
   def new
-    @technology = Technology.new
+    respond_with(@technology = Technology.new)
   end
 
   def edit
     new_visit(Technology,params[:id])
-    @technology = Technology.find(params[:id])
+    respond_with(@technology = Technology.find(params[:id]))
   end
 
   def create
-    @technology = Technology.new(params[:technology])
-    if @technology.save
-      flash[:notice] = 'Technology was successfully created.'
-      redirect_to(@technology)
-    else
-      render :action => "new"
-    end
+    respond_with(@technology = Technology.create(params[:technology]))
   end
 
   def duplicate

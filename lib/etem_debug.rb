@@ -77,7 +77,7 @@ class EtemDebug
     flow  = Flow.all.map(&:id).sort
     unless pv==flow
       (flow-pv).collect{|f|
-        @errors << [:check_disconnected_flow,"Technology #{Flow.find(f).technology_id} has disconnected Flow #{f}"]
+        @errors << [:check_disconnected_flow,"Technology #{Flow.find(f).technology_id} has disconnected Flow #{f} - Please define eff_flo parameters"]
       }
     end
     @errors
@@ -117,7 +117,7 @@ class EtemDebug
     def check_orphan_demand
     Commodity.demands.each do |dem|
       if dem.produced_by.size == 0
-        @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.id]
+        @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.id.to_s]
       end
     end
     @errors

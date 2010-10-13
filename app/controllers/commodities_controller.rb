@@ -38,7 +38,7 @@ class CommoditiesController < ApplicationController
   end
 
   def create
-    respond_with(@commodity = Commodity.new(params[:commodity]))
+    respond_with(@commodity = Commodity.create(params[:commodity]))
   end
 
   def duplicate
