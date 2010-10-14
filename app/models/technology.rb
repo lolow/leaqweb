@@ -61,22 +61,30 @@ class Technology < ActiveRecord::Base
   def duplicate
     t = Technology.create( :name => next_available_name(Technology,self.name),
                            :description => self.description,
-                           :set_list => self.set_list.join(', ') )
+                           :set_list => self.set_list.join(',') )
     flow_hash = {}
-    self.flows.each { |f|
-      eval("ff = #{f.type}.create")
+    self.in_flows.each { |f|
+      ff = InFlow.create
       flow_hash[f.id] = ff.id
       f.commodities.each {|c| ff.commodities << c }
       t.flows << ff
     }
-    t.save
+    self.out_flows.each { |f|
+      ff = OutFlow.create
+      flow_hash[f.id] = ff.id
+      f.commodities.each {|c| ff.commodities << c }
+      t.flows << ff
+    }
+    puts flow_hash.inspect
     params = Parameter.where(:name=>PARAM_TECHNOLOGIES).map(&:id)
     self.parameter_values.where(:parameter_id=>params).each { |pv|
       attributes = pv.attributes
-      [:flow_id,:in_flow_id,:out_flow_id].each do |att|
+      puts attributes.inspect
+      %w{flow_id in_flow_id out_flow_id}.each do |att|
         attributes[att] = flow_hash[attributes[att]]
       end
-      attributes.delete(["technology_id","created_at","updated_at"])
+      puts attributes.inspect
+      attributes.delete("technology_id")
       t.parameter_values << ParameterValue.create(attributes)
     }
     t.save
