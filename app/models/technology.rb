@@ -184,7 +184,7 @@ class Technology < ActiveRecord::Base
     com = {}
     [input,output].each do |c|
       if Commodity.where(:name=>c).empty?
-        com[c] = Commodity.create(:name=>c,:description=>"")
+        com[c] = Commodity.create(:name=>c,:description=>"",:set_list=>"ENC,C")
       else
         com[c] = Commodity.find_by_name(c)
       end
