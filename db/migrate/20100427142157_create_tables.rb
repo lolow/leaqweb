@@ -6,7 +6,7 @@ class CreateTables < ActiveRecord::Migration
       t.string :variable
       t.string :rows
       t.string :columns
-      t.string :filters
+      t.text :filters
       t.timestamps
     end
   end
