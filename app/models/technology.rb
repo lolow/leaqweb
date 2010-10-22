@@ -58,8 +58,9 @@ class Technology < ActiveRecord::Base
   end
 
   # Duplicate the technology
-  def duplicate
-    t = Technology.create( :name => next_available_name(Technology,self.name),
+  def duplicate(new_name=nil)
+    new_name = next_available_name(Technology,self.name) unless new_name
+    t = Technology.create( :name => new_name,
                            :description => self.description,
                            :set_list => self.set_list.join(',') )
     flow_hash = {}
@@ -75,15 +76,12 @@ class Technology < ActiveRecord::Base
       f.commodities.each {|c| ff.commodities << c }
       t.flows << ff
     }
-    puts flow_hash.inspect
     params = Parameter.where(:name=>PARAM_TECHNOLOGIES).map(&:id)
     self.parameter_values.where(:parameter_id=>params).each { |pv|
       attributes = pv.attributes
-      puts attributes.inspect
       %w{flow_id in_flow_id out_flow_id}.each do |att|
         attributes[att] = flow_hash[attributes[att]]
       end
-      puts attributes.inspect
       attributes.delete("technology_id")
       t.parameter_values << ParameterValue.create(attributes)
     }

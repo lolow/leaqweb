@@ -68,9 +68,10 @@
                   <tbody>
                   - header = false
                 - else
-                  %tr
-                    - row[1...row.size].each do |x|
-                      %td= x
+                  - if row[1...row.size].map(&:to_f).sum > 0
+                    %tr
+                      - row[1...row.size].each do |x|
+                        %td= x
               </tbody>
 .clear
 %div(id="query_editor" style="display:none; cursor: default")

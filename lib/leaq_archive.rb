@@ -104,7 +104,7 @@ class LeaqArchive
       t = Technology.create!(:name => row["name"],
                       :description => row["description"])
       t.set_list = row["sets"]
-      t.save
+      t.save!
       h[:tec][row["id"]] = t.id
     end
 
@@ -128,7 +128,7 @@ class LeaqArchive
                      :demand_driver_id => h[:par][row["demand_driver_id"]],
                      :demand_elasticity => row["demand_elasticity"])
       c.set_list = row["sets"]
-      c.save
+      c.save!
       h[:com][row["id"]] = c.id
     end
 
@@ -156,7 +156,7 @@ class LeaqArchive
       pv.year          = row["year"]
       pv.value         = row["value"]
       pv.source        = row["source"]
-      pv.save
+      pv.save!
     end
 
     readline_zip(filename,Table) do |row|
