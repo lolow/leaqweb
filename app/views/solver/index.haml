@@ -53,7 +53,7 @@
           #display_log
             - if (@solvers[0].solved? && !@solvers[0].has_files?)
               log file should have been deleted because of its age. Please reinit the solver
-            %pre= @solvers[0].log
+            %pre= raw log_with_link(sanitize @solvers[0].log)
 - else
   .grid_3
     .box
