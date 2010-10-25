@@ -18,7 +18,7 @@ module EtemTools
           tech.save!
         end
         %w{icap_bnd_fx avail fixed_cap}.each do |param|
-          ParameterValue.destroy(tech.parameter_values.of(param).map{|pv|pv.id})
+          ParameterValue.destroy(tech.parameter_values.of(param).map(&:id))
         end
         ParameterValue.create(:parameter_id=>Parameter.find_by_name("avail").id,
                               :technology_id=>tech.id,
