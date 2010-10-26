@@ -4,6 +4,8 @@ set S:= #{@s_s};
 
 set P:= #{@s_p};
 
+set M:= #{@s_m};
+
 set C:= #{@s_c};
 
 set IMP:= #{@s_imp};
@@ -98,5 +100,8 @@ param com_net_bnd_up_ts default #{@p_com_net_bnd_up_ts_d} := #{@p_com_net_bnd_up
 param frac_dem := #{@p_frac_dem};
 
 param network_efficiency default #{@p_network_efficiency_d} := #{@p_network_efficiency};
+
+param market default #{@p_market_d} := #{@p_market};
+param renewal_rate default #{@p_renewal_rate_d} := #{@p_renewal_rate};
 
 end;

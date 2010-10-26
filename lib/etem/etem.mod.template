@@ -5,7 +5,7 @@
 #######################
 # Date     : 09/2010
 # Version  : 3.0
-# Authors  : L. Drouet
+# Authors  : L. Drouet, J.Thénié
 # Language : GMPL
 # command  : glpsol -m model_file.mod -d data_file.dat -y display_file.txt -o output_file.txt
 # example  : glpsol -m etem.mod -d geneva.dat
@@ -13,7 +13,7 @@
 param nb_periods    >=1;
 param period_length >=1;     # expressed in year.
 
-set T := 1..nb_periods;      # time periods.
+set T := 1..nb_periods;      # time periods
 set S;                       # slice periods
 set P;                       # processes
 set C;                       # commodities
@@ -24,6 +24,7 @@ set FLOW;                    # commodities groups labels
 set FLOW_IN{P} within FLOW;  # incoming flows 
 set FLOW_OUT{P} within FLOW; # outcoming flows
 set C_ITEMS{FLOW} within C;  # set of commodities
+set M;                       # markets
 
 # COMPUTED SETS
 set C_MAP{p in P}  within C := setof{f in FLOW_IN[p], c in C_ITEMS[f]}(c) union setof{f in FLOW_OUT[p], c in C_ITEMS[f]}(c); 
@@ -44,7 +45,7 @@ param cost_imp{T,S,C};              # import costs.
 param cost_vom{T,P};                # operation and maintenance variable cost.
 param demand{T,DEM};                # useful demand.
 param eff_flo{FLOW,FLOW};           # efficiency ratio for a specified process between 2 flows.
-param fixed_cap{T,P};             # fixed capacity (residual cap.).
+param fixed_cap{T,P};               # fixed capacity (residual cap.).
 param flow_act{P} symbolic in FLOW; # flow which define process activity
 param flo_share_fx{FLOW,C};         # fixed flow share of c in the total flow
 param flo_share_lo{FLOW,C};         # lower bound of the flow share of c in the total flow
@@ -56,12 +57,12 @@ param network_efficiency{C};        # infrastructure efficiency
 param peak_prod{P,S,C};             # ration on production which can be use at peak period
 param peak_reserve{T,S,C};          # reserve on production
 
-param act_bnd_fx{T,S,P};          # fixed activity
-param act_bnd_lo{T,S,P};          # lower bound on activity
-param act_bnd_up{T,S,P};          # upper bound on activity
-param cap_bnd_fx{T,P};            # fixed capacity
-param cap_bnd_lo{T,P};            # lower bound on capacity
-param cap_bnd_up{T,P};            # upper bound on capacity
+param act_bnd_fx{T,S,P};            # fixed activity
+param act_bnd_lo{T,S,P};            # lower bound on activity
+param act_bnd_up{T,S,P};            # upper bound on activity
+param cap_bnd_fx{T,P};              # fixed capacity
+param cap_bnd_lo{T,P};              # lower bound on capacity
+param cap_bnd_up{T,P};              # upper bound on capacity
 param com_net_bnd_up_ts{T,S,C};     # upper bound on total net amount
 param com_net_bnd_up_t{T,C};        # upper bound on total net amount
 param exp_bnd_fx{T,S,EXP};          # fixed exportation
@@ -70,12 +71,16 @@ param exp_bnd_up{T,S,EXP};          # upper bound on exportation
 param flo_bnd_fx{T,S,FLOW};         # fixed flow
 param flo_bnd_lo{T,S,FLOW};         # lower bound on flow
 param flo_bnd_up{T,S,FLOW};         # upper bound on flow
-param icap_bnd_fx{T,P};           # fixed new capacity
-param icap_bnd_lo{T,P};           # lower bound on new capacity
-param icap_bnd_up{T,P};           # upper bound on new capacity
+param icap_bnd_fx{T,P};             # fixed new capacity
+param icap_bnd_lo{T,P};             # lower bound on new capacity
+param icap_bnd_up{T,P};             # upper bound on new capacity
 param imp_bnd_fx{T,S,IMP};          # fixed importation
 param imp_bnd_lo{T,S,IMP};          # lower bound on importation
 param imp_bnd_up{T,S,IMP};          # upper bound on importation
+
+param market{P,M};                  # =1 if the process p belongs to the market m
+param renewal_rate{T,M};            # renewal rate in market m
+
 
 # COMPUTED PARAMETERS
 param nb_completed_years{t in T} := # number of completed years
@@ -113,19 +118,14 @@ minimize OBJECTIVE : VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL;
 
 # Objective function constraints
 
-<?rb unless @eq_objinv ?>
 subject to EQ_OBJINV : 
   VAR_OBJINV = sum{t in T, p in P} cost_icap[t,p]*VAR_ICAP[t,p]/((1+discount_rate)**(nb_completed_years[t]));
-<?rb end ?>
 
-<?rb unless @eq_objfix ?>
 subject to EQ_OBJFIX :
   VAR_OBJFIX = sum{t in T, p in P} annualized*cost_fom[t,p]*
                (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]} VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
                /((1+discount_rate)**(nb_completed_years[t]));
-<?rb end ?>
 
-<?rb unless @eq_objvar ?>
 subject to EQ_OBJVAR :
   VAR_OBJVAR = sum{t in T} annualized*
     ( 
@@ -138,15 +138,11 @@ subject to EQ_OBJVAR :
       )
     )
     /((1+discount_rate)**(nb_completed_years[t]));
-<?rb end ?>
 
-<?rb unless @eq_objsal ?>
 subject to EQ_OBJSAL :
   VAR_OBJSAL = sum{t in T, p in P : t>=avail[p] and t+life[p]>nb_periods+1}
     salvage[t,p]*cost_icap[t,p]*VAR_ICAP[t,p]/((1+discount_rate)**(nb_completed_years[t]));
-<?rb end ?>
 
-<?rb unless @eq_combal ?>
 # Basic commodity balance equations (by type) ensuring that production >=/= consumption
 subject to EQ_COMBAL {t in T, s in S, c in C} :
   (sum {p in P_PROD[c]} VAR_COM[t,s,p,c] +
@@ -164,42 +160,30 @@ subject to EQ_COMBAL {t in T, s in S, c in C} :
 	 	0
   else
     frac_dem[s,c]*demand[t,c];
-<?rb end ?>
 
-<?rb unless @eq_capact ?>
 # capacity utilization equation
 subject to EQ_CAPACT {t in T, s in S, p in P} :
   sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c] # activity[t,s,p]
    <= avail_factor[t,s,p]*cap_act[p]*fraction[s]*
   (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]); # capacity[t,p]
-<?rb end ?>
 
-<?rb unless @eq_ptrans ?>
 # flow to flow transformation constraint
 subject to EQ_PTRANS {t in T, s in S, p in P, cg_in in FLOW_IN[p], cg_out in FLOW_OUT[p]: 
     eff_flo[cg_in,cg_out]>0} :
   sum{c_o in C_ITEMS[cg_out]} VAR_COM[t,s,p,c_o]
 = eff_flo[cg_in,cg_out] *
   sum{c_i in C_ITEMS[cg_in]} VAR_COM[t,s,p,c_i];
-<?rb end ?>
 
-<?rb unless @eq_shr_lo ?>
 # market/product share limit constraints
 subject to EQ_SHR_LO {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p], c in C_ITEMS[cg] : flo_share_lo[cg,c]>0} :
 VAR_COM[t,s,p,c] >= flo_share_lo[cg,c]*sum{cc in C_ITEMS[cg]} VAR_COM[t,s,p,cc];
-<?rb end ?>
 
-<?rb unless @eq_shr_up ?>
 subject to EQ_SHR_UP {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p], c in C_ITEMS[cg] : flo_share_up[cg,c]>0} :
 VAR_COM[t,s,p,c] <= flo_share_up[cg,c]*sum{cc in C_ITEMS[cg]} VAR_COM[t,s,p,cc];
-<?rb end ?>
 
-<?rb unless @eq_shr_fx ?>
 subject to EQ_SHR_FX {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p], c in C_ITEMS[cg] : flo_share_fx[cg,c]>0} :
 VAR_COM[t,s,p,c]  = flo_share_fx[cg,c]*sum{cc in C_ITEMS[cg]} VAR_COM[t,s,p,cc];
-<?rb end ?>
 
-<?rb unless @eq_peak ?>
 # peak activity equations
 subject to EQ_PEAK {t in T, s in S, c in C} :
   1/(1+peak_reserve[t,s,c])*(
@@ -217,134 +201,100 @@ subject to EQ_PEAK {t in T, s in S, c in C} :
 		VAR_EXP[t,s,c]
 	else
 	 	0;
-<?rb end ?>
 
 # activity bound constraints
-<?rb unless @eq_act_lo ?>
 subject to EQ_ACT_LO {t in T, s in S, p in P : act_bnd_lo[t,s,p]>0} :
   sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c] # activity[t,s,p]
    >= act_bnd_lo[t,s,p];
-<?rb end ?>
 
-<?rb unless @eq_act_up ?>
 subject to EQ_ACT_UP {t in T, s in S, p in P : act_bnd_up[t,s,p]>=0} :
   sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c] # activity[t,s,p]
    <= act_bnd_up[t,s,p];
-<?rb end ?>
 
-<?rb unless @eq_act_fx ?>
 subject to EQ_ACT_FX {t in T, s in S, p in P : act_bnd_fx[t,s,p]>=0} :
   sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c] # activity[t,s,p]
    = act_bnd_fx[t,s,p];
-<?rb end ?>
+
 
 # importation bound constraints
-<?rb unless @eq_imp_lo ?>
 subject to EQ_IMP_LO {t in T, s in S, c in IMP : imp_bnd_lo[t,s,c]>0} :
 VAR_IMP[t,s,c] >= imp_bnd_lo[t,s,c];
-<?rb end ?>
 
-<?rb unless @eq_imp_up ?>
 subject to EQ_IMP_UP {t in T, s in S, c in IMP : imp_bnd_up[t,s,c]>=0} :
 VAR_IMP[t,s,c] <= imp_bnd_up[t,s,c];
-<?rb end ?>
 
-<?rb unless @eq_imp_fx ?>
 subject to EQ_IMP_FX {t in T, s in S, c in IMP : imp_bnd_fx[t,s,c]>=0} :
 VAR_IMP[t,s,c] = imp_bnd_fx[t,s,c];
-<?rb end ?>
 
 # exportation bound constraints
-<?rb unless @eq_exp_lo ?>
 subject to EQ_EXP_LO {t in T, s in S, c in EXP : exp_bnd_lo[t,s,c]>0} :
 VAR_EXP[t,s,c] >= exp_bnd_lo[t,s,c];
-<?rb end ?>
 
-<?rb unless @eq_exp_up ?>
 subject to EQ_EXP_UP {t in T, s in S, c in EXP : exp_bnd_up[t,s,c]>=0} :
 VAR_EXP[t,s,c] <= exp_bnd_up[t,s,c];
-<?rb end ?>
 
-<?rb unless @eq_exp_fx ?>
 subject to EQ_EXP_FX {t in T, s in S, c in EXP : exp_bnd_fx[t,s,c]>=0} :
 VAR_EXP[t,s,c] = exp_bnd_fx[t,s,c];
-<?rb end ?>
 
 # flow bound constraints
-<?rb unless @eq_flo_lo ?>
 subject to EQ_FLO_LO {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p] : flo_bnd_lo[t,s,cg]>0} :
 sum {c in C_ITEMS[cg]} VAR_COM[t,s,p,c] >= flo_bnd_lo[t,s,cg];
-<?rb end ?>
 
-<?rb unless @eq_flo_up ?>
 subject to EQ_FLO_UP {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p] : flo_bnd_up[t,s,cg]>0} :
 sum {c in C_ITEMS[cg]} VAR_COM[t,s,p,c] <= flo_bnd_up[t,s,cg];
-<?rb end ?>
 
-<?rb unless @eq_flo_fx ?>
 subject to EQ_FLO_FX {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p] : flo_bnd_fx[t,s,cg]>0} :
 sum {c in C_ITEMS[cg]} VAR_COM[t,s,p,c] = flo_bnd_fx[t,s,cg];
-<?rb end ?>
+
 
 # new capacity bound constraints
-<?rb unless @eq_icap_lo ?>
 subject to EQ_ICAP_LO {t in T, p in P : icap_bnd_lo[t,p]>0} :
 VAR_ICAP[t,p] >= icap_bnd_lo[t,p];
-<?rb end ?>
 
-<?rb unless @eq_icap_up ?>
 subject to EQ_ICAP_UP {t in T,  p in P : icap_bnd_up[t,p]>=0} :
 VAR_ICAP[t,p] <= icap_bnd_up[t,p];
-<?rb end ?>
 
-<?rb unless @eq_icap_fx ?>
 subject to EQ_ICAP_FX {t in T, p in P : icap_bnd_fx[t,p]>=0} :
 VAR_ICAP[t,p] = icap_bnd_fx[t,p];
-<?rb end ?>
 
 # capacity bound constraints
-<?rb unless @eq_cap_lo ?>
 subject to EQ_CAP_LO {t in T, p in P : cap_bnd_lo[t,p]>0} :
     sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p] # capacity[t,p]
      >= cap_bnd_lo[t,p];
-<?rb end ?>
 
-<?rb unless @eq_cap_up ?>
 subject to EQ_CAP_UP {t in T, p in P : cap_bnd_up[t,p]>=0} :
 	sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p] # capacity[t,p]
 	 <= cap_bnd_up[t,p];
-<?rb end ?>
 
-<?rb unless @eq_cap_fx ?>
 subject to EQ_CAP_FX {t in T, p in P : cap_bnd_fx[t,p]>=0} :
 	sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p] # capacity[t,p]
 	 = cap_bnd_fx[t,p];
-<?rb end ?>
 
 # net amount bound constraints per time slice (t,s)
-<?rb unless @eq_com_net_up_ts ?>
 subject to EQ_COM_NET_UP_TS {t in T, s in S, c in C : com_net_bnd_up_ts[t,s,c]>=0} :
 	(sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0) - # procurement
 	(sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
 	 <= com_net_bnd_up_ts[t,s,c];
-<?rb end ?>
 
 # net amount bound constraints per time period (t)
-<?rb unless @eq_com_net_up_t ?>
 subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
     sum{s in S}(
 	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0) - # procurement
 	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
 	) <= com_net_bnd_up_t[t,c];
-<?rb end ?>
+
+# renewal rate
+subject to EQ_RENEWAL_RATE_T_M {t in T, m in M : renewal_rate[t,m]>=0} :
+	 sum{p in P:market[p,m]=1} market[p,m] * VAR_ICAP[t,p]
+   <=
+   sum{p in P:market[p,m]=1} market[p,m] * renewal_rate[t,m] *
+   (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]); # capacity[t,p]
 
 ###
 ### Solve statement
 ###
 
 solve;
-
-<?rb if @write_outputs ?>
 
 ###
 ### Output parameters
@@ -440,7 +390,5 @@ for {t in T, dem in DEM}{
 for {t in T, c in DEM}{
   printf "DEMAND,%s,ANNUAL,,%s,%f\n", t, c, demand[t,c];
 }
-
-<?rb end ?>
 
 end;

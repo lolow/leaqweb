@@ -4,7 +4,8 @@
     .block
       %h5 Activity
       %p
-        Last change: #{distance_of_time_in_words(Time.new, @last_change,true)}
+        - if @last_change
+          Last change: #{distance_of_time_in_words(Time.new, @last_change, true)}
         %br
       %h5 Energy system database
       %p

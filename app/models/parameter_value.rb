@@ -8,6 +8,7 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :flow
   belongs_to :out_flow
   belongs_to :in_flow
+  belongs_to :market
 
   validates :value, :presence => true, :numericality => true
   validates :parameter, :presence => true
@@ -61,6 +62,7 @@ class ParameterValue < ActiveRecord::Base
     "fixed_cap"        => %w{year technology_id},
     "cost_delivery"    => %w{year time_slice technology_id commodity_id},
     "flow_act"         => %w{technology_id},
+    "renewal_rate"     => %w{year market_id},
     "nb_periods"       => nil,
     "period_length"    => nil,
     "discount_rate"    => nil

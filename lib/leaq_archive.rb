@@ -56,7 +56,7 @@ class LeaqArchive
       end
 
       headers = ["parameter_id","technology_id","commodity_id","flow_id",
-                 "in_flow_id","out_flow_id","time_slice",
+                 "in_flow_id","out_flow_id","market_id","time_slice",
                  "year","value","source"]
       write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
@@ -71,6 +71,11 @@ class LeaqArchive
       write_csv_into_zip(zipfile,Combustion,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
+
+      headers = ["id","name","description","technologies"]
+      write_csv_into_zip(zipfile,Market,headers) do |m,csv|
+        csv << [m.id,m.name,m.description,m.technology_ids.join(' ')]
+      end
       
     end
 
@@ -81,7 +86,7 @@ class LeaqArchive
 
     #Hashes de correspondance
     h = Hash.new
-    [:loc,:tec,:com,:flo,:par].each { |x| h[x] = Hash.new  }
+    [:loc,:tec,:com,:flo,:par,:mkt].each { |x| h[x] = Hash.new  }
 
     def self.readline_zip(zipfile,active_record)
       require 'benchmark'
@@ -144,6 +149,13 @@ class LeaqArchive
       end
     end
 
+    readline_zip(filename,Market) do |row|
+      technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tech][c]}
+      h[:mkt][row["id"]] = Market.create!(:name            => row["name"],
+                                          :description     => row["description"],
+                                          :technology_ids  => technology_ids).id
+    end
+
     readline_zip(filename,ParameterValue) do |row|
       pv = ParameterValue.new
       pv.parameter_id  = h[:par][row["parameter_id"]]
@@ -152,6 +164,7 @@ class LeaqArchive
       pv.flow_id       = h[:flo][row["flow_id"]]
       pv.in_flow_id    = h[:flo][row["in_flow_id"]]
       pv.out_flow_id   = h[:flo][row["out_flow_id"]]
+      pv.market_id     = h[:mkt][row["market_id"]]
       pv.time_slice    = row["time_slice"]
       pv.year          = row["year"]
       pv.value         = row["value"]

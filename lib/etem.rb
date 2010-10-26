@@ -20,11 +20,12 @@ module Etem
                        %w{cost_vom cost_fom cost_icap} +
                        %w{act_bnd_lo act_bnd_fx act_bnd_up} +
                        %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
-                       %w{icap_bnd_lo icap_bnd_fx icap_bnd_up}
+                       %w{icap_bnd_lo icap_bnd_fx icap_bnd_up market}
   INDEX = { "T" => "Time period",
             "S" => "Time slice",
             "P" => "Processes",
-            "C" => "Commodities" }.freeze
+            "C" => "Commodities",
+            "M" => "Markets" }.freeze
   NAME_MESSAGE = "Please use only letters, numbers or symbol '-' in name"
 
 

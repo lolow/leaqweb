@@ -2,6 +2,8 @@ require 'leaq_archive'
 require 'etem_debug'
 class DashboardController < ApplicationController
 
+  before_filter :authenticate_user!
+
   # GET /
   def index
     @nb_commodities = Commodity.count

@@ -18,7 +18,8 @@ class Technology < ActiveRecord::Base
                                 :message => NAME_MESSAGE }
   
   acts_as_identifiable :prefix => "t"
-  
+  has_and_belongs_to_many :markets
+
   def flow_act
     ParameterValue.of("flow_act").technology(self).first.flow
   end

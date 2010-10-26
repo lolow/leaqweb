@@ -1,5 +1,7 @@
 Leaqweb::Application.routes.draw do |map|
   
+  resources :markets
+
   devise_for :users
 
   resources :tables do  

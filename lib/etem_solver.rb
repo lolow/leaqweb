@@ -21,8 +21,6 @@ class EtemSolver
 
     puts "Create context" if opts[:debug]
     context = create_context(opts[:debug])
-    context["write_outputs"] = opts[:write_output]
-    opts[:ignore_equations].each { |eq| context[eq] = true  }
 
     %w{mod dat}.each do |ext|
       puts "Generate .#{ext} file" if opts[:debug]
@@ -101,8 +99,10 @@ class EtemSolver
     technologies = Technology.tagged_with("P")
     commodities  = Commodity.tagged_with("C")
     flows = Flow.joins(:technology).where(:technology_id=>technologies)
+    markets = Market.tagged_with("M")
     c[:s_s]    = TIME_SLICES.join(" ")
     c[:s_p]    = id_list(technologies.all)
+    c[:s_m]    = id_list(markets.all)
     c[:s_c]    = id_list(commodities.all)
     c[:s_imp]  = id_list(commodities.tagged_with("IMP"))
     c[:s_exp]  = id_list(commodities.tagged_with("EXP"))
@@ -125,15 +125,16 @@ class EtemSolver
       if signature[param]
         pv = ParameterValue.of(param.to_s)
         pv = pv.where(:technology_id=> technologies) if signature[param].include?("technology")
-        pv = pv.where(:commodity_id=> commodities) if signature[param].include?("commodity")
-        pv = pv.where(:in_flow_id => flows) if signature[param].include?("in_flow")
-        pv = pv.where(:out_flow_id => flows) if signature[param].include?("out_flow")
-        pv = pv.where(:flow_id => flows) if signature[param].include?("flow")
+        pv = pv.where(:commodity_id=> commodities)   if signature[param].include?("commodity")
+        pv = pv.where(:in_flow_id => flows)          if signature[param].include?("in_flow")
+        pv = pv.where(:out_flow_id => flows)         if signature[param].include?("out_flow")
+        pv = pv.where(:flow_id => flows)             if signature[param].include?("flow")
         c["p_#{param}".to_sym]   = values_for(param,pv)
       end
     end
     c["p_nb_periods_d"]    = nb_periods
     c["p_period_length_d"] = period_duration
+    c["market"] = markets.map{|m| m.technologies.map{|t| "#{t.pid} #{m.pid} 1"}}.join(" ")
 
     # frac_dem - fill the parameter if no value are available
     fill_dmd = c[:s_dem].scan(/\w+/) - c[:p_frac_dem].scan(/\w+/)
@@ -180,8 +181,6 @@ class EtemSolver
       # Values are projected/desagregated if necessary
       str = []
       values.each{ |key,k_values|
-        p key
-        p k_values
         projection(k_values,time_proj[parameter]).each{|period,value|
           if key.index("AN")
             TIME_SLICES.each { |ts|
