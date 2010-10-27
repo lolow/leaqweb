@@ -23,7 +23,10 @@ class Commodity < ActiveRecord::Base
   scope :pollutants, tagged_with("POLL")
   scope :energy_carriers, tagged_with("ENC")
   scope :demands, tagged_with("DEM")
-  
+  scope :activated, tagged_with("C")
+  scope :imports, tagged_with("IMP")
+  scope :exports, tagged_with("EXP")
+
   def out_flows
     OutFlow.joins(:commodities).where("commodities.id"=>self)
   end

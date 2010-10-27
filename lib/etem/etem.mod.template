@@ -81,7 +81,6 @@ param imp_bnd_up{T,S,IMP};          # upper bound on importation
 param market{P,M};                  # =1 if the process p belongs to the market m
 param renewal_rate{T,M};            # renewal rate in market m
 
-
 # COMPUTED PARAMETERS
 param nb_completed_years{t in T} := # number of completed years
   (t-1)*period_length;
@@ -282,13 +281,6 @@ subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
 	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0) - # procurement
 	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
 	) <= com_net_bnd_up_t[t,c];
-
-# renewal rate
-subject to EQ_RENEWAL_RATE_T_M {t in T, m in M : renewal_rate[t,m]>=0} :
-	 sum{p in P:market[p,m]=1} market[p,m] * VAR_ICAP[t,p]
-   <=
-   sum{p in P:market[p,m]=1} market[p,m] * renewal_rate[t,m] *
-   (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]); # capacity[t,p]
 
 ###
 ### Solve statement

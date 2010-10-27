@@ -96,17 +96,17 @@ class EtemSolver
     c = Hash.new("")
 
     # sets generation
-    technologies = Technology.tagged_with("P")
-    commodities  = Commodity.tagged_with("C")
+    technologies = Technology.activated
+    commodities  = Commodity.activated
     flows = Flow.joins(:technology).where(:technology_id=>technologies)
-    markets = Market.tagged_with("M")
+    markets = Market.activated
     c[:s_s]    = TIME_SLICES.join(" ")
     c[:s_p]    = id_list(technologies.all)
     c[:s_m]    = id_list(markets.all)
     c[:s_c]    = id_list(commodities.all)
-    c[:s_imp]  = id_list(commodities.tagged_with("IMP"))
-    c[:s_exp]  = id_list(commodities.tagged_with("EXP"))
-    c[:s_dem]  = id_list(commodities.tagged_with("DEM"))
+    c[:s_imp]  = id_list(commodities.imports)
+    c[:s_exp]  = id_list(commodities.exports)
+    c[:s_dem]  = id_list(commodities.demands)
     c[:s_flow] = id_list(flows.all)
     
     c[:s_in_flow]  = Hash.new
@@ -129,12 +129,13 @@ class EtemSolver
         pv = pv.where(:in_flow_id => flows)          if signature[param].include?("in_flow")
         pv = pv.where(:out_flow_id => flows)         if signature[param].include?("out_flow")
         pv = pv.where(:flow_id => flows)             if signature[param].include?("flow")
+        pv = pv.where(:market_id => markets)         if signature[param].include?("market")
         c["p_#{param}".to_sym]   = values_for(param,pv)
       end
     end
-    c["p_nb_periods_d"]    = nb_periods
-    c["p_period_length_d"] = period_duration
-    c["market"] = markets.map{|m| m.technologies.map{|t| "#{t.pid} #{m.pid} 1"}}.join(" ")
+    c[:p_nb_periods_d]    = nb_periods
+    c[:p_period_length_d] = period_duration
+    c[:p_market] = markets.map{|m| m.technologies.activated.map{|t| "#{t.pid} #{m.pid} 1"}}.join(" ")
 
     # frac_dem - fill the parameter if no value are available
     fill_dmd = c[:s_dem].scan(/\w+/) - c[:p_frac_dem].scan(/\w+/)
@@ -164,7 +165,7 @@ class EtemSolver
       # Value are gathered by indexes other than period
       case parameter
       when "demand"
-        Commodity.tagged_with("DEM").tagged_with("C").each{|dem|
+        Commodity.demands.activated.each{|dem|
           key = "T " + Commodity.pid(dem.id)
           values[key] = Hash.new
           dem.demand_values.each{|dv|
@@ -230,6 +231,7 @@ class EtemSolver
       when "flow"          then Flow.pid(row.flow.id)
       when "in_flow"       then Flow.pid(row.in_flow.id)
       when "out_flow"      then Flow.pid(row.out_flow.id)
+      when "market"        then Market.pid(row.market_id)
       end
     }
   end

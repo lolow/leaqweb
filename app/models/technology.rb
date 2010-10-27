@@ -19,6 +19,7 @@ class Technology < ActiveRecord::Base
   
   acts_as_identifiable :prefix => "t"
   has_and_belongs_to_many :markets
+  scope :activated, tagged_with("P")
 
   def flow_act
     ParameterValue.of("flow_act").technology(self).first.flow

@@ -2,9 +2,6 @@
 market:
 - technology
 - market
-renewal_rate:
-- period
-- market
 com_net_bnd_up_t: 
 - period
 - commodity

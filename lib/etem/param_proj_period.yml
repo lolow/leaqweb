@@ -32,4 +32,3 @@ imp_bnd_fx: interpolation
 imp_bnd_lo: interpolation
 imp_bnd_up: interpolation
 peak_reserve: extrapolation
-renewal_rate: interpolation
