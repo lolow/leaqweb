@@ -84,7 +84,7 @@ module EtemTools
     end
     t.name = name
     t.description = "Fuel tech"
-    t.set_list = "FUELTECH"
+    t.set_list = "FUELTECH,P"
     t.save
     fi = InFlow.create
     fi.commodities << com[input]
