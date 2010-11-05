@@ -1,0 +1,34 @@
+%div(id="flow_editor" style="display:none; cursor: default")
+  .box
+    %h2#flow_editor_title Flow Editor
+    .block
+      %p
+        %table
+          %thead
+            %tr
+              %th Available commodities
+              %th Flow commodities
+          %tbody
+            %tr
+              %td.col50
+                %select(multiple size="10" id="sel_avail_commodity" class="flow_list")
+                  %optgroup(label="Energy Carriers")
+                    - Commodity.energy_carriers.order(:name).each do |c|
+                      %option= c.name
+                  %optgroup(label="Pollutants")
+                    - Commodity.pollutants.order(:name).each do |c|
+                      %option= c.name
+                  %optgroup(label="Useful demands")
+                    - Commodity.demands.order(:name).each do |c|
+                      %option= c.name
+                %p(style="text-align: center")
+                  %a(href="#" id="add_commodity_flow")
+                    & add >>
+              %td.col50
+                %select(multiple size="10" id="sel_flow_commodity" class="flow_list")
+                %p(style="text-align: center")
+                  %a(href="#" id="remove_commodity_flow")
+                    & << remove
+      %p
+        = submit_tag 'Add', :id => "flow_editor_button"
+        %input(type="button" id="cancel" value="Cancel")

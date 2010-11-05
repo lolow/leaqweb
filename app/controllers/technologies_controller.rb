@@ -4,7 +4,6 @@
 
 class TechnologiesController < ApplicationController
   before_filter :authenticate_user!
-
   respond_to :html
 
   def index
@@ -24,8 +23,7 @@ class TechnologiesController < ApplicationController
   end
 
   def show
-    @technology = Technology.find(params[:id])
-    redirect_to edit_technology_path(@technology)
+    redirect_to edit_technology_path(Technology.find(params[:id]))
   end
 
   def new

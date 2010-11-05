@@ -1,0 +1,10 @@
+.box
+  %h2 Shortcut
+  .block
+    %p
+      - unless page == :index
+        = link_to 'Browse markets', markets_path
+        %br
+      - unless page == :new
+        = link_to 'New market', new_market_path
+        %br

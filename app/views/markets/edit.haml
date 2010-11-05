@@ -1,0 +1,17 @@
+.grid_3
+  = render :partial => 'shortcuts', :locals => { :page => :edit }
+
+.grid_9
+  .box
+    %h2 Market
+    .block
+      = form_for(@market) do |f|
+        = render "shared/error_messages", :target => @market
+        %p
+          = f.label :name
+          = f.text_field :name, :size => 50
+        %p
+          = f.label :description
+          = f.text_field :description, :size => 50
+        %p= f.submit 'Update'
+.clear

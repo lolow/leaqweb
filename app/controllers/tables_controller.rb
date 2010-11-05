@@ -1,31 +1,23 @@
+# Copyright (c) 2009-2010, Laurent Drouet. This file is
+# licensed under the Affero General Public License version 3. See
+# the COPYRIGHT file.
+
 class TablesController < ApplicationController
   before_filter :authenticate_user!
+  respond_to :html
 
-  # GET /tables
   def index
     @tables = Table.order(:name)
-    respond_to do |format|
-      format.html # index.html.erb
-    end
   end
 
-  # GET /tables/1
   def show
-    @table = Table.find(params[:id])
-    respond_to do |format|
-      format.html { redirect_to edit_table_path(@table) }
-    end
+    redirect_to edit_market_path(Table.find(params[:id]))
   end
 
-  # GET /tables/new
   def new
-    @table = Table.new
-    respond_to do |format|
-      format.html # new.html.erb
-    end
+    respond_with(@table = Table.new)
   end
 
-  # GET /tables/clone/1
   def duplicate
     @table = Table.find(params[:id]).duplicate_as_new
     respond_to do |format|
@@ -33,43 +25,25 @@ class TablesController < ApplicationController
     end
   end
 
-  # GET /tables/1/edit
   def edit
-    @table = Table.find(params[:id])
+    respond_with(@table = Table.find(params[:id]))
   end
 
-  # POST /tables
   def create
-    @table = Table.new(params[:table])
-    respond_to do |format|
-      if @table.save
-        flash[:notice] = 'Table was successfully created.'
-        format.html { redirect_to(@table) }
-      else
-        format.html { render :action => "new" }
-      end
-    end
+    respond_with(@table = Table.create(params[:table]))
   end
 
-  # PUT /tables/1
   def update
     @table = Table.find(params[:id])
-    respond_to do |format|
-      if @table.update_attributes(params[:table])
-        flash[:notice] = 'Table was successfully updated.'
-        format.html { redirect_to(@table) }
-      else
-        format.html { render :action => "edit" }
-      end
+    if @table.update_attributes(params[:table])
+      redirect_to(@table, :notice => 'Table was successfully updated.')
+    else
+      render :action => "edit"
     end
   end
 
-  # DELETE /tables/1
   def destroy
-    @table = Table.find(params[:id])
-    @table.destroy
-    respond_to do |format|
-      format.html { redirect_to(tables_url) }
-    end
+    Table.destroy(params[:id])
+    redirect_to(tables_url)
   end
 end

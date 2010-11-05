@@ -1,83 +1,42 @@
+# Copyright (c) 2009-2010, Laurent Drouet. This file is
+# licensed under the Affero General Public License version 3. See
+# the COPYRIGHT file.
+
 class MarketsController < ApplicationController
-  # GET /markets
-  # GET /markets.xml
+  before_filter :authenticate_user!
+  respond_to :html
+
   def index
-    @markets = Market.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @markets }
-    end
+    @markets = Market.order(:name)
   end
 
-  # GET /markets/1
-  # GET /markets/1.xml
   def show
-    @market = Market.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @market }
-    end
+    redirect_to edit_market_path(Market.find(params[:id]))
   end
 
-  # GET /markets/new
-  # GET /markets/new.xml
   def new
-    @market = Market.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @market }
-    end
+    respond_with(@market = Market.new)
   end
 
-  # GET /markets/1/edit
   def edit
-    @market = Market.find(params[:id])
+    respond_with(@market = Market.find(params[:id]))
   end
 
-  # POST /markets
-  # POST /markets.xml
   def create
-    @market = Market.new(params[:market])
-
-    respond_to do |format|
-      if @market.save
-        format.html { redirect_to(@market, :notice => 'Market was successfully created.') }
-        format.xml  { render :xml => @market, :status => :created, :location => @market }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @market.errors, :status => :unprocessable_entity }
-      end
-    end
+    respond_with(@market = Market.create(params[:market]))
   end
 
-  # PUT /markets/1
-  # PUT /markets/1.xml
   def update
     @market = Market.find(params[:id])
-
-    respond_to do |format|
-      if @market.update_attributes(params[:market])
-        format.html { redirect_to(@market, :notice => 'Market was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @market.errors, :status => :unprocessable_entity }
-      end
-    end
+   if @market.update_attributes(params[:market])
+     redirect_to(@market, :notice => 'Market was successfully updated.')
+   else
+     render :action => "edit"
+   end
   end
 
-  # DELETE /markets/1
-  # DELETE /markets/1.xml
   def destroy
-    @market = Market.find(params[:id])
-    @market.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(markets_url) }
-      format.xml  { head :ok }
-    end
-  end
+    Market.destroy(params[:id])
+    redirect_to(markets_url)
+   end
 end

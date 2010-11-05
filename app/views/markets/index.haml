@@ -1,0 +1,19 @@
+.grid_3
+  = render :partial => 'shortcuts', :locals => { :page => :index }
+.grid_9
+  .box
+    %h2 Browse stored queries
+    %p
+      %table(summary="Markets list")
+        %thead
+          %tr
+            %th Name
+            %th Description
+            %th
+        %tbody
+          - @markets.each do |market|
+            %tr
+              %td= link_to market.name, edit_market_path(market)
+              %td= link_to market.description, edit_market_path(market)
+              %td= link_to 'delete', market, :confirm => 'Are you sure?', :method => :delete
+.clear
