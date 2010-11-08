@@ -2,7 +2,7 @@
 act_bnd_fx: :fraction
 act_bnd_lo: :fraction
 act_bnd_up: :fraction
-avail_factor: :fraction
+avail_factor: :same
 com_net_bnd_up_ts: :fraction
 cost_delivery: :same
 cost_exp: :same
