@@ -29,6 +29,7 @@ class EtemSolver
 
     puts "Run optimization solver" if opts[:debug]
     run(command)
+
   end
 
   def reset
@@ -37,17 +38,32 @@ class EtemSolver
   end
 
   def prepare_results
-    return unless solved?
-    if optimal?
-      dict = Hash[*Commodity.all.collect{|x|[x.pid,x.name]}.flatten]
-      dict.merge! Hash[*Technology.all.collect{|x|[x.pid,x.name]}.flatten]
-      FasterCSV.open(file("csv"), "w") do |csv|
-        csv << %w[attribute T S P C value]
-        header = true
-        FasterCSV.foreach(file("out")) do |row|
-          csv << [row[0],row[1],row[2],dict[row[3]],dict[row[4]],row[5]] unless header
-          header = false
-        end
+    return unless optimal?
+    dict = Hash[*Commodity.activated.collect{|x|[x.pid,x.name]}.flatten]
+    dict.merge! Hash[*Technology.activated.collect{|x|[x.pid,x.name]}.flatten]
+    #write csv result file
+    FasterCSV.open(file("csv"), "w") do |csv|
+      csv << %w[attribute T S P C value]
+      header = true
+      FasterCSV.foreach(file("out")) do |row|
+        csv << [row[0],first_year + (row[1].to_i-1) * period_duration,row[2],dict[row[3]],dict[row[4]],row[5]] unless header
+        header = false
+      end
+    end
+    #write glossary
+    File.open(file("txt"), "w") do |f|
+      f.puts('ETEM outputs')
+      f.puts("Generated on #{Time.now.to_s}")
+      f.puts('General parameters')
+      f.puts "First year:#{first_year}"
+      f.puts "Period duration:#{period_duration}"
+      f.puts('Commodity')
+      Commodity.activated.each do |c|
+        f.puts "#{c.pid}\t#{c.name}\t#{c.description}"
+      end
+      f.puts('Technology')
+      Technology.activated.each do |t|
+        f.puts "#{t.pid}\t#{t.name}\t#{t.description}"
       end
     end
   end

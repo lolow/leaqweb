@@ -1,4 +1,5 @@
 #collections of functions to help the feeding of the database
+#but are not called by the application
 require 'yaml'
 
 module EtemTools
@@ -39,6 +40,7 @@ module EtemTools
     end
   end
 
+  #display the fixed production of a commodity
   def fixed_production(commodity_name,year=2005)
     commodity = Commodity.find_by_name(commodity_name)
     total = commodity.produced_by.inject(0){|sum,t|
