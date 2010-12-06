@@ -148,6 +148,19 @@ module EtemTools
     end
   end
 
+  def update_all_combustion_factor
+    Combustion.all.each do |comb|
+      techs = (comb.fuel.consumed_by & comb.pollutant.produced_by)
+      puts "#{comb.fuel}->#{comb.pollutant}: #{techs.size} technologies"
+      techs.each do |t|
+        fin  = t.in_flows.select{|f|f.commodities.include?(comb.fuel)}.first
+        fout = t.out_flows.select{|f|f.commodities.include?(comb.pollutant)}.first
+        t.combustion_factor(fin, fout)
+      end
+    end
+    puts "done"
+  end
+
   def batch_update_emissions_flows(input,output,coefficient=1,source=nil)
     i = Commodity.find_by_name(input)
     puts "input: #{i}"

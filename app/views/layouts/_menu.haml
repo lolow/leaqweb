@@ -17,16 +17,18 @@
         %li= link_to 'Results', outputs_path
         %li= link_to 'Stored queries', tables_path
         %li= link_to 'General parameters', :controller => 'etem', :action => 'parameters'
-    %li
-      = link_to 'Emissions allocation', "#"
-      %ul
-        %li= link_to 'Sectoral maps', "#"
-        %li= link_to 'Sectoral load profiles', "#"
-    %li
-      = link_to 'AYLTP', "#"
-      %ul
-        %li= link_to 'Pollution episodes', "#"
-        %li= link_to 'Simulation', "#"
+    /
+      %li
+        = link_to 'Emissions allocation', "#"
+        %ul
+          %li= link_to 'Sectoral maps', "#"
+          %li= link_to 'Sectoral load profiles', "#"
+    /
+      %li
+        = link_to 'AYLTP', "#"
+        %ul
+          %li= link_to 'Pollution episodes', "#"
+          %li= link_to 'Simulation', "#"
     %li.secondary
       - if user_signed_in?
         = link_to 'Sign out', destroy_user_session_path

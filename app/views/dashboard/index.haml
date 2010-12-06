@@ -2,36 +2,33 @@
   .box
     %h2 Main Info
     .block
-      %h5 Activity
-      %p
-        - if @last_change
-          Last change: #{distance_of_time_in_words(Time.new, @last_change, true)}
-        %br
       %h5 Energy system database
       %p
-        #{@nb_commodities} commodities
+        #{@nb_commodities}
+        = link_to 'commodities', commodities_path
         %br
-        #{@nb_technologies} technologies
+        #{@nb_technologies}
+        = link_to 'technologies', technologies_path
         %br
         #{@nb_flows} flows
         %br
         #{@nb_parameter_values}  parameter values
         %br
-        #{@nb_demand_drivers} demand drivers
+        #{@nb_demand_drivers}
+        = link_to 'demand drivers', demand_drivers_path
         %br
-        #{@nb_combustions}  combustion coefficients
+        #{@nb_combustions}
+        = link_to 'combustion factors', combustions_path
 
-
-.grid_6
+.grid_5
   .box
-    %h2 Energy System
+    %h2 Database
     .block
+      %h5 Maintenance
       %p
         Empty database
         %br
         = link_to "Check energy system integrity", "/dashboard/check_db"
-  .box
-    %h2 Main Database
     .block
       %h5 Backup
       %p= link_to "Download the complete database", "/backup.zip"
@@ -41,12 +38,11 @@
         = form_tag("/restore", :multipart => true) do
           %p= file_field 'upload', 'db', :class => "db_file", :size => nil
           %p= submit_tag "Restore", :disable_with => "Please wait..."
-.clear
-.grid_12
+
+.grid_4
   .box
-    %h2
-      %a#toggle-a Revision log
-    .block#a
+    %h2 Last Modifications
+    .block
       %p
         - @log.each do |version|
           = version.versioned_type + "[" + version.versioned_id.to_s + "]:"
@@ -54,6 +50,7 @@
           = version.modifications.keys.join(",")
           = "(" + distance_of_time_in_words(Time.new, version.created_at,true) + " ago)"
           %br
+        = link_to "...", "/dashboard/log"
 
 
 .clear

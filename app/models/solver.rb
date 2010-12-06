@@ -42,9 +42,9 @@ class Solver < ActiveRecord::Base
     etem.optimal?
   end
   
-  #def prepare_results
-  #  etem.prepare_results
-  #end
+  def prepare_results
+    etem.prepare_results
+  end
 
   def has_files?
     etem.has_files?

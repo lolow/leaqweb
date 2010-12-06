@@ -160,4 +160,8 @@ module Etem
     available_name
   end
 
+  def create_default_parameters
+
+  end
+
 end
