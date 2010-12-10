@@ -19,6 +19,20 @@ class OutputsController < ApplicationController
 
   # PUT /outputs/1
   def update
+    if params[:commit]=="Store this query as"
+      @table = Table.new()
+      name = params[:table][:name]
+      @table.name = @table.next_available_name(Table, name)
+      @table.aggregate = params[:table][:aggregate]
+      @table.variable  = params[:table][:attribute]
+      formula = params[:table][:formula].split("~")
+      @table.rows      = formula[0] if formula.size==2
+      @table.columns   = formula[1] if formula.size==2
+      @table.filters   = params[:table][:filter]
+      @table.save
+      redirect_to @table
+      return
+    end
     @output = Output.find(params[:id])
     @tables = Table.order(:name)
     if params[:table][:id].to_i>0

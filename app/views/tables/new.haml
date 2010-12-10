@@ -4,26 +4,12 @@
   .box
     %h2 New query
     .block
-      = form_for(@table) do |f|
-        = render "shared/error_messages", :target => @table
-        %fieldset
-          %p
-            = f.label :name
-            = f.text_field :name
-          %p
-            = f.label :aggregate
-            = f.text_field :aggregate
-          %p
-            = f.label :variable
-            = f.text_field :variable
-          %p
-            = f.label :rows
-            = f.text_field :rows
-          %p
-            = f.label :columns
-            = f.text_field :columns
-          %p
-            = f.label :filters
-            = f.text_field :filters
-          = f.submit 'Create', :class => "confirm button"
+      = simple_form_for @table do |f|
+        =f.input :name
+        =f.input :aggregate
+        =f.input :variable
+        =f.input :rows
+        =f.input :columns
+        =f.input :filters, :input_html => {:rows=> '3'}
+        =f.button :submit
 .clear

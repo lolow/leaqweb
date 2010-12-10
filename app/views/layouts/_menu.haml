@@ -1,7 +1,7 @@
 .grid_12
   %ul.nav.main
     %li
-      = link_to 'Overview', root_path
+      = link_to 'Overview', root_path, {:class=>"left_side"}
     %li
       = link_to 'Energy System', '#'
       %ul
@@ -31,9 +31,9 @@
           %li= link_to 'Simulation', "#"
     %li.secondary
       - if user_signed_in?
-        = link_to 'Sign out', destroy_user_session_path
+        = link_to 'Sign out', destroy_user_session_path, {:class=>"right_side"}
       - else
-        = link_to 'Sign in', new_user_session_path
+        = link_to 'Sign in', new_user_session_path, {:class=>"right_side"}
 .clear
 
 .grid_12

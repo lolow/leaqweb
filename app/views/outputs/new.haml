@@ -4,10 +4,8 @@
   .box
     %h2 New resultset
     .block
-      = form_for(@output) do |f|
-        = render "shared/error_messages", :target => @output
+      = simple_form_for @output do |f|
         %p
-          = f.label :name, "Name/Description"
-          = f.text_field :name
-          = f.submit 'Create', :class => "confirm button"
+          = f.input :name, :label => "Name/Description"
+          = f.button :submit
 .clear

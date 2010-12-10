@@ -4,15 +4,9 @@
   .box
     %h2 New Technology
     .block
-      = form_for(@technology) do |f|
-        = render "shared/error_messages", :target => @technology
-        %p
-          = f.label :name
-          = f.text_field :name
-        %p
-          = f.label :set_list, 'Sets'
-          = f.select :set_list, %w{P P,DMD}, {:include_blank => true}
-        %p
-          = f.submit 'Create', :class => "confirm button"
-          = f.hidden_field :description, :value => ""
+      = simple_form_for @technology do |f|
+        = f.input :name
+        = f.input :set_list, :collection => %w{P P,DMD}, :prompt => ""
+        = f.button :submit
+        = f.hidden_field :description, :value => ""
 .clear

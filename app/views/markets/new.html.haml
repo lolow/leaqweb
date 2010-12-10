@@ -4,14 +4,8 @@
   .box
     %h2 New query
     .block
-      = form_for(@market) do |f|
-        = render "shared/error_messages", :target => @market
-        %fieldset
-          %p
-            = f.label :name
-            = f.text_field :name
-          %p
-            = f.label :description
-            = f.text_field :description
-          = f.submit 'Create', :class => "confirm button"
+      =simple_form_for @market do |f|
+        =f.input :name
+        =f.input :description
+        =f.button :submit
 .clear

@@ -95,3 +95,7 @@
           %p
             = submit_tag 'Display'
             %input(type="button" id="cancel" value="Cancel")
+          %p
+            %br
+            = submit_tag 'Store this query as'
+            = text_field :table, :name, :value => params[:table][:name]
