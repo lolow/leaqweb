@@ -1,0 +1,48 @@
+:javascript
+  $(document).ready(function() {
+    xticks = #{(0..5).collect{|x| 5*x+2005}.to_json};
+    $.jqplot('chartdiv',
+    #{[@demand_driver.parameter_values.collect{|pv| [pv.year,pv.value.to_f]}].to_json},
+    {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
+  } );
+
+.grid_3
+  =render :partial => 'shortcuts', :locals => { :page => :edit }
+
+  .box
+    %h2 ID card
+    .block
+      = form_for(@demand_driver) do |f|
+        = render "shared/error_messages", :target => @demand_driver
+        %fieldset.idcard
+          %p
+            = f.label :name, 'Name:'
+            %br
+            = f.text_field :name, :size=>nil
+            %br
+            = f.label :definition, 'Definition:'
+            %br
+            = f.text_area :definition, :rows => 2, :cols=>nil
+          %input(type="hidden" name="do" value="update")
+          %p= f.submit 'Update', :class => "button"
+        %p= link_to 'Delete', @demand_driver, :confirm => 'Are you sure?', :method => :delete
+
+  .box
+    %h2 Preview
+    .block
+      #chartdiv(style="height:200px;width:100%;")
+      %p= link_to 'refresh', @demand_driver
+
+.grid_9
+  .box
+    %h2 Demand driver values
+    .block
+      :erb
+        <%= render :partial => 'shared/driver_table',
+        :locals => {:driver => @demand_driver,
+        :lenght_change => "false",
+        :filter => "false",
+        :request_path => demand_driver_path(@demand_driver),
+        :cols => %w{year value source},
+        :editable => %w{value source}
+        } %>

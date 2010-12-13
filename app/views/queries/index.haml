@@ -1,0 +1,17 @@
+.grid_3
+  = render :partial => 'shortcuts', :locals => { :page => :index }
+.grid_9
+  .box
+    %h2 Browse stored queries
+    %p
+      %table(summary="Stored queries list")
+        %thead
+          %tr
+            %th Name
+            %th
+        %tbody
+          - @tables.each do |table|
+            %tr
+              %td= link_to table.name, edit_table_path(table)
+              %td= link_to 'delete', table, :confirm => 'Are you sure?', :method => :delete
+.clear
