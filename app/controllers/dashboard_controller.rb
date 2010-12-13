@@ -1,5 +1,5 @@
-require 'leaq_archive'
-require 'etem_debug'
+require 'etem_archive'
+
 class DashboardController < ApplicationController
 
   before_filter :authenticate_user!
@@ -35,8 +35,10 @@ class DashboardController < ApplicationController
 
   # GET /dashboard/restore
   def restore
-    LeaqArchive.clean_database
-    LeaqArchive.restore(params[:upload]["db"].path)
+    if File.exist?(params[:upload]["db"].tempfile.path)
+      EtemArchive.clean_database
+      EtemArchive.restore(params[:upload]["db"].tempfile.path)
+    end
     redirect_to root_path
   end
 
