@@ -47,9 +47,13 @@ h1#logo {
 	font-weight:normal;
 	font-size:3em;
 	text-align:left;
-	background:$logo_backgroud;
+	background:$logo_background;
 	padding:.25em 1em;
 	margin-bottom:0;
+}
+
+h1#logo a {
+	color:$logo_color;
 }
 
 
