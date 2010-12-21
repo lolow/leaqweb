@@ -13,13 +13,13 @@
         }
       });
 
-      $('#driver_table').dataTable({
-		"bPaginate": true,
-		"bLengthChange": #{lenght_change},
-		"bFilter": #{filter},
-		"bSort": true,
-		"bInfo": true,
-		"bAutoWidth": false,
+    $('#driver_table').dataTable({
+        "bPaginate": true,
+        "bLengthChange": #{lenght_change},
+        "bFilter": #{filter},
+        "bSort": true,
+        "bInfo": true,
+        "bAutoWidth": false,
         "sDom": 'lfrtip<"dataTables_action">'
       });
       $("div.dataTables_action").html('<p><select name="do" >' +
@@ -48,11 +48,11 @@
         - cols.each do |c|
           - if c=="year"
             %td
-              %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]" size="5")
+              %input(type="textcell" id="#{c}" name="pv[#{c}]" size="5")
           - elsif c=="value"
             %td
-              %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]" size="10")
+              %input(type="textcell" id="#{c}" name="pv[#{c}]" size="10")
           - else
             %td
-              %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]")
+              %input(type="textcell" id="#{c}" name="pv[#{c}]")
 .clear

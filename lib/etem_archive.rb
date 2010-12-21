@@ -2,7 +2,7 @@ require 'faster_csv'
 require 'zip/zip'
 require 'zip/zipfilesystem'
 
-class LeaqArchive
+class EtemArchive
   
   # Vide rapidement la base de données 
   def self.clean_database
@@ -11,9 +11,11 @@ class LeaqArchive
     Flow.delete_all
     Parameter.delete_all
     ParameterValue.delete_all
-    Table.delete_all
+    Market.delete_all
+    Query.delete_all
     Combustion.delete_all
     ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
+    ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
     VestalVersions::Version.delete_all
   end
 
@@ -63,7 +65,7 @@ class LeaqArchive
       end
 
       headers = ["name","aggregate","variable","rows","columns","filters"]
-      write_csv_into_zip(zipfile,Table,headers) do |pv,csv|
+      write_csv_into_zip(zipfile,Query,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
       
@@ -150,7 +152,7 @@ class LeaqArchive
     end
 
     readline_zip(filename,Market) do |row|
-      technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tech][c]}
+      technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tec][c]}
       h[:mkt][row["id"]] = Market.create!(:name            => row["name"],
                                           :description     => row["description"],
                                           :technology_ids  => technology_ids).id
@@ -172,8 +174,8 @@ class LeaqArchive
       pv.save!
     end
 
-    readline_zip(filename,Table) do |row|
-      Table.create!( :name => row["name"],
+    readline_zip(filename,Query) do |row|
+      Query.create!( :name => row["name"],
                      :aggregate => row["aggregate"],
                      :variable => row["variable"],
                      :rows => row["rows"],

@@ -70,6 +70,7 @@ h2#page-heading {
 	margin-bottom:20px;
 	padding:10px 10px 1px 10px;
   border-radius: 5px;
+  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
 .box h2 {
@@ -80,6 +81,7 @@ h2#page-heading {
 	background:$text_color;
 	margin:-10px -10px 0 -10px;
 	padding:6px 12px;
+  -webkit-border-radius: 5px 5px 0 0;
   -moz-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0;
 }
@@ -91,6 +93,7 @@ h2#page-heading {
 	padding:6px 12px;
 	margin:-6px -12px;
 	border:none;
+  -webkit-border-radius: 5px 5px 0 0;
   -moz-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0;
 }
@@ -330,6 +333,9 @@ fieldset p label {
 fieldset p input {
 	width:98%;
 }
+fieldset p input[type=checkbox] {
+	width:auto;
+}
 fieldset p textarea {
 	width:98%;
 }
@@ -359,7 +365,6 @@ fieldset.demand_projection p input {
 fieldset.demand_projection p input.button {
     width:10%;
 }
-
 
 
 fieldset.login p label {
@@ -549,6 +554,7 @@ input.filter.text {
 	padding:8px 18px 8px 8px;
   border: 2px red dashed;
   border-radius: 5px;
+  -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
 

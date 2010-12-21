@@ -1,5 +1,5 @@
-require 'leaq_archive'
-require 'etem_debug'
+require 'etem_archive'
+
 class DashboardController < ApplicationController
 
   before_filter :authenticate_user!
@@ -14,10 +14,9 @@ class DashboardController < ApplicationController
     klasses = [ParameterValue,Parameter,Combustion,Technology,Commodity,Flow]
     last_changes = klasses.collect {|k| k.order(:updated_at).last.updated_at if k.count > 0} 
     last_changes.compact!
-    @last_change = last_changes.max
     @nb_demand_drivers = DemandDriver.count
     @nb_parameter_values = ParameterValue.count
-    @log = VestalVersions::Version.order("created_at DESC").limit(25)
+    @log = VestalVersions::Version.order("created_at DESC").limit(10)
   end
 
   # GET /res/check_db
@@ -36,8 +35,10 @@ class DashboardController < ApplicationController
 
   # GET /dashboard/restore
   def restore
-    LeaqArchive.clean_database
-    LeaqArchive.restore(params[:upload]["db"].path)
+    if File.exist?(params[:upload]["db"].tempfile.path)
+      EtemArchive.clean_database
+      EtemArchive.restore(params[:upload]["db"].tempfile.path)
+    end
     redirect_to root_path
   end
 

@@ -1,6 +1,6 @@
 :javascript
-  var filter = #{@table.digest_filter.to_json};
-  var variables = #{Table::INDEX.to_json};
+  var filter = #{@query.digest_filter.to_json};
+  var variables = #{Query::INDEX.to_json};
   function var_r(variable){
     var s = "";
     $('#'+ variable + ' li').each(function(index) {
@@ -59,7 +59,7 @@
     $('.conditions_list').empty();
     last_row = "<tr>" +
       "<td><select id=\"new_var\">" +
-  #{options_for_select(Table::INDEX.invert).to_json} +
+  #{options_for_select(Query::INDEX.invert).to_json} +
       "</select></td>" +
       "<td>must <select id=\"new_not\">" +
   #{options_for_select(['','not ']).to_json} + "</select> <select id=\"new_func\">" +
@@ -102,16 +102,16 @@
   .box
     %h2 Query fields
     .block
-      = form_for(@table) do |f|
-        = render "shared/error_messages", :target => @table
+      = form_for(@query) do |f|
+        = render "shared/error_messages", :target => @query
         %p
           = f.label :name
           = f.text_field :name, :size => 50
         %p
           = f.label :aggregate
-          = f.select :aggregate, Table::AGGREGATES.collect{ |a| [a,a.downcase]  }
+          = f.select :aggregate, Query::AGGREGATES.collect{ |a| [a,a.downcase]  }
           = f.label :variable
-          = f.select :variable, Table::VARIABLES.collect{ |a| [a,a] }
+          = f.select :variable, Query::VARIABLES.collect{ |a| [a,a] }
         %p
           Columns/Rows (drag and drop elements)
           = f.hidden_field :rows
@@ -119,24 +119,24 @@
 
           %ul#choices.table_def
             %li.table_def_head Unused
-            - @table.unused.each do |item|
-              %li{:class=>"table_def_default",:id=>"#{item}"}= Table::INDEX[item.strip]
+            - @query.unused.each do |item|
+              %li{:class=>"table_def_default",:id=>"#{item}"}= Query::INDEX[item.strip]
 
           %ul#rows.table_def
             %li.table_def_head Rows
-            - @table.rows.split('+').each do |i|
-              %li.table_def_default{:id=>"#{i}"}= Table::INDEX[i.strip]
+            - @query.rows.split('+').each do |i|
+              %li.table_def_default{:id=>"#{i}"}= Query::INDEX[i.strip]
 
           %ul#columns.table_def
             %li.table_def_head Columns
-            - @table.columns.split('+').each do |i|
-              %li.table_def_default{:id=>"#{i}"}= Table::INDEX[i.strip]
+            - @query.columns.split('+').each do |i|
+              %li.table_def_default{:id=>"#{i}"}= Query::INDEX[i.strip]
 
         .clear
         %p
           = f.label :filters
           %br
-          = f.hidden_field :filters, :value => raw(@table[:filters])
+          = f.hidden_field :filters, :value => raw(@query[:filters])
           %table
             %thead
               %tr

@@ -4,15 +4,9 @@
   .box
     %h2 New commodity
     .block
-      = form_for(@commodity) do |f|
-        = render "shared/error_messages", :target => @commodity
-        %p
-          = f.label :name
-          = f.text_field :name
-        %p
-          = f.label :set_list, 'Sets'
-          = f.select :set_list, %w{C,DEM C,POLL C,ENC C,ENC,IMP C,ENC,IMP,EXP}, {:include_blank => true}
-        %p
-          = f.submit 'Create', :class => "confirm button"
-          = f.hidden_field :description, :value => ""
+      = simple_form_for @commodity do |f|
+        = f.input :name
+        = f.input :set_list, :collection => %w{C,DEM C,POLL C,ENC C,ENC,IMP C,ENC,IMP,EXP}, :prompt => ""
+        = f.button :submit
+        = f.hidden_field :description, :value => ""
 .clear

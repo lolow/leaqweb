@@ -1,5 +1,5 @@
 require 'etem'
-class Table < ActiveRecord::Base
+class Query < ActiveRecord::Base
   include Etem
 
   versioned
@@ -32,7 +32,7 @@ class Table < ActiveRecord::Base
   end
 
   def duplicate_as_new
-    Table.new( :name      => next_available_name(Table,name),
+    Query.new( :name      => next_available_name(Query,name),
                :aggregate => aggregate,
                :variable  => variable,
                :columns   => columns,

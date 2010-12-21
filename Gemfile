@@ -10,6 +10,7 @@ gem 'mysql2'
 gem 'mongrel'
 gem 'mongrel'
 gem 'workflow'
+gem 'simple_form'
 gem 'acts-as-taggable-on'
 gem "compass", ">= 0.10.5"
 gem 'will_paginate', ">= 3.0.pre2"

@@ -31,7 +31,7 @@ module Etem
 
   DEF_OPTS = {:temp_path => "/tmp",
               :model_path => File.join(Rails.root,'lib','etem'),
-              :debug => false,
+              :debug => true,
               :ignore_equations => [],
               :write_output => true,
               :period_duration => 5,
@@ -152,12 +152,16 @@ module Etem
   end
 
   def next_available_name(klass,name)
-    index = 0
-    fname=name
-    while klass.find_by_name(fname)
-      fname=name + "#{index+=1}"
+    counter = 0
+    available_name=name
+    while klass.find_by_name(available_name)
+      available_name=name + "-#{counter+=1}"
     end
-    fname
+    available_name
+  end
+
+  def create_default_parameters
+
   end
 
 end
