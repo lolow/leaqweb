@@ -27,7 +27,7 @@ class DashboardController < ApplicationController
   # GET /backup.zip
   def backup
     f = Tempfile.new("backup")
-    LeaqArchive.backup(f.path)
+    EtemArchive.backup(f.path)
     send_file f.path, :type => "application/zip",
                       :url_based_filename => true
     f.close

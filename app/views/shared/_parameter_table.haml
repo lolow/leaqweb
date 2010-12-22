@@ -73,7 +73,7 @@
               %td= short_flow(pv.flow)
             - else
               %td
-                %span(id="#{pv.id}-#{c}" class="#{"edit" if editable.include? c}")= pv.attributes[c]
+                %span(id="#{pv.id}-#{c}" class="#{"edit" if editable.include? c}")>= pv.attributes[c]
           %td.check
             %input(type="checkbox" name="cb#{pv.id}")
     %tfoot
