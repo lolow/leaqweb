@@ -1,4 +1,5 @@
 require 'etem_archive'
+require 'etem_debug'
 
 class DashboardController < ApplicationController
 

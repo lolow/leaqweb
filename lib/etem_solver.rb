@@ -290,7 +290,7 @@ class EtemSolver
 
   def command
     "echo Start: `date` > #{file("log")} " +
-    "&& glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} >> #{file("log")} " +
+    "&& nice glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} >> #{file("log")} " +
     "&& echo End: `date` >> #{file("log")} "
   end
     

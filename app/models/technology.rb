@@ -94,9 +94,9 @@ class Technology < ActiveRecord::Base
   # Read input/output parameters to create/update eff_flo / flo_shr_fx parameters
   def preprocess_input_output
     
-    #Read parameters
+    #Read all input/output parameters
     io = ["input","output"].collect{|p|parameter_values_for(p)}
-    return if io[0].size*io[1].size==0
+    return if (io[0].size*io[1].size)==0
 
     #Classify inflow-outflow
     p = Hash.new
