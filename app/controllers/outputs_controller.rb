@@ -8,43 +8,43 @@ class OutputsController < ApplicationController
 
   def show
     @output = Output.find(params[:id])
-    @queries = Query.order(:name)
-    params[:query] = Hash.new("")
+    @stored_queries = StoredQuery.order(:name)
+    params[:stored_query] = Hash.new("")
     render :show
   end
 
   def update
     if params[:commit]=="Store this query as"
-      @query = Query.new()
-      name = params[:query][:name]
-      @query.name = @query.next_available_name(Query, name)
-      @query.aggregate = params[:query][:aggregate]
-      @query.variable  = params[:query][:attribute]
-      formula = params[:query][:formula].split("~")
-      @query.rows      = formula[0] if formula.size==2
-      @query.columns   = formula[1] if formula.size==2
-      @query.filters   = params[:query][:filter]
-      if @query.save
-        redirect_to @query
+      @stored_query = StoredQuery.new()
+      name = params[:stored_query][:name]
+      @stored_query.name = @stored_query.next_available_name(StoredQuery, name)
+      @stored_query.aggregate = params[:stored_query][:aggregate]
+      @stored_query.variable  = params[:stored_query][:attribute]
+      formula = params[:stored_query][:formula].split("~")
+      @stored_query.rows      = formula[0] if formula.size==2
+      @stored_query.columns   = formula[1] if formula.size==2
+      @stored_query.filters   = params[:stored_query][:filter]
+      if @stored_query.save
+        redirect_to @stored_query
         return
       else
         flash[:notice] = "Wrong query definition"
-        render :template => "query/new"
+        render :template => "stored_query/new"
         return
       end
     end
     @output  = Output.find(params[:id])
-    @queries = Query.order(:name)
-    if params[:query][:id].to_i>0
-      t = Query.find(params[:query][:id])
-      params[:query][:aggregate] = t.aggregate
-      params[:query][:name] = t.name
-      params[:query][:attribute] = t.variable
-      params[:query][:formula] = t.rows + "~" + t.columns
-      params[:query][:filter] = t.filters
+    @stored_queries = StoredQuery.order(:name)
+    if params[:stored_query][:id].to_i>0
+      t = StoredQuery.find(params[:stored_query][:id])
+      params[:stored_query][:aggregate] = t.aggregate
+      params[:stored_query][:name] = t.name
+      params[:stored_query][:attribute] = t.variable
+      params[:stored_query][:formula] = t.rows + "~" + t.columns
+      params[:stored_query][:filter] = t.filters
     end
-    @output.compute_cross_tab(params[:query])
-    params[:query][:result] = @output.cross_tab
+    @output.compute_cross_tab(params[:stored_query])
+    params[:stored_query][:result] = @output.cross_tab
     render :show
   end
 

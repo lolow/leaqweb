@@ -10,8 +10,8 @@
             %th Name
             %th
         %tbody
-          - @queries.each do |query|
+          - @stored_queries.each do |query|
             %tr
-              %td= link_to query.name, edit_query_path(query)
+              %td= link_to query.name, edit_stored_query_path(query)
               %td= link_to 'delete', query, :confirm => 'Are you sure?', :method => :delete
 .clear

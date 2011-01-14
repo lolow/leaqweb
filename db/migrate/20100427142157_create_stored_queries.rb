@@ -1,6 +1,6 @@
-class CreateTables < ActiveRecord::Migration
+class CreateStoredQueries < ActiveRecord::Migration
   def self.up
-    create_table :queries do |t|
+    create_table :stored_queries do |t|
       t.string :name
       t.string :aggregate
       t.string :variable
@@ -12,6 +12,6 @@ class CreateTables < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :queries
+    drop_table :stored_queries
   end
 end

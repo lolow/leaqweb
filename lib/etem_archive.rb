@@ -12,7 +12,7 @@ class EtemArchive
     Parameter.delete_all
     ParameterValue.delete_all
     Market.delete_all
-    Query.delete_all
+    StoredQuery.delete_all
     Combustion.delete_all
     ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
     ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
@@ -65,7 +65,7 @@ class EtemArchive
       end
 
       headers = ["name","aggregate","variable","rows","columns","filters"]
-      write_csv_into_zip(zipfile,Query,headers) do |pv,csv|
+      write_csv_into_zip(zipfile,StoredQuery,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
       
@@ -174,8 +174,8 @@ class EtemArchive
       pv.save!
     end
 
-    readline_zip(filename,Query) do |row|
-      Query.create!( :name => row["name"],
+    readline_zip(filename,StoredQuery) do |row|
+      StoredQuery.create!( :name => row["name"],
                      :aggregate => row["aggregate"],
                      :variable => row["variable"],
                      :rows => row["rows"],

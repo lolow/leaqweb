@@ -1,6 +1,6 @@
 :javascript
-  var filter = #{@query.digest_filter.to_json};
-  var variables = #{Query::INDEX.to_json};
+  var filter = #{@stored_query.digest_filter.to_json};
+  var variables = #{StoredQuery::INDEX.to_json};
   function var_r(variable){
     var s = "";
     $('#'+ variable + ' li').each(function(index) {
@@ -37,7 +37,7 @@
         s += " & "
       }
     }
-    $('#query_filters').attr('value',s);
+    $('#stored_query_filters').attr('value',s);
   }
   function remove_cond(i){
     filter.splice(i,1);
@@ -59,7 +59,7 @@
     $('.conditions_list').empty();
     last_row = "<tr>" +
       "<td><select id=\"new_var\">" +
-  #{options_for_select(Query::INDEX.invert).to_json} +
+  #{options_for_select(StoredQuery::INDEX.invert).to_json} +
       "</select></td>" +
       "<td>must <select id=\"new_not\">" +
   #{options_for_select(['','not ']).to_json} + "</select> <select id=\"new_func\">" +
@@ -100,18 +100,18 @@
 
 .grid_9
   .box
-    %h2 Query fields
+    %h2 Stored query fields
     .block
-      = form_for(@query) do |f|
-        = render "shared/error_messages", :target => @query
+      = form_for(@stored_query) do |f|
+        = render "shared/error_messages", :target => @stored_query
         %p
           = f.label :name
           = f.text_field :name, :size => 50
         %p
           = f.label :aggregate
-          = f.select :aggregate, Query::AGGREGATES.collect{ |a| [a,a.downcase]  }
+          = f.select :aggregate, StoredQuery::AGGREGATES.collect{ |a| [a,a.downcase]  }
           = f.label :variable
-          = f.select :variable, Query::VARIABLES.collect{ |a| [a,a] }
+          = f.select :variable, StoredQuery::VARIABLES.collect{ |a| [a,a] }
         %p
           Columns/Rows (drag and drop elements)
           = f.hidden_field :rows
@@ -119,24 +119,24 @@
 
           %ul#choices.table_def
             %li.table_def_head Unused
-            - @query.unused.each do |item|
-              %li{:class=>"table_def_default",:id=>"#{item}"}= Query::INDEX[item.strip]
+            - @stored_query.unused.each do |item|
+              %li{:class=>"table_def_default",:id=>"#{item}"}= StoredQuery::INDEX[item.strip]
 
           %ul#rows.table_def
             %li.table_def_head Rows
-            - @query.rows.split('+').each do |i|
-              %li.table_def_default{:id=>"#{i}"}= Query::INDEX[i.strip]
+            - @stored_query.rows.split('+').each do |i|
+              %li.table_def_default{:id=>"#{i}"}= StoredQuery::INDEX[i.strip]
 
           %ul#columns.table_def
             %li.table_def_head Columns
-            - @query.columns.split('+').each do |i|
-              %li.table_def_default{:id=>"#{i}"}= Query::INDEX[i.strip]
+            - @stored_query.columns.split('+').each do |i|
+              %li.table_def_default{:id=>"#{i}"}= StoredQuery::INDEX[i.strip]
 
         .clear
         %p
           = f.label :filters
           %br
-          = f.hidden_field :filters, :value => raw(@query[:filters])
+          = f.hidden_field :filters, :value => raw(@stored_query[:filters])
           %table
             %thead
               %tr

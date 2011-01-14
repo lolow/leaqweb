@@ -36,7 +36,7 @@
         %h5 Stored queries
         %p
           = form_tag output_path(@output), :method => :put do
-            = select_tag "query[id]", options_for_select(@queries.map{|t|[t.name,"#{t.id}"]}, :selected => "#{params[:query][:id]}")
+            = select_tag "stored_query[id]", options_for_select(@stored_queries.map{|t|[t.name,"#{t.id}"]}, :selected => "#{params[:stored_query][:id]}")
             = submit_tag 'Send', :disable_with => 'Execute...'
             %a(href="#" onclick="custom_query()") custom query
           %br
@@ -45,20 +45,20 @@
   .grid_12
     .box
       %h2 Query result
-      - if params[:query][:result]
+      - if params[:stored_query][:result]
         .block
           %div(id="tableres" style="padding:1em;")
             - header = true
             %table
-              - FasterCSV.parse(params[:query][:result]) do |row|
+              - FasterCSV.parse(params[:stored_query][:result]) do |row|
                 - if header
                   %thead
                     %tr
                       %th(colspan="#{row.size() - 1}" class="table-head")
-                        - if params[:query][:name]==""
-                          Custom query
+                        - if params[:stored_query][:name]==""
+                          Custom stored query
                         - else
-                          = params[:query][:name]
+                          = params[:stored_query][:name]
                     %tr
                       - row[1...row.size].each do |x|
                         %td= x
@@ -73,29 +73,29 @@
 .clear
 %div(id="query_editor" style="display:none; cursor: default")
   .box
-    %h2 Query Editor
+    %h2 Stored Query Editor
     .block
       %p
         = form_tag output_path(@output), :method => :put do
-          = hidden_field :query, :name, :value => ""
-          = hidden_field :query, :id, :value => 0
+          = hidden_field :stored_query, :name, :value => ""
+          = hidden_field :stored_query, :id, :value => 0
           %table
             %tr
-              %td= label :query, :aggregate
-              %td= select_tag "query[aggregate]", options_for_select(Query::AGGREGATES.collect{ |a| [a,a.downcase]}, :selected => params[:query][:aggregate])
+              %td= label :stored_query, :aggregate
+              %td= select_tag "stored_query[aggregate]", options_for_select(StoredQuery::AGGREGATES.collect{ |a| [a,a.downcase]}, :selected => params[:stored_query][:aggregate])
             %tr
-              %td= label :query, :attribute
-              %td= select_tag "query[attribute]", options_for_select(Query::VARIABLES.collect{ |a| [a,a]}, :selected => params[:query][:attribute])
+              %td= label :stored_query, :attribute
+              %td= select_tag "stored_query[attribute]", options_for_select(StoredQuery::VARIABLES.collect{ |a| [a,a]}, :selected => params[:stored_query][:attribute])
             %tr
-              %td= label :query, :formula
-              %td= text_field :query, :formula, :value => params[:query][:formula]
+              %td= label :stored_query, :formula
+              %td= text_field :stored_query, :formula, :value => params[:stored_query][:formula]
             %tr
-              %td= label :query, :filter
-              %td= text_field :query, :filter, :value => params[:query][:filter]
+              %td= label :stored_query, :filter
+              %td= text_field :stored_query, :filter, :value => params[:stored_query][:filter]
           %p
             = submit_tag 'Display'
             %input(type="button" id="cancel" value="Cancel")
           %p
             %br
             = submit_tag 'Store this query as'
-            = text_field :query, :name, :value => params[:query][:name]
+            = text_field :stored_query, :name, :value => params[:stored_query][:name]

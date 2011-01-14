@@ -2,9 +2,9 @@
   = render :partial => 'shortcuts', :locals => { :page => :new }
 .grid_6
   .box
-    %h2 New query
+    %h2 New Stored query
     .block
-      = simple_form_for @table do |f|
+      = simple_form_for @stored_query do |f|
         =f.input :name
         =f.input :aggregate
         =f.input :variable

@@ -4,7 +4,7 @@ Leaqweb::Application.routes.draw do |map|
 
   devise_for :users
 
-  resources :queries do
+  resources :stored_queries do
     member do
       get :duplicate
     end
