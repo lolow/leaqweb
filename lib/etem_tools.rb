@@ -4,6 +4,208 @@ require 'yaml'
 
 module EtemTools
 
+  def generate_new_tech_from_csv(file,sector=nil)
+    # collect redundant infos
+    list = %w{avail life af cap_act eff_flo flo_share_fx avail cost_vom cost_fom cost_icap avail_factor}
+    param = {}
+    list.each{|l|param[l]=Parameter.find_by_name(l)}
+    polls = ["CO2","N2O","CH4"].collect do |p|
+      Commodity.find_by_name("#{p}-#{sector}")
+    end
+    polls.compact!
+    set_list = (sector=="PRD") ? "P" : "DMD,P"
+    FasterCSV.foreach(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}) do |row|
+      tech_name = row["name"]
+      puts tech_name
+      tech = Technology.find_by_name(tech_name)
+      Technology.destroy(tech.id) if tech
+      tech = Technology.create!(:name => tech_name,
+                                :description => row["description"],
+                                :set_list => set_list)
+      #Main flows
+      in_flow = InFlow.create
+      row["input"].split(",").each do |c|
+        p c
+        in_flow.commodities << Commodity.find_by_name(c)
+        if row["share-"+c.downcase]
+           ParameterValue.create!(:parameter => param["flo_share_fx"],
+                            :technology    => tech,
+                            :flow          => in_flow,
+                            :commodity     => Commodity.find_by_name(c),
+                            :value         => row["share-"+c.downcase],
+                            :source        => "CRTE")
+        end
+      end
+      out_flow = OutFlow.create
+      outputs = row["output"].split(",")
+      outputs.each do |c|
+        p c
+        out_flow.commodities << Commodity.find_by_name(c)
+        if row["share-"+c.downcase]
+           ParameterValue.create!(:parameter => param["flo_share_fx"],
+                            :technology    => tech,
+                            :flow          => out_flow,
+                            :commodity     => Commodity.find_by_name(c),
+                            :value         => row["share-"+c.downcase],
+                            :source        => "CRTE")
+        end
+      end
+      tech.flows << in_flow
+      tech.flows << out_flow
+      tech.flow_act = out_flow
+      #Main parameters
+      ParameterValue.create!(:parameter    => param["eff_flo"],
+                             :technology    => tech,
+                             :in_flow       => in_flow,
+                             :out_flow      => out_flow,
+                             :value         => row["eff_flo"],
+                             :source        => "CRTE")
+     ParameterValue.create!(:parameter     => param["avail"],
+                            :technology    => tech,
+                            :value         => row["avail"],
+                            :source        => "CRTE [year]")
+     ParameterValue.create!(:parameter     => param["cap_act"],
+                            :technology    => tech,
+                            :value         => row["cap_act"],
+                            :source        => "CRTE") if row["cap_act"]
+     ParameterValue.create!(:parameter     => param["life"],
+                            :technology    => tech,
+                            :value         => row["life"],
+                            :source        => "CRTE [years]") if row["life"]
+     ParameterValue.create!(:parameter     => param["cost_fom"],
+                            :technology    => tech,
+                            :year          => 0,
+                            :value         => row["cost_fom"],
+                            :source        => "CRTE") if row["cost_fom"]
+     ParameterValue.create!(:parameter     => param["cost_vom"],
+                            :technology    => tech,
+                            :year          => 0,
+                            :value         => row["cost_vom"],
+                            :source        => "CRTE") if row["cost_vom"]
+     ParameterValue.create!(:parameter     => param["cost_icap"],
+                            :technology    => tech,
+                            :year          => 0,
+                            :value         => row["cost_icap"],
+                            :source        => "CRTE") if row["cost_icap"]
+     ParameterValue.create!(:parameter     => param["avail_factor"],
+                            :technology    => tech,
+                            :time_slice    => "AN",
+                            :year          => 2005,
+                            :value         => row["avail_factor"],
+                            :source        => "CRTE") if row["avail_factor"]
+      #Combustion factors
+      polls.each do |p|
+        out_flow = OutFlow.create
+        out_flow.commodities << p
+        tech.flows << out_flow
+        coef = tech.combustion_factor(in_flow,out_flow)
+        ParameterValue.create(:parameter   => param["eff_flo"],
+                              :technology    => tech,
+                              :in_flow       => in_flow,
+                              :out_flow      => out_flow,
+                              :value         => coef,
+                              :source        => "Combustion coefficients")
+      end
+    end
+  end
+
+  def generate_existing_technology(file,sector=nil)
+    fixed_cap = Parameter.find_by_name("fixed_cap")
+    life      = Parameter.find_by_name("life")
+    af        = Parameter.find_by_name("avail_factor")
+    cap_act   = Parameter.find_by_name("cap_act")
+    icap_bnd_fx  = Parameter.find_by_name("icap_bnd_fx")
+    eff_flo      = Parameter.find_by_name("eff_flo")
+    flo_share_fx = Parameter.find_by_name("flo_share_fx")
+    polls = ["CO2","N2O","CH4"].collect do |p|
+      Commodity.find_by_name("#{p}-#{sector}")
+    end
+    polls.compact!
+    FasterCSV.foreach(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}) do |row|
+      tech_name = sector + "-" + row["name"]
+      puts tech_name
+      tech = Technology.find_by_name(tech_name)
+      Technology.destroy(tech.id) if tech
+      tech = Technology.create!(:name => tech_name,
+                               :description => row["description"],
+                               :set_list => "DMD,P")
+      #Main flows
+      in_flow = InFlow.create
+      row["in_flow"].split("-").each do |c|
+        in_flow.commodities << Commodity.find_by_name(c+"-"+sector)
+      end
+      out_flow = OutFlow.create
+      outputs = row["out_flow"].split("-")
+      outputs.each do |c|
+        out_flow.commodities << Commodity.find_by_name(sector+"-"+c)
+      end
+      tech.flows << in_flow
+      tech.flows << out_flow
+      tech.flow_act = out_flow
+      #Main parameters
+      ParameterValue.create!(:parameter     => eff_flo,
+                            :technology    => tech,
+                            :in_flow       => in_flow,
+                            :out_flow      => out_flow,
+                            :value         => row["eff_flo"],
+                            :source        => "CRTE")
+      ParameterValue.create!(:parameter     => fixed_cap,
+                            :technology    => tech,
+                            :year          => 2005,
+                            :value         => row["fixed_cap_2005"],
+                            :source        => "CRTE " + row["cap_unit"])
+      ParameterValue.create!(:parameter     => life,
+                            :technology    => tech,
+                            :value         => row["life"],
+                            :source        => "CRTE [years]")
+      ParameterValue.create!(:parameter     => fixed_cap,
+                            :technology    => tech,
+                            :year          => 2005 - 1 + row["life"].to_i,
+                            :value         => 0,
+                            :source        => "CRTE " + row["cap_unit"])
+      ParameterValue.create!(:parameter     => af,
+                            :technology    => tech,
+                            :time_slice    => "AN",
+                            :year          => 2005,
+                            :value         => row["avail_factor"],
+                            :source        => "CRTE")
+      ParameterValue.create!(:parameter     => cap_act,
+                            :technology    => tech,
+                            :value         => row["cap_act"],
+                            :source        => "CRTE " + row["cap_act_unit"])
+      ParameterValue.create!(:parameter     => icap_bnd_fx,
+                            :technology    => tech,
+                            :year          => 0,
+                            :value         => row["icap_bnd_fx"],
+                            :source        => "CRTE " + row["cap_unit"])
+      ParameterValue.create!(:parameter     => flo_share_fx,
+                            :technology    => tech,
+                            :flow          => out_flow,
+                            :commodity     => out_flow.commodities.first,
+                            :value         => row["share-out"],
+                            :source        => "CRTE") if row["share-out"]
+      ParameterValue.create!(:parameter     => flo_share_fx,
+                            :technology    => tech,
+                            :flow          => out_flow,
+                            :commodity     => out_flow.commodities[1],
+                            :value         => 1.0 - row["share-out"].to_f,
+                            :source        => "CRTE" ) if row["share-out"]
+      #Combustion factors
+      polls.each do |p|
+        out_flow = OutFlow.create
+        out_flow.commodities << p
+        tech.flows << out_flow
+        coef = tech.combustion_factor(in_flow,out_flow)
+        ParameterValue.create(:parameter   => eff_flo,
+                              :technology    => tech,
+                              :in_flow       => in_flow,
+                              :out_flow      => out_flow,
+                              :value         => coef,
+                              :source        => "Combustion coefficients")
+      end
+    end 
+  end
+
   def generate_new_technology(yml_file,end_year=2030)
     YAML.load_file(yml_file).each do |row|
       tech0 = Technology.find_by_name(row["technology_name"])

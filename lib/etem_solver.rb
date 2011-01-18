@@ -198,6 +198,7 @@ class EtemSolver
       # Values are projected/desagregated if necessary
       str = []
       values.each{ |key,k_values|
+        puts parameter
         projection(k_values,time_proj[parameter]).each{|period,value|
           if key.index("AN")
             TIME_SLICES.each { |ts|
