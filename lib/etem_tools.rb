@@ -4,13 +4,19 @@ require 'yaml'
 
 module EtemTools
 
-  def generate_new_tech_from_csv(file,sector=nil)
+  def generate_new_tech_from_csv(file,sector=nil,auto_combustion=true)
     # collect redundant infos
     list = %w{avail life af cap_act eff_flo flo_share_fx avail cost_vom cost_fom cost_icap avail_factor}
     param = {}
     list.each{|l|param[l]=Parameter.find_by_name(l)}
-    polls = ["CO2","N2O","CH4"].collect do |p|
-      Commodity.find_by_name("#{p}-#{sector}")
+    if auto_combustion
+      polls = ["CO2","N2O","CH4"].collect do |p|
+        Commodity.find_by_name("#{p}-#{sector}")
+      end
+    else
+      polls = FasterCSV.read(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}).headers.select{|s|s[0,4]=="poll"}.collect{|s|s[5..-1]}.collect do |p|
+        Commodity.find_by_name("#{p}")
+      end
     end
     polls.compact!
     set_list = (sector=="PRD") ? "P" : "DMD,P"
@@ -94,17 +100,34 @@ module EtemTools
                             :value         => row["avail_factor"],
                             :source        => "CRTE") if row["avail_factor"]
       #Combustion factors
-      polls.each do |p|
-        out_flow = OutFlow.create
-        out_flow.commodities << p
-        tech.flows << out_flow
-        coef = tech.combustion_factor(in_flow,out_flow)
-        ParameterValue.create(:parameter   => param["eff_flo"],
-                              :technology    => tech,
-                              :in_flow       => in_flow,
-                              :out_flow      => out_flow,
-                              :value         => coef,
-                              :source        => "Combustion coefficients")
+      if auto_combustion
+        polls.each do |p|
+          out_flow = OutFlow.create
+          out_flow.commodities << p
+          tech.flows << out_flow
+          coef = tech.combustion_factor(in_flow,out_flow)
+          ParameterValue.create(:parameter   => param["eff_flo"],
+                                :technology    => tech,
+                                :in_flow       => in_flow,
+                                :out_flow      => out_flow,
+                                :value         => coef,
+                                :source        => "Combustion coefficients")
+        end
+      else
+      # specific pollutant
+        
+        polls.each do |p|
+          puts "poll-" + p.name.downcase
+          out_flow = OutFlow.create
+          out_flow.commodities << p
+          tech.flows << out_flow
+          ParameterValue.create(:parameter   => param["eff_flo"],
+                                :technology    => tech,
+                                :in_flow       => in_flow,
+                                :out_flow      => out_flow,
+                                :value         => row["poll-"+p.name.downcase],
+                                :source        => "CRTE")
+        end
       end
     end
   end
