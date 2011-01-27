@@ -1,4 +1,4 @@
-require 'faster_csv'
+require 'csv'
 require 'zip/zip'
 require 'zip/zipfilesystem'
 
@@ -27,7 +27,7 @@ class EtemArchive
       puts "-- #{active_record.name}"
       time = Benchmark.measure {
         zipfile.put_next_entry(active_record.name)
-        zipfile.print(FasterCSV.generate do |csv|
+        zipfile.print(CSV.generate do |csv|
           csv << headers
           active_record.all.each {|o| yield(o,csv)}
         end)
@@ -98,7 +98,7 @@ class EtemArchive
           Zip::ZipInputStream::open(zipfile) { |file|
           while (entry = file.get_next_entry)
             if entry.name==active_record.name
-              FasterCSV.parse(file.read,{:headers=>true}) {|row| yield row}
+              CSV.parse(file.read,{:headers=>true}) {|row| yield row}
             end
           end
           }

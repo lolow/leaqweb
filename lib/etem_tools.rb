@@ -1,6 +1,7 @@
 #collections of functions to help the feeding of the database
-#but are not called by the application
+#but should not be called by the application
 require 'yaml'
+require 'csv'
 
 module EtemTools
 
@@ -14,13 +15,13 @@ module EtemTools
         Commodity.find_by_name("#{p}-#{sector}")
       end
     else
-      polls = FasterCSV.read(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}).headers.select{|s|s[0,4]=="poll"}.collect{|s|s[5..-1]}.collect do |p|
+      polls = CSV.read(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}).headers.select{|s|s[0,4]=="poll"}.collect{|s|s[5..-1]}.collect do |p|
         Commodity.find_by_name("#{p}")
       end
     end
     polls.compact!
     set_list = (sector=="PRD") ? "P" : "DMD,P"
-    FasterCSV.foreach(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}) do |row|
+    CSV.foreach(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}) do |row|
       tech_name = row["name"]
       puts tech_name
       tech = Technology.find_by_name(tech_name)
@@ -45,7 +46,6 @@ module EtemTools
       out_flow = OutFlow.create
       outputs = row["output"].split(",")
       outputs.each do |c|
-        p c
         out_flow.commodities << Commodity.find_by_name(c)
         if row["share-"+c.downcase]
            ParameterValue.create!(:parameter => param["flo_share_fx"],
@@ -144,7 +144,7 @@ module EtemTools
       Commodity.find_by_name("#{p}-#{sector}")
     end
     polls.compact!
-    FasterCSV.foreach(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}) do |row|
+    CSV.foreach(file,{:col_sep=>"\t",:headers=>true,:skip_blanks=>true}) do |row|
       tech_name = sector + "-" + row["name"]
       puts tech_name
       tech = Technology.find_by_name(tech_name)

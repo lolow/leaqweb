@@ -50,7 +50,7 @@
           %div(id="tableres" style="padding:1em;")
             - header = true
             %table
-              - FasterCSV.parse(params[:stored_query][:result]) do |row|
+              - CSV.parse(params[:stored_query][:result]) do |row|
                 - if header
                   %thead
                     %tr

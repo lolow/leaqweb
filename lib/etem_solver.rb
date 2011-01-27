@@ -1,7 +1,8 @@
 require 'tenjin'
 require 'yaml'
 require 'benchmark'
-
+require 'solver'
+require 'csv'
 require 'etem'
 
 class EtemSolver
@@ -42,12 +43,10 @@ class EtemSolver
     dict = Hash[*Commodity.activated.collect{|x|[x.pid,x.name]}.flatten]
     dict.merge! Hash[*Technology.activated.collect{|x|[x.pid,x.name]}.flatten]
     #write csv result file
-    FasterCSV.open(file("csv"), "w") do |csv|
+    CSV.open(file("csv"), "w") do |csv|
       csv << %w[attribute T S P C value]
-      header = true
-      FasterCSV.foreach(file("out")) do |row|
-        csv << [row[0],first_year + (row[1].to_i-1) * period_duration,row[2],dict[row[3]],dict[row[4]],row[5]] unless header
-        header = false
+      CSV.foreach(file("out"),{:headers=>true}) do |row|
+        csv << [row[0],first_year + (row[1].to_i-1) * period_duration,row[2],dict[row[3]],dict[row[4]],row[5]]
       end
     end
     #write glossary
@@ -82,8 +81,8 @@ class EtemSolver
   
   def time_used
     return unless solved?
-    t1 = Time.parse(log.grep(/Start:/).first)
-    t2 = Time.parse(log.grep(/End:/).first)
+    t1 = Time.parse(log.lines.grep(/Start:/).first)
+    t2 = Time.parse(log.lines.grep(/End:/).first)
     t2 - t1
   end
 
@@ -195,10 +194,9 @@ class EtemSolver
           values[key][v.year] = v.value
         }
       end
-      # Values are projected/desagregated if necessary
+      # Values are projected/desagreggated if necessary
       str = []
       values.each{ |key,k_values|
-        puts parameter
         projection(k_values,time_proj[parameter]).each{|period,value|
           if key.index("AN")
             TIME_SLICES.each { |ts|
