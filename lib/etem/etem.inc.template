@@ -1,0 +1,375 @@
+set T / 1 * #{@p_nb_periods_d} /;
+
+set S / #{@s_s} /;
+
+set P / #{@s_p} /;
+
+set M / #{@s_m} /;
+
+set C / #{@s_c} /;
+
+set IMP(C) / #{@s_imp} /;
+
+set EXP(C) / #{@s_exp} /;
+
+set DEM(C) / #{@s_dem} /;
+
+set FLOW / #{@s_flow} /;
+
+set FLOW_IN(P,FLOW) /
+<?rb @s_in_flow.each do |tech,flows| ?>
+#{tech}.(#{flows.split(" ").join(","))}
+<?rb end ?>
+/;
+
+set FLOW_OUT(P,FLOW) /
+<?rb @s_out_flow.each do |tech,flows| ?>
+#{tech}.(#{flows.split(" ").join(","))}
+<?rb end ?>
+/;
+
+set C_ITEMS(FLOW,C) /
+<?rb @s_c_items.each do |flow,comms| ?>
+#{flow}.(#{comms.split(" ").join(","))}
+<?rb end ?>
+/;
+
+set C_MAP(P,C);
+set P_CONS(C,P);
+set P_PROD(C,P);
+
+LOOP(FLOW,
+  LOOP(C$C_ITEMS(FLOW,C),
+    LOOP(P$FLOW_IN(P,FLOW),
+      C_MAP(P,C)  = yes
+      P_CONS(C,P) = yes
+    );
+  );
+);
+
+LOOP(FLOW,
+  LOOP(C$C_ITEMS(FLOW,C),
+    LOOP(P$FLOW_OUT(P,FLOW),
+      C_MAP(P,C)  = yes
+      P_PROD(C,P) = yes
+    );
+  );
+);
+
+set FLOW_ACT(P,FLOW) /
+<?rb e = @p_flow_act.split(" ").to_enum ?>
+<?rb loop do ?>
+'#{e.next}'.'#{e.next}'
+<?rb end ?>
+/;
+
+scalar nb_periods /#{@p_nb_periods_d}/;
+scalar period_length /#{@p_period_length_d}/;
+scalar discount_rate /#{@p_discount_rate_d}/;
+
+parameter cost_delivery(T,S,P,C);
+cost_delivery(T,S,P,C)=#{@p_cost_delivery_d};
+<?rb e = @p_cost_delivery.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_delivery('#{e.next}','#{e.next}','#{e.next}','e.next') = #{e.next};
+<?rb end ?>
+
+parameter avail_factor(T,S,P);
+avail_factor(T,S,P)=#{@p_avail_factor_d};
+<?rb e = @p_avail_factor.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_delivery('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter act_bnd_fx(T,S,P);
+act_bnd_fx(T,S,P)=#{@p_act_bnd_fx_d};
+<?rb e = @p_act_bnd_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  act_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter act_bnd_lo(T,S,P);
+act_bnd_lo(T,S,P)=#{@p_act_bnd_lo_d};
+<?rb e = @p_act_bnd_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  act_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter act_bnd_up(T,S,P);
+act_bnd_up(T,S,P)=#{@p_act_bnd_up_d};
+<?rb e = @p_act_bnd_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  act_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter peak_reserve(T,S,C);
+peak_reserve(T,S,C)=#{@p_peak_reserve_d};
+<?rb e = @p_peak_reserve.split(" ").to_enum ?>
+<?rb loop do ?>
+  peak_reserve('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cost_imp(T,S,C);
+cost_imp(T,S,C)=#{@p_cost_imp_d};
+<?rb e = @p_cost_imp.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_imp('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cost_exp(T,S,C);
+cost_exp(T,S,C)=#{@p_cost_exp_d};
+<?rb e = @p_cost_exp.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_exp('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter peak_prod(T,S,C);
+peak_prod(T,S,C)=#{@p_peak_prod_d};
+<?rb e = @p_peak_prod.split(" ").to_enum ?>
+<?rb loop do ?>
+  peak_prod('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter exp_bnd_fx(T,S,C);
+exp_bnd_fx(T,S,C)=#{@p_exp_bnd_fx_d};
+<?rb e = @p_exp_bnd_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  exp_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter exp_bnd_lo(T,S,C);
+exp_bnd_lo(T,S,C)=#{@p_exp_bnd_lo_d};
+<?rb e = @p_exp_bnd_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  exp_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter exp_bnd_up(T,S,C);
+exp_bnd_up(T,S,C)=#{@p_exp_bnd_up_d};
+<?rb e = @p_exp_bnd_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  exp_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter imp_bnd_fx(T,S,C);
+imp_bnd_fx(T,S,C)=#{@p_imp_bnd_fx_d};
+<?rb e = @p_imp_bnd_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  imp_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter imp_bnd_lo(T,S,C);
+imp_bnd_lo(T,S,C)=#{@p_imp_bnd_lo_d};
+<?rb e = @p_imp_bnd_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  imp_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter imp_bnd_up(T,S,C);
+imp_bnd_up(T,S,C)=#{@p_imp_bnd_up_d};
+<?rb e = @p_imp_bnd_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  imp_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter flow_bnd_fx(T,S,FLOW);
+flo_bnd_fx(T,S,FLOW)=#{@p_flo_bnd_fx_d};
+<?rb e = @p_flo_bnd_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  flo_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter flow_bnd_lo(T,S,FLOW);
+flo_bnd_lo(T,S,FLOW)=#{@p_flo_bnd_lo_d};
+<?rb e = @p_flo_bnd_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  flo_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter flow_bnd_up(T,S,FLOW);
+flo_bnd_up(T,S,FLOW)=#{@p_flo_bnd_up_d};
+<?rb e = @p_flo_bnd_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  flo_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter com_net_bnd_up_ts(T,S,C);
+com_net_bnd_up_ts(T,S,C)=#{@p_com_net_bnd_up_ts_d};
+<?rb e = @p_com_net_bnd_up_ts.split(" ").to_enum ?>
+<?rb loop do ?>
+  com_net_bnd_up_ts('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+parameter com_net_bnd_up_t(T,C);
+com_net_bnd_up_t(T,S,C)=#{@p_com_net_bnd_up_t_d};
+<?rb e = @p_com_net_bnd_up_t.split(" ").to_enum ?>
+<?rb loop do ?>
+  com_net_bnd_up_t('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter frac_dem(S,DEM);
+frac_dem(S,DEM)=#{@p_frac_dem_d} ;
+<?rb e = @p_frac_dem.split(" ").to_enum ?>
+<?rb loop do ?>
+  frac_dem('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter fixed_cap(T,P);
+fixed_cap(T,P)=#{@p_fixed_cap_d} ;
+<?rb e = @p_fixed_cap.split(" ").to_enum ?>
+<?rb loop do ?>
+  fixed_cap('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cost_icap(T,P);
+cost_icap(T,P)=#{@p_cost_icap_d} ;
+<?rb e = @p_cost_icap.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_icap('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cost_fom(T,P);
+cost_fom(T,P)=#{@p_cost_fom_d} ;
+<?rb e = @p_cost_fom.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_fom('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cost_vom(T,P);
+cost_vom(T,P)=#{@p_cost_vom_d} ;
+<?rb e = @p_cost_vom.split(" ").to_enum ?>
+<?rb loop do ?>
+  cost_vom('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cap_bnd_fx(T,P);
+cap_bnd_fx(T,P)=#{@p_cap_bnd_fx_d} ;
+<?rb e = @p_cap_bnd_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  cap_bnd_fx('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cap_bnd_lo(T,P);
+cap_bnd_lo(T,P)=#{@p_cap_bnd_lo_d} ;
+<?rb e = @p_cap_bnd_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  cap_bnd_lo('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cap_bnd_up(T,P);
+cap_bnd_up(T,P)=#{@p_cap_bnd_up_d} ;
+<?rb e = @p_cap_bnd_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  cap_bnd_up('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter icap_bnd_fx(T,P);
+icap_bnd_fx(T,P)=#{@p_icap_bnd_fx_d} ;
+<?rb e = @p_icap_bnd_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  icap_bnd_fx('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter icap_bnd_lo(T,P);
+icap_bnd_lo(T,P)=#{@p_icap_bnd_lo_d} ;
+<?rb e = @p_icap_bnd_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  icap_bnd_lo('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter icap_bnd_up(T,P);
+icap_bnd_up(T,P)=#{@p_icap_bnd_up_d} ;
+<?rb e = @p_icap_bnd_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  icap_bnd_up('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+
+parameter demand(T,DEM);
+demand(T,DEM)=#{@p_demand_d} ;
+<?rb e = @p_demand.split(" ").to_enum ?>
+<?rb loop do ?>
+  demand('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter act_flo(P,C);
+act_flo(P,C)=#{@p_act_flo_d} ;
+<?rb e = @p_act_flo.split(" ").to_enum ?>
+<?rb loop do ?>
+  act_flo('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter eff_flo(FLOW,FLOW);
+eff_flo(FLOW)=#{@p_eff_flo_d} ;
+<?rb e = @p_eff_flo.split(" ").to_enum ?>
+<?rb loop do ?>
+  eff_flo('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter flo_share_lo(FLOW,C);
+flo_share_lo(FLOW,C)=#{@p_flo_share_lo_d} ;
+<?rb e = @p_flo_share_lo.split(" ").to_enum ?>
+<?rb loop do ?>
+  flo_share_lo('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter flo_share_up(FLOW,C);
+flo_share_up(FLOW,C)=#{@p_flo_share_up_d} ;
+<?rb e = @p_flo_share_up.split(" ").to_enum ?>
+<?rb loop do ?>
+  flo_share_up('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter flo_share_fx(FLOW,C);
+flo_share_fx(FLOW,C)=#{@p_flo_share_fx_d} ;
+<?rb e = @p_flo_share_fx.split(" ").to_enum ?>
+<?rb loop do ?>
+  flo_share_fx('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter market(P,M);
+market(P,M)=#{@p_market_d} ;
+<?rb e = @p_market.split(" ").to_enum ?>
+<?rb loop do ?>
+  market('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter cap_act(P);
+cap_act(P)=#{@p_cap_act_d} ;
+<?rb e = @p_cap_act.split(" ").to_enum ?>
+<?rb loop do ?>
+  cap_act('#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter avail(P);
+avail(P)=#{@p_avail_d} ;
+<?rb e = @p_avail.split(" ").to_enum ?>
+<?rb loop do ?>
+  avail('#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter fraction(S);
+fraction(S)=#{@p_fraction_d} ;
+<?rb e = @p_fraction.split(" ").to_enum ?>
+<?rb loop do ?>
+  fraction('#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter life(P);
+life(P)=#{@p_life_d} ;
+<?rb e = @p_life.split(" ").to_enum ?>
+<?rb loop do ?>
+  life('#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter network_efficiency(C);
+network_efficiency(C)=#{@p_network_efficiency_d} ;
+<?rb e = @p_network_efficiency.split(" ").to_enum ?>
+<?rb loop do ?>
+  network_efficiency('#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter nb_completed_years(T);
+nb_completed_years(T)=(ord(T)-1)*period_length;
+
+parameter annualized;
+set TT/1*#{@p_period_length_d}/;
+annualized = sum(TT,(1+discount_rate)**(1-(ord(TT))));
+
+parameter salvage(T,P);
+salvage(T,P) = (1-(1+discount_rate)**(-period_length*(t+life(P)-nb_periods-1)))
+               /((1+discount_rate)**(period_length*(nb_periods+1-t)))
+               /(1-(1+discount_rate)**(-period_length*life(P)));
