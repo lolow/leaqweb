@@ -1,7 +1,6 @@
 body {
 	background: $background_color;
 	color: $text_color;
-	font-size: 11px;
 	padding: 0 0 40px;
 }
 
@@ -138,15 +137,7 @@ div.menu .block {
 p {
 	margin-bottom:1em;
 }
-blockquote {
-	font-family: Georgia, 'Times New Roman', serif;
-	font-size:1.2em;
-	padding-left:1em;
-	border-left:4px solid #ccc;
-}
-blockquote cite {
-	font-size:.9em;
-}
+
 ul, ol {
 	padding-top:0;
 }
