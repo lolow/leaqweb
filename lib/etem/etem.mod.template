@@ -184,7 +184,7 @@ subject to EQ_SHR_FX {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p]
 VAR_COM[t,s,p,c]  = flo_share_fx[cg,c]*sum{cc in C_ITEMS[cg]} VAR_COM[t,s,p,cc];
 
 # peak activity equations
-subject to EQ_PEAK {t in T, s in S, c in C} :
+subject to EQ_PEAK {t in T, s in S, c in C:peak_reserve[t,s,c]>0} :
   1/(1+peak_reserve[t,s,c])*(
       sum{p in P_PROD[c] : c in C_ITEMS[flow_act[p]]} cap_act[p]*act_flo[p,c]*peak_prod[p,s,c]*fraction[s]*
                               (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p] 

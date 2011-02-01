@@ -54,7 +54,7 @@ class Commodity < ActiveRecord::Base
   def demand_values
     return [] unless demand?
     if demand_driver
-      update_etem_options
+      #update_etem_options
       
       dv = parameter_values.of("demand").where(:year=>first_year).first
       base_year_value = dv ? dv.value : 0

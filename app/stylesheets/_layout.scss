@@ -1,7 +1,6 @@
 body {
 	background: $background_color;
 	color: $text_color;
-	padding: 0 0 40px;
 }
 
 /*links*/
@@ -9,7 +8,7 @@ a {
 	color: $link_color;
 	font-weight:bold;
 	text-decoration: none;
-    cursor: pointer;
+  cursor: pointer;
 }
 a:hover {
 	color:$text_color;
@@ -69,13 +68,14 @@ h2#page-heading {
 /* boxes
 ----------------------------------------------- */
 .box {
-	background:#ddd;
+	background:$box-background;
 	margin-bottom:20px;
 	padding:10px 10px 1px 10px;
   border-radius: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
 }
+
 .box h2 {
 	font-size:1em;
 	font-weight:normal;
@@ -129,6 +129,15 @@ div.menu h2 {
 }
 div.menu .block {
 	padding-top:0;
+}
+
+.footer {
+	background:$footer-background;
+	margin-bottom:20px;
+	padding:10px 10px 1px 10px;
+  border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
 }
 
 

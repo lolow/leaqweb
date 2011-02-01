@@ -31,7 +31,10 @@ module Etem
 
   DEF_OPTS = {:temp_path => "/tmp",
               :model_path => File.join(Rails.root,'lib','etem'),
+              :wait_solver => false,
+              :language => "GMPL", # or "GAMS"
               :debug => true,
+              :log_file => true,
               :ignore_equations => [],
               :write_output => true,
               :period_duration => 5,
@@ -40,10 +43,6 @@ module Etem
              }.freeze
 
   TIME_SLICES = %w{WD WN SD SN ID IN}
-
-  def update_etem_options(opts={})
-    @opts = opts.reverse_merge(DEF_OPTS)
-  end
 
   def signature
     @signature ||= YAML.load_file(File.join(@opts[:model_path],'param_sign.yml'))

@@ -9,26 +9,30 @@ class EtemSolver
   include Etem
 
   # Create a new environment
-  def initialize(token=nil,pid=0,opts={})
-    opts = update_etem_options(opts)
+  def initialize(token=nil,pid=0)
     @token = token || (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
     @pid = pid
   end
                                                                     
   # Solve the model and return pid
   def solve(opts={})
-    opts = update_etem_options(opts)
-    ["mod","dat"].each{|ext|copy_template(ext)}
 
-    puts "Create context" if opts[:debug]
-    context = create_context(opts[:debug])
+    @opts = opts.reverse_merge(DEF_OPTS)
 
-    %w{mod dat}.each do |ext|
-      puts "Generate .#{ext} file" if opts[:debug]
+    exts = case @opts[:language]
+      when "GMPL" then ["mod","dat"]
+      when "GAMS" then ["gms","inc"]
+    end
+
+    exts.each{|ext|copy_template(ext)}
+
+    context = create_context
+    context[:f_inc] = file("inc") if @opts[:language]=="GAMS"
+
+    exts.each do |ext|
       File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
     end
 
-    puts "Run optimization solver" if opts[:debug]
     run(command)
 
   end
@@ -87,7 +91,10 @@ class EtemSolver
   end
 
   def has_files?
-    %w{mod dat out log}.inject(true){ |enum,x| enum && File.exists?(file(x)) }
+    exts = %w{out log}
+    exts << %w{mod dat} if @opts[:language] == "GMPL"
+    exts << %w{gms inc} if @opts[:language] == "GAMS"
+    exts.inject(true){ |enum,x| enum && File.exists?(file(x)) }
   end
 
   def kill
@@ -103,11 +110,11 @@ class EtemSolver
   end
 
   def clean
-    %w{mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
+    %w{gms inc mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
   
   # Extracts the context data for the generation
-  def create_context(debug=false)
+  def create_context
     c = Hash.new("")
 
     # sets generation
@@ -279,18 +286,32 @@ class EtemSolver
     puts "   -> %.4fs" % time.real if debug
   end
 
-  def run(*cmd)
+  def run(cmd)
     puts cmd
-    @pid = fork do
-      exec(*cmd)
-      exit! 127
+    if @opts[:wait_solver]
+      @pid = nil
+      system(cmd)
+    else
+      @pid = fork do
+        exec(*cmd)
+        exit! 127
+      end
     end
   end
 
   def command
-    "echo Start: `date` > #{file("log")} " +
-    "&& nice glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} >> #{file("log")} " +
-    "&& echo End: `date` >> #{file("log")} "
+    case @opts[:language]
+    when "GMPL"
+      "echo Start: `date` " +
+      (@opts[:log_file] ? ">> #{file("log")} " : "") +
+      "&& nice glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} " +
+      (@opts[:log_file] ? ">> #{file("log")} " : "") +
+      "&& echo End: `date` " +
+      (@opts[:log_file] ? ">> #{file("log")} " : "") +
+      ""
+    when "GAMS"
+      "gams #{file("gms")} -o #{file("lst")}"
+    end
   end
     
 end

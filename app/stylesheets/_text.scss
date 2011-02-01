@@ -12,7 +12,8 @@ body
 {
 	/*font: 13px/1.5 Helvetica, Arial, 'Liberation Sans', FreeSans, sans-serif;*/
   font-family: Ubuntu, sans-serif;
-  font-size: 11px;
+  font-size: $body-font-size;
+  line-height: 1.2;
 }
 
 a:focus

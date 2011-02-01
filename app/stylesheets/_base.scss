@@ -1,5 +1,7 @@
 $white: #fff;
+$light_green:#d5e69c;
 $background_color: #eee;
+$body-font-size: 70%;
 
 $text_color: #333;
 $link_color: #000;
@@ -7,7 +9,7 @@ $link_color: #000;
 $logo_background: #74b200;
 $logo_color: #ffffff;
 
-$nav_background: #d5e69c;
+$nav_background: $light_green;
 $nav_color: #3e6e10;
 $menu_background: #799d23;
 $menu_color: #ffffff;
@@ -16,3 +18,6 @@ $menu_hover: #3e6e10;
 
 $width:98%;
 $grid:12; /*can be 12 or 16*/
+
+$box-background:lighten($light_green, 10%);
+$footer-background:$light_green;
