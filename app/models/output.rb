@@ -5,7 +5,7 @@ class Output < ActiveRecord::Base
   before_destroy :clear
 
   TMP = "/tmp"
-  EXT = %w{txt mod dat csv out log}
+  EXT = %w{txt mod dat csv out log gms inc}
 
   def self.auto_new
     name = "output_00"
@@ -20,7 +20,7 @@ class Output < ActiveRecord::Base
     solver.prepare_results
     FileUtils.mkdir_p(path) unless File.exists?(path)
     File.delete(file("Renv")) if File.exists?(file("Renv"))
-    EXT.each { |x| FileUtils.cp(solver.file(x),file(x)) }
+    EXT.each { |x| FileUtils.cp(solver.file(x),file(x)) if File.exist?(solver.file(x))}
   end
 
   def compute_cross_tab(table)

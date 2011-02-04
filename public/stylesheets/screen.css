@@ -1574,7 +1574,7 @@ input.filter.text {
 /* notice */
 /* line 555, ../../app/stylesheets/_layout.scss */
 .notice {
-  background: #ddd;
+  background: #e6f0c5;
   margin-bottom: 10px;
   padding: 8px 18px 8px 8px;
   border: 2px red dashed;

@@ -32,7 +32,7 @@ module Etem
   DEF_OPTS = {:temp_path => "/tmp",
               :model_path => File.join(Rails.root,'lib','etem'),
               :wait_solver => false,
-              :language => "GMPL", # or "GAMS"
+              :language => "GAMS", # or "GMPL"
               :debug => true,
               :log_file => true,
               :ignore_equations => [],

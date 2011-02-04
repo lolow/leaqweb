@@ -326,60 +326,57 @@ printf "VAR_OBJVAR,,,,,%f\n", VAR_OBJVAR;
 printf "VAR_OBJSAL,,,,,%f\n", VAR_OBJSAL;
 
 #T,P
-for {t in T, p in P}{
+for {t in T, p in P: capacity[t,p]<>0}{
   printf "CAPACITY,%s,,%s,,%f\n", t, p , capacity[t,p];
 }
 
 #T,P
-for {t in T, p in P}{
+for {t in T, p in P:VAR_ICAP[t,p]<>0}{
   printf "VAR_ICAP,%s,,%s,,%f\n", t , p , VAR_ICAP[t,p];
 }
 
 #T, S, P
-for {t in T, s in S, p in P}{
+for {t in T, s in S, p in P:activity[t,s,p]<>0}{
   printf "ACTIVITY,%s,%s,%s,,%f\n", t, s, p , activity[t,s,p];
 }
-for {t in T,p in P}{
+for {t in T,p in P:(sum {s in S} activity[t,s,p])<>0}{
   printf "ACTIVITY,%s,ANNUAL,%s,,%f\n", t , p , sum {s in S} activity[t,s,p];
 }
 
 #T, S, C
-for {t in T, s in S, c in IMP}{
+for {t in T, s in S, c in IMP:VAR_IMP[t,s,c] <> 0}{
   printf "VAR_IMP,%s,%s,,%s,%f\n", t, s, c, VAR_IMP[t,s,c];
 }
-for {t in T, c in IMP}{
+for {t in T, c in IMP:(sum {s in S}VAR_IMP[t,s,c]) <> 0}{
   printf "VAR_IMP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_IMP[t,s,c];
 }
-for {t in T, s in S, c in EXP}{
+for {t in T, s in S, c in EXP:VAR_EXP[t,s,c] <> 0}{
   printf "VAR_EXP,%s,%s,,%s,%f\n", t, s, c, VAR_EXP[t,s,c];
 }
-for {t in T, c in EXP}{
+for {t in T, c in EXP:(sum {s in S}VAR_EXP[t,s,c]) <> 0}{
   printf "VAR_EXP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_EXP[t,s,c];
 }
 
 #T, S, C
-for {t in T, s in S, c in C}{
+for {t in T, s in S, c in C:EQ_COMBAL[t,s,c].dual<> 0}{
   printf "C_PRICE,%s,%s,,%s,%f\n", t, s, c, EQ_COMBAL[t,s,c].dual;
+}
+for {t in T, c in C:(sum{s in S} fraction[s]*EQ_COMBAL[t,s,c].dual) <> 0}{
+  printf "C_PRICE,%s,ANNUAL,,%s,%f\n", t, c, sum{s in S} fraction[s]*EQ_COMBAL[t,s,c].dual;
 }
 
 #T,S,P,C
-for {t in T, s in S, p in P, c in C_MAP[p]}{
+for {t in T, s in S, p in P, c in C_MAP[p]:VAR_COM[t,s,p,c] <> 0}{
   printf "VAR_COM,%s,%s,%s,%s,%f\n", t, s, p, c, VAR_COM[t,s,p,c];
 }
 
 #T,P,C
-for {t in T, p in P, c in C_MAP[p]}{
+for {t in T, p in P, c in C_MAP[p]:(sum{s in S} VAR_COM[t,s,p,c]) <> 0}{
   printf "VAR_COM,%s,ANNUAL,%s,%s,%f\n", t, p, c, sum{s in S} VAR_COM[t,s,p,c];
 }
 
-#CHECK DEMAND
-for {t in T, dem in DEM}{
-  printf "CHK_DEM,%s,,,%s,%f\n", t, dem , sum{s in S, p in P_PROD[dem]} (fixed_cap[t,p]*fraction[s]*cap_act[p]*
-                                                                 avail_factor[t,s,p]*act_flo[p,dem]) - demand[t,dem];
-}
-
 #T,C
-for {t in T, c in DEM}{
+for {t in T, c in DEM:demand[t,c] <> 0}{
   printf "DEMAND,%s,ANNUAL,,%s,%f\n", t, c, demand[t,c];
 }
 

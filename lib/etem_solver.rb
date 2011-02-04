@@ -9,15 +9,14 @@ class EtemSolver
   include Etem
 
   # Create a new environment
-  def initialize(token=nil,pid=0)
+  def initialize(token=nil,pid=0,opts={})
     @token = token || (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
     @pid = pid
+    @opts = opts.reverse_merge(DEF_OPTS)
   end
                                                                     
   # Solve the model and return pid
   def solve(opts={})
-
-    @opts = opts.reverse_merge(DEF_OPTS)
 
     exts = case @opts[:language]
       when "GMPL" then ["mod","dat"]
@@ -27,7 +26,9 @@ class EtemSolver
     exts.each{|ext|copy_template(ext)}
 
     context = create_context
-    context[:f_inc] = file("inc") if @opts[:language]=="GAMS"
+    context[:f_inc] = file("inc")
+    context[:f_out] = file("out")
+    context[:f_status] = file("status")
 
     exts.each do |ext|
       File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
@@ -76,11 +77,21 @@ class EtemSolver
   end
 
   def solved?
-    log.index("End:") if File.exists?(file("log"))
+    case @opts[:language]
+    when "GMPL"
+      log.index("End:") if File.exists?(file("log"))
+    when "GAMS"
+      File.exists?(file("status"))
+    end
   end
 
   def optimal?
-    log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
+    case @opts[:language]
+    when "GMPL"
+      log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
+    when "GAMS"
+      File.read(file("status")).to_i == 1 if File.exists?(file("status"))
+    end
   end
   
   def time_used
@@ -91,10 +102,7 @@ class EtemSolver
   end
 
   def has_files?
-    exts = %w{out log}
-    exts << %w{mod dat} if @opts[:language] == "GMPL"
-    exts << %w{gms inc} if @opts[:language] == "GAMS"
-    exts.inject(true){ |enum,x| enum && File.exists?(file(x)) }
+    File.exists?(file("log"))
   end
 
   def kill
@@ -110,7 +118,7 @@ class EtemSolver
   end
 
   def clean
-    %w{gms inc mod dat out log csv}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
+    %w{gms inc mod dat out log csv status}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
   
   # Extracts the context data for the generation
@@ -300,18 +308,19 @@ class EtemSolver
   end
 
   def command
+    "echo Start: `date` " +
+    (@opts[:log_file] ? "> #{file("log")} " : "") +
     case @opts[:language]
     when "GMPL"
-      "echo Start: `date` " +
-      (@opts[:log_file] ? ">> #{file("log")} " : "") +
+      
       "&& nice glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} " +
-      (@opts[:log_file] ? ">> #{file("log")} " : "") +
-      "&& echo End: `date` " +
-      (@opts[:log_file] ? ">> #{file("log")} " : "") +
-      ""
+      (@opts[:log_file] ? ">> #{file("log")} " : "")
     when "GAMS"
-      "gams #{file("gms")} -o #{file("lst")}"
-    end
+      "&& gams #{file("gms")} -o #{file("lst")} lo=3 ll=0 " +
+      (@opts[:log_file] ? ">> #{file("log")} " : "")
+    end +
+    "&& echo End: `date` " +
+    (@opts[:log_file] ? ">> #{file("log")} " : "")
   end
     
 end

@@ -1,3 +1,6 @@
+$OFFLISTING
+$ONEMPTY
+$OFFDIGIT
 ***********************
 *                     *
 * ETEM model for LEAQ *
@@ -26,9 +29,11 @@ Positive Variables
   VAR_OBJVAR       Variable costs part of objective function
   VAR_OBJSAL       Salvage value part of objective function
   VAR_ICAP(T,P)    Investment in new capacity
-  VAR_IMP(T,S,IMP) Import activities
-  VAR_EXP(T,S,EXP) Export activities
+  VAR_IMP(T,S,C) Import activities
+  VAR_EXP(T,S,C) Export activities
   VAR_COM(T,S,P,C) Commodity flow
+  CAPACITY(T,P)    Capacity
+  ACTIVITY(T,S,P)
 ;
 
 Equations
@@ -63,9 +68,18 @@ Equations
   EQ_CAP_LO  Capacity bound constraints
   EQ_CAP_UP
   EQ_CAP_FX
-  EQ_COM_NET_UP_TS  Net amount bound constraints per time slice 
+  EQ_COM_NET_UP_TS  Net amount bound constraints per time slice
   EQ_COM_NET_UP_T   Net amount bound constraints per time period
+  EQ_CAPACITY
+  EQ_ACTIVITY
 ;
+
+EQ_CAPACITY(T,P)..
+  CAPACITY(T,P) =E= SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge (ord(T)-life(P)+1)) and (ord(T1) ge avail(P)) ),
+                    VAR_ICAP(T1,P))+fixed_cap(T,P);
+
+EQ_ACTIVITY(T,S,P)..
+  ACTIVITY(T,S,P) =E= SUM(FLOW$FLOW_ACT(P,FLOW), SUM(C$C_ITEMS(FLOW,C), VAR_COM(T,S,P,C) / act_flo(P,C) ));
 
 EQ_OBJ..
 VAR_OBJ =E= VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL;
@@ -75,25 +89,14 @@ VAR_OBJINV =E= SUM( (T,P), cost_icap(T,P)*VAR_ICAP(T,P)/((1+discount_rate)**(nb_
 
 EQ_OBJFIX..
 VAR_OBJFIX =E= SUM( (T,P), annualized*cost_fom(T,P)*
-
-* capacity(T,P)
-               (SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge ord(T)-life(P)+1) and (ord(T1) ge avail(P)) ),
-                VAR_ICAP(T1,P)+fixed_cap(T,P)))
-
+               CAPACITY(T,P)
                /((1+discount_rate)**(nb_completed_years(T))) );
 
 EQ_OBJVAR..
 VAR_OBJVAR =E= SUM(T, annualized*
     (
       SUM(S,
-        SUM(P, cost_vom(T,P) *
-
-* activity[t,s,p]
-          SUM(FLOW$FLOW_ACT(P,FLOW),
-            SUM(C$C_ITEMS(FLOW,C),
-              VAR_COM(T,S,P,C) / act_flo(P,C) ))
-
-        )
+         SUM(P, cost_vom(T,P) * ACTIVITY(T,S,P) )
        + SUM(IMP, cost_imp(T,S,IMP) * VAR_IMP(T,S,IMP))
        - SUM(EXP, cost_exp(T,S,EXP) * VAR_EXP(T,S,EXP))
        + SUM(P,SUM(C$C_MAP(P,C), cost_delivery(T,S,P,C) * VAR_COM(T,S,P,C) ))
@@ -107,10 +110,10 @@ VAR_OBJSAL =E= SUM(P,SUM(T$( (ord(T) ge avail(P)) and ( (ord(T)+life(P)) gt (nb_
     ) );
 
 EQ_COMBAL(T,S,C)$(not DEM(C))..
-  ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + SUM(IMP$IMP(C), VAR_IMP(T,S,IMP)) ) *
+  ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) *
     network_efficiency(C)
   =G=
-    SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + SUM(EXP$EXP(C), VAR_EXP(T,S,EXP));
+    SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C);
 
 EQ_DEMBAL(T,S,DEM)..
    SUM(P$P_PROD(DEM,P), VAR_COM(T,S,P,DEM) )
@@ -118,15 +121,9 @@ EQ_DEMBAL(T,S,DEM)..
    frac_dem(S,DEM)*demand(T,DEM);
 
 EQ_CAPACT(T,S,P)..
-* activity[t,s,p]
-   SUM(FLOW$FLOW_ACT(P,FLOW),
-     SUM(C$C_ITEMS(FLOW,C),
-       VAR_COM(T,S,P,C) / act_flo(P,C) ))
+   ACTIVITY(T,S,P)
    =L=
-   avail_factor(T,S,P)*cap_act(P)*fraction(S)*
-* capacity(T,P)
-   (SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge ord(T)-life(P)+1) and (ord(T1) ge avail(P)) ),
-     VAR_ICAP(T1,P)+fixed_cap(T,P)));
+   avail_factor(T,S,P)*cap_act(P)*fraction(S)*CAPACITY(T,P);
 
 EQ_PTRANS(T,S,P,INFLOW,OUTFLOW)$( (eff_flo(INFLOW,OUTFLOW) gt 0) and FLOW_IN(P,INFLOW) and FLOW_OUT(P,OUTFLOW) )..
   SUM(C$C_ITEMS(OUTFLOW,C), VAR_COM(T,S,P,C) )
@@ -147,41 +144,26 @@ EQ_PEAK(T,S,C)$(peak_reserve(T,S,C) ne 0)..
    1/(1+peak_reserve(T,S,C))*(
     SUM(FLOW$C_ITEMS(FLOW,C),
       SUM(P$(P_PROD(C,P) and FLOW_ACT(P,FLOW)),
-        cap_act(P)*act_flo(P,C)*peak_prod(P,S,C)*fraction(S)*
-* capacity(T,P)
-        (SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge ord(T)-life(P)+1) and (ord(T1) ge avail(P)) ),
-          VAR_ICAP(T1,P)+fixed_cap(T,P)))
+        cap_act(P)*act_flo(P,C)*peak_prod(P,S,C)*fraction(S)*CAPACITY(T,P)
        ) +
       SUM(P$(P_PROD(C,P) and (not FLOW_ACT(P,FLOW))),
         peak_prod(P,S,C)*VAR_COM(T,S,P,C)
       )
     )
-    + SUM(IMP$IMP(C),VAR_IMP(T,S,IMP))
+    + VAR_IMP(T,S,C)$IMP(C)
    )
    =G=
     SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C) ) +
-    SUM(EXP$EXP(C),VAR_EXP(T,S,EXP));
+    VAR_EXP(T,S,C)$EXP(C);
 
 EQ_ACT_LO(T,S,P)$(act_bnd_lo(T,S,P) gt 0)..
-* activity[t,s,p]
-  SUM(FLOW$FLOW_ACT(P,FLOW),
-    SUM(C$C_ITEMS(FLOW,C),
-      VAR_COM(T,S,P,C) / act_flo(P,C) ))
-=G= act_bnd_lo(T,S,P);
+ACTIVITY(T,S,P) =G= act_bnd_lo(T,S,P);
 
 EQ_ACT_UP(T,S,P)$(act_bnd_up(T,S,P) ge 0)..
-* activity[t,s,p]
-  SUM(FLOW$FLOW_ACT(P,FLOW),
-    SUM(C$C_ITEMS(FLOW,C),
-      VAR_COM(T,S,P,C) / act_flo(P,C) ))
-=L= act_bnd_up(T,S,P);
+ACTIVITY(T,S,P) =L= act_bnd_up(T,S,P);
 
 EQ_ACT_FX(T,S,P)$(act_bnd_fx(T,S,P) ge 0)..
-* activity[t,s,p]
-  SUM(FLOW$FLOW_ACT(P,FLOW),
-    SUM(C$C_ITEMS(FLOW,C),
-      VAR_COM(T,S,P,C) / act_flo(P,C) ))
-=E= act_bnd_fx(T,S,P);
+ACTIVITY(T,S,P) =E= act_bnd_fx(T,S,P);
 
 EQ_IMP_LO(T,S,IMP)$(imp_bnd_lo(T,S,IMP) gt 0)..
 VAR_IMP(T,S,IMP) =G= imp_bnd_lo(T,S,IMP);
@@ -220,32 +202,23 @@ EQ_ICAP_FX(T,P)$(icap_bnd_fx(T,P) ge 0)..
 VAR_ICAP(T,P) =E= icap_bnd_fx(T,P);
 
 EQ_CAP_LO(T,P)$(cap_bnd_lo(T,P) gt 0)..
-* capacity(T,P)
-  (SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge ord(T)-life(P)+1) and (ord(T1) ge avail(P)) ),
-    VAR_ICAP(T1,P)+fixed_cap(T,P)))
-=G= cap_bnd_lo(T,P);
+CAPACITY(T,P)=G= cap_bnd_lo(T,P);
 
 EQ_CAP_UP(T,P)$(cap_bnd_up(T,P) ge 0)..
-* capacity(T,P)
-  (SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge ord(T)-life(P)+1) and (ord(T1) ge avail(P)) ),
-    VAR_ICAP(T1,P)+fixed_cap(T,P)))
-=L= cap_bnd_up(T,P);
+CAPACITY(T,P)=L= cap_bnd_up(T,P);
 
 EQ_CAP_FX(T,P)$(cap_bnd_fx(T,P) ge 0)..
-* capacity(T,P)
-  (SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge ord(T)-life(P)+1) and (ord(T1) ge avail(P)) ),
-    VAR_ICAP(T1,P)+fixed_cap(T,P)))
-=E= cap_bnd_fx(T,P);
+CAPACITY(T,P)=E= cap_bnd_fx(T,P);
 
 EQ_COM_NET_UP_TS(T,S,C)$(com_net_bnd_up_ts[t,s,c] ge 0)..
-( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + SUM(IMP$IMP(C),VAR_IMP(T,S,IMP)) ) -
-( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + SUM(EXP$EXP(C),VAR_EXP(T,S,EXP)) )
+( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) -
+( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) )
 =L= com_net_bnd_up_ts(T,S,C);
 
 EQ_COM_NET_UP_T(T,C)$(com_net_bnd_up_t[t,c] ge 0)..
 SUM(S,
-  ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + SUM(IMP$IMP(C),VAR_IMP(T,S,IMP)) ) -
-  ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + SUM(EXP$EXP(C),VAR_EXP(T,S,EXP)) ) )
+  ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) -
+  ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) ) )
 =L= com_net_bnd_up_t(T,C);
 
 MODEL ETEM /
@@ -282,105 +255,83 @@ MODEL ETEM /
   EQ_CAP_FX
   EQ_COM_NET_UP_TS
   EQ_COM_NET_UP_T
+  EQ_CAPACITY
+  EQ_ACTIVITY
 /;
+
+*OPTIONS
+option limrow = 0;
+option limcol = 0;
+option solprint = off;
+
 
 SOLVE ETEM USING LP MINIMIZING VAR_OBJ;
 
+file out /'#{@f_out}'/;
+put out;
+out.nd = 6;
+out.nw = 0;
+out.sw = 0;
+out.lw = 0;
 
-*###
-*### Output parameters
-*###
-*
-*# Relationship between process activity & individual primary commodity flows
-*param activity{t in T,s in S, p in P} := sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c];
-*
-*# Capacity transfer
-*param capacity{t in T, p in P} := sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]} VAR_ICAP[t1,p]+fixed_cap[t,p];
-*
-*# Commodity production
-*param production{t in T, s in S, c in C} := sum{ p in P_PROD[c] inter P } VAR_COM[t,s,p,c];
-*
-*param consumption{t in T, s in S, c in C} := sum{ p in P_CONS[c] inter P } VAR_COM[t,s,p,c];
-*
-*# Commodity procurement
-*param procurement{t in T, s in S, c in C} := sum{ p in P_PROD[c] } VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0;
-*
-*# Commodity disposal
-*param disposal{t in T, s in S, c in C} := sum{ p in P_CONS[c] } VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0;
-*
-*# Commodity net amount
-*param total_net_amount{t in T, s in S, c in C} := procurement[t,s,c] - disposal[t,s,c];
-*
-*#
-*# All outputs
-*#
-*#
-*
-*printf "attribute,T,S,P,C,value\n";
-*
-*#Without index
-*printf "VAR_OBJINV,,,,,%f\n", VAR_OBJINV;
-*printf "VAR_OBJFIX,,,,,%f\n", VAR_OBJFIX;
-*printf "VAR_OBJVAR,,,,,%f\n", VAR_OBJVAR;
-*printf "VAR_OBJSAL,,,,,%f\n", VAR_OBJSAL;
-*
-**#T,P
-*for {t in T, p in P}{
-*  printf "CAPACITY,%s,,%s,,%f\n", t, p , capacity[t,p];
-*}
-*
-*#T,P
-*for {t in T, p in P}{
-*  printf "VAR_ICAP,%s,,%s,,%f\n", t , p , VAR_ICAP[t,p];
-*}
-*
-*#T, S, P
-*for {t in T, s in S, p in P}{
-*  printf "ACTIVITY,%s,%s,%s,,%f\n", t, s, p , activity[t,s,p];
-*}
-*for {t in T,p in P}{
-*  printf "ACTIVITY,%s,ANNUAL,%s,,%f\n", t , p , sum {s in S} activity[t,s,p];
-*}
-*
-*#T, S, C
-*for {t in T, s in S, c in IMP}{
-*  printf "VAR_IMP,%s,%s,,%s,%f\n", t, s, c, VAR_IMP[t,s,c];
-*}
-*for {t in T, c in IMP}{
-*  printf "VAR_IMP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_IMP[t,s,c];
-*}
-*for {t in T, s in S, c in EXP}{
-*  printf "VAR_EXP,%s,%s,,%s,%f\n", t, s, c, VAR_EXP[t,s,c];
-*}
-*for {t in T, c in EXP}{
-*  printf "VAR_EXP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_EXP[t,s,c];
-*}
+put 'attribute,T,S,P,C,value' / ;
 
-*#T, S, C
-*for {t in T, s in S, c in C}{
-*  printf "C_PRICE,%s,%s,,%s,%f\n", t, s, c, EQ_COMBAL[t,s,c].dual;
-*}
+put 'VAR_OBJINV,,,,,'VAR_OBJINV.l/;
+put 'VAR_OBJFIX,,,,,'VAR_OBJFIX.l/;
+put 'VAR_OBJFIX,,,,,'VAR_OBJVAR.l/;
+put 'VAR_OBJFIX,,,,,'VAR_OBJSAL.l/;
 
-*#T,S,P,C
-*for {t in T, s in S, p in P, c in C_MAP[p]}{
-*  printf "VAR_COM,%s,%s,%s,%s,%f\n", t, s, p, c, VAR_COM[t,s,p,c];
-*}
+LOOP(T,LOOP(P$CAPACITY.l(T,P),
+put 'CAPACITY,'T.tl',,'P.tl',,'CAPACITY.l(T,P)/;
+))
 
-*#T,P,C
-*for {t in T, p in P, c in C_MAP[p]}{
-*  printf "VAR_COM,%s,ANNUAL,%s,%s,%f\n", t, p, c, sum{s in S} VAR_COM[t,s,p,c];
-*}
+LOOP(T,LOOP(P$VAR_ICAP.l(T,P),
+put 'VAR_ICAP,'T.tl',,'P.tl',,'VAR_ICAP.l(T,P)/;
+))
 
-*#CHECK DEMAND
-*for {t in T, dem in DEM}{
-*  printf "CHK_DEM,%s,,,%s,%f\n", t, dem , sum{s in S, p in P_PROD[dem]} (fixed_cap[t,p]*fraction[s]*cap_act[p]*
-*                                                                 avail_factor[t,s,p]*act_flo[p,dem]) - demand[t,dem];
-*}
+LOOP(T,LOOP(S,LOOP(P$ACTIVITY.l(T,S,P),
+put 'ACTIVITY,'T.tl','S.tl','P.tl',,'ACTIVITY.l(T,S,P)/;
+)))
+LOOP(T,LOOP(P$(SUM(S,ACTIVITY.l(T,S,P))),
+put 'ACTIVITY,'T.tl',ANNUAL,'P.tl',,'SUM(S,ACTIVITY.l(T,S,P))/;
+))
 
-*#T,C
-*for {t in T, c in DEM}{
-*  printf "DEMAND,%s,ANNUAL,,%s,%f\n", t, c, demand[t,c];
-*}
 
-*end;
+LOOP(T,LOOP(S,LOOP(IMP$VAR_IMP.l(T,S,IMP),
+put 'VAR_IMP,'T.tl','S.tl',,'IMP.tl','VAR_IMP.l(T,S,IMP)/;
+)))
+LOOP(T,LOOP(IMP$SUM(S,VAR_IMP.l(T,S,IMP)),
+put 'VAR_IMP,'T.tl',ANNUAL,,'IMP.tl','SUM(S,VAR_IMP.l(T,S,IMP))/;
+))
 
+LOOP(T,LOOP(S,LOOP(EXP$VAR_EXP.l(T,S,EXP),
+put 'VAR_EXP,'T.tl','S.tl',,'EXP.tl','VAR_EXP.l(T,S,EXP)/;
+)))
+LOOP(T,LOOP(EXP$SUM(S,VAR_EXP.l(T,S,EXP)),
+put 'VAR_EXP,'T.tl',ANNUAL,,'EXP.tl','SUM(S,VAR_EXP.l(T,S,EXP))/;
+))
+
+LOOP(T,LOOP(S,LOOP(C$EQ_COMBAL.m(T,S,C),
+put 'C_PRICE,'T.tl','S.tl',,'C.tl','EQ_COMBAL.m(T,S,C)/;
+)))
+LOOP(T,LOOP(C$SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C)),
+put 'C_PRICE,'T.tl',ANNUAL,,'C.tl','SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C))/;
+))
+
+LOOP(T,LOOP(S,LOOP(P,LOOP(C$(C_MAP(P,C) and VAR_COM.l(T,S,P,C)),
+put 'VAR_COM,'T.tl','S.tl','P.tl','C.tl','VAR_COM.l(T,S,P,C)/;
+))))
+LOOP(T,LOOP(P,LOOP(C$(C_MAP(P,C) and SUM(S,VAR_COM.l(T,S,P,C))),
+put 'VAR_COM,'T.tl',ANNUAL,'P.tl','C.tl','SUM(S,VAR_COM.l(T,S,P,C))/;
+)))
+
+LOOP(T,LOOP(DEM,
+put 'DEMAND,'T.tl',ANNUAL,,'DEM.tl','demand(T,DEM)/;
+))
+
+putclose out;
+
+file status /'#{@f_status}'/;
+put status;
+put ETEM.modelstat;
+putclose status;

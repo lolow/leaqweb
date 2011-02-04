@@ -274,7 +274,11 @@ module EtemTools
       act_flo   = p_value("act_flo",:technology_id=>t,:commodity_id=>commodity)
       avail_factor = p_value("avail_factor",:technology_id=>t,:time_slice=>"AN")
       t_production = fixed_cap * cap_act * act_flo * avail_factor
-      puts "#{t.name}: #{fixed_cap} x #{cap_act} x #{act_flo} x #{avail_factor}"
+      cost_fom = p_value("cost_fom",:technology_id=>t,:year=>0)
+      cost_fom *= fixed_cap
+      cost_vom = p_value("cost_vom",:technology_id=>t,:time_slice=>"AN",:year=>0)
+      cost_vom *= t_production
+      puts "#{t.name}: #{fixed_cap} x #{cap_act} x #{act_flo} x #{avail_factor} cost[fix=#{cost_fom},var=#{cost_vom}]"
       sum + t_production
     }
     puts "Total: #{total}"

@@ -1,6 +1,3 @@
-$ONEMPTY
-$OFFDIGIT
-
 set T / 1 * #{@p_nb_periods_d} /;
 
 set S /
