@@ -7,7 +7,7 @@ module EtemTools
 
   def generate_new_tech_from_csv(file,sector=nil,auto_combustion=true)
     # collect redundant infos
-    list = %w{avail life af cap_act eff_flo flo_share_fx avail cost_vom cost_fom cost_icap avail_factor}
+    list = %w{avail life af cap_act eff_flo flo_share_fx flo_share_up avail cost_vom cost_fom cost_icap avail_factor}
     param = {}
     list.each{|l|param[l]=Parameter.find_by_name(l)}
     if auto_combustion
@@ -99,6 +99,12 @@ module EtemTools
                             :year          => 2005,
                             :value         => row["avail_factor"],
                             :source        => "CRTE") if row["avail_factor"]
+     ParameterValue.create!(:parameter     => param["flo_share_up"],
+                            :technology    => tech,
+                            :flow          => out_flow,
+                            :commodity     => Commodity.find_by_name("HET"),
+                            :value         => row["flo_share_up_het"],
+                            :source        => "CRTE") if row["flo_share_up_het"]
       #Combustion factors
       if auto_combustion
         polls.each do |p|
