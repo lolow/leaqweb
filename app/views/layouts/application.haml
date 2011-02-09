@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 %html
   = render 'layouts/head'
-%body
-  .container_12
-    = render 'layouts/header'
-    = render 'layouts/menu'
-    .grid_12
-      - [:alert, :notice].each do |type|
-        - if flash[type]
-          %div(class=type)= flash[type]
-    .clear
-    
-    = yield
-    
-    = render 'layouts/footer'
+  %body
+    .container_12
+      = render 'layouts/header'
+      = render 'layouts/menu'
+      .grid_12
+        - [:alert, :notice].each do |type|
+          - if flash[type]
+            %div(class=type)= flash[type]
+      .clear
+
+      = yield
+
+      = render 'layouts/footer'

@@ -14,6 +14,14 @@
           $.unblockUI();
           return false;
       });
+    $('#select_table').click(function(){
+      var r = document.createRange();
+      var w = document.getElementById("table_query");
+      r.selectNodeContents(w);
+      var sel=window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      })
   });
 
 .grid_3
@@ -49,7 +57,9 @@
         .block
           %div(id="tableres" style="padding:1em;")
             - header = true
-            %table
+            - if params[:stored_query][:result].size>0
+              %input(type="button" id="select_table" value="Select table")
+            %table(id="table_query")
               - CSV.parse(params[:stored_query][:result]) do |row|
                 - if header
                   %thead

@@ -85,12 +85,13 @@ EQ_OBJ..
 VAR_OBJ =E= VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL;
 
 EQ_OBJINV..
-VAR_OBJINV =E= SUM( (T,P), cost_icap(T,P)*VAR_ICAP(T,P)/((1+discount_rate)**(nb_completed_years(T))));
+VAR_OBJINV =E= SUM((T,P), cost_icap(T,P)*VAR_ICAP(T,P)
+               /((1+discount_rate)**(nb_completed_years(T))));
 
 EQ_OBJFIX..
-VAR_OBJFIX =E= SUM( (T,P), annualized*cost_fom(T,P)*
+VAR_OBJFIX =E= SUM((T,P), annualized*cost_fom(T,P)*
                CAPACITY(T,P)
-               /((1+discount_rate)**(nb_completed_years(T))) );
+               /((1+discount_rate)**(nb_completed_years(T))));
 
 EQ_OBJVAR..
 VAR_OBJVAR =E= SUM(T, annualized*
@@ -278,8 +279,8 @@ put 'attribute,T,S,P,C,value' / ;
 
 put 'VAR_OBJINV,,,,,'VAR_OBJINV.l/;
 put 'VAR_OBJFIX,,,,,'VAR_OBJFIX.l/;
-put 'VAR_OBJFIX,,,,,'VAR_OBJVAR.l/;
-put 'VAR_OBJFIX,,,,,'VAR_OBJSAL.l/;
+put 'VAR_OBJVAR,,,,,'VAR_OBJVAR.l/;
+put 'VAR_OBJSAL,,,,,'VAR_OBJSAL.l/;
 
 LOOP(T,LOOP(P$CAPACITY.l(T,P),
 put 'CAPACITY,'T.tl',,'P.tl',,'CAPACITY.l(T,P)/;
