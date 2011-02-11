@@ -27,10 +27,13 @@ class EtemArchive
       puts "-- #{active_record.name}"
       time = Benchmark.measure {
         zipfile.put_next_entry(active_record.name)
-        zipfile.print(CSV.generate do |csv|
+        text = CSV.generate do |csv|
           csv << headers
           active_record.all.each {|o| yield(o,csv)}
-        end)
+        end
+        # zipfile.print(text) is buggy in ruby 1.9
+        # the following line replaces it
+        zipfile << text << $\.to_s
       }
       puts "   -> %.4fs" % time.real
     end

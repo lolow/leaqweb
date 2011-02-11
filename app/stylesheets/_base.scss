@@ -21,3 +21,28 @@ $grid:12; /*can be 12 or 16*/
 
 $box-background:lighten($light_green, 10%);
 $footer-background:$light_green;
+
+@mixin corner($size) {
+  -moz-border-radius: $size;
+  -webkit-border-radius: $size;
+  -khtml-border-radius: $size;
+   border-radius: $size;
+}
+@mixin corner_top($size) {
+  -moz-border-radius: $size $size 0 0;
+  -webkit-border-radius: $size $size 0 0;
+  -khtml-border-radius: $size $size 0 0;
+   border-radius: $size;
+}
+
+@mixin imr {
+  cursor: pointer;
+  text-indent: -9999px;
+  display:block;
+  border: 0 none;
+}
+
+@mixin left($dist) {
+  float: left;
+  margin-left: $dist;
+}
