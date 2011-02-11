@@ -5,21 +5,34 @@ class Commodity < ActiveRecord::Base
   
   versioned
 
-  acts_as_taggable_on :sets, :sectors
+  #Acts_as
+  acts_as_taggable_on :sets
   acts_as_identifiable :prefix => "c"
 
+  #Relations
   has_and_belongs_to_many :flows
-  has_many :parameter_values, :dependent => :delete_all
-  
+  has_many :parameter_values, :dependent => :delete_all  
   belongs_to :demand_driver
   has_many :combustions, :dependent => :delete_all, :foreign_key => :fuel_id
   has_many :combustions, :dependent => :delete_all, :foreign_key => :pollutant_id
 
+  #Validations
   validates :name, :presence => true,
                    :uniqueness => true,
                    :format => { :with => /\A[a-zA-Z\d-]+\z/,
-                                :message => NAME_MESSAGE }
-  
+                                :message => VALID_NAME }
+
+  #Categories (name => sets)
+  CAT = {
+    "disabled"       => "",
+    "import"         => "C,IMP,ENC",
+    "export"         => "C,EXP,ENC",
+    "import+export"  => "C,IMP,EXP,ENC",
+    "demand"         => "C,DEM",
+    "aggregate"      => "C,AGG"
+  }
+
+  #Scopes
   scope :pollutants, tagged_with("POLL")
   scope :energy_carriers, tagged_with("ENC")
   scope :demands, tagged_with("DEM")
@@ -54,8 +67,6 @@ class Commodity < ActiveRecord::Base
   def demand_values
     return [] unless demand?
     if demand_driver
-      #update_etem_options
-      
       dv = parameter_values.of("demand").where(:year=>first_year).first
       base_year_value = dv ? dv.value : 0
       
@@ -84,9 +95,9 @@ class Commodity < ActiveRecord::Base
                           :description   => description,
                           :set_list      => set_list.join(", "),
                           :demand_driver => demand_driver )
-    parameter_values.of(PARAM_COMMODITIES).each { |pv|
+    parameter_values.of(PARAM_COMMODITIES).each do |pv|
         c.parameter_values << ParameterValue.create(pv.attributes)
-    }
+    end
     c.save
     c
   end

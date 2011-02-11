@@ -26,7 +26,7 @@ module Etem
             "P" => "Processes",
             "C" => "Commodities",
             "M" => "Markets" }.freeze
-  NAME_MESSAGE = "Please use only letters, numbers or symbol '-' in name"
+  VALID_NAME = "Please use only letters, numbers or symbol '-' in name"
 
 
   DEF_OPTS = {:temp_path => "/tmp",
