@@ -63,4 +63,4 @@ Copyright
 
 The code is licensed as GNU AGPLv3. See the LICENSE file for the full license.
 
-Copyright (c) 2009-2010 Laurent Drouet <ldrouet at gmail dot com>
+Copyright (c) 2009-2011 Laurent Drouet <ldrouet at gmail dot com>
