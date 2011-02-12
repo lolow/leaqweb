@@ -18,6 +18,8 @@
             = f.label :sets, 'Sets:'
             %br
             = f.text_field :set_list, :size=>nil
+            %br
+            = f.select :set_list, Commodity::CATEGORIES
           %input(type="hidden" name="do" value="update")
           = f.submit 'Update', :class => "button" 
         %p

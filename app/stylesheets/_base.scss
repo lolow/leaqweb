@@ -1,25 +1,28 @@
 $white: #fff;
 $light_green:#d5e69c;
-$background_color: #eee;
+$background_color: #ececec;
 $body-font-size: 70%;
 
 $text_color: #333;
 $link_color: #000;
 
-$logo_background: #74b200;
+$logo_background: darken($light_green,40%);
 $logo_color: #ffffff;
+
+$h2_background: #3A2823;
+$h2_color: #A7948F;
 
 $nav_background: $light_green;
 $nav_color: #3e6e10;
-$menu_background: #799d23;
-$menu_color: #ffffff;
-$menu_limit: #3e6e10;
-$menu_hover: #3e6e10;
+$menu_background: darken($light_green,35%);
+$menu_color: lighten($nav_color,70%);
+$menu_limit: darken($light_green,40%);
+$menu_hover: darken($light_green,40%);
 
 $width:98%;
 $grid:12; /*can be 12 or 16*/
 
-$box-background:lighten($light_green, 10%);
+$box-background:#ecede0;
 $footer-background:$light_green;
 
 @mixin corner($size) {

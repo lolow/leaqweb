@@ -61,7 +61,7 @@ h2#page-heading {
 	font-weight:normal;
 	padding:.25em;
 	margin:0 0 10px 0;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid $white;
 }
 
 
@@ -78,21 +78,22 @@ h2#page-heading {
 	font-size:1em;
 	font-weight:normal;
 	text-transform:uppercase;
-	color:$white;
-	background:$text_color;
+	color:$h2_color;
+	background:$h2_background;
 	margin:-10px -10px 0 -10px;
 	padding:6px 12px;
     @include corner_top(5px);
 }
 .box h2 a,
 .box h2 a.visible {
-	color:$white;
-	background:$text_color url("/images/switch_minus.gif") 97% 50% no-repeat;
+	color:$h2_color;
+	background:$h2_background url("/images/switch_minus.gif") 97% 50% no-repeat;
 	display:block;
 	padding:6px 12px;
 	margin:-6px -12px;
 	border:none;
     @include corner_top(5px);
+    font-weight:normal;
 }
 .grid_4 .box h2 a {
 	background-position: 97% 50%;
