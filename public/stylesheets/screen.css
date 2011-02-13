@@ -1579,10 +1579,11 @@ input.filter.text {
 /* notice */
 /* line 548, ../../app/stylesheets/_layout.scss */
 .notice {
+  text-align: center;
   background: #ecede0;
   margin-bottom: 10px;
-  padding: 8px 18px 8px 8px;
-  border: 2px red dashed;
+  padding: 1px 1px 14px 0px;
+  border: 1px #e38a0a dashed;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   -khtml-border-radius: 5px;
@@ -1592,7 +1593,7 @@ input.filter.text {
 /*
 ---datatable
 */
-/* line 559, ../../app/stylesheets/_layout.scss */
+/* line 564, ../../app/stylesheets/_layout.scss */
 .dataTables_wrapper {
   position: relative;
   /*min-height: 302px;*/
@@ -1600,14 +1601,14 @@ input.filter.text {
   _height: 302px;
 }
 
-/* line 565, ../../app/stylesheets/_layout.scss */
+/* line 570, ../../app/stylesheets/_layout.scss */
 .dataTables_length {
   float: left;
   width: 40%;
   margin-bottom: 5px;
 }
 
-/* line 570, ../../app/stylesheets/_layout.scss */
+/* line 575, ../../app/stylesheets/_layout.scss */
 .dataTables_filter {
   float: right;
   text-align: right;
@@ -1615,53 +1616,53 @@ input.filter.text {
   margin-bottom: 5px;
 }
 
-/* line 577, ../../app/stylesheets/_layout.scss */
+/* line 582, ../../app/stylesheets/_layout.scss */
 .dataTables_action {
   float: right;
   text-align: right;
   width: 40%;
 }
 
-/* line 583, ../../app/stylesheets/_layout.scss */
+/* line 588, ../../app/stylesheets/_layout.scss */
 .dataTables_info {
   float: left;
   width: 45%;
 }
 
-/* line 587, ../../app/stylesheets/_layout.scss */
+/* line 592, ../../app/stylesheets/_layout.scss */
 .dataTables_paginate {
   float: left;
   /*text-align:right;*/
   width: 44px;
 }
 
-/* line 593, ../../app/stylesheets/_layout.scss */
+/* line 598, ../../app/stylesheets/_layout.scss */
 td.check {
   width: 1.5em;
 }
 
-/* line 597, ../../app/stylesheets/_layout.scss */
+/* line 602, ../../app/stylesheets/_layout.scss */
 td.col50 {
   width: 50%;
 }
 
-/* line 601, ../../app/stylesheets/_layout.scss */
+/* line 606, ../../app/stylesheets/_layout.scss */
 select.flow_list {
   width: 100%;
 }
 
-/* line 605, ../../app/stylesheets/_layout.scss */
+/* line 610, ../../app/stylesheets/_layout.scss */
 input[type="textcell"] {
   width: 100%;
 }
 
-/* line 609, ../../app/stylesheets/_layout.scss */
+/* line 614, ../../app/stylesheets/_layout.scss */
 table.dataTable {
   clear: both;
   margin-bottom: 5px;
 }
 
-/* line 613, ../../app/stylesheets/_layout.scss */
+/* line 618, ../../app/stylesheets/_layout.scss */
 table.dataTable thead th {
   /*padding: 3px 18px 3px 10px;
   border-bottom: 1px solid black;
@@ -1669,30 +1670,30 @@ table.dataTable thead th {
   cursor: pointer;
 }
 
-/* line 620, ../../app/stylesheets/_layout.scss */
+/* line 625, ../../app/stylesheets/_layout.scss */
 table.dataTable tfoot th {
   /*padding: 3px 10px;
   border-top: 1px solid black;
   font-weight: bold;*/
 }
 
-/* line 626, ../../app/stylesheets/_layout.scss */
+/* line 631, ../../app/stylesheets/_layout.scss */
 table.dataTable tr.heading2 td {
   /* border-bottom: 1px solid #aaa; */
 }
 
-/* line 630, ../../app/stylesheets/_layout.scss */
+/* line 635, ../../app/stylesheets/_layout.scss */
 table.dataTable td {
   /*padding: 3px 10px;*/
 }
 
-/* line 634, ../../app/stylesheets/_layout.scss */
+/* line 639, ../../app/stylesheets/_layout.scss */
 table.dataTable td.center {
   /*text-align: center;*/
 }
 
 /* Pagination nested */
-/* line 639, ../../app/stylesheets/_layout.scss */
+/* line 644, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
   height: 16px;
   width: 16px;
@@ -1700,12 +1701,12 @@ table.dataTable td.center {
   float: left;
 }
 
-/* line 646, ../../app/stylesheets/_layout.scss */
+/* line 651, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
   background-image: url("/images/resultset_previous.png");
 }
 
-/* line 651, ../../app/stylesheets/_layout.scss */
+/* line 656, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
   background-image: url("/images/resultset_next.png");
 }
@@ -1713,38 +1714,38 @@ table.dataTable td.center {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables sorting
  */
-/* line 659, ../../app/stylesheets/_layout.scss */
+/* line 664, ../../app/stylesheets/_layout.scss */
 .sorting_asc {
   background: url("/images/sort_asc.gif") no-repeat center right;
 }
 
-/* line 663, ../../app/stylesheets/_layout.scss */
+/* line 668, ../../app/stylesheets/_layout.scss */
 .sorting_desc {
   background: url("/images/sort_desc.gif") no-repeat center right;
 }
 
-/* line 667, ../../app/stylesheets/_layout.scss */
+/* line 672, ../../app/stylesheets/_layout.scss */
 .sorting {
   /*background: url('/images/sort_both.png') no-repeat center right;*/
 }
 
-/* line 671, ../../app/stylesheets/_layout.scss */
+/* line 676, ../../app/stylesheets/_layout.scss */
 .sorting_asc_disabled {
   /*background: url('/images/sort_asc_disabled.png') no-repeat center right;*/
 }
 
-/* line 675, ../../app/stylesheets/_layout.scss */
+/* line 680, ../../app/stylesheets/_layout.scss */
 .sorting_desc_disabled {
   /*background: url('/images/sort_desc_disabled.png') no-repeat center right;*/
 }
 
-/* line 679, ../../app/stylesheets/_layout.scss */
+/* line 684, ../../app/stylesheets/_layout.scss */
 .flow_act {
   font-weight: bold;
   background-color: #FFFF66;
 }
 
-/* line 684, ../../app/stylesheets/_layout.scss */
+/* line 689, ../../app/stylesheets/_layout.scss */
 li.table_def_default {
   cursor: pointer;
   border: 1px solid #bbb;
@@ -1753,7 +1754,7 @@ li.table_def_default {
   padding: 3px 6px;
 }
 
-/* line 692, ../../app/stylesheets/_layout.scss */
+/* line 697, ../../app/stylesheets/_layout.scss */
 li.table_def_head {
   outline: medium none;
   background: #555;
@@ -1765,7 +1766,7 @@ li.table_def_head {
   padding: 3px 6px;
 }
 
-/* line 704, ../../app/stylesheets/_layout.scss */
+/* line 709, ../../app/stylesheets/_layout.scss */
 #choices, #rows, #columns {
   list-style-type: none;
   margin: 0 0 1em 0;

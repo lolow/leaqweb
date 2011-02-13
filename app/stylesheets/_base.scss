@@ -25,6 +25,8 @@ $grid:12; /*can be 12 or 16*/
 $box-background:#ecede0;
 $footer-background:$light_green;
 
+$notice_border_color:#E38A0A;
+
 @mixin corner($size) {
   -moz-border-radius: $size;
   -webkit-border-radius: $size;

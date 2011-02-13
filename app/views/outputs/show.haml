@@ -55,10 +55,10 @@
       %h2 Query result
       - if params[:stored_query][:result]
         .block
-          %div(id="tableres" style="padding:1em;")
+          - if params[:stored_query][:result].size>0
+            %input(type="button" id="select_table" value="Select table")
+          %div(id="query_result" style="padding:1em;")
             - header = true
-            - if params[:stored_query][:result].size>0
-              %input(type="button" id="select_table" value="Select table")
             %table(id="table_query")
               - CSV.parse(params[:stored_query][:result]) do |row|
                 - if header
@@ -69,9 +69,11 @@
                           Custom stored query
                         - else
                           = params[:stored_query][:name]
-                    %tr
-                      - row[1...row.size].each do |x|
-                        %td= x
+                    - row = row.collect{|x|x.split("_")}
+                    - 0...(row[1].size).each do |i|
+                      %tr
+                        - row[1...row.size].each do |x|
+                          %td= x[i]
                   <tbody>
                   - header = false
                 - else

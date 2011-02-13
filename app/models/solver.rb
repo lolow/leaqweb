@@ -57,7 +57,7 @@ class Solver < ActiveRecord::Base
   private
 
   def etem
-    @etem ||= EtemSolver.new(token=self.id, pid=self.pid)
+    @etem ||= EtemSolver.new(token=self.id, pid=self.pid, opts=self.opts)
   end
 
   def reset

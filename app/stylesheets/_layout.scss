@@ -546,11 +546,16 @@ input.filter.text {
 
 /* notice */
 .notice {
+    text-align:center;
 	background:$box-background;
 	margin-bottom:10px;
-	padding:8px 18px 8px 8px;
-  border: 2px red dashed;
-  @include corner(5px);
+	padding:1px 1px 14px 0px;
+    border: 1px $notice_border_color dashed;
+    @include corner(5px);
+    //background-color: $box-background;
+    //background-image:url('/images/cross.png');
+    //background-repeat:no-repeat;
+    //background-position:right top;
 }
 
 /*
