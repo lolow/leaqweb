@@ -1,4 +1,5 @@
 require 'etem_solver'
+require 'yaml'
 
 class Solver < ActiveRecord::Base
 
@@ -53,7 +54,15 @@ class Solver < ActiveRecord::Base
   def update_status
     complete! if solving? && etem.solved?
   end
+  
+  def opts
+    YAML.load(self.options)
+  end
 
+  def opts=(hash)
+    self.options = hash.to_yaml
+  end
+  
   private
 
   def etem
