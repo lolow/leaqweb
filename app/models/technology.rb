@@ -15,7 +15,7 @@ class Technology < ActiveRecord::Base
   validates :name, :presence => true,
                    :uniqueness => true,
                    :format => { :with => /\A[a-zA-Z\d-]+\z/,
-                                :message => NAME_MESSAGE }
+                                :message => VALID_NAME }
   
   acts_as_identifiable :prefix => "t"
   has_and_belongs_to_many :markets
