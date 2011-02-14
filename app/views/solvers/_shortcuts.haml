@@ -1,0 +1,10 @@
+.box
+  %h2 Shortcut
+  .block
+    %p
+      - unless page == :index
+        = link_to 'Browse running solvers', solvers_path
+        %br
+      - unless page == :new
+        = link_to 'New solver run', new_solver_path
+        %br

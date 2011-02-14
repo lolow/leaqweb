@@ -43,7 +43,7 @@ Leaqweb::Application.routes.draw do |map|
   end
 
   resources :flows
-  resources :solver
+  resources :solvers
   resources :demand_drivers
   
   match '/backup.zip' => 'dashboard#backup'

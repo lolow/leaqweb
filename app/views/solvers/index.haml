@@ -1,0 +1,25 @@
+.grid_3
+  = render :partial => 'shortcuts', :locals => { :page => :index }
+.grid_9
+  .box
+    %h2 Browse running solvers
+    %p
+      - if @solvers && @solvers.size > 0
+        %table(summary="Solver job list")
+          %thead
+            %tr
+              %th ID
+              %th Creation date
+              %th Status
+              %th
+          %tbody
+            - @solvers.each do |solver|
+              %tr
+                %td= link_to solver.pid, solver
+                %td= link_to solver.created_at, solver
+                %td= link_to solver.workflow_state, solver
+                %td= link_to 'kill/delete', solver, :confirm => 'Are you sure?', :method => :delete
+      - else
+        %br
+        No running solvers.
+.clear

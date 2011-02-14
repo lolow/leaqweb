@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.3'
+gem 'rails', '3.0.4'
 
 gem 'haml'
 gem 'warden'
@@ -9,6 +9,7 @@ gem 'tenjin'
 gem 'mysql2'
 gem 'mongrel', '>= 1.2.0.pre2'
 gem 'workflow'
+gem 'jquery-rails'
 gem 'simple_form'
 gem 'acts-as-taggable-on'
 gem "compass", ">= 0.10.5"

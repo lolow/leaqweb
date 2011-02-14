@@ -22,17 +22,18 @@ class Commodity < ActiveRecord::Base
                    :format => { :with => /\A[a-zA-Z\d-]+\z/,
                                 :message => VALID_NAME }
 
-  #Categories (name => sets)
-  CAT = {
-    "disabled"       => "",
-    "import"         => "C,IMP,ENC",
-    "export"         => "C,EXP,ENC",
-    "import+export"  => "C,IMP,EXP,ENC",
-    "demand"         => "C,DEM",
-    "aggregate"      => "C,AGG"
-  }
-
-  #Scopes
+  # Categories [name,value]
+  # sets in value has to be sorted!!
+  CATEGORIES = [
+    ["Disabled",""],
+    ["Energy carrier [import]","C,ENC,IMP"],
+    ["Energy carrier [export]","C,ENC,EXP"],
+    ["Energy carrier [import+export]","C,ENC,EXP,IMP"],
+    ["Energy carrier [only]","C,ENC"],
+    ["Demand","C,DEM"],
+    ["Aggregator","AGG,C"]
+    ]
+  
   scope :pollutants, tagged_with("POLL")
   scope :energy_carriers, tagged_with("ENC")
   scope :demands, tagged_with("DEM")
@@ -100,6 +101,19 @@ class Commodity < ActiveRecord::Base
     end
     c.save
     c
+  end
+  
+  #return the corresponding set list from the CATEGORIES array
+  def matching_set_list
+    my_set = self.set_list.sort.join(",")
+    s = nil
+    CATEGORIES.each do |c|
+      if c[1]==my_set
+        s = c[1]
+        break
+      end
+    end
+    s
   end
 
 end

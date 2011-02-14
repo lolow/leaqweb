@@ -1,23 +1,53 @@
 $white: #fff;
 $light_green:#d5e69c;
-$background_color: #eee;
+$background_color: #ececec;
 $body-font-size: 70%;
 
 $text_color: #333;
 $link_color: #000;
 
-$logo_background: #74b200;
+$logo_background: darken($light_green,40%);
 $logo_color: #ffffff;
+
+$h2_background: #3A2823;
+$h2_color: #A7948F;
 
 $nav_background: $light_green;
 $nav_color: #3e6e10;
-$menu_background: #799d23;
-$menu_color: #ffffff;
-$menu_limit: #3e6e10;
-$menu_hover: #3e6e10;
+$menu_background: darken($light_green,35%);
+$menu_color: lighten($nav_color,70%);
+$menu_limit: darken($light_green,40%);
+$menu_hover: darken($light_green,40%);
 
 $width:98%;
 $grid:12; /*can be 12 or 16*/
 
-$box-background:lighten($light_green, 10%);
+$box-background:#ecede0;
 $footer-background:$light_green;
+
+$notice_border_color:#E38A0A;
+
+@mixin corner($size) {
+  -moz-border-radius: $size;
+  -webkit-border-radius: $size;
+  -khtml-border-radius: $size;
+   border-radius: $size;
+}
+@mixin corner_top($size) {
+  -moz-border-radius: $size $size 0 0;
+  -webkit-border-radius: $size $size 0 0;
+  -khtml-border-radius: $size $size 0 0;
+   border-radius: $size;
+}
+
+@mixin imr {
+  cursor: pointer;
+  text-indent: -9999px;
+  display:block;
+  border: 0 none;
+}
+
+@mixin left($dist) {
+  float: left;
+  margin-left: $dist;
+}
