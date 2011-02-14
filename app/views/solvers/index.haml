@@ -17,7 +17,7 @@
               %tr
                 %td= link_to solver.pid, solver
                 %td= link_to solver.created_at, solver
-                %td= link_to solver.workflow_state, solver
+                %td= link_to solver.current_state.name, solver
                 %td= link_to 'kill/delete', solver, :confirm => 'Are you sure?', :method => :delete
       - else
         %br

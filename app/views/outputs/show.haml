@@ -57,7 +57,7 @@
         .block
           - if params[:stored_query][:result].size>0
             %input(type="button" id="select_table" value="Select table")
-          %div(id="query_result" style="padding:1em;")
+          %div(id="query_result")
             - header = true
             %table(id="table_query")
               - CSV.parse(params[:stored_query][:result]) do |row|
@@ -70,7 +70,8 @@
                         - else
                           = params[:stored_query][:name]
                     - row = row.collect{|x|x.split("_")}
-                    - 0...(row[1].size).each do |i|
+                    - iter = row.collect{|x|x.size}.max - 1
+                    - 0.upto(iter).each do |i|
                       %tr
                         - row[1...row.size].each do |x|
                           %td= x[i]
@@ -82,6 +83,7 @@
                       - row[1...row.size].each do |x|
                         %td= x
               </tbody>
+          %br
 .clear
 %div(id="query_editor" style="display:none; cursor: default")
   .box

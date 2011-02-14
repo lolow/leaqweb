@@ -6,7 +6,7 @@ class Solver < ActiveRecord::Base
   before_destroy :reset
   validate :check_available_slots, :on => :create
 
-  MAX_SOLVERS = 1
+  MAX_SOLVERS = 5
 
   # State Machine
   include Workflow

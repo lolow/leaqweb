@@ -1167,8 +1167,6 @@ ul.section li.current > a.active:hover {
 /* line 252, ../../app/stylesheets/_layout.scss */
 table {
   width: 100%;
-  border: 1px solid #bbb;
-  margin-bottom: 10px;
 }
 
 /* line 257, ../../app/stylesheets/_layout.scss */
@@ -1773,4 +1771,16 @@ li.table_def_head {
   padding: 0;
   width: 30%;
   float: left;
+}
+
+/* line 717, ../../app/stylesheets/_layout.scss */
+#query_result {
+  overflow: auto;
+  width: 100%;
+  margin-bottom: 0px;
+}
+
+/* line 723, ../../app/stylesheets/_layout.scss */
+#table_query {
+  margin-bottom: 0px;
 }

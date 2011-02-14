@@ -251,8 +251,8 @@ ul.section li.current > a.active:hover {
 ----------------------------------------------- */
 table {
 	width:100%;
-	border:1px solid #bbb;
-	margin-bottom:10px;
+	//border:1px solid #bbb;
+	//margin-bottom:10px;
 }
 col.colC {
 	width:8em;
@@ -712,4 +712,14 @@ margin:0 0 1em 0;
 padding:0;
 width:30%;
 float: left;
+}
+
+#query_result {
+    overflow:auto;
+    width:100%;
+    margin-bottom:0px;
+}
+
+#table_query {
+    margin-bottom:0px;
 }
