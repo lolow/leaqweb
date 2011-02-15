@@ -1,0 +1,151 @@
+--- 
+- :name: discount_rate
+  :definition: Annual discount rate. currently one global parameter used to compute discounted total cost (objective function)
+  :default_value: 0.03
+- :name: nb_periods
+  :definition: Number of periods
+  :default_value: 26.0
+- :name: period_length
+  :definition: Duration of period
+  :default_value: 1.0
+- :name: com_net_bnd_up_t
+  :definition: Upper bound on total net amount by year
+  :default_value: -1.0
+- :name: peak_reserve
+  :definition: Peak reserve as a fraction of peak demand.
+  :default_value: 0.0
+- :name: imp_bnd_up
+  :definition: Upper bound on importation
+  :default_value: -1.0
+- :name: fraction
+  :definition: Duration of a time slice as fraction of a year 0 - 1 fraction of available capacity for a specified time slice. the sum of all fractions is 1
+  :default_value: 1.0
+- :name: avail_factor
+  :definition: Availability factor on process activity in a time slice to the installed capacity
+  :default_value: 1.0
+- :name: exp_bnd_fx
+  :definition: Fixed exportation
+  :default_value: -1.0
+- :name: act_bnd_fx
+  :definition: Fixed overall activity of a process. curently only default value
+  :default_value: -1.0
+- :name: cost_exp
+  :definition: Export price of a commodity
+  :default_value: 0.0
+- :name: flo_bnd_fx
+  :definition: Fixed importation
+  :default_value: -1.0
+- :name: icap_bnd_fx
+  :definition: Fixed bound on new capacity
+  :default_value: -1.0
+- :name: frac_dem
+  :definition: Fraction of the annual demand occuring in a time-slice. fractions of 1 for each demand
+  :default_value: 1.0
+- :name: exp_bnd_lo
+  :definition: Lower bound on exportation
+  :default_value: 0.0
+- :name: act_bnd_lo
+  :definition: Lower bound on activity
+  :default_value: 0.0
+- :name: flo_bnd_lo
+  :definition: Lower bound on flow
+  :default_value: 0.0
+- :name: icap_bnd_lo
+  :definition: Lower bound on new capacity
+  :default_value: 0.0
+- :name: life
+  :definition: Technical life duration of a process.
+  :default_value: 50.0
+- :name: exp_bnd_up
+  :definition: Upper bound on exportation
+  :default_value: -1.0
+- :name: imp_bnd_fx
+  :definition: Fixed importation
+  :default_value: -1.0
+- :name: act_bnd_up
+  :definition: Upper bound on activity
+  :default_value: -1.0
+- :name: flo_share_lo
+  :definition: Lower bound of the flow share of a commodity in the total flow
+  :default_value: 0.0
+- :name: flo_bnd_up
+  :definition: Upper bound on flow
+  :default_value: -1.0
+- :name: network_efficiency
+  :definition: Infrastucture or transmission network efficiency of a commodity
+  :default_value: 1.0
+- :name: cap_bnd_fx
+  :definition: Fixed capacity
+  :default_value: -1.0
+- :name: flo_share_up
+  :definition: Upper bound of the flow share of a commodity in the total flow
+  :default_value: 0.0
+- :name: com_net_bnd_up_ts
+  :definition: Upper bound on total net amount by year and time-slice
+  :default_value: -1.0
+- :name: peak_prod
+  :definition: Ratio on production which can be use at peak period
+  :default_value: 1.0
+- :name: cost_delivery
+  :definition: Delivery cost of a commodity for a process
+  :default_value: 0.0
+- :name: imp_bnd_lo
+  :definition: Lower bound on importation
+  :default_value: 0.0
+- :name: cap_bnd_lo
+  :definition: Lower bound on capacity
+  :default_value: 0.0
+- :name: flow_act
+  :definition: Flow which define process activity. no value
+  :default_value: 0.0
+- :name: cap_bnd_up
+  :definition: Upper bound on capacity
+  :default_value: -1.0
+- :name: icap_bnd_up
+  :definition: Upper bound on new capacity
+  :default_value: -1.0
+- :name: eff_flo
+  :definition: Efficiency ratio for a specified process between FLOW_IN and FLOW_OUT commodity groups.
+  :default_value: 0.0
+- :name: fixed_cap
+  :definition: Fixed capacity (residual cap.)
+  :default_value: 0.0
+- :name: act_flo
+  :definition: "Conversion factor from commodity units to activity units 0 - 1. currently one global parameter "
+  :default_value: 1.0
+- :name: cap_act
+  :definition: Conversion factor from capacity to activity
+  :default_value: 1.0
+- :name: cost_imp
+  :definition: Import price of a commodity
+  :default_value: 10000000000000.0
+- :name: cost_vom
+  :definition: Operation and maintenance variable cost
+  :default_value: 0.0
+- :name: cost_fom
+  :definition: Operation and maintenance fixed cost
+  :default_value: 0.0
+- :name: cost_icap
+  :definition: Investment cost of one capacity unit
+  :default_value: 0.0
+- :name: avail
+  :definition: Availability year of a process.
+  :default_value: 2000.0
+- :name: demand
+  :definition: Annual useful demand
+  :default_value: 0.0
+- :name: flo_share_fx
+  :definition: Fixed flow share of a commodity in the total flow
+  :default_value: 0.0
+- :name: base_year
+  :definition: The base year is also the first year of the first period
+  :default_value: 2005.0
+- :name: input
+  :definition: input quantity
+  :default_value: 0.0
+- :name: output
+  :definition: output quantity
+  :default_value: 0.0
+- :name: market
+  :definition: technology market (0,1)
+  :default_value: 0.0

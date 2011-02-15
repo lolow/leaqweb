@@ -9,10 +9,7 @@ class SolversController < ApplicationController
   
   def index
     @solvers = Solver.all
-    #@outputs = Output.all
-    #@solvers.map(&:update_status)
-    #@new_solver = Solver.new
-    #@refresh = @solvers.inject(false) { |memo,s| memo || s.solving?  }
+    @solvers.map(&:update_status)
   end
   
   def new

@@ -1,11 +1,11 @@
 require 'etem_archive'
 require 'etem_debug'
+require 'yaml'
 
 class DashboardController < ApplicationController
 
   before_filter :authenticate_user!
 
-  # GET /
   def index
     @nb_commodities = Commodity.count
     @nb_technologies = Technology.count
@@ -20,12 +20,10 @@ class DashboardController < ApplicationController
     @log = VestalVersions::Version.order("created_at DESC").limit(10)
   end
 
-  # GET /res/check_db
   def check_db
     @errors = EtemDebug.new.check_everything
   end
 
-  # GET /backup.zip
   def backup
     f = Tempfile.new("backup")
     EtemArchive.backup(f.path)
@@ -34,11 +32,24 @@ class DashboardController < ApplicationController
     f.close
   end
 
-  # GET /dashboard/restore
   def restore
     if File.exist?(params[:upload]["db"].tempfile.path)
       EtemArchive.clean_database
       EtemArchive.restore(params[:upload]["db"].tempfile.path)
+    end
+    redirect_to root_path
+  end
+  
+  def log
+    @log = VestalVersions::Version.order("created_at DESC").limit(200)
+  end
+  
+  def reset
+    EtemArchive.clean_database
+    File.open(File.join(Rails.root,'lib','etem','default_parameters.yml')) do |f|
+      YAML::load(f).each do |record|
+        Parameter.create(record)
+      end
     end
     redirect_to root_path
   end

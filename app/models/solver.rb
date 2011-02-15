@@ -6,8 +6,6 @@ class Solver < ActiveRecord::Base
   before_destroy :reset
   validate :check_available_slots, :on => :create
 
-  MAX_SOLVERS = 5
-
   # State Machine
   include Workflow
   workflow do
@@ -74,7 +72,7 @@ class Solver < ActiveRecord::Base
   end
 
   def check_available_slots
-    errors.add(:base,"No job slot available") unless Solver.count < MAX_SOLVERS
+    errors.add(:base,"No job slot available") unless Solver.count < 999
   end
   
 end

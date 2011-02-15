@@ -31,13 +31,13 @@ $notice_border_color:#E38A0A;
   -moz-border-radius: $size;
   -webkit-border-radius: $size;
   -khtml-border-radius: $size;
-   border-radius: $size;
+  border-radius: $size;
 }
 @mixin corner_top($size) {
   -moz-border-radius: $size $size 0 0;
   -webkit-border-radius: $size $size 0 0;
   -khtml-border-radius: $size $size 0 0;
-   border-radius: $size;
+  border-radius: $size $size 0 0;
 }
 
 @mixin imr {

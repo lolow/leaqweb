@@ -1,3 +1,14 @@
+:javascript
+  function start_solver() {
+    $.blockUI({ message: '<b>Generating problem...</b>',
+      css: { border: 'none',
+        padding: '15px',
+        backgroundColor: '#000',
+        opacity: .5,
+        color: '#fff'
+      }});
+    $('#new_solver').submit();
+  }
 .grid_3
   = render :partial => 'shortcuts', :locals => { :page => :new }
 .grid_9
@@ -17,5 +28,5 @@
         %p
           = label_tag :language, 'Modeling language:'
           = select_tag :language, options_for_select([["GLPK","GMPL"],["GAMS","GAMS"]],params[:language])
-        =f.button :submit, 'Launch solver'
+        =button_to_function "Launch solver", "start_solver()"
 .clear

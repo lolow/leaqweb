@@ -51,7 +51,7 @@
         %p= link_to 'Reinit query', @output
   .clear
   .grid_12
-    .box
+    .box(id='box_result')
       %h2 Query result
       - if params[:stored_query][:result]
         .block

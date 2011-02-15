@@ -25,10 +25,7 @@
     %h2 Database
     .block
       %h5 Maintenance
-      %p
-        Empty database
-        %br
-        = link_to "Check energy system integrity", "/dashboard/check_db"
+      %p= link_to "Check energy system integrity", :controller => "dashboard", :action => "check_db"
     .block
       %h5 Backup
       %p= link_to "Download the complete database", "/backup.zip"
@@ -38,6 +35,9 @@
         = form_tag("/restore", :multipart => true) do
           %p= file_field 'upload', 'db', :class => "db_file", :size => nil
           %p= submit_tag "Restore", :disable_with => "Please wait..."
+    .block
+      %h5 Reset
+      %p= link_to "Empty database", {:controller => "dashboard", :action => "reset"}, :confirm => 'Are you sure? This will delete everything in the database'  
 
 .grid_4
   .box

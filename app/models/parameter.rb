@@ -1,5 +1,7 @@
 class Parameter < ActiveRecord::Base
 
+  PARAMETERS =
+
   versioned
 
   has_many :parameter_values

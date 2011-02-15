@@ -12,7 +12,7 @@ module Etem
                       %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} +
                       %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } +
                       %w{com_net_bnd_up_t com_net_bnd_up_ts}
-  PARAM_TECHNOLOGIES = %w{input output} + %w{eff_flo flow_act} +
+  PARAM_TECHNOLOGIES = %w{input output eff_flo flow_act} +
                        %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
                        %w{flo_share_lo flo_share_fx flo_share_up} +
                        %w{peak_prod cost_delivery act_flo} + %w{fixed_cap} +
@@ -157,10 +157,6 @@ module Etem
       available_name=name + "-#{counter+=1}"
     end
     available_name
-  end
-
-  def create_default_parameters
-
   end
 
 end

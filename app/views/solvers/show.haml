@@ -29,7 +29,10 @@
         - else
           import outputs into a resultset
         %br
-        = link_to("Reinit solver", @solver, :method=>:delete, :confirm => "Are you sure?")
+        - if @solver.solved? && @solver.has_files?
+          = link_to("delete solver job", @solver, :method=>:delete, :confirm => "Are you sure?")
+        - else
+          = link_to("kill solver job", @solver, :method=>:delete, :confirm => "Are you sure?")
 
 .grid_9
   .box
