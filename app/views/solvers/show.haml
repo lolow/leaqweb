@@ -22,6 +22,8 @@
     %h2 Shortcuts
     .block
       %p
+        = link_to 'Browse solver jobs', solvers_path
+        %br
         - if @solver.solved? && @solver.has_files?
           = link_to_function("import outputs into a resultset",
               "import_res(#{new_output_path.to_json},#{@solver.id})")
