@@ -19,11 +19,11 @@ class OutputsController < ApplicationController
       name = params[:stored_query][:name]
       @stored_query.name = @stored_query.next_available_name(StoredQuery, name)
       @stored_query.aggregate = params[:stored_query][:aggregate]
-      @stored_query.variable  = params[:stored_query][:attribute]
+      @stored_query.variable = params[:stored_query][:attribute]
       formula = params[:stored_query][:formula].split("~")
-      @stored_query.rows      = formula[0] if formula.size==2
-      @stored_query.columns   = formula[1] if formula.size==2
-      @stored_query.filters   = params[:stored_query][:filter]
+      @stored_query.rows = formula[0] if formula.size==2
+      @stored_query.columns = formula[1] if formula.size==2
+      @stored_query.filters = params[:stored_query][:filter]
       if @stored_query.save
         redirect_to @stored_query
         return
@@ -33,7 +33,7 @@ class OutputsController < ApplicationController
         return
       end
     end
-    @output  = Output.find(params[:id])
+    @output = Output.find(params[:id])
     @stored_queries = StoredQuery.order(:name)
     if params[:stored_query][:id].to_i>0
       t = StoredQuery.find(params[:stored_query][:id])
@@ -68,12 +68,12 @@ class OutputsController < ApplicationController
 
   def create
     @output = Output.new(params[:output])
-      if @output.save
-        flash[:notice] = 'Output was successfully created.'
-        redirect_to(@output)
-      else
-        render :action => "new"
-      end
+    if @output.save
+      flash[:notice] = 'Output was successfully created.'
+      redirect_to(@output)
+    else
+      render :action => "new"
+    end
   end
 
   def destroy

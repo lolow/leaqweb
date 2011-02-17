@@ -1,0 +1,3 @@
+<%= collection_select(method, :technology, list, :id, :name,
+    {:prompt => true},
+    {:onchange => "if(this.value.length>0){location.href='/technologies/'+this.value+'/edit';}"}) %>

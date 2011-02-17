@@ -1,0 +1,11 @@
+%input(type="checkbox" name="f#{f.id}")
+- if f.flow_act_of?(t)
+  %span.flow_act
+    = f.id.to_s + ":"
+    = raw commodity_url_list(f)
+-else
+  %span
+    = f.id.to_s + ":"
+    = raw commodity_url_list(f)
+%a(href="#" onclick="edit_flow('#{flow_path(f)}','Out flow',#{f.id})") edit
+%br

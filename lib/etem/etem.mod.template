@@ -20,10 +20,12 @@ set C;                       # commodities
 set DEM within C;            # useful demands
 set IMP within C;            # imported commodities
 set EXP within C;            # exported commodities
+set AGG within C;            # aggregates
 set FLOW;                    # commodities groups labels
 set FLOW_IN{P} within FLOW;  # incoming flows 
 set FLOW_OUT{P} within FLOW; # outcoming flows
 set C_ITEMS{FLOW} within C;  # set of commodities
+set C_AGG{AGG} within C;     # set of aggregated commodities
 set M;                       # markets
 
 # COMPUTED SETS
@@ -34,6 +36,7 @@ set P_CONS{c in C} within P := setof{p in P, f in FLOW_IN[p]: c in C_ITEMS[f]}(p
 # GIVEN PARAMETERS
 param discount_rate;
 param act_flo{P,C};                 # conversion factor from flow to activity.
+param agg_coef{AGG,C};              # coefficient factor in aggregate
 param avail_factor{T,S,P};          # availability factor
 param avail{P};                     # availability period.
 param cap_act{P};                   # conversion factor from capacity to activity
@@ -102,7 +105,7 @@ var VAR_ICAP{T,P}   >=0;               # investment capacity
 var VAR_IMP{T,S,IMP}  >=0;             # import activities 
 var VAR_EXP{T,S,EXP}  >=0;             # export activities
 var VAR_COM{T,S,p in P,C_MAP[p]}>=0;   # commodity flow
-
+var VAR_AGG{T,S,AGG}                   # aggregate activities
 
 ###
 ### Objective function
@@ -281,6 +284,10 @@ subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
 	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0) - # procurement
 	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
 	) <= com_net_bnd_up_t[t,c];
+
+# aggregation of commodities
+subject_to EQ_AGG{t in T, s in S, agg in AGG} :
+    VAR_AGG[t,s,agg] =  sum{c in C_AGG[agg]} VAR_COM[t,s,p,c] * agg_coef[agg,c];
 
 ###
 ### Solve statement

@@ -8,10 +8,5 @@
   .box
     %h2 Last modifications
     .block
-      - @log.each do |version|
-        = version.versioned_type + "[" + version.versioned_id.to_s + "]:"
-        modifications on
-        = version.modifications.keys.join(",")
-        = "(" + distance_of_time_in_words(Time.new, version.created_at,true) + " ago)"
-        %br
-      %br
+      %p= render :partial => "log", :collection => @log, :as => :version
+.clear

@@ -45,8 +45,8 @@ class DemandDriversController < ApplicationController
       end
     end
   end
-  
- # DELETE /drivers/1
+
+  # DELETE /drivers/1
   def destroy
     @demand_driver = DemandDriver.find(params[:id])
     @demand_driver.destroy
@@ -76,27 +76,27 @@ class DemandDriversController < ApplicationController
     end
     # action on parameter_value
     case params[:do]
-    when "update"
-      respond_to do |format|
-        if @demand_driver.update_attributes(params[:demand_driver])
-          flash[:notice] = 'Demand driver was successfully updated.'
-          format.html { redirect_to(edit_demand_driver_path(@technology)) }
-        else
-          format.html { render :action => "edit" }
+      when "update"
+        respond_to do |format|
+          if @demand_driver.update_attributes(params[:demand_driver])
+            flash[:notice] = 'Demand driver was successfully updated.'
+            format.html { redirect_to(edit_demand_driver_path(@technology)) }
+          else
+            format.html { render :action => "edit" }
+          end
         end
-      end
-      return
-    when "delete_pv"
-      ids = @demand_driver.parameter_values.map(&:id).select{|i|params["cb#{i}"]}
-      ParameterValue.destroy(ids)
-    when "add_pv"
-      att = params[:pv]
-      att[:parameter] = @demand_driver
-      pv = ParameterValue.new(att)
-      flash[:notice] = 'Demand driver value was successfully added.' if pv.save
+        return
+      when "delete_pv"
+        ids = @demand_driver.parameter_values.map(&:id).select { |i| params["cb#{i}"] }
+        ParameterValue.destroy(ids)
+      when "add_pv"
+        att = params[:pv]
+        att[:parameter] = @demand_driver
+        pv = ParameterValue.new(att)
+        flash[:notice] = 'Demand driver value was successfully added.' if pv.save
     end if params[:do]
     respond_to do |format|
-        format.html { redirect_to(edit_demand_driver_path(@demand_driver)) }
+      format.html { redirect_to(edit_demand_driver_path(@demand_driver)) }
     end
   end
 

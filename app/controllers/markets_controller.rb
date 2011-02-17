@@ -28,15 +28,15 @@ class MarketsController < ApplicationController
 
   def update
     @market = Market.find(params[:id])
-   if @market.update_attributes(params[:market])
-     redirect_to(@market, :notice => 'Market was successfully updated.')
-   else
-     render :action => "edit"
-   end
+    if @market.update_attributes(params[:market])
+      redirect_to(@market, :notice => 'Market was successfully updated.')
+    else
+      render :action => "edit"
+    end
   end
 
   def destroy
     Market.destroy(params[:id])
     redirect_to(markets_url)
-   end
+  end
 end

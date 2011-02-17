@@ -457,9 +457,14 @@ input.filter.text {
 
 /* AJAX sliding shelf
 ----------------------------------------------- */
-#loading {float:right; margin-right:14px; margin-top:-2px;}
-.block {padding-bottom:1px;}
-
+#loading {
+    float:right;
+    margin-right:14px;
+    margin-top:-2px;
+}
+.block {
+    padding-bottom:1px;
+}
 
 /* Accordian
 ----------------------------------------------- */
@@ -493,57 +498,6 @@ input.filter.text {
 	padding-bottom:10px;
 }
 
-
-/* Mootools Kwicks
------------------------------------------------ */
-#kwick-box { 
-	padding:0;
-	overflow:hidden;
-}
-#kwick-box h2 { 
-	margin:0;
-}
-#kwick {
-	position: relative;
-}
-#kwick .kwicks {
-	display: block;
-	background: #999;
-	height: 120px;
-	list-style:none;
-	margin:0;
-	overflow:hidden;
-}
-#kwick li {
-	float: left;
-	margin:0;
-	padding:0;
-}
-#kwick .kwick {
-	display: block;
-	cursor: pointer;
-	overflow: hidden;
-	height: 100px;
-	width: 215px;
-	padding: 10px;
-	background: $white;
-}
-#kwick .kwick span {
-	color:$white;
-}
-#kwick .one {
-	background: #666;
-}
-#kwick .two {
-	background: #777;
-}
-#kwick .three {
-	background: #888;
-}
-#kwick .four {
-	background: #999;
-}
-
 /* notice */
 .notice {
     text-align:center;
@@ -552,10 +506,6 @@ input.filter.text {
 	padding:1px 1px 14px 0px;
     border: 1px $notice_border_color dashed;
     @include corner(5px);
-    //background-color: $box-background;
-    //background-image:url('/images/cross.png');
-    //background-repeat:no-repeat;
-    //background-position:right top;
 }
 
 /*
@@ -616,28 +566,7 @@ table.dataTable {
     margin-bottom:5px;
 }
 table.dataTable thead th {
-	/*padding: 3px 18px 3px 10px;
-	border-bottom: 1px solid black;
-	font-weight: bold;*/
 	cursor: pointer;
-}
-
-table.dataTable tfoot th {
-	/*padding: 3px 10px;
-	border-top: 1px solid black;
-	font-weight: bold;*/
-}
-
-table.dataTable tr.heading2 td {
-	/* border-bottom: 1px solid #aaa; */
-}
-
-table.dataTable td {
-	/*padding: 3px 10px;*/
-}
-
-table.dataTable td.center {
-	/*text-align: center;*/
 }
 
 /* Pagination nested */
@@ -667,18 +596,6 @@ table.dataTable td.center {
 
 .sorting_desc {
 	background: url('/images/sort_desc.gif') no-repeat center right;
-}
-
-.sorting {
-	/*background: url('/images/sort_both.png') no-repeat center right;*/
-}
-
-.sorting_asc_disabled {
-	/*background: url('/images/sort_asc_disabled.png') no-repeat center right;*/
-}
-
-.sorting_desc_disabled {
-	/*background: url('/images/sort_desc_disabled.png') no-repeat center right;*/
 }
 
 .flow_act {

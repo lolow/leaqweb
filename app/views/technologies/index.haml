@@ -6,11 +6,7 @@
       %a#toggle-search Filter
     .block#search
     %h5 Name
-    = form_tag request.path, :method => 'get' do
-      %p
-        = text_field_tag :search, params[:search], :class => "search text"
-        = submit_tag "Filter", :class => "search button"
-        = hidden_field_tag :page, 1
+    = render :partial => "/shared/search"
     %h5 Set
     %ul.menu
       - %w{DMD FUELTECH}.each do |tag|

@@ -3,7 +3,7 @@ class ParameterValuesController < ApplicationController
   respond_to :json, :only => [:update]
 
   def update
-    value = ParameterValue.update(field[:id],field[:field]=>params[:value]) ? params[:value] : ""
+    value = ParameterValue.update(field[:id], field[:field]=>params[:value]) ? params[:value] : ""
     render :json => value
   end
 
@@ -11,9 +11,9 @@ class ParameterValuesController < ApplicationController
 
   def field
     f = params[:field].split("-")
-    return {
-      :id    => f.first.to_i,
-      :field => f.last
+    {
+        :id => f.first.to_i,
+        :field => f.last
     }
   end
 

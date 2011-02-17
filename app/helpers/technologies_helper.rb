@@ -2,11 +2,13 @@ module TechnologiesHelper
   def commodity_url_list(flow)
     "(" + flow.commodities.collect { |c|
       link_to(h(c.name), edit_commodity_path(c))
-    }.join(", ") + ")".html_safe 
+    }.join(", ") + ")".html_safe
   end
+
   def commodity_list(flow)
-    "(" + flow.commodities.collect { |c| h(c.name) }.join(", ") + ")".html_safe 
+    "(" + flow.commodities.collect { |c| h(c.name) }.join(", ") + ")".html_safe
   end
+
   def short_flow(flow)
     return "" unless flow
     s = "#{flow.id}"

@@ -43,8 +43,8 @@
         - elsif key[0,1]=="="
           if ($("##{pid}_parameter option:selected").text()=="#{key[1..-1]}")
         {
-        - value.each do |c|
-          $("##{pid}_#{c}").attr("disabled", true);
+        - value.each do |cvalue|
+          $("##{pid}_#{cvalue}").attr("disabled", true);
         }
     }).change();
     });

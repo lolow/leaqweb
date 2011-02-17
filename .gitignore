@@ -11,3 +11,4 @@ config/database.yml
 nbproject/
 public/files/
 Gemfile.lock
+.idea

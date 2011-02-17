@@ -20,14 +20,14 @@ class Output < ActiveRecord::Base
     solver.prepare_results
     FileUtils.mkdir_p(path) unless File.exists?(path)
     File.delete(file("Renv")) if File.exists?(file("Renv"))
-    EXT.each { |x| FileUtils.cp(solver.file(x),file(x)) if File.exist?(solver.file(x))}
+    EXT.each { |x| FileUtils.cp(solver.file(x), file(x)) if File.exist?(solver.file(x)) }
   end
 
   def compute_cross_tab(table)
     @output = self
     @table = table
     File.delete(file("tab")) if File.exists?(file("tab"))
-    template = File.read(File.join(Rails.root,'lib','cross_tab.R.erb'))
+    template = File.read(File.join(Rails.root, 'lib', 'cross_tab.R.erb'))
     f = Tempfile.new("R#{self.id}")
     f2 = Tempfile.new("S#{self.id}")
     text = ERB.new(template).result(binding)
@@ -48,13 +48,13 @@ class Output < ActiveRecord::Base
   end
 
   def file(ext)
-    File.join(path,"file.#{ext}")
+    File.join(path, "file.#{ext}")
   end
 
   private
 
   def path
-    File.join(Rails.root,'public','files','out',self.id.to_s)
+    File.join(Rails.root, 'public', 'files', 'out', self.id.to_s)
   end
 
   def clear

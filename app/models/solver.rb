@@ -19,12 +19,12 @@ class Solver < ActiveRecord::Base
 
     state :solved
   end
-  
+
   def solve
     self.pid = etem.solve
     self.save
   end
-  
+
   def log
     etem.log
   end
@@ -40,7 +40,7 @@ class Solver < ActiveRecord::Base
   def optimal?
     etem.optimal?
   end
-  
+
   def prepare_results
     etem.prepare_results
   end
@@ -52,7 +52,7 @@ class Solver < ActiveRecord::Base
   def update_status
     complete! if solving? && etem.solved?
   end
-  
+
   def opts
     YAML.load(self.options)
   end
@@ -60,7 +60,7 @@ class Solver < ActiveRecord::Base
   def opts=(hash)
     self.options = hash.to_yaml
   end
-  
+
   private
 
   def etem
@@ -72,7 +72,7 @@ class Solver < ActiveRecord::Base
   end
 
   def check_available_slots
-    errors.add(:base,"No job slot available") unless Solver.count < 999
+    errors.add(:base, "No job slot available") unless Solver.count < 999
   end
-  
+
 end

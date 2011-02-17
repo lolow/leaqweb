@@ -92,7 +92,7 @@ module Rails
           current_parent << FakeRoute.new(path, options)
         end
       end
-      
+
       def resources(*args)
         if block_given?
           parent = FakeResourceRoute.new(args.shift)
@@ -108,7 +108,7 @@ module Rails
             current_parent << FakeResourceRoute.new(args.shift, args.pop)
             debug "mapping resources #{current_parent.last.name} w/o block with args"
           else
-            args.each do |a|              
+            args.each do |a|
               current_parent << FakeResourceRoute.new(a)
               debug "mapping resources #{current_parent.last.name}"
             end

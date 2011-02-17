@@ -10,29 +10,29 @@ class CombustionsController < ApplicationController
 
   def index
     @combustions = combustions_all
-    @combustion  = Combustion.new
+    @combustion = Combustion.new
   end
 
   def create
     case params[:do]
-    when "create"
-      @combustion = Combustion.new(params[:combustion])
-      if @combustion.save
-        flash[:notice]='Combustion coefficient was successfully added.'
-      else
-        @combustions = combustions_all
-        render :action => "index"
-        return
-      end
-    when "delete"
-      Combustion.destroy(checkbox_ids)
-      flash[:notice]='Combustion coefficients has been deleted.'
+      when "create"
+        @combustion = Combustion.new(params[:combustion])
+        if @combustion.save
+          flash[:notice]='Combustion coefficient was successfully added.'
+        else
+          @combustions = combustions_all
+          render :action => "index"
+          return
+        end
+      when "delete"
+        Combustion.destroy(checkbox_ids)
+        flash[:notice]='Combustion coefficients has been deleted.'
     end
     redirect_to(combustions_path)
   end
 
   def update
-    value = Combustion.update(field[:id],field[:field]=>params[:value]) ? params[:value] : ""
+    value = Combustion.update(field[:id], field[:field]=>params[:value]) ? params[:value] : ""
     render :json => value
   end
 
@@ -44,9 +44,9 @@ class CombustionsController < ApplicationController
 
   def field
     f = params[:field].split("-")
-    return {
-      :id    => f.first.to_i,
-      :field => f.last
+    {
+        :id => f.first.to_i,
+        :field => f.last
     }
   end
 

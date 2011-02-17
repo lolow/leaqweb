@@ -343,10 +343,7 @@ module EtemTools
 
   # Create a fuel tech and its input/output if necessary
   def batch_create_emissions_flows(input,output,coefficient=1,source="")
-    i = Commodity.find_by_name(input)
-    puts "input: #{i}"
-    o = Commodity.find_by_name(output)
-    puts "output: #{o}"
+    i, o = get_in_out(input, output)
     p = Parameter.find_by_name("eff_flo")
     i.consumed_by.each do |t|
       if t.inputs.size == 1
@@ -396,17 +393,15 @@ module EtemTools
     puts "done"
   end
 
+
   def batch_update_emissions_flows(input,output,coefficient=1,source=nil)
-    i = Commodity.find_by_name(input)
-    puts "input: #{i}"
-    o = Commodity.find_by_name(output)
-    puts "output: #{o}"
+    i, o = get_in_out(input, output)
     p = Parameter.find_by_name("eff_flo")
     i.consumed_by.each do |t|
       if t.inputs.size == 1
         t.out_flows.each do |f|
           if f.commodities.size==1 && f.commodities.include?(o)
-            pv = ParameterValue.find(:first,:conditions=>{:parameter_id=>p.id,:out_flow_id=>f.id})
+            pv = ParameterValue.where(:parameter_id=>p.id,:out_flow_id=>f.id).first
             if coefficient.to_s.starts_with("*")
               pv.update_attributes({:value => pv.value * coefficient[1..-1].to_f})
             else
@@ -418,6 +413,14 @@ module EtemTools
         end
       end
     end
+  end
+
+  def get_in_out(input, output)
+    i = Commodity.find_by_name(input)
+    puts "input: #{i}"
+    o = Commodity.find_by_name(output)
+    puts "output: #{o}"
+    return i, o
   end
 
 end
