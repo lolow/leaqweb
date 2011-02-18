@@ -123,20 +123,21 @@ class EtemSolver
   
   # Extracts the context data for the generation
   def create_context
-    c = Hash.new("")
+    c = Hash.new([])
 
     # sets generation
     technologies = Technology.activated
     commodities  = Commodity.activated
     flows = Flow.joins(:technology).where(:technology_id=>technologies)
     markets = Market.activated
-    c[:s_s]    = TIME_SLICES.join(" ")
+    c[:s_s]    = TIME_SLICES
     c[:s_p]    = id_list(technologies.all)
     c[:s_m]    = id_list(markets.all)
     c[:s_c]    = id_list(commodities.all)
     c[:s_imp]  = id_list(commodities.imports)
     c[:s_exp]  = id_list(commodities.exports)
     c[:s_dem]  = id_list(commodities.demands)
+    c[:s_agg]  = id_list(commodities.aggregates)
     c[:s_flow] = id_list(flows.all)
     
     c[:s_in_flow]  = Hash.new
@@ -148,6 +149,9 @@ class EtemSolver
     
     c[:s_c_items] = Hash.new
     flows.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)}
+
+    c[:s_c_agg] = Hash.new
+    commodities.aggregates.all.each{|agg| c[:s_c_agg][agg.pid] = id_list(agg.sub_commodities)}
     
     # parameters generation
     signature.each_key do |param|
@@ -168,9 +172,11 @@ class EtemSolver
     c[:p_market] = markets.map{|m| m.technologies.activated.map{|t| "#{t.pid} #{m.pid} 1"}}.join(" ")
 
     # frac_dem - fill the parameter if no value are available
-    fill_dmd = c[:s_dem].scan(/\w+/) - c[:p_frac_dem].scan(/\w+/)
+    fill_dmd = c[:s_dem] - c[:p_frac_dem].select{|x| x =~ /\w+/ }
     fill_dmd.each do |d|
-      TIME_SLICES.each{|ts| c[:p_frac_dem] += " #{ts} #{d} #{fraction[ts]} "}
+      TIME_SLICES.each do |ts|
+        c[:p_frac_dem] << ts << d << fraction[ts]
+      end
     end
     c
   end                    
@@ -209,13 +215,13 @@ class EtemSolver
           values[key][v.year] = v.value
         }
       end
-      # Values are projected/desagreggated if necessary
+      # Values are projected/disaggregated if necessary
       str = []
       values.each{ |key,k_values|
         projection(k_values,time_proj[parameter]).each{|period,value|
           if key.index("AN")
             TIME_SLICES.each { |ts|
-              str << key.sub("AN",ts).sub(/[T]/,period.to_s)
+              str.concat(key.sub("AN",ts).sub(/[T]/,period.to_s).split)
               if inherit_ts[parameter]==:same
                 str << value
               elsif inherit_ts[parameter]==:fraction
@@ -223,12 +229,12 @@ class EtemSolver
               end
             }
           else
-            str << key.sub(/[T]/,period.to_s)
+            str.concat(key.sub(/[T]/,period.to_s).split)
             str << value
           end
         }
       }
-      str.join(" ")
+      str
     else
       pv.collect{ |v|
         str = parameter_value_indexes(parameter,v)
@@ -238,14 +244,13 @@ class EtemSolver
                 when "life"     then "#{v.value/period_duration}"
                 else "#{v.value}"
                 end
-        str
-      }.join(" ")
+      }.flatten
     end
   end
 
   # Return a string which is a list of prefixed ids
   def id_list(items)
-    items.collect{|x|"#{x.pid}"}.join(" ")
+    items.map(&:pid)
   end
 
   # Returns an array of string that contains the parameter value indexes

@@ -31,6 +31,7 @@ Positive Variables
   VAR_ICAP(T,P)    Investment in new capacity
   VAR_IMP(T,S,C) Import activities
   VAR_EXP(T,S,C) Export activities
+  VAR_AGG(T,S,AGG)
   VAR_COM(T,S,P,C) Commodity flow
   CAPACITY(T,P)    Capacity
   ACTIVITY(T,S,P)
@@ -72,14 +73,8 @@ Equations
   EQ_COM_NET_UP_T   Net amount bound constraints per time period
   EQ_CAPACITY
   EQ_ACTIVITY
+  EQ_AGG     Aggregate commodities
 ;
-
-EQ_CAPACITY(T,P)..
-  CAPACITY(T,P) =E= SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge (ord(T)-life(P)+1)) and (ord(T1) ge avail(P)) ),
-                    VAR_ICAP(T1,P))+fixed_cap(T,P);
-
-EQ_ACTIVITY(T,S,P)..
-  ACTIVITY(T,S,P) =E= SUM(FLOW$FLOW_ACT(P,FLOW), SUM(C$C_ITEMS(FLOW,C), VAR_COM(T,S,P,C) / act_flo(P,C) ));
 
 EQ_OBJ..
 VAR_OBJ =E= VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL;
@@ -222,6 +217,16 @@ SUM(S,
   ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) ) )
 =L= com_net_bnd_up_t(T,C);
 
+EQ_CAPACITY(T,P)..
+  CAPACITY(T,P) =E= SUM(T1$( (ord(T1) le ord(T)) and (ord(T1) ge (ord(T)-life(P)+1)) and (ord(T1) ge avail(P)) ),
+                    VAR_ICAP(T1,P))+fixed_cap(T,P);
+
+EQ_ACTIVITY(T,S,P)..
+  ACTIVITY(T,S,P) =E= SUM(FLOW$FLOW_ACT(P,FLOW), SUM(C$C_ITEMS(FLOW,C), VAR_COM(T,S,P,C) / act_flo(P,C) ));
+
+EQ_AGG(T,S,AGG)..
+VAR_AGG(T,S,AGG) =E= SUM(C$C_AGG(AGG,C),SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)));
+
 MODEL ETEM /
   EQ_OBJ
   EQ_OBJINV
@@ -258,6 +263,7 @@ MODEL ETEM /
   EQ_COM_NET_UP_T
   EQ_CAPACITY
   EQ_ACTIVITY
+  EQ_AGG
 /;
 
 *OPTIONS
