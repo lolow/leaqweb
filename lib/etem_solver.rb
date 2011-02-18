@@ -16,7 +16,7 @@ class EtemSolver
   end
                                                                     
   # Solve the model and return pid
-  def solve(opts={})
+  def solve
 
     exts = case @opts[:language]
       when "GMPL" then ["mod","dat"]
@@ -312,7 +312,6 @@ class EtemSolver
     (@opts[:log_file] ? "> #{file("log")} " : "") +
     case @opts[:language]
     when "GMPL"
-      
       "&& nice glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} " +
       (@opts[:log_file] ? ">> #{file("log")} " : "")
     when "GAMS"

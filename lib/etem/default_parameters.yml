@@ -1,4 +1,7 @@
 --- 
+- :name: agg_coef
+  :definition: Conversion coefficient from the commodity to its aggregate
+  :default_value: 1
 - :name: discount_rate
   :definition: Annual discount rate. currently one global parameter used to compute discounted total cost (objective function)
   :default_value: 0.03

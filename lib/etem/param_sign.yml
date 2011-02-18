@@ -1,4 +1,7 @@
 ---
+agg_coef:
+- commodity
+- commodity
 market:
 - technology
 - market

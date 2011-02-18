@@ -31,7 +31,7 @@ class Commodity < ActiveRecord::Base
       ["Energy carrier [import+export]", "C,ENC,EXP,IMP"],
       ["Energy carrier [only]", "C,ENC"],
       ["Demand", "C,DEM"],
-      ["Aggregator", "AGG,C"]
+      ["Aggregate", "AGG,C"]
   ]
 
   scope :pollutants, tagged_with("POLL")

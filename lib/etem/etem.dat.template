@@ -14,6 +14,8 @@ set EXP:= #{@s_exp};
 
 set DEM:= #{@s_dem};
 
+set AGG:= #{@s_agg};
+
 set FLOW:= #{@s_flow};
 
 <?rb @s_in_flow.each do |tech,flow|  ?>
@@ -56,7 +58,8 @@ param avail_factor default #{@p_avail_factor_d} := #{@p_avail_factor};
 
 param demand  default #{@p_demand_d} := #{@p_demand};
 
-param act_flo default #{@p_act_flo_d} := #{@p_act_flo};
+param act_flo  default #{@p_act_flo_d}  := #{@p_act_flo};
+param agg_coef default #{@p_agg_coef_d} := #{@p_agg_coef};
 
 param cost_imp default #{@p_cost_imp_d} := #{@p_cost_imp};
 

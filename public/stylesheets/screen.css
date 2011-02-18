@@ -1458,14 +1458,14 @@ input.filter.text {
   margin-top: -2px;
 }
 
-/* line 461, ../../app/stylesheets/_layout.scss */
+/* line 465, ../../app/stylesheets/_layout.scss */
 .block {
   padding-bottom: 1px;
 }
 
 /* Accordian
 ----------------------------------------------- */
-/* line 466, ../../app/stylesheets/_layout.scss */
+/* line 471, ../../app/stylesheets/_layout.scss */
 .toggler {
   color: #222;
   margin: 0;
@@ -1479,103 +1479,32 @@ input.filter.text {
   font-weight: normal;
 }
 
-/* line 478, ../../app/stylesheets/_layout.scss */
+/* line 483, ../../app/stylesheets/_layout.scss */
 .element h4 {
   margin: 0;
   padding: 4px;
   line-height: 1.2em;
 }
 
-/* line 483, ../../app/stylesheets/_layout.scss */
+/* line 488, ../../app/stylesheets/_layout.scss */
 .element p {
   margin: 0;
   padding: 4px;
 }
 
-/* line 487, ../../app/stylesheets/_layout.scss */
+/* line 492, ../../app/stylesheets/_layout.scss */
 .float-right {
   padding: 10px 20px;
   float: right;
 }
 
-/* line 492, ../../app/stylesheets/_layout.scss */
+/* line 497, ../../app/stylesheets/_layout.scss */
 #accordian-block {
   padding-bottom: 10px;
 }
 
-/* Mootools Kwicks
------------------------------------------------ */
-/* line 499, ../../app/stylesheets/_layout.scss */
-#kwick-box {
-  padding: 0;
-  overflow: hidden;
-}
-
-/* line 503, ../../app/stylesheets/_layout.scss */
-#kwick-box h2 {
-  margin: 0;
-}
-
-/* line 506, ../../app/stylesheets/_layout.scss */
-#kwick {
-  position: relative;
-}
-
-/* line 509, ../../app/stylesheets/_layout.scss */
-#kwick .kwicks {
-  display: block;
-  background: #999;
-  height: 120px;
-  list-style: none;
-  margin: 0;
-  overflow: hidden;
-}
-
-/* line 517, ../../app/stylesheets/_layout.scss */
-#kwick li {
-  float: left;
-  margin: 0;
-  padding: 0;
-}
-
-/* line 522, ../../app/stylesheets/_layout.scss */
-#kwick .kwick {
-  display: block;
-  cursor: pointer;
-  overflow: hidden;
-  height: 100px;
-  width: 215px;
-  padding: 10px;
-  background: white;
-}
-
-/* line 531, ../../app/stylesheets/_layout.scss */
-#kwick .kwick span {
-  color: white;
-}
-
-/* line 534, ../../app/stylesheets/_layout.scss */
-#kwick .one {
-  background: #666;
-}
-
-/* line 537, ../../app/stylesheets/_layout.scss */
-#kwick .two {
-  background: #777;
-}
-
-/* line 540, ../../app/stylesheets/_layout.scss */
-#kwick .three {
-  background: #888;
-}
-
-/* line 543, ../../app/stylesheets/_layout.scss */
-#kwick .four {
-  background: #999;
-}
-
 /* notice */
-/* line 548, ../../app/stylesheets/_layout.scss */
+/* line 502, ../../app/stylesheets/_layout.scss */
 .notice {
   text-align: center;
   background: #ecede0;
@@ -1591,7 +1520,7 @@ input.filter.text {
 /*
 ---datatable
 */
-/* line 564, ../../app/stylesheets/_layout.scss */
+/* line 514, ../../app/stylesheets/_layout.scss */
 .dataTables_wrapper {
   position: relative;
   /*min-height: 302px;*/
@@ -1599,14 +1528,14 @@ input.filter.text {
   _height: 302px;
 }
 
-/* line 570, ../../app/stylesheets/_layout.scss */
+/* line 520, ../../app/stylesheets/_layout.scss */
 .dataTables_length {
   float: left;
   width: 40%;
   margin-bottom: 5px;
 }
 
-/* line 575, ../../app/stylesheets/_layout.scss */
+/* line 525, ../../app/stylesheets/_layout.scss */
 .dataTables_filter {
   float: right;
   text-align: right;
@@ -1614,84 +1543,59 @@ input.filter.text {
   margin-bottom: 5px;
 }
 
-/* line 582, ../../app/stylesheets/_layout.scss */
+/* line 532, ../../app/stylesheets/_layout.scss */
 .dataTables_action {
   float: right;
   text-align: right;
   width: 40%;
 }
 
-/* line 588, ../../app/stylesheets/_layout.scss */
+/* line 538, ../../app/stylesheets/_layout.scss */
 .dataTables_info {
   float: left;
   width: 45%;
 }
 
-/* line 592, ../../app/stylesheets/_layout.scss */
+/* line 542, ../../app/stylesheets/_layout.scss */
 .dataTables_paginate {
   float: left;
   /*text-align:right;*/
   width: 44px;
 }
 
-/* line 598, ../../app/stylesheets/_layout.scss */
+/* line 548, ../../app/stylesheets/_layout.scss */
 td.check {
   width: 1.5em;
 }
 
-/* line 602, ../../app/stylesheets/_layout.scss */
+/* line 552, ../../app/stylesheets/_layout.scss */
 td.col50 {
   width: 50%;
 }
 
-/* line 606, ../../app/stylesheets/_layout.scss */
+/* line 556, ../../app/stylesheets/_layout.scss */
 select.flow_list {
   width: 100%;
 }
 
-/* line 610, ../../app/stylesheets/_layout.scss */
+/* line 560, ../../app/stylesheets/_layout.scss */
 input[type="textcell"] {
   width: 100%;
 }
 
-/* line 614, ../../app/stylesheets/_layout.scss */
+/* line 564, ../../app/stylesheets/_layout.scss */
 table.dataTable {
   clear: both;
   margin-bottom: 5px;
 }
 
-/* line 618, ../../app/stylesheets/_layout.scss */
+/* line 568, ../../app/stylesheets/_layout.scss */
 table.dataTable thead th {
-  /*padding: 3px 18px 3px 10px;
-  border-bottom: 1px solid black;
-  font-weight: bold;*/
   cursor: pointer;
 }
 
-/* line 625, ../../app/stylesheets/_layout.scss */
-table.dataTable tfoot th {
-  /*padding: 3px 10px;
-  border-top: 1px solid black;
-  font-weight: bold;*/
-}
-
-/* line 631, ../../app/stylesheets/_layout.scss */
-table.dataTable tr.heading2 td {
-  /* border-bottom: 1px solid #aaa; */
-}
-
-/* line 635, ../../app/stylesheets/_layout.scss */
-table.dataTable td {
-  /*padding: 3px 10px;*/
-}
-
-/* line 639, ../../app/stylesheets/_layout.scss */
-table.dataTable td.center {
-  /*text-align: center;*/
-}
-
 /* Pagination nested */
-/* line 644, ../../app/stylesheets/_layout.scss */
+/* line 573, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
   height: 16px;
   width: 16px;
@@ -1699,12 +1603,12 @@ table.dataTable td.center {
   float: left;
 }
 
-/* line 651, ../../app/stylesheets/_layout.scss */
+/* line 580, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
   background-image: url("/images/resultset_previous.png");
 }
 
-/* line 656, ../../app/stylesheets/_layout.scss */
+/* line 585, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
   background-image: url("/images/resultset_next.png");
 }
@@ -1712,38 +1616,23 @@ table.dataTable td.center {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables sorting
  */
-/* line 664, ../../app/stylesheets/_layout.scss */
+/* line 593, ../../app/stylesheets/_layout.scss */
 .sorting_asc {
   background: url("/images/sort_asc.gif") no-repeat center right;
 }
 
-/* line 668, ../../app/stylesheets/_layout.scss */
+/* line 597, ../../app/stylesheets/_layout.scss */
 .sorting_desc {
   background: url("/images/sort_desc.gif") no-repeat center right;
 }
 
-/* line 672, ../../app/stylesheets/_layout.scss */
-.sorting {
-  /*background: url('/images/sort_both.png') no-repeat center right;*/
-}
-
-/* line 676, ../../app/stylesheets/_layout.scss */
-.sorting_asc_disabled {
-  /*background: url('/images/sort_asc_disabled.png') no-repeat center right;*/
-}
-
-/* line 680, ../../app/stylesheets/_layout.scss */
-.sorting_desc_disabled {
-  /*background: url('/images/sort_desc_disabled.png') no-repeat center right;*/
-}
-
-/* line 684, ../../app/stylesheets/_layout.scss */
+/* line 601, ../../app/stylesheets/_layout.scss */
 .flow_act {
   font-weight: bold;
   background-color: #FFFF66;
 }
 
-/* line 689, ../../app/stylesheets/_layout.scss */
+/* line 606, ../../app/stylesheets/_layout.scss */
 li.table_def_default {
   cursor: pointer;
   border: 1px solid #bbb;
@@ -1752,7 +1641,7 @@ li.table_def_default {
   padding: 3px 6px;
 }
 
-/* line 697, ../../app/stylesheets/_layout.scss */
+/* line 614, ../../app/stylesheets/_layout.scss */
 li.table_def_head {
   outline: medium none;
   background: #555;
@@ -1764,7 +1653,7 @@ li.table_def_head {
   padding: 3px 6px;
 }
 
-/* line 709, ../../app/stylesheets/_layout.scss */
+/* line 626, ../../app/stylesheets/_layout.scss */
 #choices, #rows, #columns {
   list-style-type: none;
   margin: 0 0 1em 0;
@@ -1773,7 +1662,7 @@ li.table_def_head {
   float: left;
 }
 
-/* line 717, ../../app/stylesheets/_layout.scss */
+/* line 634, ../../app/stylesheets/_layout.scss */
 #query_result {
   overflow: auto;
   width: 100%;
@@ -1781,7 +1670,7 @@ li.table_def_head {
   margin-bottom: 0px;
 }
 
-/* line 724, ../../app/stylesheets/_layout.scss */
+/* line 641, ../../app/stylesheets/_layout.scss */
 #table_query {
   margin-bottom: 0px;
 }

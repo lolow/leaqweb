@@ -105,7 +105,7 @@ var VAR_ICAP{T,P}   >=0;               # investment capacity
 var VAR_IMP{T,S,IMP}  >=0;             # import activities 
 var VAR_EXP{T,S,EXP}  >=0;             # export activities
 var VAR_COM{T,S,p in P,C_MAP[p]}>=0;   # commodity flow
-var VAR_AGG{T,S,AGG}                   # aggregate activities
+var VAR_AGG{T,S,AGG}>=0;               # aggregate activities
 
 ###
 ### Objective function
@@ -285,9 +285,9 @@ subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
 	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
 	) <= com_net_bnd_up_t[t,c];
 
-# aggregation of commodities
-subject_to EQ_AGG{t in T, s in S, agg in AGG} :
-    VAR_AGG[t,s,agg] =  sum{c in C_AGG[agg]} VAR_COM[t,s,p,c] * agg_coef[agg,c];
+# aggregate commodities
+subject to EQ_AGG{t in T, s in S, agg in AGG} :
+    VAR_AGG[t,s,agg] =  sum{c in C_AGG[agg], p in P_PROD[c]} VAR_COM[t,s,p,c] * agg_coef[agg,c];
 
 ###
 ### Solve statement
