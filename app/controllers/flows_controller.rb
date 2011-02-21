@@ -1,8 +1,10 @@
+# Copyright (c) 2009-2011, Laurent Drouet. This file is
+# licensed under the Affero General Public License version 3. See
+# the COPYRIGHT file.
+
 class FlowsController < ApplicationController
   before_filter :authenticate_user!
 
-  # GET /flows/1
-  # GET /flows/1.js
   def show
     @flow = Flow.find(params[:id])
     flow_hash = {:flow=>{:id=>@flow.id, :commodities=>@flow.commodities}}
@@ -13,7 +15,6 @@ class FlowsController < ApplicationController
     end
   end
 
-  # POST /flows
   def create
     coms = Commodity.find_by_list_name(params[:commodities])
     if coms.size >0
@@ -31,7 +32,6 @@ class FlowsController < ApplicationController
     end
   end
 
-  # PUT /technologies/1
   def update
     @flow = Flow.find(params[:id])
     coms = Commodity.find_by_list_name(params[:commodities])

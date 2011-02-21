@@ -134,6 +134,7 @@ class EtemSolver
     c[:s_p]    = id_list(technologies.all)
     c[:s_m]    = id_list(markets.all)
     c[:s_c]    = id_list(commodities.all)
+    c[:s_enc]  = id_list(commodities.energy_carriers)
     c[:s_imp]  = id_list(commodities.imports)
     c[:s_exp]  = id_list(commodities.exports)
     c[:s_dem]  = id_list(commodities.demands)
@@ -151,7 +152,7 @@ class EtemSolver
     flows.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)}
 
     c[:s_c_agg] = Hash.new
-    commodities.aggregates.all.each{|agg| c[:s_c_agg][agg.pid] = id_list(agg.sub_commodities)}
+    commodities.aggregates.all.each{|agg| c[:s_c_agg][agg.pid] = id_list(agg.components)}
     
     # parameters generation
     signature.each_key do |param|
@@ -204,7 +205,7 @@ class EtemSolver
         Commodity.demands.activated.each{|dem|
           key = "T " + Commodity.pid(dem.id)
           values[key] = Hash.new
-          dem.demand_values.each{|dv|
+          dem.demand_values(first_year).each{|dv|
             values[key][dv[0]] = dv[1]
           }
         }
@@ -326,5 +327,30 @@ class EtemSolver
     "&& echo End: `date` " +
     (@opts[:log_file] ? ">> #{file("log")} " : "")
   end
+
+  def first_year
+    @opts[:first_year]
+  end
+
+  def last_year
+    first_year+period_duration*nb_periods-1
+  end
+
+  def nb_periods
+    @opts[:nb_periods]
+  end
+
+  def period_duration
+    @opts[:period_duration]
+  end
+
+  def period(year)
+    [[((year - first_year) / period_duration + 1).to_i,1].max,nb_periods].min
+  end
+
+  def periods
+    @etem_periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
+  end
+
     
 end

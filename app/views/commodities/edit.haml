@@ -23,25 +23,28 @@
         %p
           = link_to 'Duplicate,', duplicate_commodity_path, :confirm => 'Are you sure?', :method => :post
           = link_to 'Delete', @commodity, :confirm => 'Are you sure?', :method => :delete
-  .box
-    %h2 Flows
-    .block
-      - if @commodity.consumed_by.size > 0
-        %p
-          Consumed by #{pluralize(@commodity.consumed_by.size, 'technology')}:
-          = render :partial => "select_commodities", :locals => {:method => :consumed_by, :list => @commodity.consumed_by}
-      - else
-        %p Not consumed.
-      - if @commodity.produced_by.size > 0
-        %p
-          Produced by #{pluralize(@commodity.produced_by.size, 'technology')}:
-          = render :partial => "select_commodities", :locals => {:method => :produced_by, :list => @commodity.produced_by}
-      -else
-        %p Not produced.
+  - unless @commodity.aggregate? || !@commodity.activated?
+    .box
+      %h2 Flows
+      .block
+        - if @commodity.consumed_by.size > 0
+          %p
+            Consumed by #{pluralize(@commodity.consumed_by.size, 'technology')}:
+            = render :partial => "select_commodities", :locals => {:method => :consumed_by, :list => @commodity.consumed_by}
+        - else
+          %p Not consumed.
+        - if @commodity.produced_by.size > 0
+          %p
+            Produced by #{pluralize(@commodity.produced_by.size, 'technology')}:
+            = render :partial => "select_commodities", :locals => {:method => :produced_by, :list => @commodity.produced_by}
+        -else
+          %p Not produced.
 
 - if @commodity.demand?
   = render :partial => 'edit_demand', :locals => {:object=>@commodity}
-- else
+- elsif @commodity.aggregate?
+  = render :partial => 'edit_aggregate', :locals => {:object=>@commodity}
+- elsif @commodity.activated?
   = render :partial => 'edit_commodity', :locals => {:object=>@commodity}
 
 .clear

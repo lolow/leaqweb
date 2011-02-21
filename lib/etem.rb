@@ -6,7 +6,7 @@ module Etem
   AGGREGATES = %w{SUM MEAN}
   VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
                %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
-               %w{C_PRICE}
+               %w{C_PRICE VAR_AGG}
   PARAM_COMMODITIES = %w{demand frac_dem} +
                       %w{network_efficiency peak_reserve} +
                       %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} +
@@ -37,15 +37,15 @@ module Etem
               :log_file => true,
               :ignore_equations => [],
               :write_output => true,
-              :period_duration => 5,
-              :nb_periods => 9,
+              :period_duration => 1,
+              :nb_periods => 26,
               :first_year => 2005
              }.freeze
 
   TIME_SLICES = %w{WD WN SD SN ID IN}
 
   def signature
-    @signature ||= YAML.load_file(File.join(@opts[:model_path],'param_sign.yml'))
+    @signature ||= ParameterValue::SIGNATURE
   end
 
   def time_proj
@@ -66,29 +66,6 @@ module Etem
     @inherit_ts ||= YAML.load_file(File.join(@opts[:model_path],'param_inherit_ts.yml'))
   end
 
-  def first_year
-    @etem_first_year ||=  Parameter.find_by_name('base_year').default_value.to_i
-  end
-
-  def last_year
-    first_year+period_duration*nb_periods-1
-  end
-
-  def nb_periods
-    @etem_nb_periods ||=  Parameter.find_by_name('nb_periods').default_value.to_i
-  end
-
-  def period_duration
-    @etem_period_duration ||=  Parameter.find_by_name('period_length').default_value.to_i
-  end
-  
-  def period(year)
-    [[((year - first_year) / period_duration + 1).to_i,1].max,nb_periods].min
-  end
-
-  def periods
-    @etem_periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
-  end
 
   def model_path
     @opts[:model_path]

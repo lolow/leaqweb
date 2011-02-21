@@ -1674,3 +1674,13 @@ li.table_def_head {
 #table_query {
   margin-bottom: 0px;
 }
+
+/* line 645, ../../app/stylesheets/_layout.scss */
+#table_component {
+  width: 400px;
+}
+
+/* line 649, ../../app/stylesheets/_layout.scss */
+#sel_avail_commodity, #components {
+  width: 100%;
+}

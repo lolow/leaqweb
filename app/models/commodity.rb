@@ -13,8 +13,13 @@ class Commodity < ActiveRecord::Base
   has_and_belongs_to_many :flows
   has_many :parameter_values, :dependent => :delete_all
   belongs_to :demand_driver
-  has_many :combustions, :dependent => :delete_all, :foreign_key => :fuel_id
-  has_many :combustions, :dependent => :delete_all, :foreign_key => :pollutant_id
+  has_many :combustions, :dependent => :destroy, :foreign_key => :fuel_id
+  has_many :combustions, :dependent => :destroy, :foreign_key => :pollutant_id
+
+  has_many :components, :through => :aggregations, :source => :aggregate
+  has_many :aggregates, :through => :aggregations, :source => :component
+  has_many :aggregations, :foreign_key => :aggregate_id, :dependent => :destroy
+  has_many :aggregations, :foreign_key => :component_id, :dependent => :destroy
 
   #Validations
   validates :name, :presence => true,
@@ -58,15 +63,23 @@ class Commodity < ActiveRecord::Base
     Technology.joins(:flows).where("flows.id"=>in_flows)
   end
 
+  def activated?
+    self.set_list.include? "C"
+  end
+
   def demand?
     self.set_list.include? "DEM"
+  end
+
+  def aggregate?
+    self.set_list.include? "AGG"
   end
 
   def pollutant?
     self.set_list.include? "POLL"
   end
 
-  def demand_values
+  def demand_values(first_year)
     return [] unless demand?
     if demand_driver
       dv = parameter_values.of("demand").where(:year=>first_year).first

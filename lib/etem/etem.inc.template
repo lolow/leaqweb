@@ -326,11 +326,25 @@ act_flo(P,C)=#{@p_act_flo_d} ;
   act_flo('#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
-parameter agg_coef(AGG,C);
-agg_coef(AGG,C)=#{@p_agg_coef_d} ;
+parameter agg_coef(C,AGG);
+agg_coef(C,AGG)=#{@p_agg_coef_d} ;
 <?rb e = @p_agg_coef.to_enum ?>
 <?rb loop do ?>
   agg_coef('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter degree_of_use(T,C,AGG);
+degree_of_use(T,C,AGG)=#{@p_degree_of_use_d} ;
+<?rb e = @p_degree_of_use.to_enum ?>
+<?rb loop do ?>
+  degree_of_use('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter rate_of_penetration(T,C,AGG);
+rate_of_penetration(T,C,AGG)=#{@p_degree_of_use_d} ;
+<?rb e = @p_degree_of_use.to_enum ?>
+<?rb loop do ?>
+  rate_of_penetration('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
 parameter eff_flo(FLOW,FLOW);

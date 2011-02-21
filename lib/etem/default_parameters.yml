@@ -14,6 +14,12 @@
 - :name: com_net_bnd_up_t
   :definition: Upper bound on total net amount by year
   :default_value: -1.0
+- :name: degree_of_use
+  :definition: maximum share of a commodity in an aggregate
+  :default_value: -1.0
+- :name: rate_of_penetration
+  :definition: maximum rate of penetration of a commodity in an aggregate
+  :default_value: 0
 - :name: peak_reserve
   :definition: Peak reserve as a fraction of peak demand.
   :default_value: 0.0

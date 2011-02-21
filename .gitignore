@@ -12,3 +12,4 @@ nbproject/
 public/files/
 Gemfile.lock
 .idea
+.bundle

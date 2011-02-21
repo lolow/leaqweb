@@ -1,149 +1,157 @@
 ---
+rate_of_penetration:
+- period
+- commodity
+- aggregate
+degree_of_use:
+- period
+- commodity
+- aggregate
 agg_coef:
 - commodity
-- commodity
+- aggregate
 market:
 - technology
 - market
-com_net_bnd_up_t: 
+com_net_bnd_up_t:
 - period
 - commodity
-peak_reserve: 
-- period
-- time_slice
-- commodity
-imp_bnd_up: 
+peak_reserve:
 - period
 - time_slice
 - commodity
-cap_bnd_up: 
+imp_bnd_up:
+- period
+- time_slice
+- commodity
+cap_bnd_up:
 - period
 - technology
-fraction: 
+fraction:
 - time_slice
-demand: 
+demand:
 - period
 - commodity
-avail_factor: 
-- period
-- time_slice
-- technology
-exp_bnd_fx: 
-- period
-- time_slice
-- commodity
-act_bnd_fx: 
+avail_factor:
 - period
 - time_slice
 - technology
-flo_share_fx: 
+exp_bnd_fx:
+- period
+- time_slice
+- commodity
+act_bnd_fx:
+- period
+- time_slice
+- technology
+flo_share_fx:
 - flow
 - commodity
-cost_exp: 
+cost_exp:
 - period
 - time_slice
 - commodity
-flo_bnd_fx: 
+flo_bnd_fx:
 - period
 - time_slice
 - flow
-icap_bnd_fx: 
+icap_bnd_fx:
 - period
 - technology
-frac_dem: 
+frac_dem:
 - time_slice
 - commodity
-eff_flo: 
+eff_flo:
 - in_flow
 - out_flow
-exp_bnd_lo: 
+exp_bnd_lo:
 - period
 - time_slice
 - commodity
-act_bnd_lo: 
+act_bnd_lo:
 - period
 - time_slice
 - technology
-cost_fom: 
+cost_fom:
 - period
 - technology
-flo_bnd_lo: 
-- period
-- time_slice
-- flow
-icap_bnd_lo: 
-- period
-- technology
-life: 
-- technology
-avail: 
-- technology
-exp_bnd_up: 
-- period
-- time_slice
-- commodity
-act_bnd_up: 
-- period
-- time_slice
-- technology
-flo_share_lo: 
-- flow
-- commodity
-cost_icap: 
-- period
-- technology
-flo_bnd_up: 
+flo_bnd_lo:
 - period
 - time_slice
 - flow
-icap_bnd_up: 
+icap_bnd_lo:
 - period
 - technology
-network_efficiency: 
-- commodity
-cap_act: 
+life:
 - technology
-imp_bnd_fx: 
+avail:
+- technology
+exp_bnd_up:
 - period
 - time_slice
 - commodity
-cap_bnd_fx: 
+act_bnd_up:
 - period
+- time_slice
 - technology
-flo_share_up: 
+flo_share_lo:
 - flow
 - commodity
-cost_imp: 
+cost_icap:
+- period
+- technology
+flo_bnd_up:
+- period
+- time_slice
+- flow
+icap_bnd_up:
+- period
+- technology
+network_efficiency:
+- commodity
+cap_act:
+- technology
+imp_bnd_fx:
 - period
 - time_slice
 - commodity
-act_flo: 
+cap_bnd_fx:
+- period
 - technology
+flo_share_up:
+- flow
 - commodity
-com_net_bnd_up_ts: 
+cost_imp:
 - period
 - time_slice
 - commodity
-peak_prod: 
-- technology
-- time_slice
-- commodity
-fixed_cap: 
-- period
-- technology
-cost_delivery: 
-- period
-- time_slice
+act_flo:
 - technology
 - commodity
-imp_bnd_lo: 
+com_net_bnd_up_ts:
 - period
 - time_slice
 - commodity
-cap_bnd_lo: 
+peak_prod:
+- technology
+- time_slice
+- commodity
+fixed_cap:
 - period
 - technology
-flow_act: 
+cost_delivery:
+- period
+- time_slice
+- technology
+- commodity
+imp_bnd_lo:
+- period
+- time_slice
+- commodity
+cap_bnd_lo:
+- period
+- technology
+flow_act:
 - technology
 cost_vom:
 - period
@@ -151,3 +159,4 @@ cost_vom:
 nb_periods:
 period_length:
 discount_rate:
+

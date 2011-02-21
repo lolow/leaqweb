@@ -1,3 +1,7 @@
+# Copyright (c) 2009-2011, Laurent Drouet. This file is
+# licensed under the Affero General Public License version 3. See
+# the COPYRIGHT file.
+
 require 'etem_debug'
 require 'etem'
 require 'yaml'
@@ -24,9 +28,9 @@ class SolversController < ApplicationController
   def create
     @solver = Solver.new
     @solver.opts = {
-        :base_year => params[:base_year].to_i,
+        :first_year => params[:first_year].to_i,
         :nb_periods => params[:nb_periods].to_i,
-        :period_length => params[:period_length].to_i,
+        :period_duration => params[:period_duration].to_i,
         :language => params[:language]
     }
     if @solver.save

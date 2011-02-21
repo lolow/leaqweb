@@ -73,7 +73,9 @@ Equations
   EQ_COM_NET_UP_T   Net amount bound constraints per time period
   EQ_CAPACITY
   EQ_ACTIVITY
-  EQ_AGG     Aggregate commodities
+  EQ_AGG           Aggregate commodities
+  EQ_DEGREE_OF_USE Maximum share of a commodity in an aggregate
+  EQ_RATE_OF_PENETRATION rate of penetration of a commodity in an aggregate
 ;
 
 EQ_OBJ..
@@ -225,7 +227,17 @@ EQ_ACTIVITY(T,S,P)..
   ACTIVITY(T,S,P) =E= SUM(FLOW$FLOW_ACT(P,FLOW), SUM(C$C_ITEMS(FLOW,C), VAR_COM(T,S,P,C) / act_flo(P,C) ));
 
 EQ_AGG(T,S,AGG)..
-VAR_AGG(T,S,AGG) =E= SUM(C$C_AGG(AGG,C),SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)));
+  VAR_AGG(T,S,AGG)
+  =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * (SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C))) ;
+
+EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) ge 0))..
+  SUM(S,SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C))
+  =L= degree_of_use(T,C,AGG) * SUM(S,VAR_AGG(T,S,AGG));
+
+EQ_RATE_OF_PENETRATION(T,C,AGG)$(C_AGG(AGG,C) and (rate_of_penetration(t,c,agg) ne 0) and (ord(t) gt 1))..
+  SUM(S,SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C))
+  =L= (1+rate_of_penetration(T,C,AGG)) *
+  SUM(S,SUM(P$P_PROD(C,P),VAR_COM(T-1,S,P,C)) + VAR_IMP(T-1,S,C)$IMP(C)) ;
 
 MODEL ETEM /
   EQ_OBJ
@@ -264,6 +276,7 @@ MODEL ETEM /
   EQ_CAPACITY
   EQ_ACTIVITY
   EQ_AGG
+  EQ_DEGREE_OF_USE
 /;
 
 *OPTIONS
@@ -334,6 +347,13 @@ put 'VAR_COM,'T.tl',ANNUAL,'P.tl','C.tl','SUM(S,VAR_COM.l(T,S,P,C))/;
 
 LOOP(T,LOOP(DEM,
 put 'DEMAND,'T.tl',ANNUAL,,'DEM.tl','demand(T,DEM)/;
+))
+
+LOOP(T,LOOP(S,LOOP(AGG,
+put 'VAR_AGG,'T.tl','S.tl',,'AGG.tl','VAR_AGG.l(T,S,AGG)/;
+)))
+LOOP(T,LOOP(AGG,
+put 'VAR_AGG,'T.tl',ANNUAL,,'AGG.tl','SUM(S,VAR_AGG.l(T,S,AGG))/;
 ))
 
 putclose out;

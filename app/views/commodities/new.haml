@@ -6,7 +6,7 @@
     .block
       = simple_form_for @commodity do |f|
         = f.input :name
-        = f.input :set_list, :collection => %w{C,DEM C,POLL C,ENC C,ENC,IMP C,ENC,IMP,EXP}, :prompt => ""
+        = f.input :set_list, :collection => Commodity::CATEGORIES, :prompt => "Select commodity type...", :label=>"Type"
         = f.button :submit
         = f.hidden_field :description, :value => ""
 .clear
