@@ -23,7 +23,7 @@
         %p
           = link_to 'Duplicate,', duplicate_commodity_path, :confirm => 'Are you sure?', :method => :post
           = link_to 'Delete', @commodity, :confirm => 'Are you sure?', :method => :delete
-  - unless @commodity.aggregate? || !@commodity.activated?
+  - if @commodity.activated?
     .box
       %h2 Flows
       .block
@@ -42,8 +42,6 @@
 
 - if @commodity.demand?
   = render :partial => 'edit_demand', :locals => {:object=>@commodity}
-- elsif @commodity.aggregate?
-  = render :partial => 'edit_aggregate', :locals => {:object=>@commodity}
 - elsif @commodity.activated?
   = render :partial => 'edit_commodity', :locals => {:object=>@commodity}
 

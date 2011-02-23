@@ -96,7 +96,7 @@ class EtemDebug
 
   def check_in_flow_and_demand
     demands = Commodity.tagged_with("DEM").map(&:id)
-    inflows = InFlow.collect{|f|f.commodities.map(&:id)}.flatten.uniq
+    inflows = InFlow.all.collect{|f|f.commodities.map(&:id)}.flatten.uniq
     ids = demands & inflows
     if ids.size > 0
       @errors << [:check_in_flow_and_demand,"InFlows should not contain demand Commodity: " + ids.join(",")]
@@ -105,7 +105,7 @@ class EtemDebug
   end
 
   def check_dmd_and_demand
-    demands = Commodity.tagged_with("DEM").map(&:id)
+    demands = Commodity.demands.map(&:id)
     techs   = OutFlow.joins(:commodities).where('commodities.id'=>demands).group(:technology_id).map(&:technology_id)
     dmd     = Technology.tagged_with("DMD").map(&:id)
     ids = techs - dmd

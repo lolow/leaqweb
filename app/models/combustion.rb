@@ -1,5 +1,5 @@
 class Combustion < ActiveRecord::Base
-  versioned
+  versioned :dependent => :tracking
 
   #Relations
   belongs_to :fuel, :class_name => "Commodity"

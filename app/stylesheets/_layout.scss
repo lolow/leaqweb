@@ -251,8 +251,6 @@ ul.section li.current > a.active:hover {
 ----------------------------------------------- */
 table {
 	width:100%;
-	//border:1px solid #bbb;
-	//margin-bottom:10px;
 }
 col.colC {
 	width:8em;
@@ -649,3 +647,47 @@ float: left;
 #sel_avail_commodity, #components {
   width:100%;
 }
+
+/* forms */
+.simple_form {
+   margin: 0;
+   padding: 0;
+}
+/*
+.input {
+    display: block;
+    margin-bottom: 0.5em;
+    padding: 0;
+}
+
+label {
+    float: left;
+    padding: 0 1em;
+    text-align: right;
+    width: 100px;
+}
+
+form div input, form div textarea {
+    border-color: #555555 #CCCCCC #CCCCCC #555555;
+    border-style: solid;
+    border-width: 1px;
+    color: #333333;
+    padding: 1px;
+    width: 250px;
+}
+
+input:focus, textarea:focus {
+    background: none repeat scroll 0 0 #EFEFEF;
+    color: #000000;
+}
+
+input.button {
+    background: none repeat scroll 0 0 $h2_background;
+    border: 1px solid #333333;
+    color: $h2_color;
+    font-size: 100%;
+    padding: 2px 1em;
+    margin-left:150px;
+}
+
+*/

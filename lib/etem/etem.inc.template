@@ -32,8 +32,14 @@ set DEM(C) /
 <?rb end ?>
 /;
 
-set AGG(C) /
+set AGG(*) /
 <?rb @s_agg.each do |item| ?>
+#{item}
+<?rb end ?>
+/;
+
+set MARKET(*) /
+<?rb @s_m.each do |item| ?>
 #{item}
 <?rb end ?>
 /;
@@ -65,6 +71,12 @@ set C_ITEMS(FLOW,C) /
 set C_AGG(AGG,C) /
 <?rb @s_c_agg.each do |agg,comms| ?>
 #{agg}.(#{comms.join(",")})
+<?rb end ?>
+/;
+
+set P_MARKET(MARKET,P) /
+<?rb @s_p_market.each do |market,techs| ?>
+#{market}.(#{techs.join(",")})
 <?rb end ?>
 /;
 
@@ -341,8 +353,8 @@ degree_of_use(T,C,AGG)=#{@p_degree_of_use_d} ;
 <?rb end ?>
 
 parameter rate_of_penetration(T,C,AGG);
-rate_of_penetration(T,C,AGG)=#{@p_degree_of_use_d} ;
-<?rb e = @p_degree_of_use.to_enum ?>
+rate_of_penetration(T,C,AGG)=#{@p_rate_of_penetration_d} ;
+<?rb e = @p_rate_of_penetration.to_enum ?>
 <?rb loop do ?>
   rate_of_penetration('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>

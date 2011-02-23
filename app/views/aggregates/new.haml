@@ -2,11 +2,11 @@
   = render :partial => 'shortcuts', :locals => { :page => :new }
 .grid_6
   .box
-    %h2 New Market
+    %h2 New Aggregate
     .block
-      =simple_form_for @market do |f|
+      =simple_form_for @aggregate do |f|
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
-        =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
+        =f.input :set_list, :as => :hidden, :input_html => {:value => "AGG"}
         =f.button :submit
 .clear

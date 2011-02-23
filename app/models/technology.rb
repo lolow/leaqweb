@@ -3,7 +3,7 @@ require 'etem'
 class Technology < ActiveRecord::Base
   include Etem
 
-  versioned
+  versioned :dependent => :tracking
 
   acts_as_taggable_on :sets
 
@@ -15,7 +15,7 @@ class Technology < ActiveRecord::Base
   validates :name, :presence => true,
             :uniqueness => true,
             :format => {:with => /\A[a-zA-Z\d-]+\z/,
-                        :message => VALID_NAME}
+                        :message => "Please use only letters, numbers or '-' in name"}
 
   acts_as_identifiable :prefix => "t"
   has_and_belongs_to_many :markets

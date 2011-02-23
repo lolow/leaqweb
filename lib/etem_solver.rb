@@ -130,6 +130,7 @@ class EtemSolver
     commodities  = Commodity.activated
     flows = Flow.joins(:technology).where(:technology_id=>technologies)
     markets = Market.activated
+    aggregates = Aggregate.activated
     c[:s_s]    = TIME_SLICES
     c[:s_p]    = id_list(technologies.all)
     c[:s_m]    = id_list(markets.all)
@@ -138,9 +139,9 @@ class EtemSolver
     c[:s_imp]  = id_list(commodities.imports)
     c[:s_exp]  = id_list(commodities.exports)
     c[:s_dem]  = id_list(commodities.demands)
-    c[:s_agg]  = id_list(commodities.aggregates)
+    c[:s_agg]  = id_list(aggregates.all)
     c[:s_flow] = id_list(flows.all)
-    
+
     c[:s_in_flow]  = Hash.new
     c[:s_out_flow] = Hash.new
     technologies.each do |t|
@@ -149,10 +150,13 @@ class EtemSolver
     end
     
     c[:s_c_items] = Hash.new
-    flows.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)}
+    flows.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)&c[:s_c]}
 
     c[:s_c_agg] = Hash.new
-    commodities.aggregates.all.each{|agg| c[:s_c_agg][agg.pid] = id_list(agg.components)}
+    aggregates.all.each{|agg| c[:s_c_agg][agg.pid] = id_list(agg.commodities)&c[:s_c]}
+
+    c[:s_p_market] = Hash.new
+    markets.all.each{|m| c[:s_p_market][m.pid] = id_list(m.technologies)&c[:s_p]}
     
     # parameters generation
     signature.each_key do |param|
@@ -161,6 +165,7 @@ class EtemSolver
         pv = ParameterValue.of(param.to_s)
         pv = pv.where(:technology_id=> technologies) if signature[param].include?("technology")
         pv = pv.where(:commodity_id=> commodities)   if signature[param].include?("commodity")
+        pv = pv.where(:aggregate_id=> aggregates) if signature[param].include?("aggregate")
         pv = pv.where(:in_flow_id => flows)          if signature[param].include?("in_flow")
         pv = pv.where(:out_flow_id => flows)         if signature[param].include?("out_flow")
         pv = pv.where(:flow_id => flows)             if signature[param].include?("flow")
@@ -263,6 +268,7 @@ class EtemSolver
       when "period"        then "T"
       when "time_slice"    then row.time_slice
       when "commodity"     then Commodity.pid(row.commodity_id)
+      when "aggregate"     then Aggregate.pid(row.aggregate_id)
       when "technology"    then Technology.pid(row.technology_id)
       when "flow"          then Flow.pid(row.flow.id)
       when "in_flow"       then Flow.pid(row.in_flow.id)
@@ -352,5 +358,4 @@ class EtemSolver
     @etem_periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
   end
 
-    
 end

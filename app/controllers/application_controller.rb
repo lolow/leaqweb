@@ -1,7 +1,6 @@
 # Copyright (c) 2009-2011, Laurent Drouet. This file is
 # licensed under the Affero General Public License version 3. See
 # the COPYRIGHT file.
-
 class ApplicationController < ActionController::Base
 
   protect_from_forgery

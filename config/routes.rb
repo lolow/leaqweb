@@ -1,6 +1,6 @@
 Leaqweb::Application.routes.draw do |map|
   
-  resources :markets
+
 
   devise_for :users
 
@@ -43,6 +43,8 @@ Leaqweb::Application.routes.draw do |map|
   end
 
   resources :flows
+  resources :markets
+  resources :aggregates
   resources :solvers
   resources :demand_drivers
   

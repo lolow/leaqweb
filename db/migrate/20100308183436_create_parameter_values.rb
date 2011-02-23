@@ -4,7 +4,7 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :parameter
       t.belongs_to :technology
       t.belongs_to :commodity
-      t.belongs_to :aggregate, :class_name => "Commodity"
+      t.belongs_to :aggregate
       t.belongs_to :flow
       t.belongs_to :out_flow
       t.belongs_to :in_flow

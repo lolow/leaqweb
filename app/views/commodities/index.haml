@@ -10,9 +10,9 @@
       = render :partial => "/shared/search"
       %h5 Set
       %ul.menu
-        - %w{ENC DEM POLL IMP EXP}.each do |tag|
-          - c = "active" if tag==params[:set]
-          %li= link_to tag, {:controller => "commodities", :set => tag}, :class => c
+        - [["Energy carriers", "ENC"], ["Demands","DEM"], ["Pollutants","POLL"], ["Imports","IMP"], ["Exports","EXP"]].each do |tag|
+          - c = "active" if tag[1]==params[:set]
+          %li= link_to tag[0], {:controller => "commodities", :set => tag[1]}, :class => c
       = link_to "reset filter", commodities_path
       
   - if @last_visited.size > 0

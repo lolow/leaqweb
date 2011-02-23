@@ -3,7 +3,7 @@ require 'etem'
 class Commodity < ActiveRecord::Base
   include Etem
 
-  versioned
+  versioned :dependent => :tracking
 
   #Acts_as
   acts_as_taggable_on :sets
@@ -16,16 +16,13 @@ class Commodity < ActiveRecord::Base
   has_many :combustions, :dependent => :destroy, :foreign_key => :fuel_id
   has_many :combustions, :dependent => :destroy, :foreign_key => :pollutant_id
 
-  has_many :components, :through => :aggregations, :source => :aggregate
-  has_many :aggregates, :through => :aggregations, :source => :component
-  has_many :aggregations, :foreign_key => :aggregate_id, :dependent => :destroy
-  has_many :aggregations, :foreign_key => :component_id, :dependent => :destroy
+  has_and_belongs_to_many :aggregates
 
   #Validations
   validates :name, :presence => true,
             :uniqueness => true,
             :format => {:with => /\A[a-zA-Z\d-]+\z/,
-                        :message => VALID_NAME}
+                        :message => "Please use only letters, numbers or '-' in name"}
 
   # Categories [name,value]
   # sets in value has to be sorted!!
@@ -35,8 +32,8 @@ class Commodity < ActiveRecord::Base
       ["Energy carrier [export]", "C,ENC,EXP"],
       ["Energy carrier [import+export]", "C,ENC,EXP,IMP"],
       ["Energy carrier [only]", "C,ENC"],
-      ["Demand", "C,DEM"],
-      ["Aggregate", "AGG,C"]
+      ["Pollutant", "C,POLL"],
+      ["Demand", "C,DEM"]
   ]
 
   scope :pollutants, tagged_with("POLL")
@@ -45,7 +42,6 @@ class Commodity < ActiveRecord::Base
   scope :activated, tagged_with("C")
   scope :imports, tagged_with("IMP")
   scope :exports, tagged_with("EXP")
-  scope :aggregates, tagged_with("AGG")
 
   def out_flows
     OutFlow.joins(:commodities).where("commodities.id"=>self)
@@ -69,10 +65,6 @@ class Commodity < ActiveRecord::Base
 
   def demand?
     self.set_list.include? "DEM"
-  end
-
-  def aggregate?
-    self.set_list.include? "AGG"
   end
 
   def pollutant?

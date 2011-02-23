@@ -12,10 +12,12 @@ class EtemArchive
     Parameter.delete_all
     ParameterValue.delete_all
     Market.delete_all
+    Aggregate.delete_all
     StoredQuery.delete_all
     Combustion.delete_all
     ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
     ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
+    ActiveRecord::Base.connection.execute("DELETE FROM `aggregates_commodities`")
     VestalVersions::Version.delete_all
   end
 
@@ -60,7 +62,7 @@ class EtemArchive
         csv << p.attributes.values_at(*headers)
       end
 
-      headers = ["parameter_id","technology_id","commodity_id","flow_id",
+      headers = ["parameter_id","technology_id","commodity_id","aggregate_id","flow_id",
                  "in_flow_id","out_flow_id","market_id","time_slice",
                  "year","value","source"]
       write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
@@ -77,9 +79,14 @@ class EtemArchive
         csv << pv.attributes.values_at(*headers)
       end
 
-      headers = ["id","name","description","technologies"]
+      headers = ["id","name","description","technologies","sets"]
       write_csv_into_zip(zipfile,Market,headers) do |m,csv|
-        csv << [m.id,m.name,m.description,m.technology_ids.join(' ')]
+        csv << [m.id,m.name,m.description,m.technology_ids.join(' '),m.set_list.join(',')]
+      end
+
+      headers = ["id","name","description","commodities","sets"]
+      write_csv_into_zip(zipfile,Aggregate,headers) do |a,csv|
+        csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]
       end
       
     end
@@ -91,7 +98,7 @@ class EtemArchive
 
     #Hashes de correspondance
     h = Hash.new
-    [:loc,:tec,:com,:flo,:par,:mkt].each { |x| h[x] = Hash.new  }
+    [:loc,:tec,:com,:flo,:par,:mkt, :agg].each { |x| h[x] = Hash.new  }
 
     def self.readline_zip(zipfile,active_record)
       require 'benchmark'
@@ -111,8 +118,8 @@ class EtemArchive
     end
 
     readline_zip(filename,Technology) do |row|
-      t = Technology.create!(:name => row["name"],
-                      :description => row["description"])
+      t = Technology.create!(:name        => row["name"],
+                             :description => row["description"])
       t.set_list = row["sets"]
       t.save!
       h[:tec][row["id"]] = t.id
@@ -133,10 +140,10 @@ class EtemArchive
     end
 
     readline_zip(filename,Commodity) do |row|
-      c = Commodity.create!(:name => row["name"],
-                     :description => row["description"],
-                     :demand_driver_id => h[:par][row["demand_driver_id"]],
-                     :demand_elasticity => row["demand_elasticity"])
+      c = Commodity.create!(:name              => row["name"],
+                            :description       => row["description"],
+                            :demand_driver_id  => h[:par][row["demand_driver_id"]],
+                            :demand_elasticity => row["demand_elasticity"])
       c.set_list = row["sets"]
       c.save!
       h[:com][row["id"]] = c.id
@@ -156,9 +163,38 @@ class EtemArchive
 
     readline_zip(filename,Market) do |row|
       technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tec][c]}
-      h[:mkt][row["id"]] = Market.create!(:name            => row["name"],
-                                          :description     => row["description"],
-                                          :technology_ids  => technology_ids).id
+      m = Market.create!(:name            => row["name"],
+                         :description     => row["description"],
+                         :technology_ids  => technology_ids)
+      m.set_list = row["sets"]
+      m.save!
+      h[:mkt][row["id"]] = m.id
+    end
+
+    readline_zip(filename,Aggregate) do |row|
+      commodity_ids = row["commodities"].scan(/\d+/).collect{|c|h[:com][c]}
+      a = Aggregate.create!(:name          => row["name"],
+                            :description   => row["description"],
+                            :commodity_ids => commodity_ids)
+      a.set_list = row["sets"]
+      a.save!
+      h[:agg][row["id"]] = a.id
+    end
+
+    readline_zip(filename,StoredQuery) do |row|
+      StoredQuery.create!(:name      => row["name"],
+                          :aggregate => row["aggregate"],
+                          :variable  => row["variable"],
+                          :rows      => row["rows"],
+                          :columns   => row["columns"],
+                          :filters   => row["filters"])
+    end
+
+    readline_zip(filename,Combustion) do |row|
+      c = Combustion.create!(:fuel_id      => h[:com][row["fuel_id"]],
+                             :pollutant_id => h[:com][row["pollutant_id"]],
+                             :value        => row["value"],
+                             :source       => row["source"])
     end
 
     readline_zip(filename,ParameterValue) do |row|
@@ -166,6 +202,7 @@ class EtemArchive
       pv.parameter_id  = h[:par][row["parameter_id"]]
       pv.technology_id = h[:tec][row["technology_id"]]
       pv.commodity_id  = h[:com][row["commodity_id"]]
+      pv.aggregate_id  = h[:agg][row["aggregate_id"]]
       pv.flow_id       = h[:flo][row["flow_id"]]
       pv.in_flow_id    = h[:flo][row["in_flow_id"]]
       pv.out_flow_id   = h[:flo][row["out_flow_id"]]
@@ -177,22 +214,6 @@ class EtemArchive
       pv.save!
     end
 
-    readline_zip(filename,StoredQuery) do |row|
-      StoredQuery.create!( :name => row["name"],
-                     :aggregate => row["aggregate"],
-                     :variable => row["variable"],
-                     :rows => row["rows"],
-                     :columns => row["columns"],
-                     :filters => row["filters"])
-    end
-    
-    readline_zip(filename,Combustion) do |row|
-      c = Combustion.create!(:fuel_id      => h[:com][row["fuel_id"]],
-                             :pollutant_id => h[:com][row["pollutant_id"]],
-                             :value        => row["value"],
-                             :source       => row["source"])
-    end
-    
   end
 
 end

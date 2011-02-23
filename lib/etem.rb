@@ -26,7 +26,7 @@ module Etem
             "P" => "Processes",
             "C" => "Commodities",
             "M" => "Markets" }.freeze
-  VALID_NAME = "Please use only letters, numbers or symbol '-' in name"
+  VALID_NAME_MSG = "Please use only letters, numbers or symbol '-' in name"
 
 
   DEF_OPTS = {:temp_path => "/tmp",
@@ -45,7 +45,7 @@ module Etem
   TIME_SLICES = %w{WD WN SD SN ID IN}
 
   def signature
-    @signature ||= ParameterValue::SIGNATURE
+    @signature ||= YAML.load_file(File.join(@opts[:model_path],'param_sign.yml'))
   end
 
   def time_proj

@@ -29,12 +29,16 @@ Positive Variables
   VAR_OBJVAR       Variable costs part of objective function
   VAR_OBJSAL       Salvage value part of objective function
   VAR_ICAP(T,P)    Investment in new capacity
-  VAR_IMP(T,S,C) Import activities
-  VAR_EXP(T,S,C) Export activities
-  VAR_AGG(T,S,AGG)
+  VAR_IMP(T,S,C)   Import activities
+  VAR_EXP(T,S,C)   Export activities
   VAR_COM(T,S,P,C) Commodity flow
-  CAPACITY(T,P)    Capacity
+;
+
+Positive Variables
+  AGGREGATE(T,S,AGG)
+  CAPACITY(T,P)
   ACTIVITY(T,S,P)
+  TOTAL_NET_AMOUNT(T,S,C)
 ;
 
 Equations
@@ -73,6 +77,7 @@ Equations
   EQ_COM_NET_UP_T   Net amount bound constraints per time period
   EQ_CAPACITY
   EQ_ACTIVITY
+  EQ_TOTAL_NET_AMOUNT
   EQ_AGG           Aggregate commodities
   EQ_DEGREE_OF_USE Maximum share of a commodity in an aggregate
   EQ_RATE_OF_PENETRATION rate of penetration of a commodity in an aggregate
@@ -209,14 +214,11 @@ EQ_CAP_FX(T,P)$(cap_bnd_fx(T,P) ge 0)..
 CAPACITY(T,P)=E= cap_bnd_fx(T,P);
 
 EQ_COM_NET_UP_TS(T,S,C)$(com_net_bnd_up_ts[t,s,c] ge 0)..
-( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) -
-( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) )
+TOTAL_NET_AMOUNT(T,S,C)
 =L= com_net_bnd_up_ts(T,S,C);
 
 EQ_COM_NET_UP_T(T,C)$(com_net_bnd_up_t[t,c] ge 0)..
-SUM(S,
-  ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) -
-  ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) ) )
+SUM(S,TOTAL_NET_AMOUNT(T,S,C))
 =L= com_net_bnd_up_t(T,C);
 
 EQ_CAPACITY(T,P)..
@@ -226,18 +228,23 @@ EQ_CAPACITY(T,P)..
 EQ_ACTIVITY(T,S,P)..
   ACTIVITY(T,S,P) =E= SUM(FLOW$FLOW_ACT(P,FLOW), SUM(C$C_ITEMS(FLOW,C), VAR_COM(T,S,P,C) / act_flo(P,C) ));
 
+EQ_TOTAL_NET_AMOUNT(T,S,C)..
+  TOTAL_NET_AMOUNT(T,S,C) =E=
+  ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) -
+  ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) );
+
 EQ_AGG(T,S,AGG)..
-  VAR_AGG(T,S,AGG)
-  =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * (SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C))) ;
+  AGGREGATE(T,S,AGG)
+  =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * TOTAL_NET_AMOUNT(T,S,C)) ;
 
 EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) ge 0))..
-  SUM(S,SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C))
-  =L= degree_of_use(T,C,AGG) * SUM(S,VAR_AGG(T,S,AGG));
+  SUM(S,agg_coef(C,AGG) * TOTAL_NET_AMOUNT(T,S,C))
+  =L= degree_of_use(T,C,AGG) * SUM(S,AGGREGATE(T,S,AGG));
 
 EQ_RATE_OF_PENETRATION(T,C,AGG)$(C_AGG(AGG,C) and (rate_of_penetration(t,c,agg) ne 0) and (ord(t) gt 1))..
-  SUM(S,SUM(P$P_PROD(C,P),VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C))
+  SUM(S,TOTAL_NET_AMOUNT(T,S,C))
   =L= (1+rate_of_penetration(T,C,AGG)) *
-  SUM(S,SUM(P$P_PROD(C,P),VAR_COM(T-1,S,P,C)) + VAR_IMP(T-1,S,C)$IMP(C)) ;
+  SUM(S,TOTAL_NET_AMOUNT(T-1,S,C)) ;
 
 MODEL ETEM /
   EQ_OBJ
@@ -275,15 +282,16 @@ MODEL ETEM /
   EQ_COM_NET_UP_T
   EQ_CAPACITY
   EQ_ACTIVITY
+  EQ_TOTAL_NET_AMOUNT
   EQ_AGG
   EQ_DEGREE_OF_USE
+  EQ_RATE_OF_PENETRATION
 /;
 
 *OPTIONS
 option limrow = 0;
 option limcol = 0;
 option solprint = off;
-
 
 SOLVE ETEM USING LP MINIMIZING VAR_OBJ;
 
@@ -315,7 +323,6 @@ put 'ACTIVITY,'T.tl','S.tl','P.tl',,'ACTIVITY.l(T,S,P)/;
 LOOP(T,LOOP(P$(SUM(S,ACTIVITY.l(T,S,P))),
 put 'ACTIVITY,'T.tl',ANNUAL,'P.tl',,'SUM(S,ACTIVITY.l(T,S,P))/;
 ))
-
 
 LOOP(T,LOOP(S,LOOP(IMP$VAR_IMP.l(T,S,IMP),
 put 'VAR_IMP,'T.tl','S.tl',,'IMP.tl','VAR_IMP.l(T,S,IMP)/;
@@ -349,11 +356,18 @@ LOOP(T,LOOP(DEM,
 put 'DEMAND,'T.tl',ANNUAL,,'DEM.tl','demand(T,DEM)/;
 ))
 
-LOOP(T,LOOP(S,LOOP(AGG,
-put 'VAR_AGG,'T.tl','S.tl',,'AGG.tl','VAR_AGG.l(T,S,AGG)/;
+LOOP(T,LOOP(S,LOOP(AGG$AGGREGATE.l(T,S,AGG),
+put 'AGGREGATE,'T.tl','S.tl',,'AGG.tl','AGGREGATE.l(T,S,AGG)/;
 )))
-LOOP(T,LOOP(AGG,
-put 'VAR_AGG,'T.tl',ANNUAL,,'AGG.tl','SUM(S,VAR_AGG.l(T,S,AGG))/;
+LOOP(T,LOOP(AGG$SUM(S,AGGREGATE.l(T,S,AGG)),
+put 'AGGREGATE,'T.tl',ANNUAL,,'AGG.tl','SUM(S,AGGREGATE.l(T,S,AGG))/;
+))
+
+LOOP(T,LOOP(S,LOOP(C$TOTAL_NET_AMOUNT.l(T,S,C),
+put 'TOTAL_NET_AMOUNT,'T.tl','S.tl',,'C.tl','TOTAL_NET_AMOUNT.l(T,S,C)/;
+)))
+LOOP(T,LOOP(C$SUM(S,TOTAL_NET_AMOUNT.l(T,S,C)),
+put 'TOTAL_NET_AMOUNT,'T.tl',ANNUAL,,'C.tl','SUM(S,TOTAL_NET_AMOUNT.l(T,S,C))/;
 ))
 
 putclose out;

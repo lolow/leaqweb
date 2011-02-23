@@ -1,0 +1,10 @@
+.box
+  %h2 Shortcut
+  .block
+    %p
+      - unless page == :index
+        = link_to 'Browse aggregates', aggregates_path
+        %br
+      - unless page == :new
+        = link_to 'New aggregate', new_aggregate_path
+        %br

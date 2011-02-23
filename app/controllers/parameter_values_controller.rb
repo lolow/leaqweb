@@ -15,10 +15,7 @@ class ParameterValuesController < ApplicationController
 
   def field
     f = params[:field].split("-")
-    {
-        :id => f.first.to_i,
-        :field => f.last
-    }
+    {:id => f.first.to_i,:field => f.last}
   end
 
 end

@@ -1,0 +1,19 @@
+.grid_3
+  = render :partial => 'shortcuts', :locals => { :page => :index }
+.grid_9
+  .box
+    %h2 Browse stored queries
+    %p
+      %table(summary="Aggregate list")
+        %thead
+          %tr
+            %th Name
+            %th Description
+            %th
+        %tbody
+          - @aggregates.each do |aggregate|
+            %tr
+              %td= link_to aggregate.name, edit_aggregate_path(aggregate)
+              %td= link_to aggregate.description, edit_aggregate_path(aggregate)
+              %td= link_to 'delete', aggregate, :confirm => 'Are you sure?', :method => :delete
+.clear

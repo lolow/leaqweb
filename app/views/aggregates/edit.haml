@@ -5,10 +5,10 @@
   .box
     %h2 Market
     .block
-      =simple_form_for @market do |f|
-        =f.input :name
+      =simple_form_for @aggregate do |f|
+        =f.input :name, :required => true
         =f.input :description, :input_html => {:rows => 2}
-        =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
-        =f.association :technologies
+        =f.input :set_list, :as => :hidden, :input_html => {:value => "AGG"}
+        =f.association :commodities
         =f.button :submit
 .clear

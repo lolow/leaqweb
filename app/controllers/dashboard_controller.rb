@@ -37,7 +37,7 @@ class DashboardController < ApplicationController
   end
 
   def restore
-    if File.exist?(params[:upload]["db"].tempfile.path)
+    if params[:upload] && File.exist?(params[:upload]["db"].tempfile.path)
       EtemArchive.clean_database
       EtemArchive.restore(params[:upload]["db"].tempfile.path)
     end
