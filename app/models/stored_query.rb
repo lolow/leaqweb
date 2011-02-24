@@ -2,7 +2,7 @@ require 'etem'
 class StoredQuery < ActiveRecord::Base
   include Etem
 
-  versioned
+  #versioned
 
   validates :name, :presence => true, :uniqueness => true
 

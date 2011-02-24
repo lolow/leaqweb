@@ -3,7 +3,7 @@ require 'etem'
 class Technology < ActiveRecord::Base
   include Etem
 
-  versioned :dependent => :tracking
+  #versioned :dependent => :tracking
 
   acts_as_taggable_on :sets
 

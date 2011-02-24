@@ -19,11 +19,9 @@ on an ubuntu machine (it works also on Mac OS X, not tested on windows yet).
 2) Install rubygems from source (the version will be more up-to-date)
 http://rubygems.org/pages/download
 
-3) Install rails
+3) Update rubygems to the last version
 
     # sudo gem update --system
-    # sudo gem install rails
-    # sudo gem install mongrel
 
 4) Configure the database (if you want to use mysql)
 
@@ -45,7 +43,7 @@ http://rubygems.org/pages/download
     # cp config/database.yml{.default,}
     # sudo gem install bundler
     # bundle install
-    # rake db:setup
+    # rake db:migrate
 
 7) Install R to compute result cross-tables
 

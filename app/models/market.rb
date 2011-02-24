@@ -1,5 +1,5 @@
 class Market < ActiveRecord::Base
-  versioned :dependent => :tracking
+  #versioned :dependent => :tracking
   acts_as_taggable_on :sets
   acts_as_identifiable :prefix => "m"
   has_and_belongs_to_many :technologies

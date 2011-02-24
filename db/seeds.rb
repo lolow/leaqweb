@@ -2,10 +2,12 @@
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
 # Examples:
-#
-#   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
-#   Mayor.create(:name => 'Daley', :city => cities.first)
+
 
 #Create admin user
-admin = User.create!(:email => "ldrouet@gmail.com", :password => "adminpass")
+admin = User.create!(:email => "admin@domain.com", :password => "adminpass")
 admin.confirm!
+
+#Create standard user
+user = User.create!(:email => "leaq", :password => "leaq")
+user.confirm!

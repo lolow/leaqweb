@@ -3,7 +3,7 @@ require 'etem'
 class Commodity < ActiveRecord::Base
   include Etem
 
-  versioned :dependent => :tracking
+  #versioned :dependent => :tracking
 
   #Acts_as
   acts_as_taggable_on :sets

@@ -1,6 +1,6 @@
 class ParameterValue < ActiveRecord::Base
 
-  versioned :dependent => :tracking
+  #versioned :dependent => :tracking
 
   belongs_to :parameter
   belongs_to :technology
