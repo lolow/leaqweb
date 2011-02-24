@@ -1,7 +1,5 @@
 Leaqweb::Application.routes.draw do |map|
   
-
-
   devise_for :users
 
   resources :stored_queries do
@@ -48,9 +46,12 @@ Leaqweb::Application.routes.draw do |map|
   resources :solvers
   resources :demand_drivers
   
-  match '/backup.zip' => 'dashboard#backup'
-  match '/restore' => 'dashboard#restore'
+  match '/backup.zip', :to => 'dashboard#backup', :as => 'backup_db'
+  match '/restore', :to => 'dashboard#restore', :as => 'restore_db'
+  match '/check_db', :to => 'dashboard#check_db', :as => 'check_db'
+  match '/reset', :to => 'dashboard#reset', :as => 'reset_db'
+
   root :to => 'dashboard#index'
 
-  match ':controller(/:action(/:id(.:format)))'
+  #match ':controller(/:action(/:id(.:format)))'
 end

@@ -1,7 +1,9 @@
 module LayoutHelper
 
   def common_js
-    jquery = %w(jquery.min jquery-ui.min jquery.blockui jquery.datatables.min jquery-fluid16 jquery.jeditable jquery.jqplot.min jquery.cookie)
+    jquery = %w(jquery.min jquery-ui.min jquery.blockui jquery.datatables.min jquery.livequery)
+    jquery << "jquery-fluid16" << "jquery.jeditable" << "jquery.jqplot.min"
+    jquery << "jquery.cookie" << "jquery.coolMultiple.min"
     mine = %w(rails application)
     javascript_include_tag(jquery) + javascript_include_tag(mine)
   end

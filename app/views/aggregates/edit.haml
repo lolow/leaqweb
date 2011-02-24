@@ -12,3 +12,7 @@
         =f.association :commodities
         =f.button :submit
 .clear
+:javascript
+  $(document).ready(function() {
+    $('#aggregate_commodity_ids').coolMultiple({'delText':'unselect'});
+  });

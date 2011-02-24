@@ -1730,3 +1730,83 @@ input.button {
 }
 
 */
+/****
+Cool-multiple
+*/
+/* line 699, ../../app/stylesheets/_layout.scss */
+.hidden {
+  display: none;
+}
+
+/* line 702, ../../app/stylesheets/_layout.scss */
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+
+/* line 710, ../../app/stylesheets/_layout.scss */
+.clearfix {
+  display: inline-block;
+}
+
+/* line 713, ../../app/stylesheets/_layout.scss */
+html[xmlns] .clearfix {
+  display: block;
+}
+
+/* line 716, ../../app/stylesheets/_layout.scss */
+* html .clearfix {
+  height: 1%;
+}
+
+/* line 720, ../../app/stylesheets/_layout.scss */
+.coolmulti p {
+  margin: 0;
+  padding: 0;
+  line-height: 14px;
+}
+
+/* line 725, ../../app/stylesheets/_layout.scss */
+.coolmulti-scrollbox {
+  height: 250px;
+  overflow-y: scroll;
+  background: #fff;
+  border: 1px solid #ccc;
+  float: left;
+  padding: 5px 10px;
+  text-decoration: underline;
+}
+
+/* line 734, ../../app/stylesheets/_layout.scss */
+.coolmulti-scrollbox p {
+  padding: 2px 0;
+  cursor: pointer;
+  cursor: hand;
+}
+
+/* line 739, ../../app/stylesheets/_layout.scss */
+.coolmulti-scrollbox .coolmulti-selected {
+  background: #FFF8AF;
+}
+
+/* line 742, ../../app/stylesheets/_layout.scss */
+.coolmulti-values {
+  font-weight: bold;
+  float: left;
+  margin-left: 15px;
+  width: 200px;
+}
+
+/* line 748, ../../app/stylesheets/_layout.scss */
+.coolmulti-values p {
+  padding: 2px 0;
+}
+
+/* line 751, ../../app/stylesheets/_layout.scss */
+.coolmulti-values p a {
+  margin-left: 5px;
+}

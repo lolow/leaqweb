@@ -12,3 +12,7 @@
         =f.association :technologies
         =f.button :submit
 .clear
+:javascript
+  $(document).ready(function() {
+    $('#market_technology_ids').coolMultiple({'delText':'unselect'});
+  });
