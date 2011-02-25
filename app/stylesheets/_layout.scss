@@ -338,15 +338,6 @@ fieldset p select {
 	width:99%;
 }
 
-fieldset.idcard p {
-	margin-bottom:1em;
-	margin-top:0pt;
-}
-fieldset.idcard p input.button {
-    margin-left:55%;
-    width:40%;
-}
-
 fieldset.demand_projection p label {
     width:25%;
 }
@@ -618,7 +609,6 @@ li.table_def_head {
 	text-transform:uppercase;
 	color:$white;
     padding:3px 6px;
-
 }
 
 #choices, #rows, #columns {
@@ -653,44 +643,74 @@ float: left;
    margin: 0;
    padding: 0;
 }
-/*
+
 .input {
     display: block;
     margin-bottom: 0.5em;
     padding: 0;
 }
 
-label {
+.input label {
     float: left;
-    padding: 0 1em;
+    padding: 0 7px;
     text-align: right;
     width: 100px;
 }
 
-form div input, form div textarea {
+.input input, .input textarea {
     border-color: #555555 #CCCCCC #CCCCCC #555555;
     border-style: solid;
     border-width: 1px;
-    color: #333333;
     padding: 1px;
-    width: 250px;
+    width: 300px;
 }
 
-input:focus, textarea:focus {
-    background: none repeat scroll 0 0 #EFEFEF;
-    color: #000000;
+.input input:focus, .input textarea:focus {
+    background: none repeat scroll 0 0 $box-background;
 }
 
 input.button {
-    background: none repeat scroll 0 0 $h2_background;
-    border: 1px solid #333333;
-    color: $h2_color;
-    font-size: 100%;
-    padding: 2px 1em;
-    margin-left:150px;
+    margin-left:114px;
+    margin-bottom:5px;
+    margin-top:5px;
 }
 
-*/
+#idcard .input label {
+    text-align: left;
+}
+
+#idcard .select label {
+    width:100%;
+}
+
+#idcard .input input, #idcard .input textarea {
+    width: 98%;
+    clear:both;
+}
+
+#idcard input.button {
+    margin-left:0;
+}
+
+#action {
+  padding-top:5px;
+  padding-left:2px;
+  padding-bottom:1px;
+//  background:$white;
+}
+
+a.action {
+ text-decoration : none;
+ padding : 4px;
+ background-color:$h2_background;
+ color:$h2_color;
+ @include corner(5px);
+ }
+
+ a.action:hover {
+  color: #ccc;
+ }
+
 
 /****
 Cool-multiple
@@ -724,12 +744,14 @@ html[xmlns] .clearfix {
 }
 .coolmulti-scrollbox{
     height: 250px;
-    overflow-y: scroll;
+    overflow-y: auto;
     background: #fff;
-    border: 1px solid #ccc;
+    border-color: #555555 #CCCCCC #CCCCCC #555555;
+    border-style: solid;
+    border-width: 1px;
     float:left;
-    padding: 5px 10px;
-    text-decoration:underline;
+    padding: 1px;
+    //text-decoration:underline;
 }
 .coolmulti-scrollbox p{
     padding: 2px 0;
@@ -737,7 +759,7 @@ html[xmlns] .clearfix {
     cursor:hand;
 }
 .coolmulti-scrollbox .coolmulti-selected{
-    background: #FFF8AF;
+    background: $box-background;
 }
 .coolmulti-values{
     font-weight: bold;

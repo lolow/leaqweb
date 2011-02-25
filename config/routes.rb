@@ -51,6 +51,8 @@ Leaqweb::Application.routes.draw do |map|
   match '/check_db', :to => 'dashboard#check_db', :as => 'check_db'
   match '/reset', :to => 'dashboard#reset', :as => 'reset_db'
 
+  match '/log', :to => 'dashboard#log', :as => 'log'
+
   root :to => 'dashboard#index'
 
   #match ':controller(/:action(/:id(.:format)))'

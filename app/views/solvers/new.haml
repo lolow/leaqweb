@@ -16,17 +16,9 @@
     %h2 New Solver job
     .block
       = simple_form_for @solver do |f|
-        %p
-          = label_tag :first_year, 'Base year:'
-          = text_field_tag :first_year, params[:first_year]
-        %p
-          = label_tag :nb_periods, 'Number of periods:'
-          = text_field_tag :nb_periods, params[:nb_periods]
-        %p
-          = label_tag :period_duration, 'Period duration (years):'
-          = text_field_tag :period_duration, params[:period_duration]
-        %p
-          = label_tag :language, 'Modeling language:'
-          = select_tag :language, options_for_select([["GLPK","GMPL"],["GAMS","GAMS"]],params[:language])
-        =button_to_function "Launch solver", "start_solver()"
+        =f.input :first_year, :as => :integer
+        =f.input :nb_periods, :as => :integer
+        =f.input :period_duration, :as => :integer
+        =f.input :language, :collection => [["GAMS","GAMS"],["GLPK","GLPK"]], :include_blank => false
+        =button_to_function "Launch solver", "start_solver()", :class => "button"
 .clear

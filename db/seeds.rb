@@ -5,9 +5,9 @@
 
 
 #Create admin user
-admin = User.create!(:email => "admin@domain.com", :password => "adminpass")
+admin = User.create(:email => "admin@domain.com", :password => "adminpass")
 admin.confirm!
 
 #Create standard user
-user = User.create!(:email => "leaq", :password => "leaq")
+user = User.create(:email => "leaq", :password => "leaq")
 user.confirm!

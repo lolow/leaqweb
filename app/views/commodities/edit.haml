@@ -2,27 +2,13 @@
   =render :partial => 'shortcuts', :locals => { :page => :edit }
   .box
     %h2 Commodity
-    .block
-      = form_for(@commodity) do |f|
-        = render "shared/error_messages", :target => @commodity
-        %fieldset.idcard
-          %p
-            = f.label :name, 'Name:'
-            %br
-            = f.text_field :name, :size=>nil
-            %br
-            = f.label :description, 'Description:'
-            %br
-            = f.text_area :description, :rows => 2, :cols=>nil
-            %br
-            = f.label :set_list, 'Type:'
-            %br
-            = f.select :set_list, Commodity::CATEGORIES, :selected => @commodity.matching_set_list
-          %input(type="hidden" name="do" value="update")
-          = f.submit 'Update', :class => "button" 
-        %p
-          = link_to 'Duplicate,', duplicate_commodity_path, :confirm => 'Are you sure?', :method => :post
-          = link_to 'Delete', @commodity, :confirm => 'Are you sure?', :method => :delete
+    .block(id="idcard")
+      = simple_form_for @commodity do |f|
+        =f.input :name, :input_html => { :size => nil }
+        =f.input :description, :as => :text, :input_html => { :rows => 2, :cols=>nil }
+        =f.input :set_list, :collection => Commodity::CATEGORIES, :selected => @commodity.matching_set_list, :label => "Type"
+        =f.button :submit
+        %input(type="hidden" name="do" value="update")
   - if @commodity.activated?
     .box
       %h2 Flows

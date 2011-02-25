@@ -349,8 +349,6 @@ module Rails
 
       # Find a string in a set of files; calls +find_with_grep+ and +find_with_rak+
       # depending on platform.
-      #
-      # TODO: Figure out if this works on Windows.
       def grep_for(text, where = "./", double_quote = false, perl_regex = false)
         # If they're on Windows, they probably don't have grep.
         @probably_has_grep ||= (Config::CONFIG['host_os'].downcase =~ /mswin|windows|mingw/).nil?

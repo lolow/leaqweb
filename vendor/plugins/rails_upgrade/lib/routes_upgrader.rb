@@ -1,5 +1,3 @@
-# TODO: Fix formatting on member/collection methods
-
 module Rails
   module Upgrading
     module FakeRouter

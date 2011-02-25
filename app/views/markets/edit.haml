@@ -9,7 +9,7 @@
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
-        =f.association :technologies
+        =f.association :technologies, :collection => Technology.all(:order => 'name')
         =f.button :submit
 .clear
 :javascript

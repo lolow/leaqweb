@@ -9,6 +9,8 @@ require 'yaml'
 class SolversController < ApplicationController
   before_filter :authenticate_user!
 
+  USER_OPTION = [:nb_periods, :period_duration, :first_year, :language]
+
   respond_to :html
 
   def index
@@ -18,23 +20,27 @@ class SolversController < ApplicationController
 
   def new
     @solver = Solver.new
-    @solver.opts = Etem::DEF_OPTS
-    p @solver.opts
-    [:nb_periods, :period_duration, :first_year, :language].each do |p|
-      params[p] = @solver.opts[p]
+    USER_OPTION.each do |attr|
+      @solver[attr] = Etem::DEF_OPTS[attr]
     end
   end
 
   def create
-    @solver = Solver.new
+    @solver = Solver.create(params[:solver])
     @solver.opts = {
-        :first_year => params[:first_year].to_i,
-        :nb_periods => params[:nb_periods].to_i,
-        :period_duration => params[:period_duration].to_i,
-        :language => params[:language]
+        :first_year => params[:solver][:first_year].to_i,
+        :nb_periods => params[:solver][:nb_periods].to_i,
+        :period_duration => params[:solver][:period_duration].to_i,
+        :language => params[:solver][:language]
     }
     if @solver.save
       flash[:notice] = 'Solver has successfully started.'
+      @solver.opts = {
+        :first_year => @solver[:first_year].to_i,
+        :nb_periods => @solver[:nb_periods].to_i,
+        :period_duration => @solver[:period_duration].to_i,
+        :language => @solver[:language]
+      }
       @solver.solve!
       redirect_to(@solver)
     else
@@ -56,6 +62,10 @@ class SolversController < ApplicationController
     @solver = Solver.find(params[:id])
     @solver.destroy
     redirect_to(solvers_path)
+  end
+
+  def run
+
   end
 
 end

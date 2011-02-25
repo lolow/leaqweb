@@ -1291,38 +1291,26 @@ fieldset p select {
 }
 
 /* line 341, ../../app/stylesheets/_layout.scss */
-fieldset.idcard p {
-  margin-bottom: 1em;
-  margin-top: 0pt;
-}
-
-/* line 345, ../../app/stylesheets/_layout.scss */
-fieldset.idcard p input.button {
-  margin-left: 55%;
-  width: 40%;
-}
-
-/* line 350, ../../app/stylesheets/_layout.scss */
 fieldset.demand_projection p label {
   width: 25%;
 }
 
-/* line 353, ../../app/stylesheets/_layout.scss */
+/* line 344, ../../app/stylesheets/_layout.scss */
 fieldset.demand_projection p select {
   width: 30%;
 }
 
-/* line 356, ../../app/stylesheets/_layout.scss */
+/* line 347, ../../app/stylesheets/_layout.scss */
 fieldset.demand_projection p input {
   width: 10%;
 }
 
-/* line 360, ../../app/stylesheets/_layout.scss */
+/* line 351, ../../app/stylesheets/_layout.scss */
 fieldset.demand_projection p input.button {
   width: 10%;
 }
 
-/* line 365, ../../app/stylesheets/_layout.scss */
+/* line 356, ../../app/stylesheets/_layout.scss */
 fieldset.login p label {
   float: left;
   line-height: 2em;
@@ -1331,67 +1319,67 @@ fieldset.login p label {
   width: 32%;
 }
 
-/* line 372, ../../app/stylesheets/_layout.scss */
+/* line 363, ../../app/stylesheets/_layout.scss */
 fieldset.login p input {
   width: 60%;
 }
 
-/* line 375, ../../app/stylesheets/_layout.scss */
+/* line 366, ../../app/stylesheets/_layout.scss */
 fieldset.login input.button {
   margin-left: 35%;
 }
 
-/* line 379, ../../app/stylesheets/_layout.scss */
+/* line 370, ../../app/stylesheets/_layout.scss */
 form p.notice {
   font-weight: bold;
 }
 
-/* line 382, ../../app/stylesheets/_layout.scss */
+/* line 373, ../../app/stylesheets/_layout.scss */
 input.search.text {
   width: 66%;
 }
 
-/* line 385, ../../app/stylesheets/_layout.scss */
+/* line 376, ../../app/stylesheets/_layout.scss */
 input.search.button {
   width: 28%;
   margin-left: 2%;
 }
 
-/* line 389, ../../app/stylesheets/_layout.scss */
+/* line 380, ../../app/stylesheets/_layout.scss */
 input.filter.text {
   width: 99%;
 }
 
 /* articles
 ----------------------------------------------- */
-/* line 396, ../../app/stylesheets/_layout.scss */
+/* line 387, ../../app/stylesheets/_layout.scss */
 .articles {
   padding: 0;
 }
 
-/* line 399, ../../app/stylesheets/_layout.scss */
+/* line 390, ../../app/stylesheets/_layout.scss */
 .articles h2 {
   margin: 0;
 }
 
-/* line 402, ../../app/stylesheets/_layout.scss */
+/* line 393, ../../app/stylesheets/_layout.scss */
 #articles {
   padding-top: 0;
 }
 
-/* line 405, ../../app/stylesheets/_layout.scss */
+/* line 396, ../../app/stylesheets/_layout.scss */
 .article {
   border-top: 1px solid #666;
   padding-top: .5em;
 }
 
-/* line 409, ../../app/stylesheets/_layout.scss */
+/* line 400, ../../app/stylesheets/_layout.scss */
 .box .article {
   border-top: 3px solid white;
   padding: 13px 10px 0 10px;
 }
 
-/* line 413, ../../app/stylesheets/_layout.scss */
+/* line 404, ../../app/stylesheets/_layout.scss */
 .article h2 {
   font-size: 2em;
   font-weight: normal;
@@ -1403,25 +1391,25 @@ input.filter.text {
   border: none;
 }
 
-/* line 423, ../../app/stylesheets/_layout.scss */
+/* line 414, ../../app/stylesheets/_layout.scss */
 .article h3 {
   margin-bottom: .2em;
   font-size: 1.6em;
 }
 
-/* line 427, ../../app/stylesheets/_layout.scss */
+/* line 418, ../../app/stylesheets/_layout.scss */
 .box .first {
   border-top: none;
 }
 
-/* line 430, ../../app/stylesheets/_layout.scss */
+/* line 421, ../../app/stylesheets/_layout.scss */
 .article h4 {
   font-size: 1.2em;
   text-transform: uppercase;
   margin-bottom: .5em;
 }
 
-/* line 435, ../../app/stylesheets/_layout.scss */
+/* line 426, ../../app/stylesheets/_layout.scss */
 .article a.image {
   float: left;
   margin: 3px 10px 3px 0;
@@ -1430,17 +1418,17 @@ input.filter.text {
   background: white;
 }
 
-/* line 442, ../../app/stylesheets/_layout.scss */
+/* line 433, ../../app/stylesheets/_layout.scss */
 .article a.image:hover {
   border: 1px solid #666;
 }
 
-/* line 445, ../../app/stylesheets/_layout.scss */
+/* line 436, ../../app/stylesheets/_layout.scss */
 .article a.image img {
   float: left;
 }
 
-/* line 448, ../../app/stylesheets/_layout.scss */
+/* line 439, ../../app/stylesheets/_layout.scss */
 .article p.meta {
   color: #666;
   border-top: 1px dotted #999;
@@ -1451,21 +1439,21 @@ input.filter.text {
 
 /* AJAX sliding shelf
 ----------------------------------------------- */
-/* line 458, ../../app/stylesheets/_layout.scss */
+/* line 449, ../../app/stylesheets/_layout.scss */
 #loading {
   float: right;
   margin-right: 14px;
   margin-top: -2px;
 }
 
-/* line 463, ../../app/stylesheets/_layout.scss */
+/* line 454, ../../app/stylesheets/_layout.scss */
 .block {
   padding-bottom: 1px;
 }
 
 /* Accordian
 ----------------------------------------------- */
-/* line 469, ../../app/stylesheets/_layout.scss */
+/* line 460, ../../app/stylesheets/_layout.scss */
 .toggler {
   color: #222;
   margin: 0;
@@ -1479,32 +1467,32 @@ input.filter.text {
   font-weight: normal;
 }
 
-/* line 481, ../../app/stylesheets/_layout.scss */
+/* line 472, ../../app/stylesheets/_layout.scss */
 .element h4 {
   margin: 0;
   padding: 4px;
   line-height: 1.2em;
 }
 
-/* line 486, ../../app/stylesheets/_layout.scss */
+/* line 477, ../../app/stylesheets/_layout.scss */
 .element p {
   margin: 0;
   padding: 4px;
 }
 
-/* line 490, ../../app/stylesheets/_layout.scss */
+/* line 481, ../../app/stylesheets/_layout.scss */
 .float-right {
   padding: 10px 20px;
   float: right;
 }
 
-/* line 495, ../../app/stylesheets/_layout.scss */
+/* line 486, ../../app/stylesheets/_layout.scss */
 #accordian-block {
   padding-bottom: 10px;
 }
 
 /* notice */
-/* line 500, ../../app/stylesheets/_layout.scss */
+/* line 491, ../../app/stylesheets/_layout.scss */
 .notice {
   text-align: center;
   background: #ecede0;
@@ -1520,7 +1508,7 @@ input.filter.text {
 /*
 ---datatable
 */
-/* line 512, ../../app/stylesheets/_layout.scss */
+/* line 503, ../../app/stylesheets/_layout.scss */
 .dataTables_wrapper {
   position: relative;
   /*min-height: 302px;*/
@@ -1528,14 +1516,14 @@ input.filter.text {
   _height: 302px;
 }
 
-/* line 518, ../../app/stylesheets/_layout.scss */
+/* line 509, ../../app/stylesheets/_layout.scss */
 .dataTables_length {
   float: left;
   width: 40%;
   margin-bottom: 5px;
 }
 
-/* line 523, ../../app/stylesheets/_layout.scss */
+/* line 514, ../../app/stylesheets/_layout.scss */
 .dataTables_filter {
   float: right;
   text-align: right;
@@ -1543,59 +1531,59 @@ input.filter.text {
   margin-bottom: 5px;
 }
 
-/* line 530, ../../app/stylesheets/_layout.scss */
+/* line 521, ../../app/stylesheets/_layout.scss */
 .dataTables_action {
   float: right;
   text-align: right;
   width: 40%;
 }
 
-/* line 536, ../../app/stylesheets/_layout.scss */
+/* line 527, ../../app/stylesheets/_layout.scss */
 .dataTables_info {
   float: left;
   width: 45%;
 }
 
-/* line 540, ../../app/stylesheets/_layout.scss */
+/* line 531, ../../app/stylesheets/_layout.scss */
 .dataTables_paginate {
   float: left;
   /*text-align:right;*/
   width: 44px;
 }
 
-/* line 546, ../../app/stylesheets/_layout.scss */
+/* line 537, ../../app/stylesheets/_layout.scss */
 td.check {
   width: 1.5em;
 }
 
-/* line 550, ../../app/stylesheets/_layout.scss */
+/* line 541, ../../app/stylesheets/_layout.scss */
 td.col50 {
   width: 50%;
 }
 
-/* line 554, ../../app/stylesheets/_layout.scss */
+/* line 545, ../../app/stylesheets/_layout.scss */
 select.flow_list {
   width: 100%;
 }
 
-/* line 558, ../../app/stylesheets/_layout.scss */
+/* line 549, ../../app/stylesheets/_layout.scss */
 input[type="textcell"] {
   width: 100%;
 }
 
-/* line 562, ../../app/stylesheets/_layout.scss */
+/* line 553, ../../app/stylesheets/_layout.scss */
 table.dataTable {
   clear: both;
   margin-bottom: 5px;
 }
 
-/* line 566, ../../app/stylesheets/_layout.scss */
+/* line 557, ../../app/stylesheets/_layout.scss */
 table.dataTable thead th {
   cursor: pointer;
 }
 
 /* Pagination nested */
-/* line 571, ../../app/stylesheets/_layout.scss */
+/* line 562, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
   height: 16px;
   width: 16px;
@@ -1603,12 +1591,12 @@ table.dataTable thead th {
   float: left;
 }
 
-/* line 578, ../../app/stylesheets/_layout.scss */
+/* line 569, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
   background-image: url("/images/resultset_previous.png");
 }
 
-/* line 583, ../../app/stylesheets/_layout.scss */
+/* line 574, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
   background-image: url("/images/resultset_next.png");
 }
@@ -1616,23 +1604,23 @@ table.dataTable thead th {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * DataTables sorting
  */
-/* line 591, ../../app/stylesheets/_layout.scss */
+/* line 582, ../../app/stylesheets/_layout.scss */
 .sorting_asc {
   background: url("/images/sort_asc.gif") no-repeat center right;
 }
 
-/* line 595, ../../app/stylesheets/_layout.scss */
+/* line 586, ../../app/stylesheets/_layout.scss */
 .sorting_desc {
   background: url("/images/sort_desc.gif") no-repeat center right;
 }
 
-/* line 599, ../../app/stylesheets/_layout.scss */
+/* line 590, ../../app/stylesheets/_layout.scss */
 .flow_act {
   font-weight: bold;
   background-color: #FFFF66;
 }
 
-/* line 604, ../../app/stylesheets/_layout.scss */
+/* line 595, ../../app/stylesheets/_layout.scss */
 li.table_def_default {
   cursor: pointer;
   border: 1px solid #bbb;
@@ -1641,7 +1629,7 @@ li.table_def_default {
   padding: 3px 6px;
 }
 
-/* line 612, ../../app/stylesheets/_layout.scss */
+/* line 603, ../../app/stylesheets/_layout.scss */
 li.table_def_head {
   outline: medium none;
   background: #555;
@@ -1653,7 +1641,7 @@ li.table_def_head {
   padding: 3px 6px;
 }
 
-/* line 624, ../../app/stylesheets/_layout.scss */
+/* line 614, ../../app/stylesheets/_layout.scss */
 #choices, #rows, #columns {
   list-style-type: none;
   margin: 0 0 1em 0;
@@ -1662,7 +1650,7 @@ li.table_def_head {
   float: left;
 }
 
-/* line 632, ../../app/stylesheets/_layout.scss */
+/* line 622, ../../app/stylesheets/_layout.scss */
 #query_result {
   overflow: auto;
   width: 100%;
@@ -1670,75 +1658,118 @@ li.table_def_head {
   margin-bottom: 0px;
 }
 
-/* line 639, ../../app/stylesheets/_layout.scss */
+/* line 629, ../../app/stylesheets/_layout.scss */
 #table_query {
   margin-bottom: 0px;
 }
 
-/* line 643, ../../app/stylesheets/_layout.scss */
+/* line 633, ../../app/stylesheets/_layout.scss */
 #table_component {
   width: 400px;
 }
 
-/* line 647, ../../app/stylesheets/_layout.scss */
+/* line 637, ../../app/stylesheets/_layout.scss */
 #sel_avail_commodity, #components {
   width: 100%;
 }
 
 /* forms */
-/* line 652, ../../app/stylesheets/_layout.scss */
+/* line 642, ../../app/stylesheets/_layout.scss */
 .simple_form {
   margin: 0;
   padding: 0;
 }
 
-/*
+/* line 647, ../../app/stylesheets/_layout.scss */
 .input {
-    display: block;
-    margin-bottom: 0.5em;
-    padding: 0;
+  display: block;
+  margin-bottom: 0.5em;
+  padding: 0;
 }
 
-label {
-    float: left;
-    padding: 0 1em;
-    text-align: right;
-    width: 100px;
+/* line 653, ../../app/stylesheets/_layout.scss */
+.input label {
+  float: left;
+  padding: 0 7px;
+  text-align: right;
+  width: 100px;
 }
 
-form div input, form div textarea {
-    border-color: #555555 #CCCCCC #CCCCCC #555555;
-    border-style: solid;
-    border-width: 1px;
-    color: #333333;
-    padding: 1px;
-    width: 250px;
+/* line 660, ../../app/stylesheets/_layout.scss */
+.input input, .input textarea {
+  border-color: #555555 #CCCCCC #CCCCCC #555555;
+  border-style: solid;
+  border-width: 1px;
+  padding: 1px;
+  width: 300px;
 }
 
-input:focus, textarea:focus {
-    background: none repeat scroll 0 0 #EFEFEF;
-    color: #000000;
+/* line 668, ../../app/stylesheets/_layout.scss */
+.input input:focus, .input textarea:focus {
+  background: none repeat scroll 0 0 #ecede0;
 }
 
+/* line 672, ../../app/stylesheets/_layout.scss */
 input.button {
-    background: none repeat scroll 0 0 $h2_background;
-    border: 1px solid #333333;
-    color: $h2_color;
-    font-size: 100%;
-    padding: 2px 1em;
-    margin-left:150px;
+  margin-left: 114px;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
-*/
+/* line 678, ../../app/stylesheets/_layout.scss */
+#idcard .input label {
+  text-align: left;
+}
+
+/* line 682, ../../app/stylesheets/_layout.scss */
+#idcard .select label {
+  width: 100%;
+}
+
+/* line 686, ../../app/stylesheets/_layout.scss */
+#idcard .input input, #idcard .input textarea {
+  width: 98%;
+  clear: both;
+}
+
+/* line 691, ../../app/stylesheets/_layout.scss */
+#idcard input.button {
+  margin-left: 0;
+}
+
+/* line 695, ../../app/stylesheets/_layout.scss */
+#action {
+  padding-top: 5px;
+  padding-left: 2px;
+  padding-bottom: 1px;
+}
+
+/* line 702, ../../app/stylesheets/_layout.scss */
+a.action {
+  text-decoration: none;
+  padding: 4px;
+  background-color: #3a2823;
+  color: #dfd8d6;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px;
+}
+
+/* line 710, ../../app/stylesheets/_layout.scss */
+a.action:hover {
+  color: #ccc;
+}
+
 /****
 Cool-multiple
 */
-/* line 699, ../../app/stylesheets/_layout.scss */
+/* line 719, ../../app/stylesheets/_layout.scss */
 .hidden {
   display: none;
 }
 
-/* line 702, ../../app/stylesheets/_layout.scss */
+/* line 722, ../../app/stylesheets/_layout.scss */
 .clearfix:after {
   content: ".";
   display: block;
@@ -1748,52 +1779,53 @@ Cool-multiple
   height: 0;
 }
 
-/* line 710, ../../app/stylesheets/_layout.scss */
+/* line 730, ../../app/stylesheets/_layout.scss */
 .clearfix {
   display: inline-block;
 }
 
-/* line 713, ../../app/stylesheets/_layout.scss */
+/* line 733, ../../app/stylesheets/_layout.scss */
 html[xmlns] .clearfix {
   display: block;
 }
 
-/* line 716, ../../app/stylesheets/_layout.scss */
+/* line 736, ../../app/stylesheets/_layout.scss */
 * html .clearfix {
   height: 1%;
 }
 
-/* line 720, ../../app/stylesheets/_layout.scss */
+/* line 740, ../../app/stylesheets/_layout.scss */
 .coolmulti p {
   margin: 0;
   padding: 0;
   line-height: 14px;
 }
 
-/* line 725, ../../app/stylesheets/_layout.scss */
+/* line 745, ../../app/stylesheets/_layout.scss */
 .coolmulti-scrollbox {
   height: 250px;
-  overflow-y: scroll;
+  overflow-y: auto;
   background: #fff;
-  border: 1px solid #ccc;
+  border-color: #555555 #CCCCCC #CCCCCC #555555;
+  border-style: solid;
+  border-width: 1px;
   float: left;
-  padding: 5px 10px;
-  text-decoration: underline;
+  padding: 1px;
 }
 
-/* line 734, ../../app/stylesheets/_layout.scss */
+/* line 756, ../../app/stylesheets/_layout.scss */
 .coolmulti-scrollbox p {
   padding: 2px 0;
   cursor: pointer;
   cursor: hand;
 }
 
-/* line 739, ../../app/stylesheets/_layout.scss */
+/* line 761, ../../app/stylesheets/_layout.scss */
 .coolmulti-scrollbox .coolmulti-selected {
-  background: #FFF8AF;
+  background: #ecede0;
 }
 
-/* line 742, ../../app/stylesheets/_layout.scss */
+/* line 764, ../../app/stylesheets/_layout.scss */
 .coolmulti-values {
   font-weight: bold;
   float: left;
@@ -1801,12 +1833,12 @@ html[xmlns] .clearfix {
   width: 200px;
 }
 
-/* line 748, ../../app/stylesheets/_layout.scss */
+/* line 770, ../../app/stylesheets/_layout.scss */
 .coolmulti-values p {
   padding: 2px 0;
 }
 
-/* line 751, ../../app/stylesheets/_layout.scss */
+/* line 773, ../../app/stylesheets/_layout.scss */
 .coolmulti-values p a {
   margin-left: 5px;
 }

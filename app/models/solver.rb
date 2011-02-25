@@ -4,7 +4,12 @@ require 'yaml'
 class Solver < ActiveRecord::Base
 
   before_destroy :reset
-  validate :check_available_slots, :on => :create
+
+  validates :check_available_slots, :on => :create
+  validates :nb_periods, :presence => true, :numericality => {:only_integer => true, :minimum => -1}
+  validates :period_duration, :presence => true, :numericality => {:only_integer => true, :minimum => -1}
+  validates :first_year, :presence => true, :numericality => {:only_integer => true, :minimum => -1}
+  validates :language, :presence => true, :inclusion => {:in => %w(GAMS GLPK)}
 
   # State Machine
   include Workflow
