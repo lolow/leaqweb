@@ -1,10 +1,11 @@
-.box
-  %h2 Shortcut
-  .block
+.box(id="action")
+  .block(id="action")
     %p
       - unless page == :index
-        = link_to 'Browse aggregates', aggregates_path
-        %br
+        = link_to 'Browse', aggregates_path, :class => "action browse"
+        &nbsp;
       - unless page == :new
-        = link_to 'New aggregate', new_aggregate_path
-        %br
+        = link_to 'New', new_aggregate_path, :class => "action new"
+        &nbsp;
+      - if page == :edit
+        = link_to 'Delete', @aggregate, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"

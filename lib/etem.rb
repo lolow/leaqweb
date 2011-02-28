@@ -6,7 +6,7 @@ module Etem
   AGGREGATES = %w{SUM MEAN}
   VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
                %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
-               %w{C_PRICE VAR_AGG}
+               %w{C_PRICE AGGREGATE}
   PARAM_COMMODITIES = %w{demand frac_dem} +
                       %w{network_efficiency peak_reserve} +
                       %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} +

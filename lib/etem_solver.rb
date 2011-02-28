@@ -47,6 +47,7 @@ class EtemSolver
     return unless optimal?
     dict = Hash[*Commodity.activated.collect{|x|[x.pid,x.name]}.flatten]
     dict.merge! Hash[*Technology.activated.collect{|x|[x.pid,x.name]}.flatten]
+    dict.merge! Hash[*Aggregate.activated.collect{|x|[x.pid,x.name]}.flatten]
     #write csv result file
     CSV.open(file("csv"), "w") do |csv|
       csv << %w[attribute T S P C value]

@@ -18,23 +18,30 @@
     location.href = '/outputs/' + sim_id + '/import?solver_id=' + id;
   }
 .grid_3
-  .box
-    %h2 Shortcuts
-    .block
-      %p
-        = link_to 'Browse solver jobs', solvers_path
+  .box(id="action")
+    .block(id="action")
+      %p(class="action")
+        = link_to 'Browse', solvers_path, :class => "action browse"
+        - if @solver.solved? && @solver.has_files?
+          = link_to (@solver.solved? && @solver.has_files?) ? "delete" : "kill", @solver,
+            :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
         %br
         - if @solver.solved? && @solver.has_files?
-          = link_to_function("import outputs into a resultset",
-              "import_res(#{new_output_path.to_json},#{@solver.id})")
+          = link_to_function("Import into ResultSet",
+              "import_res(#{new_output_path.to_json},#{@solver.id})" , :class => "action delete")
           = select_tag "sim_#{@solver.id}", options_for_select(@outputs.map {|o| [o.name,o.id]}+[['New...',0]])
-        - else
-          import outputs into a resultset
+  .box
+    %h2 parameters
+    %block
+      %p
         %br
-        - if @solver.solved? && @solver.has_files?
-          = link_to("delete solver job", @solver, :method=>:delete, :confirm => "Are you sure?")
-        - else
-          = link_to("kill solver job", @solver, :method=>:delete, :confirm => "Are you sure?")
+        First year: #{@solver.first_year}
+        %br
+        Nb periods: #{@solver.nb_periods}
+        %br
+        Period duration: #{@solver.period_duration}
+        %br
+        Language: #{@solver.language}
 
 .grid_9
   .box

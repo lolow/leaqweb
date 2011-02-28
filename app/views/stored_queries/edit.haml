@@ -65,7 +65,7 @@
   #{options_for_select(['','not ']).to_json} + "</select> <select id=\"new_func\">" +
   #{options_for_select(['start with','contain','belong to']).to_json} +
       "<td><input type=\"text\" id=\"new_arg\" /></td>" +
-      "<td><a class='action' onclick='add_cond()'>Add</a></td>" +
+      "<td><a onclick='add_cond()'>Add</a></td>" +
       "</select></td>" +
       "</tr>";
     $('.conditions_list').prepend(last_row);
@@ -74,7 +74,7 @@
         "<td>" + variables[filter[i].variable] + "</td>" +
         "<td>must " + filter[i].not + filter[i].func + "</td>" +
         "<td>" + filter[i].arg + "</td>" +
-        "<td><a class='action' onclick='remove_cond(" + i + ")'>Remove</a></td>" +
+        "<td><a onclick='remove_cond(" + i + ")'>Remove</a></td>" +
         "</tr>";
       $('.conditions_list').prepend(row);
     }
@@ -131,7 +131,6 @@
             %li.table_def_head Columns
             - @stored_query.columns.split('+').each do |i|
               %li.table_def_default{:id=>"#{i}"}= StoredQuery::INDEX[i.strip]
-
         .clear
         %p
           = f.label :filters

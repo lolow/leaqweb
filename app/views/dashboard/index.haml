@@ -26,16 +26,14 @@
     .block
       %h5 Maintenance
       %p= link_to "Check energy system integrity", check_db_path
-    .block
       %h5 Backup
       %p= link_to "Download the complete database", backup_db_path
-    .block
       %h5 Restore
       %p
         = form_tag(restore_db_path, :multipart => true) do
-          %p= file_field 'upload', 'db', :class => "db_file", :size => nil
-          %p= submit_tag "Restore", :disable_with => "Please wait..."
-    .block
+          %p
+            = file_field 'upload', 'db', :class => "db_file", :size => nil
+            = submit_tag "Restore", :disable_with => "Please wait..."
       %h5 Reset
       %p= link_to "Empty database", reset_db_path, :confirm => 'Are you sure? This will delete everything in the database'
 

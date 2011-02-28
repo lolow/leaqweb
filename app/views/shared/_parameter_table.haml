@@ -19,13 +19,14 @@
         "bSort": true,
         "bInfo": true,
         "bAutoWidth": false,
+        "bStateSave": true,
         "sDom": 'lfrtip<"dataTables_action">'
         });
         
         $("div.dataTables_action").html('<p><select name="do" >' +
             '<option value="add_pv">Add value</option>'+
             '<option value="delete_pv">Delete value(s)</option>'+
-            '</select>'+#{raw submit_tag('OK').to_json}+ '</p>');
+            '</select>'+#{raw submit_tag('',:class=>'button').to_json}+ '</p>');
   } );
 
 - if rules

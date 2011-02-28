@@ -1,10 +1,11 @@
-.box
-  %h2 Shortcut
-  .block
+.box(id="action")
+  .block(id="action")
     %p
       - unless page == :index
-        = link_to 'Browse markets', markets_path
-        %br
+        = link_to 'Browse', markets_path, :class => "action browse"
+        &nbsp;
       - unless page == :new
-        = link_to 'New market', new_market_path
-        %br
+        = link_to 'New', new_market_path, :class => "action new"
+        &nbsp;
+      - if page == :edit
+        = link_to 'Delete', @market, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"

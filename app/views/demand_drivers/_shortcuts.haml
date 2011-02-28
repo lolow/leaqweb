@@ -1,10 +1,11 @@
-.box
-  %h2 Shortcuts
-  .block
+.box(id="action")
+  .block(id="action")
     %p
       - unless page == :index
-        = link_to 'Browse demand drivers', demand_drivers_path
-        %br
+        = link_to 'Browse', demand_drivers_path, :class => "action browse"
+        &nbsp;
       - unless page == :new
-        = link_to 'New demand driver', new_demand_driver_path
-        %br
+        = link_to 'New', new_demand_driver_path, :class => "action new"
+        &nbsp;
+      - if page == :edit
+        = link_to 'Delete', @demand_driver, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"

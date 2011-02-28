@@ -1,10 +1,12 @@
-.box
+.box(id="action")
   .block(id="action")
     %p 
       - unless page == :index
-        = link_to 'Browse', technologies_path, :class => "action"
+        = link_to 'Browse', technologies_path, :class => "action browse"
+        &nbsp;
       - unless page == :new
-        = link_to 'New', new_technology_path, :class => "action"
+        = link_to 'New', new_technology_path, :class => "action new"
+        &nbsp;
       - if page == :edit
-        = link_to 'Duplicate', duplicate_technology_path, :confirm => 'Are you sure?', :method => :post, :class => "action"
-        = link_to 'Delete', @technology, :confirm => 'Are you sure?', :method => :delete, :class => "action"
+        = link_to 'Duplicate', duplicate_technology_path, :confirm => 'Are you sure?', :method => :post, :class => "action duplicate"
+        = link_to 'Delete', @technology, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"

@@ -497,82 +497,12 @@ input.filter.text {
     @include corner(5px);
 }
 
-/*
----datatable
-*/
-.dataTables_wrapper {
-	position: relative;
-	/*min-height: 302px;*/
-	clear: both;
-	_height: 302px;
-}
-.dataTables_length  {
-  float:left;
-  width:40%;
-  margin-bottom:5px;
-}
-.dataTables_filter {
-    float:right;
-    text-align:right;
-    width:50%;
-    margin-bottom:5px;
-}
-
-.dataTables_action {
-    float:right;
-    text-align:right;
-    width:40%;
-}
-
-.dataTables_info {
-    float:left;
-    width:45%;
-}
-.dataTables_paginate {
-    float:left;
-    /*text-align:right;*/
-    width:44px;
-}
-
-td.check {
-    width:1.5em;
-}
-
 td.col50 {
     width:50%;
 }
 
 select.flow_list {
     width:100%;
-}
-
-input[type="textcell"] {
-width: 100%;
-}
-
-table.dataTable {
-    clear:both;
-    margin-bottom:5px;
-}
-table.dataTable thead th {
-	cursor: pointer;
-}
-
-/* Pagination nested */
-.paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
-	height: 16px;
-	width: 16px;
-	margin-left: 3px;
-	float: left;
-}
-
-.paginate_enabled_previous {
-	background-image: url('/images/resultset_previous.png');
-}
-
-
-.paginate_enabled_next {
-	background-image: url('/images/resultset_next.png');
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -670,9 +600,26 @@ float: left;
 }
 
 input.button {
-    margin-left:114px;
     margin-bottom:5px;
     margin-top:5px;
+    padding: 4px 9px 4px 10px;
+    background-color:$h2_background;
+    background-position: 6px center;
+    background-repeat: no-repeat;
+    color:$h2_color;
+    @include corner(5px);
+    font-size:100%;
+    font-weight:bold;
+    border:0px;
+    cursor: pointer;
+}
+
+.dataTables_action input.button {
+   background-image:url("/images/a_go.png");
+}
+
+.input input.button {
+    margin-left:114px;
 }
 
 #idcard .input label {
@@ -688,29 +635,49 @@ input.button {
     clear:both;
 }
 
-#idcard input.button {
-    margin-left:0;
-}
-
 #action {
-  padding-top:5px;
-  padding-left:2px;
-  padding-bottom:1px;
-//  background:$white;
+  padding-top:6px;
+  line-height:25px;
 }
 
 a.action {
  text-decoration : none;
- padding : 4px;
+ padding: 4px 9px 4px 25px;
  background-color:$h2_background;
+ background-position: 6px center;
+ background-repeat: no-repeat;
  color:$h2_color;
  @include corner(5px);
+ }
+
+
+ a.new {
+  background-image:url("/images/a_new.png");
+ }
+
+ a.duplicate {
+  background-image:url("/images/a_duplicate.png");
+ }
+
+ a.delete {
+  background-image:url("/images/a_delete.png");
+ }
+
+ a.browse {
+  background-image:url("/images/a_browse.png");
+ }
+
+ a.download {
+  background-image:url("/images/a_download.png");
+ }
+
+  a.import {
+  background-image:url("/images/a_import.png");
  }
 
  a.action:hover {
   color: #ccc;
  }
-
 
 /****
 Cool-multiple
@@ -751,7 +718,6 @@ html[xmlns] .clearfix {
     border-width: 1px;
     float:left;
     padding: 1px;
-    //text-decoration:underline;
 }
 .coolmulti-scrollbox p{
     padding: 2px 0;
@@ -772,4 +738,82 @@ html[xmlns] .clearfix {
 }
 .coolmulti-values p a{
     margin-left: 5px;
+}
+
+/*
+DataTable
+*/
+
+.dataTables_wrapper {
+	position: relative;
+	/*min-height: 302px;*/
+	clear: both;
+	_height: 302px;
+}
+.dataTables_length  {
+  float:left;
+  width:40%;
+  margin-bottom:5px;
+}
+.dataTables_filter {
+    float:right;
+    text-align:right;
+    width:50%;
+    margin-bottom:5px;
+}
+
+.dataTables_action {
+    float:right;
+    text-align:right;
+    width:40%;
+}
+
+.dataTables_info {
+    float:left;
+    width:45%;
+}
+.dataTables_paginate {
+    float:left;
+    /*text-align:right;*/
+    width:44px;
+}
+
+table.dataTable {
+    clear:both;
+    margin-bottom:5px;
+}
+table.dataTable thead th {
+	cursor: pointer;
+}
+
+table.dataTable input, .dataTables_filter input {
+    border-color: #555555 #CCCCCC #CCCCCC #555555;
+    border-style: solid;
+    border-width: 1px;
+    padding: 1px;
+}
+
+table.dataTable input[type="textcell"] {
+    width: 100%;
+}
+
+
+table.dataTable td.check {
+    width:1.5em;
+}
+
+.paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
+	height: 16px;
+	width: 16px;
+	margin-left: 3px;
+	float: left;
+}
+
+.paginate_enabled_previous {
+	background-image: url('/images/resultset_previous.png');
+}
+
+
+.paginate_enabled_next {
+	background-image: url('/images/resultset_next.png');
 }

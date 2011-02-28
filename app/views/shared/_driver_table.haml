@@ -20,6 +20,7 @@
         "bSort": true,
         "bInfo": true,
         "bAutoWidth": false,
+        "bStateSave": true,
         "sDom": 'lfrtip<"dataTables_action">'
       });
       $("div.dataTables_action").html('<p><select name="do" >' +
@@ -55,4 +56,5 @@
           - else
             %td
               %input(type="textcell" id="#{c}" name="pv[#{c}]")
+        %td
 .clear

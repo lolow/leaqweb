@@ -1,10 +1,14 @@
-.box
-  %h2 Shortcut
-  .block
+.box(id="action")
+  .block(id="action")
     %p
       - unless page == :index
-        = link_to 'Browse resultsets', outputs_path
-        %br
+        = link_to 'Browse', outputs_path, :class => "action browse"
+        &nbsp;
       - unless page == :new
-        = link_to 'New resultset', new_output_path
-        %br
+        = link_to 'New', new_output_path, :class => "action new"
+        &nbsp;
+      - if page == :show
+        = link_to 'Delete', @output, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+        - if @output.has_results?
+          %br
+          = link_to "CSV", csv_output_path(@output), :class => "action download"
