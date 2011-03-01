@@ -608,7 +608,7 @@ input.button {
     background-repeat: no-repeat;
     color:$h2_color;
     @include corner(5px);
-    font-size:100%;
+    font-size:105%;
     font-weight:bold;
     border:0px;
     cursor: pointer;
@@ -671,8 +671,25 @@ a.action {
   background-image:url("/images/a_download.png");
  }
 
-  a.import {
+ a.import {
   background-image:url("/images/a_import.png");
+ }
+
+ a.check_db {
+  background-image:url("/images/a_check_db.png");
+ }
+
+ a.backup_db {
+  background-image:url("/images/a_backup_db.png");
+ }
+
+ a.reset_db {
+  background-image:url("/images/a_reset_db.png");
+ }
+
+ input.restore_db {
+  padding: 4px 9px 4px 25px;
+  background-image:url("/images/a_restore_db.png");
  }
 
  a.action:hover {

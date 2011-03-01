@@ -1,7 +1,5 @@
 class ParameterValue < ActiveRecord::Base
 
-  #versioned :dependent => :tracking
-
   belongs_to :parameter
   belongs_to :technology
   belongs_to :commodity

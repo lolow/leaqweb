@@ -18,7 +18,6 @@ class EtemArchive
     ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
     ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
     ActiveRecord::Base.connection.execute("DELETE FROM `aggregates_commodities`")
-    VestalVersions::Version.delete_all
   end
 
   # Backup data in a zipped file containing csv files.

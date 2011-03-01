@@ -21,7 +21,6 @@ class DashboardController < ApplicationController
     last_changes.compact!
     @nb_demand_drivers = DemandDriver.count
     @nb_parameter_values = ParameterValue.count
-    @log = VestalVersions::Version.order("created_at DESC").limit(10)
   end
 
   def check_db
@@ -45,7 +44,6 @@ class DashboardController < ApplicationController
   end
 
   def log
-    @log = VestalVersions::Version.order("created_at DESC").limit(200)
   end
 
   def reset

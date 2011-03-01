@@ -17,4 +17,3 @@ gem 'will_paginate', ">= 3.0.pre2"
 gem 'rubyzip', :require => 'zip/zip'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'fastercsv', :require => 'faster_csv'
-gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'

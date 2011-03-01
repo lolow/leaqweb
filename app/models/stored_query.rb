@@ -2,8 +2,6 @@ require 'etem'
 class StoredQuery < ActiveRecord::Base
   include Etem
 
-  #versioned
-
   validates :name, :presence => true, :uniqueness => true
 
   def digest_filter

@@ -3,8 +3,6 @@ require 'etem'
 class Commodity < ActiveRecord::Base
   include Etem
 
-  #versioned :dependent => :tracking
-
   #Acts_as
   acts_as_taggable_on :sets
   acts_as_identifiable :prefix => "c"

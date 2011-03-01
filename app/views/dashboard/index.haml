@@ -23,26 +23,23 @@
 .grid_5
   .box
     %h2 Database
-    .block
-      %h5 Maintenance
-      %p= link_to "Check energy system integrity", check_db_path
-      %h5 Backup
-      %p= link_to "Download the complete database", backup_db_path
-      %h5 Restore
-      %p
-        = form_tag(restore_db_path, :multipart => true) do
-          %p
-            = file_field 'upload', 'db', :class => "db_file", :size => nil
-            = submit_tag "Restore", :disable_with => "Please wait..."
-      %h5 Reset
-      %p= link_to "Empty database", reset_db_path, :confirm => 'Are you sure? This will delete everything in the database'
+    .block(id="action")
+      = link_to "Check Energy System database", check_db_path, :class => "action check_db"
+      %br
+      = link_to "Empty database", reset_db_path, :confirm => 'Are you sure?', :class => "action reset_db"
+      %br
+      = link_to "Backup", backup_db_path, :class => "action backup_db"
+      %br
+      = form_tag(restore_db_path, :multipart => true) do
+        = submit_tag "Restore", :disable_with => "Please wait...", :class => "button restore_db"
+        = file_field 'upload', 'db', :class => "db_file", :size => nil
 
 .grid_4
   .box
     %h2 Last Modifications
     .block
       %p
-        = render :partial => "log", :collection => @log, :as => :version
+        = render :partial => "log", :collection => [], :as => :version
         %br
         = link_to "...", log_path
 .clear
