@@ -3,6 +3,8 @@ require 'etem'
 class Technology < ActiveRecord::Base
   include Etem
 
+  has_paper_trail
+
   acts_as_taggable_on :sets
 
   has_many :out_flows, :dependent => :destroy

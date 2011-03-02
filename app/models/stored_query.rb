@@ -2,6 +2,8 @@ require 'etem'
 class StoredQuery < ActiveRecord::Base
   include Etem
 
+  has_paper_trail
+
   validates :name, :presence => true, :uniqueness => true
 
   def digest_filter

@@ -367,9 +367,6 @@ fieldset.login input.button {
 	margin-left:35%;
 }
 
-form p.notice {
-	font-weight:bold;
-}
 input.search.text {
 	width:66%;
 }
@@ -488,13 +485,22 @@ input.filter.text {
 }
 
 /* notice */
-.notice {
-    text-align:center;
-	background:$box-background;
+.alert {
+	padding:1px 5px 5px 0px;
 	margin-bottom:10px;
-	padding:1px 1px 14px 0px;
-    border: 1px $notice_border_color dashed;
-    @include corner(5px);
+    text-align:center;
+    background:$white;
+    font-weight:bold;
+    color:$red;
+}
+
+.notice {
+	padding:1px 5px 5px 0px;
+	margin-bottom:10px;
+    text-align:center;
+    background:$white;
+    font-weight:bold;
+    color:$green;
 }
 
 td.col50 {
@@ -618,8 +624,27 @@ input.button {
    background-image:url("/images/a_go.png");
 }
 
-.input input.button {
+input.aligned {
     margin-left:114px;
+}
+
+.input input.boolean {
+  width: 1em;
+}
+
+.simple_form .error {
+  clear: left;
+  font-size: 12px;
+  color: $red;
+  display: block;
+}
+
+.simple_form .hint {
+  clear: left;
+  margin-left: 120px;
+  color: $grey;
+  display: block;
+  font-style: italic;
 }
 
 #idcard .input label {
@@ -643,13 +668,13 @@ input.button {
 a.action {
  text-decoration : none;
  padding: 4px 9px 4px 25px;
+ background-image:url("/images/a_go.png");
  background-color:$h2_background;
  background-position: 6px center;
  background-repeat: no-repeat;
  color:$h2_color;
  @include corner(5px);
  }
-
 
  a.new {
   background-image:url("/images/a_new.png");
@@ -685,6 +710,14 @@ a.action {
 
  a.reset_db {
   background-image:url("/images/a_reset_db.png");
+ }
+
+ a.sign_up {
+  background-image:url("/images/a_sign_up.png");
+ }
+
+ a.sign_in {
+  background-image:url("/images/a_sign_in.png");
  }
 
  input.restore_db {
@@ -814,7 +847,6 @@ table.dataTable input[type="textcell"] {
     width: 100%;
 }
 
-
 table.dataTable td.check {
     width:1.5em;
 }
@@ -833,4 +865,11 @@ table.dataTable td.check {
 
 .paginate_enabled_next {
 	background-image: url('/images/resultset_next.png');
+}
+
+
+#error_explanation h2 {
+    background:$box-background;
+    color:$red;
+    margin:0 0 0 0;
 }

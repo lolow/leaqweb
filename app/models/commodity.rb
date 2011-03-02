@@ -3,6 +3,8 @@ require 'etem'
 class Commodity < ActiveRecord::Base
   include Etem
 
+  has_paper_trail
+
   #Acts_as
   acts_as_taggable_on :sets
   acts_as_identifiable :prefix => "c"

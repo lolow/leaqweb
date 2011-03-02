@@ -22,9 +22,8 @@
     .block(id="action")
       %p(class="action")
         = link_to 'Browse', solvers_path, :class => "action browse"
-        - if @solver.solved? && @solver.has_files?
-          = link_to (@solver.solved? && @solver.has_files?) ? "delete" : "kill", @solver,
-            :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
+        - if @solver.solved?
+          = link_to "Delete", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
         %br
         - if @solver.solved? && @solver.has_files?
           = link_to_function("Import into ResultSet",

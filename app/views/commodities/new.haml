@@ -7,6 +7,6 @@
       = simple_form_for @commodity do |f|
         = f.input :name
         = f.input :set_list, :collection => Commodity::CATEGORIES, :prompt => "Select commodity type...", :label=>"Type"
-        = f.button :submit
+        = f.button :submit, :class => "aligned"
         = f.hidden_field :description, :value => ""
 .clear

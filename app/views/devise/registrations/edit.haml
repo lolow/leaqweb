@@ -1,0 +1,21 @@
+- content_for :title, "Edit #{resource_name.to_s.humanize}"
+.grid_3
+  = render :partial => "devise/shared/links"
+  .box
+    %h2 Cancel my account
+    .block
+      %p
+        Unhappy?
+        = link_to "Cancel my account", registration_path(resource_name), :confirm => "Are you sure?", :method => :delete
+.grid_9
+  .box
+    %h2 Information
+    .block
+      = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
+        = devise_error_messages!
+        = f.input :email
+        = f.input :password, :hint => "(leave blank if you don't want to change it)"
+        = f.input :password_confirmation
+        = f.input :current_password, :hint => "(we need your current password to confirm your changes)"
+        = f.submit "Update"
+.clear

@@ -1,4 +1,7 @@
 class Combustion < ActiveRecord::Base
+
+  has_paper_trail
+
   #Relations
   belongs_to :fuel, :class_name => "Commodity"
   belongs_to :pollutant, :class_name => "Commodity"

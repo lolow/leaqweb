@@ -1,4 +1,5 @@
 class Aggregate < ActiveRecord::Base
+  has_paper_trail
   acts_as_taggable_on :sets
   acts_as_identifiable :prefix => "a"
   has_and_belongs_to_many :commodities

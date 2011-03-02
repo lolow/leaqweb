@@ -1,0 +1,11 @@
+- content_for :title, "Resend unlock instructions"
+.grid_3
+  = render :partial => "devise/shared/links"
+.grid_9
+  .box
+    %h2 Information
+    .block
+      = simple_form_for(resource, :as => resource_name, :url => unlock_path(resource_name), :html => { :method => :post }) do |f|
+        = devise_error_messages!
+        = f.input :email
+        = f.button :submit, :value => "Resend unlock instructions"
