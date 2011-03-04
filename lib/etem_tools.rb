@@ -236,35 +236,37 @@ module EtemTools
   end
 
   def generate_new_technology(yml_file,end_year=2030)
-    YAML.load_file(yml_file).each do |row|
-      tech0 = Technology.find_by_name(row["technology_name"])
-      puts tech0
-      (0...row["avail"].size).each do |i|
-        new_name = "#{row["technology_name"]}-#{row["avail"][i]}"
-        puts new_name
-        tech = Technology.find_by_name(new_name)
-        Technology.destroy(tech.id) if tech
-        tech = tech0.duplicate(new_name)
-        if row["avail"][i].to_i>end_year
-          tech.set_list = (tech.set_list - ["P"]).join(",") #deactivate technology
-          tech.save!
-        end
-        %w{icap_bnd_fx avail fixed_cap}.each do |param|
-          ParameterValue.destroy(tech.parameter_values.of(param).map(&:id))
-        end
-        ParameterValue.create(:parameter_id=>Parameter.find_by_name("avail").id,
-                              :technology_id=>tech.id,
-                              :value=>row["avail"][i],
-                              :source=>"technology generator")
-        %w{cost_icap cost_fom}.each do |param|
-          tech.parameter_values.of(param).each do |pv|
-            ParameterValue.update(pv.id, :value=>pv.value*row[param][i])
+    without_versioning do
+      YAML.load_file(yml_file).each do |row|
+        tech0 = Technology.find_by_name(row["technology_name"])
+        puts tech0
+        (0...row["avail"].size).each do |i|
+          new_name = "#{row["technology_name"]}-#{row["avail"][i]}"
+          puts new_name
+          tech = Technology.find_by_name(new_name)
+          Technology.destroy(tech.id) if tech
+          tech = tech0.duplicate(new_name)
+          if row["avail"][i].to_i>end_year
+            tech.set_list = (tech.set_list - ["P"]).join(",") #deactivate technology
+            tech.save!
           end
-        end
-        param = "eff_flo"
-        tech.parameter_values.of(param).each do |pv|
-          unless pv.out_flow.pollutant?
-            ParameterValue.update(pv.id, :value=>pv.value*row[param][i])
+          %w{icap_bnd_fx avail fixed_cap}.each do |param|
+            ParameterValue.destroy(tech.parameter_values.of(param).map(&:id))
+          end
+          ParameterValue.create(:parameter_id=>Parameter.find_by_name("avail").id,
+                                :technology_id=>tech.id,
+                                :value=>row["avail"][i],
+                                :source=>"technology generator")
+          %w{cost_icap cost_fom}.each do |param|
+            tech.parameter_values.of(param).each do |pv|
+              ParameterValue.update(pv.id, :value=>pv.value*row[param][i])
+            end
+          end
+          param = "eff_flo"
+          tech.parameter_values.of(param).each do |pv|
+            unless pv.out_flow.pollutant?
+              ParameterValue.update(pv.id, :value=>pv.value*row[param][i])
+            end
           end
         end
       end
@@ -421,6 +423,16 @@ module EtemTools
     o = Commodity.find_by_name(output)
     puts "output: #{o}"
     return i, o
+  end
+
+  def without_versioning
+    was_enabled = PaperTrail.enabled?
+    PaperTrail.enabled = false
+    begin
+      yield
+    ensure
+      PaperTrail.enabled = was_enabled
+    end
   end
 
 end

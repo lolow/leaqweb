@@ -352,11 +352,18 @@ degree_of_use(T,C,AGG)=#{@p_degree_of_use_d} ;
   degree_of_use('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
-parameter rate_of_penetration(T,C,AGG);
-rate_of_penetration(T,C,AGG)=#{@p_rate_of_penetration_d} ;
+parameter market_share_up(T,MARKET,MARKET);
+market_share_up(T,MARKET,MARKET)=#{@p_market_share_up_d} ;
+<?rb e = @p_market_share_up.to_enum ?>
+<?rb loop do ?>
+  market_share_up'#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter rate_of_penetration(T,C);
+rate_of_penetration(T,C)=#{@p_rate_of_penetration_d} ;
 <?rb e = @p_rate_of_penetration.to_enum ?>
 <?rb loop do ?>
-  rate_of_penetration('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+  rate_of_penetration('#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
 parameter eff_flo(FLOW,FLOW);

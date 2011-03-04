@@ -12,7 +12,8 @@
                             :parameters => %w{network_efficiency peak_reserve} + 
                                            %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} + 
                                            %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } + 
-                                           %w{com_net_bnd_up_t com_net_bnd_up_ts},                  
+                                           %w{com_net_bnd_up_t com_net_bnd_up_ts rate_of_penetration},
                             :cols => %w{parameter time_slice year value source}, :editable => %w{value source}, 
                             :rules => {"=network_efficiency" => %w{time_slice year}, 
-                            "=com_net_bnd_up_t" => %w{time_slice}} } %>
+                                       "=com_net_bnd_up_t" => %w{time_slice},
+                                       "=rate_of_penetration" => %w{time_slice} } } %>

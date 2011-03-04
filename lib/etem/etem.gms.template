@@ -14,7 +14,9 @@ $OFFDIGIT
 
 $INCLUDE '#{@f_inc}'
 
+ALIAS(MARKET,SUBMARKET);
 ALIAS(T,T1);
+ALIAS(P,P1);
 ALIAS(C,C1);
 ALIAS(FLOW,INFLOW);
 ALIAS(FLOW,OUTFLOW);
@@ -81,6 +83,7 @@ Equations
   EQ_AGG           Aggregate commodities
   EQ_DEGREE_OF_USE Maximum share of a commodity in an aggregate
   EQ_RATE_OF_PENETRATION rate of penetration of a commodity in an aggregate
+  EQ_MARKET_SHARE_BND_UP
 ;
 
 EQ_OBJ..
@@ -238,13 +241,17 @@ EQ_AGG(T,S,AGG)..
   =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * TOTAL_NET_AMOUNT(T,S,C)) ;
 
 EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) ge 0))..
-  SUM(S,agg_coef(C,AGG) * TOTAL_NET_AMOUNT(T,S,C))
+  agg_coef(C,AGG) * SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) ))
   =L= degree_of_use(T,C,AGG) * SUM(S,AGGREGATE(T,S,AGG));
 
-EQ_RATE_OF_PENETRATION(T,C,AGG)$(C_AGG(AGG,C) and (rate_of_penetration(t,c,agg) ne 0) and (ord(t) gt 1))..
-  SUM(S,TOTAL_NET_AMOUNT(T,S,C))
-  =L= (1+rate_of_penetration(T,C,AGG)) *
-  SUM(S,TOTAL_NET_AMOUNT(T-1,S,C)) ;
+EQ_RATE_OF_PENETRATION(T,C)$(rate_of_penetration(t,c) ne 0)..
+  SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C)) =L=
+  (1+rate_of_penetration(T,C)) *
+  SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T-1,S,P,C)) + VAR_EXP(T-1,S,C)$EXP(C)) ;
+
+EQ_MARKET_SHARE_BND_UP(T,SUBMARKET,MARKET)$(market_share_up(t,submarket,market) ge 0)..
+  SUM(P1$P_MARKET(SUBMARKET,P1),CAPACITY(T,P1))
+  =L= market_share_up(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
 
 MODEL ETEM /
   EQ_OBJ

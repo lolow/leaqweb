@@ -12,3 +12,4 @@ public/files/
 Gemfile.lock
 .idea
 .bundle
+rails/

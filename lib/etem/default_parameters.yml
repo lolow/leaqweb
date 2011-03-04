@@ -17,8 +17,11 @@
 - :name: degree_of_use
   :definition: maximum share of a commodity in an aggregate
   :default_value: -1.0
+- :name: market_share_up
+  :definition: maximum share of a submarket in a market
+  :default_value: -1.0
 - :name: rate_of_penetration
-  :definition: maximum rate of penetration of a commodity in an aggregate
+  :definition: maximum annual rate of penetration of a commodity
   :default_value: 0
 - :name: peak_reserve
   :definition: Peak reserve as a fraction of peak demand.
