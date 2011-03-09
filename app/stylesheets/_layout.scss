@@ -661,9 +661,13 @@ input.aligned {
     clear:both;
 }
 
-#action {
-  padding-top:6px;
+#action.block {
+  padding-top:3px;
   line-height:25px;
+}
+
+#action.box {
+  background:lighten($box_background,7%);
 }
 
 a.action {
@@ -867,7 +871,6 @@ table.dataTable td.check {
 .paginate_enabled_next {
 	background-image: url('/images/resultset_next.png');
 }
-
 
 #error_explanation h2 {
     background:$box-background;

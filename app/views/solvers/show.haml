@@ -22,8 +22,7 @@
     .block(id="action")
       %p(class="action")
         = link_to 'Browse', solvers_path, :class => "action browse"
-        - if @solver.solved?
-          = link_to "Delete", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
+        = link_to @solver.solved? ? "Delete" : "Kill", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
         %br
         - if @solver.solved? && @solver.has_files?
           = link_to_function("Import into ResultSet",
@@ -56,5 +55,5 @@
         %h5 Log
         #display_log
           - if (@solver.solved? && !@solver.has_files?)
-            log file should have been deleted because of its age. Please reinit the solver
+            log file should have been deleted by the system.
           %pre= raw log_with_link(sanitize @solver.log)

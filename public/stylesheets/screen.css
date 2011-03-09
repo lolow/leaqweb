@@ -1694,12 +1694,17 @@ input.aligned {
 }
 
 /* line 664, ../../app/stylesheets/_layout.scss */
-#action {
-  padding-top: 6px;
+#action.block {
+  padding-top: 3px;
   line-height: 25px;
 }
 
 /* line 669, ../../app/stylesheets/_layout.scss */
+#action.box {
+  background: #fafaf7;
+}
+
+/* line 673, ../../app/stylesheets/_layout.scss */
 a.action {
   text-decoration: none;
   padding: 4px 9px 4px 25px;
@@ -1714,68 +1719,68 @@ a.action {
   border-radius: 5px;
 }
 
-/* line 680, ../../app/stylesheets/_layout.scss */
+/* line 684, ../../app/stylesheets/_layout.scss */
 a.new {
   background-image: url("/images/a_new.png");
 }
 
-/* line 684, ../../app/stylesheets/_layout.scss */
+/* line 688, ../../app/stylesheets/_layout.scss */
 a.duplicate {
   background-image: url("/images/a_duplicate.png");
 }
 
-/* line 688, ../../app/stylesheets/_layout.scss */
+/* line 692, ../../app/stylesheets/_layout.scss */
 a.delete {
   background-image: url("/images/a_delete.png");
 }
 
-/* line 692, ../../app/stylesheets/_layout.scss */
+/* line 696, ../../app/stylesheets/_layout.scss */
 a.browse {
   background-image: url("/images/a_browse.png");
 }
 
-/* line 696, ../../app/stylesheets/_layout.scss */
+/* line 700, ../../app/stylesheets/_layout.scss */
 a.download {
   background-image: url("/images/a_download.png");
 }
 
-/* line 700, ../../app/stylesheets/_layout.scss */
+/* line 704, ../../app/stylesheets/_layout.scss */
 a.import {
   background-image: url("/images/a_import.png");
 }
 
-/* line 704, ../../app/stylesheets/_layout.scss */
+/* line 708, ../../app/stylesheets/_layout.scss */
 a.check_db {
   background-image: url("/images/a_check_db.png");
 }
 
-/* line 708, ../../app/stylesheets/_layout.scss */
+/* line 712, ../../app/stylesheets/_layout.scss */
 a.backup_db {
   background-image: url("/images/a_backup_db.png");
 }
 
-/* line 712, ../../app/stylesheets/_layout.scss */
+/* line 716, ../../app/stylesheets/_layout.scss */
 a.reset_db {
   background-image: url("/images/a_reset_db.png");
 }
 
-/* line 716, ../../app/stylesheets/_layout.scss */
+/* line 720, ../../app/stylesheets/_layout.scss */
 a.sign_up {
   background-image: url("/images/a_sign_up.png");
 }
 
-/* line 720, ../../app/stylesheets/_layout.scss */
+/* line 724, ../../app/stylesheets/_layout.scss */
 a.sign_in {
   background-image: url("/images/a_sign_in.png");
 }
 
-/* line 724, ../../app/stylesheets/_layout.scss */
+/* line 728, ../../app/stylesheets/_layout.scss */
 input.restore_db {
   padding: 4px 9px 4px 25px;
   background-image: url("/images/a_restore_db.png");
 }
 
-/* line 729, ../../app/stylesheets/_layout.scss */
+/* line 733, ../../app/stylesheets/_layout.scss */
 a.action:hover {
   color: #ccc;
 }
@@ -1783,12 +1788,12 @@ a.action:hover {
 /****
 Cool-multiple
 */
-/* line 737, ../../app/stylesheets/_layout.scss */
+/* line 741, ../../app/stylesheets/_layout.scss */
 .hidden {
   display: none;
 }
 
-/* line 740, ../../app/stylesheets/_layout.scss */
+/* line 744, ../../app/stylesheets/_layout.scss */
 .clearfix:after {
   content: ".";
   display: block;
@@ -1798,29 +1803,29 @@ Cool-multiple
   height: 0;
 }
 
-/* line 748, ../../app/stylesheets/_layout.scss */
+/* line 752, ../../app/stylesheets/_layout.scss */
 .clearfix {
   display: inline-block;
 }
 
-/* line 751, ../../app/stylesheets/_layout.scss */
+/* line 755, ../../app/stylesheets/_layout.scss */
 html[xmlns] .clearfix {
   display: block;
 }
 
-/* line 754, ../../app/stylesheets/_layout.scss */
+/* line 758, ../../app/stylesheets/_layout.scss */
 * html .clearfix {
   height: 1%;
 }
 
-/* line 758, ../../app/stylesheets/_layout.scss */
+/* line 762, ../../app/stylesheets/_layout.scss */
 .coolmulti p {
   margin: 0;
   padding: 0;
   line-height: 14px;
 }
 
-/* line 763, ../../app/stylesheets/_layout.scss */
+/* line 767, ../../app/stylesheets/_layout.scss */
 .coolmulti-scrollbox {
   height: 250px;
   overflow-y: auto;
@@ -1832,19 +1837,19 @@ html[xmlns] .clearfix {
   padding: 1px;
 }
 
-/* line 773, ../../app/stylesheets/_layout.scss */
+/* line 777, ../../app/stylesheets/_layout.scss */
 .coolmulti-scrollbox p {
   padding: 2px 0;
   cursor: pointer;
   cursor: hand;
 }
 
-/* line 778, ../../app/stylesheets/_layout.scss */
+/* line 782, ../../app/stylesheets/_layout.scss */
 .coolmulti-scrollbox .coolmulti-selected {
   background: #ecede0;
 }
 
-/* line 781, ../../app/stylesheets/_layout.scss */
+/* line 785, ../../app/stylesheets/_layout.scss */
 .coolmulti-values {
   font-weight: bold;
   float: left;
@@ -1852,12 +1857,12 @@ html[xmlns] .clearfix {
   width: 200px;
 }
 
-/* line 787, ../../app/stylesheets/_layout.scss */
+/* line 791, ../../app/stylesheets/_layout.scss */
 .coolmulti-values p {
   padding: 2px 0;
 }
 
-/* line 790, ../../app/stylesheets/_layout.scss */
+/* line 794, ../../app/stylesheets/_layout.scss */
 .coolmulti-values p a {
   margin-left: 5px;
 }
@@ -1865,7 +1870,7 @@ html[xmlns] .clearfix {
 /*
 DataTable
 */
-/* line 798, ../../app/stylesheets/_layout.scss */
+/* line 802, ../../app/stylesheets/_layout.scss */
 .dataTables_wrapper {
   position: relative;
   /*min-height: 302px;*/
@@ -1873,14 +1878,14 @@ DataTable
   _height: 302px;
 }
 
-/* line 804, ../../app/stylesheets/_layout.scss */
+/* line 808, ../../app/stylesheets/_layout.scss */
 .dataTables_length {
   float: left;
   width: 40%;
   margin-bottom: 5px;
 }
 
-/* line 809, ../../app/stylesheets/_layout.scss */
+/* line 813, ../../app/stylesheets/_layout.scss */
 .dataTables_filter {
   float: right;
   text-align: right;
@@ -1888,38 +1893,38 @@ DataTable
   margin-bottom: 5px;
 }
 
-/* line 816, ../../app/stylesheets/_layout.scss */
+/* line 820, ../../app/stylesheets/_layout.scss */
 .dataTables_action {
   float: right;
   text-align: right;
   width: 40%;
 }
 
-/* line 822, ../../app/stylesheets/_layout.scss */
+/* line 826, ../../app/stylesheets/_layout.scss */
 .dataTables_info {
   float: left;
   width: 45%;
 }
 
-/* line 826, ../../app/stylesheets/_layout.scss */
+/* line 830, ../../app/stylesheets/_layout.scss */
 .dataTables_paginate {
   float: left;
   /*text-align:right;*/
   width: 44px;
 }
 
-/* line 832, ../../app/stylesheets/_layout.scss */
+/* line 836, ../../app/stylesheets/_layout.scss */
 table.dataTable {
   clear: both;
   margin-bottom: 5px;
 }
 
-/* line 836, ../../app/stylesheets/_layout.scss */
+/* line 840, ../../app/stylesheets/_layout.scss */
 table.dataTable thead th {
   cursor: pointer;
 }
 
-/* line 840, ../../app/stylesheets/_layout.scss */
+/* line 844, ../../app/stylesheets/_layout.scss */
 table.dataTable input, .dataTables_filter input {
   border-color: #555555 #CCCCCC #CCCCCC #555555;
   border-style: solid;
@@ -1927,17 +1932,17 @@ table.dataTable input, .dataTables_filter input {
   padding: 1px;
 }
 
-/* line 847, ../../app/stylesheets/_layout.scss */
+/* line 851, ../../app/stylesheets/_layout.scss */
 table.dataTable input[type="textcell"] {
   width: 100%;
 }
 
-/* line 851, ../../app/stylesheets/_layout.scss */
+/* line 855, ../../app/stylesheets/_layout.scss */
 table.dataTable td.check {
   width: 1.5em;
 }
 
-/* line 855, ../../app/stylesheets/_layout.scss */
+/* line 859, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
   height: 16px;
   width: 16px;
@@ -1945,17 +1950,17 @@ table.dataTable td.check {
   float: left;
 }
 
-/* line 862, ../../app/stylesheets/_layout.scss */
+/* line 866, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
   background-image: url("/images/resultset_previous.png");
 }
 
-/* line 867, ../../app/stylesheets/_layout.scss */
+/* line 871, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
   background-image: url("/images/resultset_next.png");
 }
 
-/* line 872, ../../app/stylesheets/_layout.scss */
+/* line 875, ../../app/stylesheets/_layout.scss */
 #error_explanation h2 {
   background: #ecede0;
   color: #dd0000;
