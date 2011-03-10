@@ -7,7 +7,6 @@ class Commodity < ActiveRecord::Base
 
   #Acts_as
   acts_as_taggable_on :sets
-  acts_as_identifiable :prefix => "c"
 
   #Relations
   has_and_belongs_to_many :flows
@@ -94,6 +93,10 @@ class Commodity < ActiveRecord::Base
   end
 
   def to_s
+    name
+  end
+
+  def pid
     name
   end
 

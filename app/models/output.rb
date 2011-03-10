@@ -5,7 +5,7 @@ class Output < ActiveRecord::Base
   before_destroy :clear
 
   TMP = "/tmp"
-  EXT = %w{txt mod dat csv out log gms inc}
+  EXT = %w{txt mod dat csv log gms inc}
 
   def self.auto_new
     name = "output_00"

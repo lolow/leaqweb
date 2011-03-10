@@ -302,7 +302,7 @@ option solprint = off;
 
 SOLVE ETEM USING LP MINIMIZING VAR_OBJ;
 
-file out /'#{@f_out}'/;
+file out /'#{@f_csv}'/;
 put out;
 out.nd = 6;
 out.nw = 0;
@@ -317,64 +317,115 @@ put 'VAR_OBJVAR,,,,,'VAR_OBJVAR.l/;
 put 'VAR_OBJSAL,,,,,'VAR_OBJSAL.l/;
 
 LOOP(T,LOOP(P$CAPACITY.l(T,P),
-put 'CAPACITY,'T.tl',,'P.tl',,'CAPACITY.l(T,P)/;
+out.nd = 0;
+put 'CAPACITY,'year(T);
+out.nd = 6;
+put ',,'P.tl',,'CAPACITY.l(T,P)/;
 ))
 
 LOOP(T,LOOP(P$VAR_ICAP.l(T,P),
-put 'VAR_ICAP,'T.tl',,'P.tl',,'VAR_ICAP.l(T,P)/;
+out.nd = 0;
+put 'VAR_ICAP,'year(T);
+out.nd = 6;
+put ',,'P.tl',,'VAR_ICAP.l(T,P)/;
 ))
 
 LOOP(T,LOOP(S,LOOP(P$ACTIVITY.l(T,S,P),
-put 'ACTIVITY,'T.tl','S.tl','P.tl',,'ACTIVITY.l(T,S,P)/;
+out.nd = 0;
+put 'ACTIVITY,'year(T);
+out.nd = 6;
+put ','S.tl','P.tl',,'ACTIVITY.l(T,S,P)/;
 )))
 LOOP(T,LOOP(P$(SUM(S,ACTIVITY.l(T,S,P))),
-put 'ACTIVITY,'T.tl',ANNUAL,'P.tl',,'SUM(S,ACTIVITY.l(T,S,P))/;
+out.nd = 0;
+put 'ACTIVITY,'year(T);
+out.nd = 6;
+put ',ANNUAL,'P.tl',,'SUM(S,ACTIVITY.l(T,S,P))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(IMP$VAR_IMP.l(T,S,IMP),
-put 'VAR_IMP,'T.tl','S.tl',,'IMP.tl','VAR_IMP.l(T,S,IMP)/;
+out.nd = 0;
+put 'VAR_IMP,'year(T);
+out.nd = 6;
+put ','S.tl',,'IMP.tl','VAR_IMP.l(T,S,IMP)/;
 )))
 LOOP(T,LOOP(IMP$SUM(S,VAR_IMP.l(T,S,IMP)),
-put 'VAR_IMP,'T.tl',ANNUAL,,'IMP.tl','SUM(S,VAR_IMP.l(T,S,IMP))/;
+out.nd = 0;
+put 'VAR_IMP,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'IMP.tl','SUM(S,VAR_IMP.l(T,S,IMP))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(EXP$VAR_EXP.l(T,S,EXP),
-put 'VAR_EXP,'T.tl','S.tl',,'EXP.tl','VAR_EXP.l(T,S,EXP)/;
+out.nd = 0;
+put 'VAR_EXP,'year(T);
+out.nd = 6;
+put ','S.tl',,'EXP.tl','VAR_EXP.l(T,S,EXP)/;
 )))
 LOOP(T,LOOP(EXP$SUM(S,VAR_EXP.l(T,S,EXP)),
-put 'VAR_EXP,'T.tl',ANNUAL,,'EXP.tl','SUM(S,VAR_EXP.l(T,S,EXP))/;
+out.nd = 0;
+put 'VAR_EXP,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'EXP.tl','SUM(S,VAR_EXP.l(T,S,EXP))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(C$EQ_COMBAL.m(T,S,C),
-put 'C_PRICE,'T.tl','S.tl',,'C.tl','EQ_COMBAL.m(T,S,C)/;
+out.nd = 0;
+put 'C_PRICE,'year(T);
+out.nd = 6;
+put ','S.tl',,'C.tl','EQ_COMBAL.m(T,S,C)/;
 )))
 LOOP(T,LOOP(C$SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C)),
-put 'C_PRICE,'T.tl',ANNUAL,,'C.tl','SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C))/;
+out.nd = 0;
+put 'C_PRICE,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'C.tl','SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(P,LOOP(C$(C_MAP(P,C) and VAR_COM.l(T,S,P,C)),
-put 'VAR_COM,'T.tl','S.tl','P.tl','C.tl','VAR_COM.l(T,S,P,C)/;
+out.nd = 0;
+put 'VAR_COM,'year(T);
+out.nd = 6;
+put ','S.tl','P.tl','C.tl','VAR_COM.l(T,S,P,C)/;
 ))))
 LOOP(T,LOOP(P,LOOP(C$(C_MAP(P,C) and SUM(S,VAR_COM.l(T,S,P,C))),
-put 'VAR_COM,'T.tl',ANNUAL,'P.tl','C.tl','SUM(S,VAR_COM.l(T,S,P,C))/;
+out.nd = 0;
+put 'VAR_COM,'year(T);
+out.nd = 6;
+put ',ANNUAL,'P.tl','C.tl','SUM(S,VAR_COM.l(T,S,P,C))/;
 )))
 
 LOOP(T,LOOP(DEM,
-put 'DEMAND,'T.tl',ANNUAL,,'DEM.tl','demand(T,DEM)/;
+out.nd = 0;
+put 'DEMAND,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'DEM.tl','demand(T,DEM)/;
 ))
 
 LOOP(T,LOOP(S,LOOP(AGG$AGGREGATE.l(T,S,AGG),
-put 'AGGREGATE,'T.tl','S.tl',,'AGG.tl','AGGREGATE.l(T,S,AGG)/;
+out.nd = 0;
+put 'AGGREGATE,'year(T);
+out.nd = 6;
+put ','S.tl',,'AGG.tl','AGGREGATE.l(T,S,AGG)/;
 )))
 LOOP(T,LOOP(AGG$SUM(S,AGGREGATE.l(T,S,AGG)),
-put 'AGGREGATE,'T.tl',ANNUAL,,'AGG.tl','SUM(S,AGGREGATE.l(T,S,AGG))/;
+out.nd = 0;
+put 'AGGREGATE,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'AGG.tl','SUM(S,AGGREGATE.l(T,S,AGG))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(C$TOTAL_NET_AMOUNT.l(T,S,C),
-put 'TOTAL_NET_AMOUNT,'T.tl','S.tl',,'C.tl','TOTAL_NET_AMOUNT.l(T,S,C)/;
+out.nd = 0;
+put 'TOTAL_NET_AMOUNT,'year(T);
+out.nd = 6;
+put ','S.tl',,'C.tl','TOTAL_NET_AMOUNT.l(T,S,C)/;
 )))
 LOOP(T,LOOP(C$SUM(S,TOTAL_NET_AMOUNT.l(T,S,C)),
-put 'TOTAL_NET_AMOUNT,'T.tl',ANNUAL,,'C.tl','SUM(S,TOTAL_NET_AMOUNT.l(T,S,C))/;
+out.nd = 0;
+put 'TOTAL_NET_AMOUNT,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'C.tl','SUM(S,TOTAL_NET_AMOUNT.l(T,S,C))/;
 ))
 
 putclose out;

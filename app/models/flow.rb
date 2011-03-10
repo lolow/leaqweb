@@ -1,6 +1,5 @@
 class Flow < ActiveRecord::Base
 
-  acts_as_identifiable :prefix => "f"
   belongs_to :technology
   has_many :parameter_values, :dependent => :delete_all
   has_and_belongs_to_many :commodities
@@ -11,5 +10,9 @@ class Flow < ActiveRecord::Base
 
   def pollutant?
     self.class==OutFlow && self.commodities.size == 1 && self.commodities.first.pollutant?
+  end
+
+  def pid
+    "f#{id}"
   end
 end

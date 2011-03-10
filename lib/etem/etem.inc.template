@@ -112,6 +112,7 @@ set FLOW_ACT(P,FLOW) /
 scalar nb_periods /#{@p_nb_periods_d}/;
 scalar period_length /#{@p_period_length_d}/;
 scalar discount_rate /#{@p_discount_rate_d}/;
+scalar first_year /#{@p_first_year_d}/;
 
 parameter cost_delivery(T,S,P,C);
 cost_delivery(T,S,P,C)=#{@p_cost_delivery_d};
@@ -440,3 +441,6 @@ parameter salvage(T,P);
 salvage(T,P) = (1-(1+discount_rate)**(-period_length*(ord(T)+life(P)-nb_periods-1)))
                /((1+discount_rate)**(period_length*(nb_periods+1-ord(T))))
                /(1-(1+discount_rate)**(-period_length*life(P)));
+
+parameter year(T);
+year(T) = first_year + (ord(T)-1) * period_length;

@@ -17,7 +17,6 @@ class Technology < ActiveRecord::Base
             :format => {:with => /\A[a-zA-Z\d-]+\z/,
                         :message => "Please use only letters, numbers or '-' in name"}
 
-  acts_as_identifiable :prefix => "t"
   has_and_belongs_to_many :markets
   scope :activated, tagged_with("P")
 
@@ -175,6 +174,10 @@ class Technology < ActiveRecord::Base
       share.collect! { |s| coefs[s.commodity_id] * s.value }
       share.inject(0) { |sum, x| sum+x }
     end
+  end
+
+  def pid
+    name
   end
 
 end

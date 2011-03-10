@@ -1,9 +1,9 @@
 require 'tenjin'
 require 'yaml'
-require 'benchmark'
 require 'solver'
 require 'csv'
 require 'etem'
+require "fileutils"
 
 class EtemSolver
   include Etem
@@ -27,11 +27,28 @@ class EtemSolver
 
     context = create_context
     context[:f_inc] = file("inc")
-    context[:f_out] = file("out")
+    context[:f_csv] = file("csv")
     context[:f_status] = file("status")
 
     exts.each do |ext|
       File.open(file(ext),"w"){|f|f.puts(engine.render(template(ext),context))}
+    end
+
+    #write glossary
+    File.open(file("txt"), "w") do |f|
+     f.puts('ETEM outputs')
+     f.puts("Generated on #{Time.now.to_s}")
+     f.puts('General parameters')
+     f.puts "First year:#{first_year}"
+     f.puts "Period duration:#{period_duration}"
+     f.puts('Commodity')
+     Commodity.activated.each do |c|
+       f.puts "#{c.name}\t#{c.description}"
+      end
+      f.puts('Technology')
+      Technology.activated.each do |t|
+        f.puts "#{t.name}\t#{t.description}"
+      end
     end
 
     run(command)
@@ -45,32 +62,20 @@ class EtemSolver
 
   def prepare_results
     return unless optimal?
-    dict = Hash[*Commodity.activated.collect{|x|[x.pid,x.name]}.flatten]
-    dict.merge! Hash[*Technology.activated.collect{|x|[x.pid,x.name]}.flatten]
-    dict.merge! Hash[*Aggregate.activated.collect{|x|[x.pid,x.name]}.flatten]
+    #dict = Hash[*Commodity.activated.collect{|x|[x.pid,x.name]}.flatten]
+    #dict.merge! Hash[*Technology.activated.collect{|x|[x.pid,x.name]}.flatten]
+    #dict.merge! Hash[*Aggregate.activated.collect{|x|[x.pid,x.name]}.flatten]
     #write csv result file
-    CSV.open(file("csv"), "w") do |csv|
-      csv << %w[attribute T S P C value]
-      CSV.foreach(file("out"),{:headers=>true}) do |row|
-        csv << [row[0],first_year + (row[1].to_i-1) * period_duration,row[2],dict[row[3]],dict[row[4]],row[5]]
-      end
-    end
-    #write glossary
-    File.open(file("txt"), "w") do |f|
-      f.puts('ETEM outputs')
-      f.puts("Generated on #{Time.now.to_s}")
-      f.puts('General parameters')
-      f.puts "First year:#{first_year}"
-      f.puts "Period duration:#{period_duration}"
-      f.puts('Commodity')
-      Commodity.activated.each do |c|
-        f.puts "#{c.pid}\t#{c.name}\t#{c.description}"
-      end
-      f.puts('Technology')
-      Technology.activated.each do |t|
-        f.puts "#{t.pid}\t#{t.name}\t#{t.description}"
-      end
-    end
+    #CSV.open(file("csv"), "w") do |csv|
+    #  csv << %w[attribute T S P C value]
+    #  CSV.foreach(file("out"),{:headers=>true}) do |row|
+    #    csv << [row[0],first_year + (row[1].to_i-1) * period_duration,row[2],dict[row[3]],dict[row[4]],row[5]]
+    #  end
+    #end
+
+    # write csv
+    #File.copy(file("out"),file("csv")) if File.exists? file("out")
+
   end
 
   def log
@@ -119,7 +124,7 @@ class EtemSolver
   end
 
   def clean
-    %w{gms inc mod dat out log csv status}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
+    %w{gms inc mod dat out log csv status lst txt}.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
   
   # Extracts the context data for the generation
@@ -133,31 +138,31 @@ class EtemSolver
     markets = Market.activated
     aggregates = Aggregate.activated
     c[:s_s]    = TIME_SLICES
-    c[:s_p]    = id_list(technologies.all)
-    c[:s_m]    = id_list(markets.all)
-    c[:s_c]    = id_list(commodities.all)
-    c[:s_enc]  = id_list(commodities.energy_carriers)
-    c[:s_imp]  = id_list(commodities.imports)
-    c[:s_exp]  = id_list(commodities.exports)
-    c[:s_dem]  = id_list(commodities.demands)
-    c[:s_agg]  = id_list(aggregates.all)
-    c[:s_flow] = id_list(flows.all)
+    c[:s_p]    = id_list_name(technologies.all)
+    c[:s_m]    = id_list_name(markets.all)
+    c[:s_c]    = id_list_name(commodities.all)
+    c[:s_enc]  = id_list_name(commodities.energy_carriers)
+    c[:s_imp]  = id_list_name(commodities.imports)
+    c[:s_exp]  = id_list_name(commodities.exports)
+    c[:s_dem]  = id_list_name(commodities.demands)
+    c[:s_agg]  = id_list_name(aggregates.all)
+    c[:s_flow] = id_list_flow(flows.all)
 
     c[:s_in_flow]  = Hash.new
     c[:s_out_flow] = Hash.new
     technologies.each do |t|
-      c[:s_in_flow][t.pid]  = id_list(t.in_flows)
-      c[:s_out_flow][t.pid] = id_list(t.out_flows)
+      c[:s_in_flow][t.name]  = id_list_flow(t.in_flows)
+      c[:s_out_flow][t.name] = id_list_flow(t.out_flows)
     end
     
     c[:s_c_items] = Hash.new
-    flows.all.each{|f| c[:s_c_items][f.pid] = id_list(f.commodities)&c[:s_c]}
+    flows.all.each{|f| c[:s_c_items]["f_#{f.id}"] = id_list_name(f.commodities)&c[:s_c]}
 
     c[:s_c_agg] = Hash.new
-    aggregates.all.each{|agg| c[:s_c_agg][agg.pid] = id_list(agg.commodities)&c[:s_c]}
+    aggregates.all.each{|agg| c[:s_c_agg][agg.name] = id_list_name(agg.commodities)&c[:s_c]}
 
     c[:s_p_market] = Hash.new
-    markets.all.each{|m| c[:s_p_market][m.pid] = id_list(m.technologies)&c[:s_p]}
+    markets.all.each{|m| c[:s_p_market][m.name] = id_list_name(m.technologies)&c[:s_p]}
     
     # parameters generation
     signature.each_key do |param|
@@ -176,7 +181,9 @@ class EtemSolver
     end
     c[:p_nb_periods_d]    = nb_periods
     c[:p_period_length_d] = period_duration
-    c[:p_market] = markets.map{|m| m.technologies.activated.map{|t| "#{t.pid} #{m.pid} 1"}}.join(" ")
+    c[:p_first_year_d]    = first_year
+
+    c[:p_market] = markets.map{|m| m.technologies.activated.map{|t| "#{t.name} #{m.name} 1"}}.join(" ")
 
     # frac_dem - fill the parameter if no value are available
     fill_dmd = c[:s_dem] - c[:p_frac_dem].select{|x| x =~ /\w+/ }
@@ -209,7 +216,7 @@ class EtemSolver
       case parameter
       when "demand"
         Commodity.demands.activated.each{|dem|
-          key = "T " + Commodity.pid(dem.id)
+          key = "_T " + dem.name
           values[key] = Hash.new
           dem.demand_values(first_year).each{|dv|
             values[key][dv[0]] = dv[1]
@@ -226,9 +233,9 @@ class EtemSolver
       str = []
       values.each{ |key,k_values|
         projection(k_values,time_proj[parameter]).each{|period,value|
-          if key.index("AN")
+          if key.index("_AN")
             TIME_SLICES.each { |ts|
-              str.concat(key.sub("AN",ts).sub(/[T]/,period.to_s).split)
+              str.concat(key.sub("_AN",ts).sub(/_T/,period.to_s).split)
               if inherit_ts[parameter]==:same
                 str << value
               elsif inherit_ts[parameter]==:fraction
@@ -236,7 +243,7 @@ class EtemSolver
               end
             }
           else
-            str.concat(key.sub(/[T]/,period.to_s).split)
+            str.concat(key.sub(/_T/,period.to_s).split)
             str << value
           end
         }
@@ -246,7 +253,7 @@ class EtemSolver
       pv.collect{ |v|
         str = parameter_value_indexes(parameter,v)
         str <<  case parameter
-                when "flow_act" then Flow.pid(v.flow.id)
+                when "flow_act" then "f_#{v.flow.id}"
                 when "avail"    then "#{period(v.value)}"
                 when "life"     then "#{v.value/period_duration}"
                 else "#{v.value}"
@@ -256,8 +263,13 @@ class EtemSolver
   end
 
   # Return a string which is a list of prefixed ids
-  def id_list(items)
-    items.map(&:pid)
+  def id_list_name(items)
+    items.map(&:name)
+  end
+
+  # Return a string which is a list of prefixed ids
+  def id_list_flow(items)
+    items.collect{|f|"f_#{f.id}"}
   end
 
   # Returns an array of string that contains the parameter value indexes
@@ -266,15 +278,15 @@ class EtemSolver
   def parameter_value_indexes(parameter,row)
     signature[parameter].collect { |idx|
       case idx
-      when "period"        then "T"
-      when "time_slice"    then row.time_slice
-      when "commodity"     then Commodity.pid(row.commodity_id)
-      when "aggregate"     then Aggregate.pid(row.aggregate_id)
-      when "technology"    then Technology.pid(row.technology_id)
-      when "flow"          then Flow.pid(row.flow.id)
-      when "in_flow"       then Flow.pid(row.in_flow.id)
-      when "out_flow"      then Flow.pid(row.out_flow.id)
-      when "market"        then Market.pid(row.market_id)
+      when "period"        then "_T"
+      when "time_slice"    then (row.time_slice=="AN" ? "_AN" : row.time_slice)
+      when "commodity"     then row.commodity.name
+      when "aggregate"     then row.aggregate.name
+      when "technology"    then row.technology.name
+      when "flow"          then "f_#{row.flow.id}"
+      when "in_flow"       then "f_#{row.in_flow.id}"
+      when "out_flow"      then "f_#{row.out_flow.id}"
+      when "market"        then row.market.name
       end
     }
   end
@@ -298,14 +310,6 @@ class EtemSolver
   def file(ext)
     File.join(temp_path,"temp-#{@token}.#{ext}")
   end
-  
-  def say(message,debug)
-    puts "-- #{message}" if debug
-    time = Benchmark.measure {
-      yield
-    }
-    puts "   -> %.4fs" % time.real if debug
-  end
 
   def run(cmd)
     puts cmd
@@ -315,7 +319,7 @@ class EtemSolver
     else
       @pid = fork do
         exec(*cmd)
-        exit! 127
+        exit! 1
       end
     end
   end
