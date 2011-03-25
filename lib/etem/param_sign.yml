@@ -1,4 +1,7 @@
 ---
+aggregate_annual_up:
+- period
+- aggregate
 market_share_up:
 - period
 - market

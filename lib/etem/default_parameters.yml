@@ -1,4 +1,7 @@
---- 
+---
+- :name: aggregate_annual_up
+  :definition: Annual upper bound on an aggregate
+  :default_value: -1.0
 - :name: agg_coef
   :definition: Conversion coefficient from the commodity to its aggregate
   :default_value: 1

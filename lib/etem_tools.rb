@@ -240,7 +240,7 @@ module EtemTools
       YAML.load_file(yml_file).each do |row|
         tech0 = Technology.find_by_name(row["technology_name"])
         puts tech0
-        (0...row["avail"].size).each do |i|
+        row["avail"].size.times.each do |i|
           new_name = "#{row["technology_name"]}-#{row["avail"][i]}"
           puts new_name
           tech = Technology.find_by_name(new_name)

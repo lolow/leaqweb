@@ -34,3 +34,5 @@ imp_bnd_up: interpolation
 peak_reserve: extrapolation
 rate_of_penetration: interpolation
 market_share_up: interpolation
+aggregate_annual_up: interpolation
+

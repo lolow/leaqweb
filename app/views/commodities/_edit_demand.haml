@@ -1,6 +1,6 @@
 :javascript
   $(document).ready(function() {
-    xticks = #{(0..5).collect{|x| 5*x+2005}.to_json};
+    xticks = #{2005.step(2030,5).to_json};
     $.jqplot('chartdiv', #{[@commodity.demand_values(2005)].to_json},
       {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
     });

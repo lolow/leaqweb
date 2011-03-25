@@ -346,6 +346,13 @@ agg_coef(C,AGG)=#{@p_agg_coef_d} ;
   agg_coef('#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
+parameter aggregate_annual_up(T,AGG);
+aggregate_annual_up(T,AGG)=#{@p_aggregate_annual_up_d} ;
+<?rb e = @p_aggregate_annual_up.to_enum ?>
+<?rb loop do ?>
+  aggregate_annual_up('#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
 parameter degree_of_use(T,C,AGG);
 degree_of_use(T,C,AGG)=#{@p_degree_of_use_d} ;
 <?rb e = @p_degree_of_use.to_enum ?>

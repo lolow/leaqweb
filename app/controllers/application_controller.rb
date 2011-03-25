@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def checkbox_ids
-    params.keys.select { |x| x=~/cb\d+/ }.collect { |x| x[2..-1].to_i }
+    params.keys.select{|x| x=~/cb\d+/ }.collect{|x| x[2..-1].to_i }
   end
 
   def last_visited(active_model)

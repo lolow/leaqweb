@@ -360,7 +360,7 @@ class EtemSolver
   end
 
   def periods
-    @etem_periods ||= (0..nb_periods-1).collect{|x|x*period_duration+first_year}
+    @etem_periods ||=  nb_periods.times.collect{|x|x*period_duration+first_year}
   end
 
 end
