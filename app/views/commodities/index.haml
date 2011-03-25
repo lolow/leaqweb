@@ -23,7 +23,33 @@
           =link_to (h item.name), edit_commodity_path(item)
           %br
 
+:javascript
+  $(document).ready(function() {
+  	$('#list_table').dataTable( {
+  		"bProcessing": true,
+  		"bServerSide": true,
+  		"sAjaxSource": #{request.path.to_json}
+  	} );
+  } );
+
 .grid_9
+
+  .box
+    %h2 Browse commodities
+    %p
+      %table(id="list_table" summary="Commodity list")
+        %thead
+          %th Name
+          %th Description
+          %th
+        %tbody
+          %tr
+            %td(colspan="3" class="list_table_empty")
+              Loading data
+        %tfoot
+          %th Name
+          %th Description
+          %th
 
   .box
     %h2 Browse commodities
