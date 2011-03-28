@@ -3,23 +3,19 @@
 # the COPYRIGHT file.
 
 class TechnologiesController < ApplicationController
+
   before_filter :authenticate_user!
-  respond_to :html
+
+  respond_to :html, :except => :list
+  respond_to :json, :only => :list
 
   def index
-    filter = {:page => params[:page],
-              :per_page => 30,
-              :order => :name}
-    if params[:search]
-      filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
-    end
     @last_visited = last_visited(Technology)
-    @sets_cloud = Technology.tag_counts_on(:sets)
-    if params[:set]
-      @technologies = Technology.tagged_with(params[:set]).paginate(filter)
-    else
-      @technologies = Technology.paginate(filter)
-    end
+  end
+
+  def list
+    @technologies, @total_technologies  = filter_technologies(params)
+    render :layout => false, :partial => "list.json"
   end
 
   def show
@@ -104,8 +100,38 @@ class TechnologiesController < ApplicationController
     redirect_to(edit_technology_path(@technology))
   end
 
+  def destroy_all
+    Technology.destroy(checkbox_ids)
+    redirect_to(commodities_url)
+  end
+
   def destroy
     Technology.destroy(params[:id])
     redirect_to(technologies_url)
   end
+
+  private
+
+  def filter_technologies(params={})
+    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+    columns = [nil,"name","description"]
+    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
+    conditions = []
+    if params[:sSearch] && params[:sSearch]!=""
+      conditions = ['name LIKE ? OR description LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
+    end
+    filter = {:page => current_page,
+              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
+              :conditions => conditions,
+              :per_page => params[:iDisplayLength]}
+    if params[:set] && params[:set]!="null"
+      displayed = Technology.tagged_with(params[:set]).paginate filter
+      total = Technology.tagged_with(params[:set]).count :conditions => conditions
+    else
+      displayed = Technology.paginate filter
+      total = Technology.count :conditions => conditions
+    end
+    return displayed, total
+  end
+
 end

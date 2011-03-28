@@ -70,6 +70,15 @@ class Commodity < ActiveRecord::Base
     self.set_list.include? "POLL"
   end
 
+  def type_name
+    return "Demand" if set_list.include? "DEM"
+    return "Pollutant" if set_list.include? "POLLS"
+    return "Import+Export" if set_list.include?("IMP") && set_list.include?("EXP")
+    return "Import" if set_list.include? "IMP"
+    return "Export" if set_list.include? "EXP"
+    return "Energy Carrier"
+  end
+
   def demand_values(first_year)
     return [] unless demand?
     if demand_driver

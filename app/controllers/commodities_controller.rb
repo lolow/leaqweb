@@ -6,21 +6,16 @@ class CommoditiesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html
+  respond_to :html, :except => :list
+  respond_to :json, :only => :list
 
   def index
-    filter = {:page => params[:page],
-              :per_page => 30,
-              :order => :name}
-    if params[:search]
-      filter.merge!({:conditions => ['name like ?', "%#{params[:search]}%"]})
-    end
     @last_visited = last_visited(Commodity)
-    if params[:set]
-      @commodities = Commodity.tagged_with(params[:set]).paginate(filter)
-    else
-      @commodities = Commodity.paginate(filter)
-    end
+  end
+
+  def list
+    @commodities, @total_commodities  = filter_commodities(params)
+    render :layout => false, :partial => "list.json"
   end
 
   def show
@@ -66,9 +61,38 @@ class CommoditiesController < ApplicationController
     redirect_to(edit_commodity_path(@commodity))
   end
 
+  def destroy_all
+    Commodity.destroy(checkbox_ids)
+    redirect_to(commodities_url)
+  end
+
   def destroy
     Commodity.destroy(params[:id])
     redirect_to(commodities_url)
+  end
+
+  private
+
+  def filter_commodities(params={})
+    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+    columns = [nil,"name","description"]
+    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
+    conditions = []
+    if params[:sSearch] && params[:sSearch]!=""
+      conditions = ['name LIKE ? OR description LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
+    end
+    filter = {:page => current_page,
+              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
+              :conditions => conditions,
+              :per_page => params[:iDisplayLength]}
+    if params[:set] && params[:set]!="null"
+      displayed = Commodity.tagged_with(params[:set]).paginate filter
+      total = Commodity.tagged_with(params[:set]).count :conditions => conditions
+    else
+      displayed = Commodity.paginate filter
+      total = Commodity.count :conditions => conditions
+    end
+    return displayed, total
   end
 
 end

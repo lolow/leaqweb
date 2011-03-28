@@ -1,5 +1,14 @@
 .grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :edit }
+
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p= link_to 'Browse all', commodities_path, :class => "action browse"
+    %p
+      = link_to 'New commodity', new_commodity_path, :class => "action new"
+      = link_to 'Duplicate', duplicate_commodity_path, :confirm => 'Are you sure?', :method => :post, :class => "action duplicate"
+      = link_to 'Delete', @commodity, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+
   .box
     %h2 Commodity
     .block(id="idcard")
@@ -9,6 +18,7 @@
         =f.input :set_list, :collection => Commodity::CATEGORIES, :selected => @commodity.matching_set_list, :label => "Type"
         =f.button :submit
         %input(type="hidden" name="do" value="update")
+
   - if @commodity.activated?
     .box
       %h2 Flows

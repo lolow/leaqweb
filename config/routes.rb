@@ -2,58 +2,38 @@ Leaqweb::Application.routes.draw do |map|
   
   devise_for :users
 
-  resources :stored_queries do
-    member do
-      get :duplicate
-    end
-  end
+  map.resources :commodities,
+                :member => {:duplicate => :post},
+                :collection => {:list => :get, :destroy_all => :delete}
 
-  resources :outputs do  
-    member do
-      get :csv
-      get :import
-    end 
-  end
+  map.resources :technologies,
+                :member => {:duplicate => :post, :emission => :post},
+                :collection => {:list => :get, :destroy_all => :delete}
 
-  resources :technologies do  
-    member do
-      post :duplicate
-      post :emission
-    end  
-  end
+  map.resources :combustions,
+                :collection => {:update => :put}
 
-  resources :commodities do  
-    member do
-      post :duplicate
-    end
-  end
+  map.resources :parameter_values,
+                :collection => {:update => :put}
+
+  map.resources :outputs,
+                :member => {:csv => :get, :import => :get}
+
+  map.resources :stored_queries,
+                :member => {:duplicate => :get}
+
+  map.resources :flows
+  map.resources :markets
+  map.resources :aggregates
+  map.resources :solvers
+  map.resources :demand_drivers
   
-  resources :combustions do
-    collection do
-      put :update
-    end
-  end
-
-  resources :parameter_values do
-    collection do
-      put :update
-    end
-  end
-
-  resources :flows
-  resources :markets
-  resources :aggregates
-  resources :solvers
-  resources :demand_drivers
-  
-  match '/backup.zip', :to => 'dashboard#backup', :as => 'backup_db'
-  match '/restore', :to => 'dashboard#restore', :as => 'restore_db'
-  match '/check_db', :to => 'dashboard#check_db', :as => 'check_db'
-  match '/reset', :to => 'dashboard#reset', :as => 'reset_db'
-
-  match '/log', :to => 'dashboard#log', :as => 'log'
+  match '/backup.zip', :to => 'dashboard#backup',   :as => 'backup_db'
+  match '/restore',    :to => 'dashboard#restore',  :as => 'restore_db'
+  match '/check_db',   :to => 'dashboard#check_db', :as => 'check_db'
+  match '/reset',      :to => 'dashboard#reset',    :as => 'reset_db'
+  match '/log',        :to => 'dashboard#log',      :as => 'log'
 
   root :to => 'dashboard#index'
 
-  #match ':controller(/:action(/:id(.:format)))'
 end

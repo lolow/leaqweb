@@ -1,17 +1,50 @@
-.grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :index }
-  
+:javascript
+  $(document).ready(function() {
+  	$('.list_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_technologies_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
+            $.getJSON( sSource, aoData, function (json) {
+              fnCallback(json)
+            } );
+          },
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0] } ],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	} );
+    $("div.dataTable_delete").html(#{submit_tag('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
+    $('.check_all').click(function () {
+      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
+    } );
+  } );
+
+.grid_2
+
   .box
-    %h2 Filter
-    .block#search
-    %h5 Name
-    = render :partial => "/shared/search"
-    %h5 Set
+    %h2 Action
+    .block
+      %p= link_to('New technology', new_technology_path, :class => 'action new')
+
+  .box
+    %h2 Type
+    .block
     %ul.menu
-      - %w{DMD FUELTECH}.each do |tag|
-        - c = "active" if tag==params[:set]
-        %li= link_to tag, {:controller => "technologies", :set => tag}, :class => c
-      = link_to "reset filter", technologies_path
+      %li
+        - c0 = "active" unless params[:set]
+        = link_to "All", technologies_path, :class => c0
+        - [["Demand devices", "DMD"], ["Fuel technologies","FUELTECH"]].each do |tag|
+          - c = "active" if tag[1]==params[:set]
+          %li= link_to tag[0], {:controller => "technologies", :set => tag[1]}, :class => c
 
   - if @last_visited.size > 0
     .box
@@ -22,27 +55,23 @@
             = link_to (h item.name), edit_technology_path(item)
             %br
 
-.grid_9
+.grid_10
 
   .box
     %h2 Browse technologies
     %p
-      %table(summary="Technology list")
-        %thead
-          %tr
-            %th Name
+      = form_tag(destroy_all_technologies_path,:method => "delete") do
+        %table(class="list_table" summary="Technology list")
+          %thead
+            %th(class='check')
+              = check_box_tag("click_check",nil,nil,:class=>"check_all")
+            %th(class='name') Name
             %th Description
-            %th
-        %tbody
-          - @technologies.each do |technology|
-            %tr{ :class => cycle('even', 'odd') }
-              %td= link_to technology.name, edit_technology_path(technology)
-              %td= link_to truncate(technology.description, :omission => "...",
-                              :length => 100),
-                              edit_technology_path(technology)
-              %td= link_to 'Delete', technology, :confirm => 'Are you sure?', :method => :delete
-      = page_entries_info @technologies
-      %br
-      = will_paginate @technologies
-      
+          %tbody
+            %tr
+              %td(colspan="3" class="list_table_empty")
+                Loading data
+    %br
+    %br
+
 .clear

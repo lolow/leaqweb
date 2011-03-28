@@ -250,8 +250,9 @@ col.colC {
 	width:8em;
 }
 th, td {
-	padding:.2em 1em;
+	padding:.1em 1em;
 	text-align:left;
+    vertical-align:middle;
 }
 thead th {
 	border-bottom:2px solid #888;
@@ -653,19 +654,23 @@ DataTable
 
 .dataTables_wrapper {
 	position: relative;
-	/*min-height: 302px;*/
 	clear: both;
 	_height: 302px;
 }
 .dataTables_length  {
   float:left;
-  width:40%;
+  width:50%;
   margin-bottom:5px;
 }
+
+.dataTables_processing {
+  float:left;
+}
+
 .dataTables_filter {
     float:right;
     text-align:right;
-    width:50%;
+    width:30%;
     margin-bottom:5px;
 }
 
@@ -676,19 +681,26 @@ DataTable
 }
 
 .dataTables_info {
-    float:left;
-    width:45%;
+    float:right;
+    text-align:right;
+    width:40%;
+    margin-top: 5px;
 }
 .dataTables_paginate {
     float:left;
-    /*text-align:right;*/
-    width:44px;
+    margin-top: 5px;
+}
+
+.dataTable_delete {
+  float:left;
+  display:block;
+  width:40%;
 }
 
 table.dataTable {
     clear:both;
-    margin-bottom:5px;
 }
+
 table.dataTable thead th {
 	cursor: pointer;
 }
@@ -728,4 +740,43 @@ table.dataTable td.check {
     background:$box-background;
     color:$red;
     margin:0 0 0 0;
+}
+
+// LIST TABLE
+
+table.list_table thead th {
+    cursor: pointer;
+}
+
+table.list_table {
+    clear: both;
+    margin-bottom: 5px;
+}
+
+table.list_table input {
+    border-color: #555555 #CCCCCC #CCCCCC #555555;
+    border-style: solid;
+    border-width: 1px;
+    padding: 1px;
+}
+
+table.list_table th.check {
+    width:1.5em;
+}
+
+table.list_table th.name {
+    width:15%;
+}
+
+.paginate_enabled_next, .paginate_enabled_previous, .paginate_button {
+  cursor: pointer;
+}
+
+.paginate_button {
+  padding: 2px;
+}
+
+.paginate_active {
+  font-weight: bold;
+  padding: 2px;
 }
