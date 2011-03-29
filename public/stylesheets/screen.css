@@ -1449,22 +1449,16 @@ input.button {
 }
 
 /* line 476, ../../app/stylesheets/_layout.scss */
-.dataTables_action input.button {
-  padding: 4px 9px 4px 21px;
-  background-image: url("/images/a_go.png");
-}
-
-/* line 481, ../../app/stylesheets/_layout.scss */
 input.aligned {
   margin-left: 114px;
 }
 
-/* line 485, ../../app/stylesheets/_layout.scss */
+/* line 480, ../../app/stylesheets/_layout.scss */
 .input input.boolean {
   width: 1em;
 }
 
-/* line 489, ../../app/stylesheets/_layout.scss */
+/* line 484, ../../app/stylesheets/_layout.scss */
 .simple_form .error {
   clear: left;
   font-size: 12px;
@@ -1472,7 +1466,7 @@ input.aligned {
   display: block;
 }
 
-/* line 496, ../../app/stylesheets/_layout.scss */
+/* line 491, ../../app/stylesheets/_layout.scss */
 .simple_form .hint {
   clear: left;
   margin-left: 120px;
@@ -1481,34 +1475,34 @@ input.aligned {
   font-style: italic;
 }
 
-/* line 504, ../../app/stylesheets/_layout.scss */
+/* line 499, ../../app/stylesheets/_layout.scss */
 #idcard .input label {
   text-align: left;
 }
 
-/* line 508, ../../app/stylesheets/_layout.scss */
+/* line 503, ../../app/stylesheets/_layout.scss */
 #idcard .select label {
   width: 100%;
 }
 
-/* line 512, ../../app/stylesheets/_layout.scss */
+/* line 507, ../../app/stylesheets/_layout.scss */
 #idcard .input input, #idcard .input textarea {
   width: 98%;
   clear: both;
 }
 
-/* line 517, ../../app/stylesheets/_layout.scss */
+/* line 512, ../../app/stylesheets/_layout.scss */
 #action.block {
   padding-top: 3px;
   line-height: 25px;
 }
 
-/* line 522, ../../app/stylesheets/_layout.scss */
+/* line 517, ../../app/stylesheets/_layout.scss */
 #action.box {
   background: #fafaf7;
 }
 
-/* line 526, ../../app/stylesheets/_layout.scss */
+/* line 521, ../../app/stylesheets/_layout.scss */
 a.action {
   text-decoration: none;
   padding: 4px 9px 4px 25px;
@@ -1523,19 +1517,25 @@ a.action {
   border-radius: 5px;
 }
 
-/* line 537, ../../app/stylesheets/_layout.scss */
+/* line 532, ../../app/stylesheets/_layout.scss */
 a.new {
   background-image: url("/images/a_new.png");
 }
 
-/* line 541, ../../app/stylesheets/_layout.scss */
+/* line 536, ../../app/stylesheets/_layout.scss */
 a.duplicate {
   background-image: url("/images/a_duplicate.png");
 }
 
-/* line 545, ../../app/stylesheets/_layout.scss */
+/* line 540, ../../app/stylesheets/_layout.scss */
 a.delete {
   background-image: url("/images/a_delete.png");
+}
+
+/* line 544, ../../app/stylesheets/_layout.scss */
+a.delete_values {
+  background-image: none;
+  padding: 4px 9px;
 }
 
 /* line 549, ../../app/stylesheets/_layout.scss */
@@ -1675,71 +1675,17 @@ html[xmlns] .clearfix {
 DataTable
 */
 /* line 655, ../../app/stylesheets/_layout.scss */
-.dataTables_wrapper {
-  position: relative;
+table.dataTable {
   clear: both;
-  _height: 302px;
+  margin-bottom: 0px;
 }
 
 /* line 660, ../../app/stylesheets/_layout.scss */
-.dataTables_length {
-  float: left;
-  width: 50%;
-  margin-bottom: 5px;
-}
-
-/* line 666, ../../app/stylesheets/_layout.scss */
-.dataTables_processing {
-  float: left;
-}
-
-/* line 670, ../../app/stylesheets/_layout.scss */
-.dataTables_filter {
-  float: right;
-  text-align: right;
-  width: 30%;
-  margin-bottom: 5px;
-}
-
-/* line 677, ../../app/stylesheets/_layout.scss */
-.dataTables_action {
-  float: right;
-  text-align: right;
-  width: 40%;
-}
-
-/* line 683, ../../app/stylesheets/_layout.scss */
-.dataTables_info {
-  float: right;
-  text-align: right;
-  width: 40%;
-  margin-top: 5px;
-}
-
-/* line 689, ../../app/stylesheets/_layout.scss */
-.dataTables_paginate {
-  float: left;
-  margin-top: 5px;
-}
-
-/* line 694, ../../app/stylesheets/_layout.scss */
-.dataTable_delete {
-  float: left;
-  display: block;
-  width: 40%;
-}
-
-/* line 700, ../../app/stylesheets/_layout.scss */
-table.dataTable {
-  clear: both;
-}
-
-/* line 704, ../../app/stylesheets/_layout.scss */
 table.dataTable thead th {
   cursor: pointer;
 }
 
-/* line 708, ../../app/stylesheets/_layout.scss */
+/* line 664, ../../app/stylesheets/_layout.scss */
 table.dataTable input, .dataTables_filter input {
   border-color: #555555 #CCCCCC #CCCCCC #555555;
   border-style: solid;
@@ -1747,17 +1693,92 @@ table.dataTable input, .dataTables_filter input {
   padding: 1px;
 }
 
-/* line 715, ../../app/stylesheets/_layout.scss */
+/* line 671, ../../app/stylesheets/_layout.scss */
 table.dataTable input[type="textcell"] {
   width: 100%;
 }
 
-/* line 719, ../../app/stylesheets/_layout.scss */
-table.dataTable td.check {
+/* line 675, ../../app/stylesheets/_layout.scss */
+th.check, td.check {
+  width: 1.5em;
+  padding-left: 0px;
+  padding-right: 0px;
+  text-align: center;
+}
+
+/* line 682, ../../app/stylesheets/_layout.scss */
+table.dataTable th.add {
   width: 1.5em;
 }
 
-/* line 723, ../../app/stylesheets/_layout.scss */
+/* line 686, ../../app/stylesheets/_layout.scss */
+#error_explanation h2 {
+  background: #ecede0;
+  color: #dd0000;
+  margin: 0 0 0 0;
+}
+
+/* line 692, ../../app/stylesheets/_layout.scss */
+.edit {
+  width: 100%;
+  display: inline;
+}
+
+/* line 699, ../../app/stylesheets/_layout.scss */
+.dataTables_wrapper {
+  position: relative;
+  clear: both;
+}
+
+/* line 704, ../../app/stylesheets/_layout.scss */
+.dataTables_length {
+  float: left;
+  width: 50%;
+  margin-bottom: 5px;
+}
+
+/* line 710, ../../app/stylesheets/_layout.scss */
+.dataTables_processing {
+  float: left;
+}
+
+/* line 714, ../../app/stylesheets/_layout.scss */
+.dataTables_filter {
+  float: right;
+  text-align: right;
+  width: 30%;
+  margin-bottom: 5px;
+}
+
+/* line 721, ../../app/stylesheets/_layout.scss */
+.dataTables_action {
+  float: left;
+  width: 45%;
+  margin-top: 5px;
+}
+
+/* line 727, ../../app/stylesheets/_layout.scss */
+.dataTables_info {
+  float: right;
+  text-align: right;
+  width: 30%;
+  margin-top: 5px;
+}
+
+/* line 733, ../../app/stylesheets/_layout.scss */
+.dataTables_paginate {
+  float: left;
+  margin-top: 5px;
+}
+
+/* line 738, ../../app/stylesheets/_layout.scss */
+.dataTable_delete {
+  float: left;
+  display: block;
+  width: 40%;
+}
+
+/* line 744, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
   height: 16px;
   width: 16px;
@@ -1765,35 +1786,28 @@ table.dataTable td.check {
   float: left;
 }
 
-/* line 730, ../../app/stylesheets/_layout.scss */
+/* line 751, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
   background-image: url("/images/resultset_previous.png");
 }
 
-/* line 735, ../../app/stylesheets/_layout.scss */
+/* line 756, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
   background-image: url("/images/resultset_next.png");
 }
 
-/* line 739, ../../app/stylesheets/_layout.scss */
-#error_explanation h2 {
-  background: #ecede0;
-  color: #dd0000;
-  margin: 0 0 0 0;
-}
-
-/* line 747, ../../app/stylesheets/_layout.scss */
+/* line 763, ../../app/stylesheets/_layout.scss */
 table.list_table thead th {
   cursor: pointer;
 }
 
-/* line 751, ../../app/stylesheets/_layout.scss */
+/* line 767, ../../app/stylesheets/_layout.scss */
 table.list_table {
   clear: both;
   margin-bottom: 5px;
 }
 
-/* line 756, ../../app/stylesheets/_layout.scss */
+/* line 772, ../../app/stylesheets/_layout.scss */
 table.list_table input {
   border-color: #555555 #CCCCCC #CCCCCC #555555;
   border-style: solid;
@@ -1801,27 +1815,27 @@ table.list_table input {
   padding: 1px;
 }
 
-/* line 763, ../../app/stylesheets/_layout.scss */
+/* line 779, ../../app/stylesheets/_layout.scss */
 table.list_table th.check {
   width: 1.5em;
 }
 
-/* line 767, ../../app/stylesheets/_layout.scss */
+/* line 783, ../../app/stylesheets/_layout.scss */
 table.list_table th.name {
   width: 15%;
 }
 
-/* line 771, ../../app/stylesheets/_layout.scss */
+/* line 787, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next, .paginate_enabled_previous, .paginate_button {
   cursor: pointer;
 }
 
-/* line 775, ../../app/stylesheets/_layout.scss */
+/* line 791, ../../app/stylesheets/_layout.scss */
 .paginate_button {
   padding: 2px;
 }
 
-/* line 779, ../../app/stylesheets/_layout.scss */
+/* line 795, ../../app/stylesheets/_layout.scss */
 .paginate_active {
   font-weight: bold;
   padding: 2px;

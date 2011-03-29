@@ -10,6 +10,9 @@ Leaqweb::Application.routes.draw do |map|
                 :member => {:duplicate => :post, :emission => :post},
                 :collection => {:list => :get, :destroy_all => :delete}
 
+  map.resources :demand_drivers,
+                :collection => {:list => :get, :destroy_all => :delete}
+
   map.resources :combustions,
                 :collection => {:update => :put}
 
@@ -26,7 +29,7 @@ Leaqweb::Application.routes.draw do |map|
   map.resources :markets
   map.resources :aggregates
   map.resources :solvers
-  map.resources :demand_drivers
+
   
   match '/backup.zip', :to => 'dashboard#backup',   :as => 'backup_db'
   match '/restore',    :to => 'dashboard#restore',  :as => 'restore_db'

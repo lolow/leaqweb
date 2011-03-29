@@ -8,4 +8,9 @@ class Combustion < ActiveRecord::Base
 
   #Validations
   validates :value, :presence => true, :numericality => true
+
+  def parameter_values_for(parameters)
+    Combustion.all
+  end
+
 end

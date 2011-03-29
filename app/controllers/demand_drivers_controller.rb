@@ -3,64 +3,47 @@
 # the COPYRIGHT file.
 
 class DemandDriversController < ApplicationController
+
   before_filter :authenticate_user!
 
-  # GET /drivers
+  respond_to :html, :except => :list
+  respond_to :json, :only => :list
+
   def index
-    filter = {:page => params[:page],
-              :per_page => 30,
-              :order => :name}
-    @demand_drivers = DemandDriver.paginate(filter)
-    respond_to do |format|
-      format.html
-    end
   end
 
-  # GET /drivers/1
+  def list
+    @demand_drivers, @total_demand_drivers  = filter_demand_drivers(params)
+    render :layout => false, :partial => "list.json"
+  end
+
   def show
-    @demand_driver = DemandDriver.find(params[:id])
-    respond_to do |format|
-      format.html { redirect_to edit_demand_driver_path(@demand_driver) }
-    end
+    redirect_to edit_demand_driver_path(DemandDriver.find(params[:id]))
   end
 
-  # GET /drivers/1/edit
   def edit
     @demand_driver = DemandDriver.find(params[:id])
+    respond_with(@demand_driver)
   end
 
-  # GET /drivers/new
   def new
-    @demand_driver = DemandDriver.new
-    respond_to do |format|
-      format.html
-    end
+    respond_with(@demand_driver = DemandDriver.new)
   end
 
-  # POST /drivers
   def create
-    @demand_driver = DemandDriver.new(params[:demand_driver])
-    respond_to do |format|
-      if @demand_driver.save
-        flash[:notice] = 'Demand driver was successfully created.'
-        format.html { redirect_to(@demand_driver) }
-      else
-        format.html { render :action => "new" }
-      end
-    end
+    respond_with(@demand_driver = DemandDriver.new(params[:demand_driver]))
   end
 
-  # DELETE /drivers/1
   def destroy
-    @demand_driver = DemandDriver.find(params[:id])
-    @demand_driver.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(demand_drivers_url) }
-    end
+    DemandDriver.destroy(params[:id])
+    redirect_to(demand_drivers_url)
   end
 
-  # PUT /drivers/1
+  def destroy_all
+    DemandDriver.destroy(checkbox_ids)
+    redirect_to(demand_drivers_url)
+  end
+
   def update
     @demand_driver = DemandDriver.find(params[:id])
     # jeditable fields
@@ -102,6 +85,30 @@ class DemandDriversController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(edit_demand_driver_path(@demand_driver)) }
     end
+  end
+
+  private
+
+  def filter_demand_drivers(params={})
+    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+    columns = [nil,"name","definition"]
+    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
+    conditions = []
+    if params[:sSearch] && params[:sSearch]!=""
+      conditions = ['name LIKE ? OR definition LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
+    end
+    filter = {:page => current_page,
+              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
+              :conditions => conditions,
+              :per_page => params[:iDisplayLength]}
+    if params[:set] && params[:set]!="null"
+      displayed = DemandDriver.tagged_with(params[:set]).paginate filter
+      total = DemandDriver.tagged_with(params[:set]).count :conditions => conditions
+    else
+      displayed = DemandDriver.paginate filter
+      total = DemandDriver.count :conditions => conditions
+    end
+    return displayed, total
   end
 
 end

@@ -15,10 +15,9 @@ class DashboardController < ApplicationController
     @nb_technologies = Technology.count
     @nb_flows = Flow.count
     @nb_combustions = Combustion.count
-    @from_time = Time.now
-    @last_changes = Version.order(:created_at).last(10)
     @nb_demand_drivers = DemandDriver.count
     @nb_parameter_values = ParameterValue.count
+    @last_changes = Version.order(:created_at).last(10)
   end
 
   def check_db

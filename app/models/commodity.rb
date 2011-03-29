@@ -134,4 +134,6 @@ class Commodity < ActiveRecord::Base
     s
   end
 
+
+
 end

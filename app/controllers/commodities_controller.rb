@@ -19,8 +19,7 @@ class CommoditiesController < ApplicationController
   end
 
   def show
-    @commodity = Commodity.find(params[:id])
-    redirect_to edit_commodity_path(@commodity)
+    redirect_to edit_commodity_path(Commodity.find(params[:id]))
   end
 
   def new
@@ -35,6 +34,16 @@ class CommoditiesController < ApplicationController
 
   def create
     respond_with(@commodity = Commodity.create(params[:commodity]))
+  end
+
+  def destroy
+    Commodity.destroy(params[:id])
+    redirect_to(commodities_url)
+  end
+
+  def destroy_all
+    Commodity.destroy(checkbox_ids)
+    redirect_to(commodities_url)
   end
 
   def duplicate
@@ -59,16 +68,6 @@ class CommoditiesController < ApplicationController
         flash[:notice] = 'Parameter value was successfully added.' if pv.save
     end if params[:do]
     redirect_to(edit_commodity_path(@commodity))
-  end
-
-  def destroy_all
-    Commodity.destroy(checkbox_ids)
-    redirect_to(commodities_url)
-  end
-
-  def destroy
-    Commodity.destroy(params[:id])
-    redirect_to(commodities_url)
   end
 
   private

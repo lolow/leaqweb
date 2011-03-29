@@ -1,32 +1,27 @@
 :javascript
   $(document).ready(function() {
-
       $('.edit').editable(#{raw parameter_values_path.to_json},{
-          style   : 'inherit',
-          width   : "none",
-          height  : 20,
-          method  : "PUT",
-          id      : 'field',
-          submitdata: {
-            authenticity_token: #{raw form_authenticity_token.to_json}
-          }
-        });
-
-        $('#parameter_table_#{pid}').dataTable({
+        style   : 'inherit',
+        width   : "100%",
+        height  : 18,
+        method  : "PUT",
+        id      : 'field',
+        submitdata: {
+          authenticity_token: #{raw form_authenticity_token.to_json}
+        }
+      });
+      $('#parameter_table_#{pid}').dataTable({
         "bPaginate": true,
-        "bLengthChange": #{length_change},
-        "bFilter": #{filter},
-        "bSort": true,
+        "bLengthChange": true,
+        "bFilter": true,
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bSort": false,
         "bInfo": true,
         "bAutoWidth": false,
         "bStateSave": true,
-        "sDom": 'lfrtip<"dataTables_action">'
-        });
-        
-        $("div.dataTables_action").html('<p><select name="do" >' +
-            '<option value="add_pv">Add value</option>'+
-            '<option value="delete_pv">Delete value(s)</option>'+
-            '</select>'+#{raw submit_tag('ok',:class=>'button').to_json}+ '</p>');
+        "sDom": 'lfrtpi'
+      });
   } );
 
 - if rules
@@ -51,16 +46,20 @@
     });
     //]]>
 
-= form_tag(request_path,:method => "put") do
+= form_tag(request_path,:method => "put",:id=>"form_#{pid}") do
   %table.dataTable(id="parameter_table_#{pid}")
     %thead
       %tr
+        %th(class='check')
+          = check_box_tag("click_check",nil,nil,:class=>"check_all")
         - cols.each do |c|
           %th= c.humanize
-        %th
+        %th(class='add')
     %tbody
       - object.parameter_values_for(parameters).each do |pv|
         %tr
+          %td(class="check")
+            %input(type="checkbox" name="cb#{pv.id}")
           - cols.each do |c|
             - if c=="parameter"
               %td= pv.parameter
@@ -72,13 +71,17 @@
               %td= short_flow(pv.out_flow)
             - elsif c=="flow"
               %td= short_flow(pv.flow)
+            - elsif c=="source"
+              %td
+                %span(id="#{pv.id}-#{c}" class="#{"edit" if editable.include? c}")>= pv.attributes[c]
             - else
               %td
                 %span(id="#{pv.id}-#{c}" class="#{"edit" if editable.include? c}")>= pv.attributes[c]
-          %td.check
-            %input(type="checkbox" name="cb#{pv.id}")
+          %td
     %tfoot
       %tr
+        %td(class="check")
+          = link_to_function "Delete", "delete_parameter_values('#{pid}')", :class => "action delete_values", :confirm => "Are you sure?"
         - cols.each do |c|
           - if c=="parameter"
             %td
@@ -126,6 +129,8 @@
             %td
               %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]")
         %td
+          = link_to_function "Add", "add_parameter_value('#{pid}')", :class => "action add_value"
   - if parameters.size==1
     %input(type="hidden" id="#{pid}_parameter" name="pv[parameter]" value="#{parameters.first}")
+  %input(type="hidden" id="do" name="do" value="delete_pv")
 .clear

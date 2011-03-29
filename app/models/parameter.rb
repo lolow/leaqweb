@@ -10,4 +10,8 @@ class Parameter < ActiveRecord::Base
     name
   end
 
+  def parameter_values_for(parameters)
+    parameter_values.order(:year)
+  end
+
 end

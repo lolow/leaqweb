@@ -8,6 +8,7 @@
         "bStateSave"     : true,
         "bSort"          : true,
         "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
         "sPaginationType": "full_numbers",
         "iDisplayLength" : 25,
         "bAutoWidth"     : false,
@@ -38,13 +39,13 @@
   .box
     %h2 Type
     .block
-    %ul.menu
-      %li
-        - c0 = "active" unless params[:set]
-        = link_to "All", technologies_path, :class => c0
-        - [["Demand devices", "DMD"], ["Fuel technologies","FUELTECH"]].each do |tag|
-          - c = "active" if tag[1]==params[:set]
-          %li= link_to tag[0], {:controller => "technologies", :set => tag[1]}, :class => c
+      %ul.menu
+        %li
+          - c0 = "active" unless params[:set]
+          = link_to "All", technologies_path, :class => c0
+          - [["Demand devices", "DMD"], ["Fuel technologies","FUELTECH"]].each do |tag|
+            - c = "active" if tag[1]==params[:set]
+            %li= link_to tag[0], {:controller => "technologies", :set => tag[1]}, :class => c
 
   - if @last_visited.size > 0
     .box

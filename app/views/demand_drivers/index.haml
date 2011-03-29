@@ -1,25 +1,58 @@
-.grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :index }
+:javascript
+  $(document).ready(function() {
+  	$('.list_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_demand_drivers_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
+            $.getJSON( sSource, aoData, function (json) {
+              fnCallback(json)
+            } );
+          },
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0] } ],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	} );
+    $("div.dataTable_delete").html(#{submit_tag('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
+    $('.check_all').click(function () {
+      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
+    } );
+  } );
 
-.grid_9
+.grid_2
 
   .box
-    %h2 Browse Demand Drivers
+    %h2 Action
+    .block
+      %p= link_to('New demand driver', new_demand_driver_path, :class => 'action new')
+
+.grid_10
+
+  .box
+    %h2 Browse demand drivers
     %p
-      %table(summary="Demand drivers list")
-        %thead
-          %tr
-            %th Name
-            %th Description
-            %th
-        %tbody
-          - @demand_drivers.each do |demand_driver|
-            %tr{ :class => cycle('even', 'odd') }
-              %td= link_to demand_driver.name, edit_demand_driver_path(demand_driver)
-              %td= link_to truncate(demand_driver.definition, :omission => "...", :length => 100), edit_demand_driver_path(demand_driver)
-              %td= link_to 'Delete', demand_driver, :confirm => 'Are you sure?', :method => :delete
-      = page_entries_info @demand_drivers
-      %br
-      = will_paginate @demand_drivers
+      = form_tag(destroy_all_demand_drivers_path,:method => "delete") do
+        %table(class="list_table" summary="Commodity list")
+          %thead
+            %th(class='check')
+              = check_box_tag("click_check",nil,nil,:class=>"check_all")
+            %th(class='name') Name
+            %th Definition
+          %tbody
+            %tr
+              %td(colspan="3" class="list_table_empty")
+                Loading data
+    %br
+    %br
 
 .clear

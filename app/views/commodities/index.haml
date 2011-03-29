@@ -8,6 +8,7 @@
         "bStateSave"     : true,
         "bSort"          : true,
         "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
         "sPaginationType": "full_numbers",
         "iDisplayLength" : 25,
         "bAutoWidth"     : false,
@@ -42,9 +43,9 @@
         %li
           - c0 = "active" unless params[:set]
           = link_to "All", commodities_path, :class => c0
-        - [["Energy carriers", "ENC"], ["Demands","DEM"], ["Pollutants","POLL"], ["Imports","IMP"], ["Exports","EXP"]].each do |tag|
-          - c = "active" if tag[1]==params[:set]
-          %li= link_to tag[0], {:controller => "commodities", :set => tag[1]}, :class => c
+          - [["Energy carriers", "ENC"], ["Demands","DEM"], ["Pollutants","POLL"], ["Imports","IMP"], ["Exports","EXP"]].each do |tag|
+            - c = "active" if tag[1]==params[:set]
+            %li= link_to tag[0], {:controller => "commodities", :set => tag[1]}, :class => c
 
   - if @last_visited.size > 0
     .box
@@ -52,7 +53,7 @@
       .block
         %p
           - @last_visited.each do |item|
-            =link_to (h item.name), edit_commodity_path(item)
+            = link_to (h item.name), edit_commodity_path(item)
             %br
 
 .grid_10

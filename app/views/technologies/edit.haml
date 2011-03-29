@@ -1,8 +1,37 @@
 %script{:type => "text/javascript",
         :src  => "/javascripts/technology_edit.js"}
-  
+:javascript
+  function add_parameter_value(pid) {
+    $('#form_' + pid + ' #do').attr('value','add_pv');
+    $('#form_' + pid).submit();
+  }
+  function delete_parameter_values(pid) {
+    if (confirm("Are you sure?")) {
+      $('#form_' + pid + ' #do').attr('value','delete_pv');
+      $('#form_' + pid).submit();
+    };
+  }
+  $(document).ready(function() {
+    $('.check_all').click(function () {
+      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
+    });
+  } );
+
 .grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :edit }
+
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p= link_to 'Browse all', technologies_path, :class => "action browse"
+    %p
+      = link_to 'New commodity', new_technology_path, :class => "action new"
+      = link_to 'Duplicate', duplicate_technology_path, :confirm => 'Are you sure?', :method => :post, :class => "action duplicate"
+      = link_to 'Delete', @technology, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+    %p
+      = form_tag(technology_path(@technology), :method => "put") do
+        %input(type="hidden" name="do" value="preprocess_input_output")
+        = submit_tag "Preprocess Input/Output > Efficiency", :class => "button"
+
   .box
     %h2 Technology
     .block(id="idcard")
@@ -53,8 +82,8 @@
 
 .grid_9
   .box
-    %h2 Input/Output [Preprocess]
-    .block#g
+    %h2 Input/Output
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -66,12 +95,10 @@
           :cols => %w{parameter in_flow out_flow commodity value source},
           :editable => %w{value source},
           :rules => nil } %>
-      = form_tag(technology_path(@technology), :method => "put") do
-        %input(type="hidden" name="do" value="preprocess_input_output")
-        = submit_tag "Preprocess ..."
+
   .box
     %h2 Efficiencies
-    .block#a
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -85,7 +112,7 @@
           :rules => nil } %>
   .box
     %h2 Flow parameters
-    .block#b
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -105,7 +132,7 @@
             "=act_flo" => %w{flow time_slice year}}} %>
   .box
     %h2 Fixed capacities
-    .block#c
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -119,7 +146,7 @@
           :rules =>  nil } %>
   .box
     %h2 General
-    .block#d
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -135,7 +162,7 @@
             "=cap_act" => %w{time_slice year} }} %>
   .box
     %h2 Costs
-    .block#e
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,
@@ -149,7 +176,7 @@
           :rules => nil } %>
   .box
     %h2 Bounds
-    .block#f
+    .block
       :erb
         <%= render :partial => 'shared/parameter_table',
           :locals => {:object => @technology,

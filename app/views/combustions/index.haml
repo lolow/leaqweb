@@ -1,3 +1,17 @@
+.grid_12
+  .box
+    %h2 Combustion coefficients
+    .block
+      :erb
+        <%= render :partial => 'shared/parameter_table',
+               :locals => { :object =>  @combustion,
+                            :pid => "comb",
+                            :request_path => combustions_path,
+                            :parameters => ["one"],
+                            :cols => %w{fuel pollutant value source},
+                            :editable => %w{value source},
+                            :rules => {} } %>
+
 :javascript
   $(document).ready(function() {
     $('.edit').editable(#{raw combustions_path.to_json},{
