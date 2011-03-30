@@ -1,6 +1,10 @@
-.grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :new }
-.grid_6
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse all', stored_queries_path, :class => "action browse"
+.grid_10
   .box
     %h2 New Stored query
     .block
@@ -11,5 +15,5 @@
         =f.input :rows
         =f.input :columns
         =f.input :filters, :input_html => {:rows=> '3'}
-        =f.button :submit
+        =f.button :submit, :class => "aligned"
 .clear

@@ -14,21 +14,26 @@ Leaqweb::Application.routes.draw do |map|
                 :collection => {:list => :get, :destroy_all => :delete}
 
   map.resources :combustions,
-                :collection => {:update => :put}
+                :collection => {:list => :get, :destroy_all => :delete, :update_value => :put}
+
+  map.resources :solvers,
+                :collection => {:list => :get, :destroy_all => :delete}
 
   map.resources :parameter_values,
                 :collection => {:update => :put}
 
   map.resources :outputs,
-                :member => {:csv => :get, :import => :get}
+                :member => {:csv => :get, :import => :get},
+                :collection => {:list => :get, :destroy_all => :delete}
 
   map.resources :stored_queries,
-                :member => {:duplicate => :get}
+                :member => {:duplicate => :get},
+                :collection => {:list => :get, :destroy_all => :delete}
 
   map.resources :flows
   map.resources :markets
   map.resources :aggregates
-  map.resources :solvers
+
 
   
   match '/backup.zip', :to => 'dashboard#backup',   :as => 'backup_db'

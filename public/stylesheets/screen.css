@@ -1694,7 +1694,7 @@ table.dataTable input, .dataTables_filter input {
 }
 
 /* line 671, ../../app/stylesheets/_layout.scss */
-table.dataTable input[type="textcell"] {
+input[type="textcell"] {
   width: 100%;
 }
 
@@ -1707,42 +1707,47 @@ th.check, td.check {
 }
 
 /* line 682, ../../app/stylesheets/_layout.scss */
-table.dataTable th.add {
-  width: 1.5em;
+th.value {
+  width: 10%;
 }
 
 /* line 686, ../../app/stylesheets/_layout.scss */
+th.add {
+  width: 1.5em;
+}
+
+/* line 690, ../../app/stylesheets/_layout.scss */
 #error_explanation h2 {
   background: #ecede0;
   color: #dd0000;
   margin: 0 0 0 0;
 }
 
-/* line 692, ../../app/stylesheets/_layout.scss */
+/* line 696, ../../app/stylesheets/_layout.scss */
 .edit {
   width: 100%;
   display: inline;
 }
 
-/* line 699, ../../app/stylesheets/_layout.scss */
+/* line 703, ../../app/stylesheets/_layout.scss */
 .dataTables_wrapper {
   position: relative;
   clear: both;
 }
 
-/* line 704, ../../app/stylesheets/_layout.scss */
+/* line 708, ../../app/stylesheets/_layout.scss */
 .dataTables_length {
   float: left;
   width: 50%;
   margin-bottom: 5px;
 }
 
-/* line 710, ../../app/stylesheets/_layout.scss */
+/* line 714, ../../app/stylesheets/_layout.scss */
 .dataTables_processing {
   float: left;
 }
 
-/* line 714, ../../app/stylesheets/_layout.scss */
+/* line 718, ../../app/stylesheets/_layout.scss */
 .dataTables_filter {
   float: right;
   text-align: right;
@@ -1750,14 +1755,14 @@ table.dataTable th.add {
   margin-bottom: 5px;
 }
 
-/* line 721, ../../app/stylesheets/_layout.scss */
+/* line 725, ../../app/stylesheets/_layout.scss */
 .dataTables_action {
   float: left;
   width: 45%;
   margin-top: 5px;
 }
 
-/* line 727, ../../app/stylesheets/_layout.scss */
+/* line 731, ../../app/stylesheets/_layout.scss */
 .dataTables_info {
   float: right;
   text-align: right;
@@ -1765,20 +1770,20 @@ table.dataTable th.add {
   margin-top: 5px;
 }
 
-/* line 733, ../../app/stylesheets/_layout.scss */
+/* line 737, ../../app/stylesheets/_layout.scss */
 .dataTables_paginate {
   float: left;
   margin-top: 5px;
 }
 
-/* line 738, ../../app/stylesheets/_layout.scss */
+/* line 742, ../../app/stylesheets/_layout.scss */
 .dataTable_delete {
   float: left;
   display: block;
   width: 40%;
 }
 
-/* line 744, ../../app/stylesheets/_layout.scss */
+/* line 748, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {
   height: 16px;
   width: 16px;
@@ -1786,28 +1791,28 @@ table.dataTable th.add {
   float: left;
 }
 
-/* line 751, ../../app/stylesheets/_layout.scss */
+/* line 755, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
   background-image: url("/images/resultset_previous.png");
 }
 
-/* line 756, ../../app/stylesheets/_layout.scss */
+/* line 760, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
   background-image: url("/images/resultset_next.png");
 }
 
-/* line 763, ../../app/stylesheets/_layout.scss */
+/* line 767, ../../app/stylesheets/_layout.scss */
 table.list_table thead th {
   cursor: pointer;
 }
 
-/* line 767, ../../app/stylesheets/_layout.scss */
+/* line 771, ../../app/stylesheets/_layout.scss */
 table.list_table {
   clear: both;
   margin-bottom: 5px;
 }
 
-/* line 772, ../../app/stylesheets/_layout.scss */
+/* line 776, ../../app/stylesheets/_layout.scss */
 table.list_table input {
   border-color: #555555 #CCCCCC #CCCCCC #555555;
   border-style: solid;
@@ -1815,28 +1820,33 @@ table.list_table input {
   padding: 1px;
 }
 
-/* line 779, ../../app/stylesheets/_layout.scss */
+/* line 783, ../../app/stylesheets/_layout.scss */
 table.list_table th.check {
   width: 1.5em;
 }
 
-/* line 783, ../../app/stylesheets/_layout.scss */
+/* line 787, ../../app/stylesheets/_layout.scss */
 table.list_table th.name {
   width: 15%;
 }
 
-/* line 787, ../../app/stylesheets/_layout.scss */
+/* line 791, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next, .paginate_enabled_previous, .paginate_button {
   cursor: pointer;
 }
 
-/* line 791, ../../app/stylesheets/_layout.scss */
+/* line 795, ../../app/stylesheets/_layout.scss */
 .paginate_button {
   padding: 2px;
 }
 
-/* line 795, ../../app/stylesheets/_layout.scss */
+/* line 799, ../../app/stylesheets/_layout.scss */
 .paginate_active {
   font-weight: bold;
   padding: 2px;
+}
+
+/* line 806, ../../app/stylesheets/_layout.scss */
+#display_log pre {
+  font-size: 1.5em;
 }

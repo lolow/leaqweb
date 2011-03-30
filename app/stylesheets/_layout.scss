@@ -668,7 +668,7 @@ table.dataTable input, .dataTables_filter input {
     padding: 1px;
 }
 
-table.dataTable input[type="textcell"] {
+input[type="textcell"] {
     width: 100%;
 }
 
@@ -679,7 +679,11 @@ th.check, td.check {
     text-align:center;
 }
 
-table.dataTable th.add {
+th.value {
+  width:10%;
+}
+
+th.add {
     width:1.5em;
 }
 
@@ -795,4 +799,10 @@ table.list_table th.name {
 .paginate_active {
   font-weight: bold;
   padding: 2px;
+}
+
+//SOLVER
+
+#display_log pre {
+  font-size:1.5em;
 }

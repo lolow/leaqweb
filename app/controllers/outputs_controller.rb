@@ -5,11 +5,13 @@
 require 'csv'
 
 class OutputsController < ApplicationController
+
   before_filter :authenticate_user!
 
+  respond_to :html, :except => :list
+  respond_to :json, :only => :list
+
   def index
-    @outputs = Output.all
-    respond_to { |format| format.html }
   end
 
   def show
@@ -17,6 +19,11 @@ class OutputsController < ApplicationController
     @stored_queries = StoredQuery.order(:name)
     params[:stored_query] = Hash.new("")
     render :show
+  end
+
+  def list
+    @outputs, @total_outputs = filter_outputs(params)
+    render :layout => false, :partial => "list.json"
   end
 
   def update
@@ -83,9 +90,24 @@ class OutputsController < ApplicationController
   end
 
   def destroy
-    @output = Output.find(params[:id])
-    @output.destroy
+    Output.destroy(params[:id])
     redirect_to(outputs_url)
+  end
+
+  def destroy_all
+    Output.destroy(checkbox_ids)
+    redirect_to(outputs_url)
+  end
+
+  private
+
+  def filter_outputs(params={})
+    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+    filter = {:page => current_page,
+              :per_page => params[:iDisplayLength]}
+    displayed = Output.all.paginate filter
+    total     = Output.count
+    return displayed, total
   end
 
 end

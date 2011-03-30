@@ -95,10 +95,19 @@
     display_filter_list();
   });
 
-.grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :edit }
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse all', stored_queries_path, :class => "action browse"
+      %p
+        = link_to 'New Stored query', new_stored_query_path, :class => "action new"
+      %p
+        = link_to 'Duplicate', duplicate_stored_query_path, :confirm => 'Are you sure?', :class => "action duplicate"
+        = link_to 'Delete', @stored_query, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
 
-.grid_9
+.grid_10
   .box
     %h2 Stored query fields
     .block

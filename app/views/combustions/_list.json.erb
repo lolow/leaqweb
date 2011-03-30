@@ -1,0 +1,13 @@
+{
+    "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
+    "iTotalRecords":<%= Combustion.count.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total_combustions.to_json.html_safe %>,
+    "aaData":<%= @combustions.collect do |c|
+                   [ check_box_tag("cb#{c.id}"),
+                     c.fuel.name,
+                     c.pollutant.name,
+                     "<span id='#{c.id}-value' class='edit'>#{c.value}</span>",
+                     "<span id='#{c.id}-source' class='edit'>#{c.source}</span>",
+                     ""]
+                 end.to_json.html_safe %>
+}

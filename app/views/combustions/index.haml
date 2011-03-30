@@ -1,87 +1,91 @@
-.grid_12
-  .box
-    %h2 Combustion coefficients
-    .block
-      :erb
-        <%= render :partial => 'shared/parameter_table',
-               :locals => { :object =>  @combustion,
-                            :pid => "comb",
-                            :request_path => combustions_path,
-                            :parameters => ["one"],
-                            :cols => %w{fuel pollutant value source},
-                            :editable => %w{value source},
-                            :rules => {} } %>
-
 :javascript
-  $(document).ready(function() {
-    $('.edit').editable(#{raw combustions_path.to_json},{
+  function add_combustion() {
+    $('#form_ #do').attr('value','add_pv');
+    $('#form_').submit();
+  }
+  function delete_combustions() {
+    if (confirm("Are you sure?")) {
+      $('#form_ #do').attr('value','delete_pv');
+      $('#form_').submit();
+    };
+  }
+  function draw_editable() {
+    $('.edit').editable(#{raw update_value_combustions_path.to_json},{
         style   : 'inherit',
-        width   : "none",
-        height  : 20,
+        width   : "100%",
+        height  : 15,
         method  : "PUT",
         id      : 'field',
         submitdata: {
           authenticity_token: #{raw form_authenticity_token.to_json}
         }
-      });
-      
-      $('#parameter_table').dataTable({
-      "bPaginate": true,
-      "bLengthChange": true,
-      "bFilter": true,
-      "bSort": true,
-      "bInfo": true,
-      "bAutoWidth": false,
-      "sDom": 'lfrtip<"dataTables_action">'
-      });
-      
-      $("div.dataTables_action").html('<p><select name="do" >' +
-          '<option value="create">Add value</option>'+
-          '<option value="delete">Delete value(s)</option>'+
-          '</select>'+#{raw submit_tag('OK').to_json}+ '</p>');
+    });
+  }
+  $(document).ready(function() {
+  	$('.list_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_combustions_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
+            $.getJSON( sSource, aoData, function (json) {
+              fnCallback(json)
+            } );
+          },
+        "fnDrawCallback": function() { draw_editable(); },
+        "aoColumnDefs"   : [ {"bSortable" : false, "aTargets": [0,-1] }],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrftpi'
+  	} );
+    $('.check_all').click(function () {
+      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
+    } );
   } );
 
 .grid_12
   .box
-    %h2 Browse/edit combustion coefficients
-    .block
-      = form_for(@combustion) do |f|
-        %table.dataTable#parameter_table
+    %h2 Combustion coefficients
+    %p
+      = form_tag(combustions_path,:method => "post",:id=>"form_") do
+        %input(type="hidden" id="do" name="do" value="")
+        %table(class="list_table" summary="Commodity list")
           %thead
-            %tr
-              %th Fuel
-              %th Pollutant
-              %th Value
-              %th Source
-              %th
+            %th(class='check')
+              = check_box_tag("click_check",nil,nil,:class=>"check_all")
+            %th(class='name') Fuel
+            %th(class='name') Pollutant
+            %th(class='value') Value
+            %th Source
+            %th(class="check")
           %tbody
-            - @combustions.each do |combustion|
-              %tr
-                %td= combustion.fuel
-                %td= combustion.pollutant
-                %td
-                  %span.edit(id="#{combustion.id}-value")= combustion.value
-                %td
-                  %span.edit(id="#{combustion.id}-source")= combustion.source
-                %td.check
-                  %input(type="checkbox" name="cb#{combustion.id}")
+            %tr
+              %td(colspan="6" class="list_table_empty")
+                Loading data
           %tfoot
             %tr
-              %td
-                = select(:combustion, :fuel_id, Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
-              %td
-                = select(:combustion, :pollutant_id, Commodity.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
-              %td
-                = f.text_field :value, :size=>10, :type => "textcell"
-              %td
-                = f.text_field :source, :type => "textcell"
-              %td
-        .clear
-        - if @combustion.errors.any?
-          #error_explanation
-            %h5
-              = pluralize(@combustion.errors.count, "error")
-              prohibited this combustion from being saved:
-            %ul
-              - @combustion.errors.full_messages.each do |msg|
-                %li= msg
+              %th(class="check")
+                = link_to_function "Delete", "delete_combustions()", :class => "action delete_values", :confirm => "Are you sure?"
+              %th
+                %select(id="combustion_fuel" name="combustion[fuel_id]")
+                  = options_for_select(Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
+              %th
+                %select(id="combustion_pollutant" name="combustion[pollutant_id]")
+                  = options_for_select(Commodity.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
+              %th
+                %input(type="textcell" id="combustion_value" name="combustion[value]")
+              %th
+                %input(type="textcell" id="combustion_source" name="combustion[source]")
+              %th(class="check")
+                = link_to_function "Add", "add_combustion()", :class => "action add_value"
+
+    %br
+    %br

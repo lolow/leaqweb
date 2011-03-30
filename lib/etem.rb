@@ -24,8 +24,7 @@ module Etem
   INDEX = { "T" => "Time period",
             "S" => "Time slice",
             "P" => "Processes",
-            "C" => "Commodities",
-            "M" => "Markets" }.freeze
+            "C" => "Commodities"}.freeze
   VALID_NAME_MSG = "Please use only letters, numbers or symbol '-' in name"
 
 

@@ -9,9 +9,12 @@
       }});
     $('#new_solver').submit();
   }
-.grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :new }
-.grid_9
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p= link_to 'Browse all', solvers_path, :class => "action browse"
+.grid_10
   .box
     %h2 New Solver job
     .block
@@ -20,5 +23,5 @@
         =f.input :nb_periods, :as => :integer
         =f.input :period_duration, :as => :integer
         =f.input :language, :collection => [["GAMS","GAMS"],["GLPK","GLPK"]], :include_blank => false
-        =button_to_function "Launch solver", "start_solver()", :class => "button"
+        = button_to_function "Launch solver", "start_solver()", :class => "button aligned"
 .clear

@@ -7,15 +7,23 @@ require 'etem'
 require 'yaml'
 
 class SolversController < ApplicationController
+
   before_filter :authenticate_user!
+
+  respond_to :html, :except => :list
+  respond_to :json, :only => :list
 
   USER_OPTION = [:nb_periods, :period_duration, :first_year, :language]
 
   respond_to :html
 
   def index
-    @solvers = Solver.all
-    @solvers.map(&:update_status)
+    Solver.all.map(&:update_status)
+  end
+
+  def list
+    @solvers, @total_solvers = filter_solvers(params)
+    render :layout => false, :partial => "list.json"
   end
 
   def new
@@ -57,15 +65,29 @@ class SolversController < ApplicationController
     respond_with(@solver)
   end
 
-  # DELETE /solver/1
   def destroy
-    @solver = Solver.find(params[:id])
-    @solver.destroy
+    Solver.destroy(params[:id])
+    redirect_to(solvers_path)
+  end
+
+  def destroy_all
+    Solver.destroy(checkbox_ids)
     redirect_to(solvers_path)
   end
 
   def run
-
   end
+
+  private
+
+  def filter_solvers(params={})
+    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+    filter = {:page => current_page,
+              :per_page => params[:iDisplayLength]}
+    displayed = Solver.all.paginate filter
+    total     = Solver.count
+    return displayed, total
+  end
+
 
 end

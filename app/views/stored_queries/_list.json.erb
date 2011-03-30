@@ -1,0 +1,9 @@
+{
+    "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
+    "iTotalRecords":<%= StoredQuery.count.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total_stored_queries.to_json.html_safe %>,
+    "aaData":<%= @stored_queries.collect do |o|
+                   [ check_box_tag("cb#{o.id}"),
+                     link_to(o.name, o) ]
+                 end.to_json.html_safe %>
+}

@@ -24,11 +24,22 @@
       })
   });
 
-.grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :show }
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse all', outputs_path, :class => "action browse"
+      %p
+        = link_to 'New Result set', new_output_path, :class => "action new"
+        = link_to 'Delete', @output, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+      - if @output.has_results?
+        %h5 Download
+        %p
+          = link_to "CSV", csv_output_path(@output), :class => "action download"
 
 - if @output.has_results?
-  .grid_9
+  .grid_10
     .box
       %h2 Query
       .block#request
@@ -41,13 +52,12 @@
           %br
         %p= link_to 'Reinit query', @output
   .clear
-  .grid_12
-    .box(id='box_result')
-      %h2 Query result
-      - if params[:stored_query][:result]
+  - if params[:stored_query][:result] && params[:stored_query][:result].size>0
+    .grid_12
+      .box(id='box_result')
+        %h2 Query result
         .block
-          - if params[:stored_query][:result].size>0
-            %input(type="button" id="select_table" value="Select table")
+          %input(type="button" id="select_table" value="Select table")
           %div(id="query_result")
             - header = true
             %table(id="table_query")
