@@ -118,7 +118,7 @@ class EtemDebug
     def check_orphan_demand
     Commodity.demands.each do |dem|
       if dem.produced_by.size == 0
-        @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.pid.to_s]
+        @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.name]
       end
     end
     @errors
@@ -127,7 +127,7 @@ class EtemDebug
   def check_demand_with_no_demand
     Commodity.demands.each do |dem|
       if ParameterValue.of("demand").where(:commodity_id=>dem.id).count == 0
-        @errors << [:check_demand_with_no_demand,"No demand value for demand " + dem.pid.to_s]
+        @errors << [:check_demand_with_no_demand,"No demand value for demand " + dem.name]
       end
     end
     @errors

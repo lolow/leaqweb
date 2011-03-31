@@ -3,9 +3,8 @@ require 'etem'
 class Commodity < ActiveRecord::Base
   include Etem
 
+  #Interfaces
   has_paper_trail
-
-  #Acts_as
   acts_as_taggable_on :sets
 
   #Relations
@@ -102,10 +101,6 @@ class Commodity < ActiveRecord::Base
   end
 
   def to_s
-    name
-  end
-
-  def pid
     name
   end
 

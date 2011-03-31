@@ -17,7 +17,6 @@ class Output < ActiveRecord::Base
   end
 
   def store_solver(solver)
-    solver.prepare_results
     FileUtils.mkdir_p(path) unless File.exists?(path)
     File.delete(file("Renv")) if File.exists?(file("Renv"))
     EXT.each { |x| FileUtils.cp(solver.file(x), file(x)) if File.exist?(solver.file(x)) }

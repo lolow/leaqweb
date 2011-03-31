@@ -176,8 +176,4 @@ class Technology < ActiveRecord::Base
     end
   end
 
-  def pid
-    name
-  end
-
 end

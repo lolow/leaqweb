@@ -60,24 +60,6 @@ class EtemSolver
     clean
   end
 
-  def prepare_results
-    return unless optimal?
-    #dict = Hash[*Commodity.activated.collect{|x|[x.pid,x.name]}.flatten]
-    #dict.merge! Hash[*Technology.activated.collect{|x|[x.pid,x.name]}.flatten]
-    #dict.merge! Hash[*Aggregate.activated.collect{|x|[x.pid,x.name]}.flatten]
-    #write csv result file
-    #CSV.open(file("csv"), "w") do |csv|
-    #  csv << %w[attribute T S P C value]
-    #  CSV.foreach(file("out"),{:headers=>true}) do |row|
-    #    csv << [row[0],first_year + (row[1].to_i-1) * period_duration,row[2],dict[row[3]],dict[row[4]],row[5]]
-    #  end
-    #end
-
-    # write csv
-    #File.copy(file("out"),file("csv")) if File.exists? file("out")
-
-  end
-
   def log
     File.open(file("log")).read if File.exists?(file("log"))
   end

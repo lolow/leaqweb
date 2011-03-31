@@ -8,8 +8,5 @@ class Market < ActiveRecord::Base
             :uniqueness => true,
             :format => {:with => /\A[a-zA-Z\d-]+\z/,
                         :message => "Please use only letters, numbers or '-' in name"}
-  def pid
-    name
-  end
 
 end

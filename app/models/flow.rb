@@ -12,7 +12,4 @@ class Flow < ActiveRecord::Base
     self.class==OutFlow && self.commodities.size == 1 && self.commodities.first.pollutant?
   end
 
-  def pid
-    "f#{id}"
-  end
 end
