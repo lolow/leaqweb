@@ -25,7 +25,7 @@ http://rubygems.org/pages/download
 
 4) Configure the database (if you want to use mysql)
 
-    # sudo apt-get install mysql-server mysql-client
+    # sudo apt-get install mysql-server mysql-client libmysqlclient-dev
     # sudo gem install mysql
     # mysql -p -u root
     <enter your root password for mysql>

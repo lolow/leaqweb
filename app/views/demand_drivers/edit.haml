@@ -2,9 +2,9 @@
   .box(class="action")
     %h2 Actions
     %br
-    %p= link_to 'Browse all', demand_driver_path, :class => "action browse"
+    %p= link_to 'Browse all', demand_drivers_path, :class => "action browse"
     %p
-      = link_to 'New commodity', new_demand_driver_path, :class => "action new"
+      = link_to 'New demand driver', new_demand_driver_path, :class => "action new"
       = link_to 'Delete', @demand_driver, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
 
   .box
