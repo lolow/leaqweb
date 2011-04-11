@@ -1,4 +1,5 @@
 #{distance_of_time_in_words(Time.now,version.created_at)} ago:
 #{version.event} #{version.item_type}
-by #{User.find(version.whodunnit).email}
+- if version.whodunnit
+  by #{User.find(version.whodunnit).email}
 %br
