@@ -14,6 +14,21 @@ $OFFDIGIT
 
 $INCLUDE '#{@f_inc}'
 
+parameter nb_completed_years(T);
+nb_completed_years(T)=(ord(T)-1)*period_length;
+
+parameter annualized;
+set TT/1*#{@p_period_length_d}/;
+annualized = sum(TT,(1+discount_rate)**(1-(ord(TT))));
+
+parameter salvage(T,P);
+salvage(T,P) = (1-(1+discount_rate)**(-period_length*(ord(T)+life(P)-nb_periods-1)))
+               /((1+discount_rate)**(period_length*(nb_periods+1-ord(T))))
+               /(1-(1+discount_rate)**(-period_length*life(P)));
+
+parameter year(T);
+year(T) = first_year + (ord(T)-1) * period_length;
+
 ALIAS(MARKET,SUBMARKET);
 ALIAS(T,T1);
 ALIAS(P,P1);
