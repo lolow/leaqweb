@@ -60,5 +60,10 @@ Copyright
 ---------
 
 The code is licensed as GNU AGPLv3. See the LICENSE file for the full license.
+Copyright (c) 2009-2011 Public Research Center Henri Tudor
 
-Copyright (c) 2009-2011 Laurent Drouet <ldrouet at gmail dot com>
+Author
+------
+
+Laurent Drouet <ldrouet at gmail dot com>
+

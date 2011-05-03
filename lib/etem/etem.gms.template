@@ -1,16 +1,15 @@
+* Copyright (c) 2009-2011, Public Research Center Henri Tudor.
+* This file is licensed under the Affero General Public License
+* version 3. See the COPYRIGHT file.
+***********************
+* ETEM model for LEAQ *
+***********************
+* Version  : 1.0
+* Authors  : L. Drouet
+
 $OFFLISTING
 $ONEMPTY
 $OFFDIGIT
-***********************
-*                     *
-* ETEM model for LEAQ *
-*                     *
-***********************
-* Date     : 01/2011
-* Version  : 1.0
-* Authors  : L. Drouet
-* Language : GAMS
-* command  : gams etem.gms
 
 $INCLUDE '#{@f_inc}'
 
