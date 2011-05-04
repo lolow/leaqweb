@@ -1,0 +1,13 @@
+#tentative graph
+library('ggplot2')
+library('gdata')
+data <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
+data <- subset(data,attribute=="<%= @table[:attribute] %>")
+<% if @table[:filter].size > 0 %>
+data <- subset(data,<%= @table[:filter] %>)
+<% end %>
+#data <- cast(data,<%= @table[:formula] %>,fun.aggregate=<%= @table[:aggregate] %>)
+p = ggplot(data=drop.levels(data),aes(x=T,y=value,group=C,colour=C)) + geom_line()
+p = p + opts(title='<%= @table[:name] %>')  + geom_point() + labs(x="",y="",colour="")
+ggsave(filename = "<%= @table[:png] %>",plot=p)
+

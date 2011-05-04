@@ -8,7 +8,7 @@ a {
 	color: $link_color;
 	font-weight:bold;
 	text-decoration: none;
-  cursor: pointer;
+    cursor: pointer;
 }
 a:hover {
 	color:$text_color;
@@ -785,7 +785,7 @@ table.list_table th.check {
 }
 
 table.list_table th.name {
-    width:15%;
+    width:25%;
 }
 
 .paginate_enabled_next, .paginate_enabled_previous, .paginate_button {

@@ -35,7 +35,6 @@
     - columns.each do |c|
       $("##{pid}_#{c}").removeAttr("disabled");
       - rules.each do |key,value|
-        //#{key}
         - if key[0,1]==">"
           if ($("##{pid}_parameter option:selected").text().substring(0,#{key.size-1})=="#{key[1..-1]}")
         - elsif key[0,1]=="="

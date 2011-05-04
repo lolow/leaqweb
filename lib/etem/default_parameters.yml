@@ -55,7 +55,7 @@
   :default_value: -1.0
 - :name: frac_dem
   :definition: Fraction of the annual demand occuring in a time-slice. fractions of 1 for each demand
-  :default_value: 1.0
+  :default_value: 0.0
 - :name: exp_bnd_lo
   :definition: Lower bound on exportation
   :default_value: 0.0
