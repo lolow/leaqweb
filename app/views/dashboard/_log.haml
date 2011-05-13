@@ -2,4 +2,6 @@
 #{version.event} #{version.item_type}
 - if version.whodunnit
   by #{User.find(version.whodunnit).email}
+- else
+  by unknown
 %br

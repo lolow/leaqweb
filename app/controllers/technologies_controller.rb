@@ -47,7 +47,7 @@ class TechnologiesController < ApplicationController
         @technology.preprocess_input_output
       when "update"
         if @technology.update_attributes(params[:technology])
-          flash[:notice] = 'Technology was successfully updated.'
+          flash[:notice] = "Technology was successfully updated. #{undo_link(@technology)}"
           redirect_to(edit_technology_path(@technology))
         else
           render :action => "edit"
@@ -89,7 +89,7 @@ class TechnologiesController < ApplicationController
         att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
         att[:technology] = @technology
         pv = ParameterValue.new(att)
-        flash[:notice] = 'Parameter value was successfully added.' if pv.save
+        flash[:notice] = "Parameter value was successfully added. #{undo_link(pv)}" if pv.save
       when "set_act_flo"
         ids = @technology.flows.map(&:id).select { |i| params["f#{i}"] }
         @technology.flow_act=Flow.find(ids[0]) if ids.size>0
@@ -132,6 +132,10 @@ class TechnologiesController < ApplicationController
       total = Technology.count :conditions => conditions
     end
     return displayed, total
+  end
+  
+  def undo_link(object)
+    view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
   end
 
 end

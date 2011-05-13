@@ -33,14 +33,13 @@ Leaqweb::Application.routes.draw do |map|
   map.resources :flows
   map.resources :markets
   map.resources :aggregates
-
-
   
-  match '/backup.zip', :to => 'dashboard#backup',   :as => 'backup_db'
-  match '/restore',    :to => 'dashboard#restore',  :as => 'restore_db'
-  match '/check_db',   :to => 'dashboard#check_db', :as => 'check_db'
-  match '/reset',      :to => 'dashboard#reset',    :as => 'reset_db'
-  match '/log',        :to => 'dashboard#log',      :as => 'log'
+  match '/backup.zip'        => 'dashboard#backup',   :as => 'backup_db'
+  match '/restore'           => 'dashboard#restore',  :as => 'restore_db'
+  match '/check_db'          => 'dashboard#check_db', :as => 'check_db'
+  match '/reset'             => 'dashboard#reset',    :as => 'reset_db'
+  match '/log'               => 'dashboard#log',      :as => 'log'
+  post "versions/:id/revert" => "versions#revert",    :as => "revert_version"
 
   root :to => 'dashboard#index'
 

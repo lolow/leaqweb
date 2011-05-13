@@ -348,10 +348,10 @@ module EtemTools
   end
 
   # Create a fuel tech and its input/output if necessary
-  def batch_create_emissions_flows(input,output,coefficient=1,source="")
+  def batch_create_emissions_flows(input,output,coefficient=1,source="",name="%")
     i, o = get_in_out(input, output)
     p = Parameter.find_by_name("eff_flo")
-    i.consumed_by.each do |t|
+    i.consumed_by.where(["name like ?",name]).each do |t|
       if t.inputs.size == 1
         inflow_id = t.in_flows.first.id
         unless t.outputs.include?(o)
@@ -399,22 +399,45 @@ module EtemTools
     puts "done"
   end
 
-
-  def batch_update_emissions_flows(input,output,coefficient=1,source=nil)
+    def batch_create_or_update_eff_flo(input,output,coefficient=1,source=nil,name="%")
     i, o = get_in_out(input, output)
     p = Parameter.find_by_name("eff_flo")
-    i.consumed_by.each do |t|
+    i.consumed_by.where(["name like ?",name]).each do |t|
       if t.inputs.size == 1
+        inflow_id = nil
+        t.in_flows.each do |f|
+          if f.commodities.size==1 && f.commodities.include?(i)
+            inflow_id = f.id
+          end
+        end
+        break unless inflow_id
         t.out_flows.each do |f|
           if f.commodities.size==1 && f.commodities.include?(o)
             pv = ParameterValue.where(:parameter_id=>p.id,:out_flow_id=>f.id).first
-            if coefficient.to_s.starts_with("*")
-              pv.update_attributes({:value => pv.value * coefficient[1..-1].to_f})
+            if pv
+              if coefficient.to_s.starts_with("*")
+                pv.update_attributes({:value => pv.value * coefficient[1..-1].to_f})
+              else
+                pv.update_attributes({:value => coefficient})
+              end
+              pv.update_attributes({:source => source}) if source
+              puts "Parameter value of #{t} updated"
             else
-              pv.update_attributes({:value => coefficient.to_f})
+              #add coefficient
+              attributes = Hash.new
+              attributes[:parameter_id]  = p.id
+              attributes[:in_flow_id]    = inflow_id
+              attributes[:out_flow_id]   = f.id
+              attributes[:technology_id] = t.id
+              attributes[:value]         = coefficient
+              attributes[:source]        = source
+              pv = ParameterValue.new(attributes)
+              if pv.save
+                puts "Create parameter_value eff_flo for #{t}"
+              else
+                pv.errors.each_full{|msg| puts "error " + msg }
+              end
             end
-            pv.update_attributes({:source => source}) if source
-            puts "Parameter value of #{t} updated"
           end
         end
       end
