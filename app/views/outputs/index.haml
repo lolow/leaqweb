@@ -1,27 +1,27 @@
 :javascript
   $(document).ready(function() {
-  	$('.list_table').dataTable( {
-  		"bProcessing"    : true,
-  		"bServerSide"    : true,
-  	    "bFilter"        : false,
-        "bLengthChange"  : true,
-        "bStateSave"     : true,
-        "bSort"          : false,
-        "bInfo"          : true,
-        "aaSorting"      : [[1,'asc']],
-        "sPaginationType": "full_numbers",
-        "iDisplayLength" : 25,
-        "bAutoWidth"     : false,
-  		"sAjaxSource"    : #{list_outputs_path.to_json},
-  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+    $('.list_table').dataTable( {
+    "bProcessing"    : true,
+    "bServerSide"    : true,
+    "bFilter"        : false,
+    "bLengthChange"  : true,
+    "bStateSave"     : true,
+    "bSort"          : false,
+    "bInfo"          : true,
+    "aaSorting"      : [[1,'asc']],
+    "sPaginationType": "full_numbers",
+    "iDisplayLength" : 25,
+    "bAutoWidth"     : false,
+  	"sAjaxSource"    : #{list_outputs_path.to_json},
+        "fnServerData"   : function ( sSource, aoData, fnCallback ) {
             aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
             $.getJSON( sSource, aoData, function (json) {
               fnCallback(json)
             } );
           },
         "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0] } ],
-  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
-  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	"oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	"sDom"           : 'lrft<"dataTable_delete">pi'
   	} );
     $("div.dataTable_delete").html(#{submit_tag('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
     $('.check_all').click(function () {
