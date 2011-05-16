@@ -44,12 +44,14 @@ http://rubygems.org/pages/download
     # sudo gem install bundler
     # bundle install
     # rake db:migrate
+    # rake db:seed
 
 7) Install R to compute result cross-tables
 
     # sudo apt-get install r-base
-    # sudo R
-    # install.packages('reshape',dependencies=TRUE)
+    # R
+    # install.packages('ggplot2',dependencies=TRUE)
+    # install.packages('gdata',dependencies=TRUE)
   
 8) Run it
   
