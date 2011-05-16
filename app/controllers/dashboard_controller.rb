@@ -17,7 +17,7 @@ class DashboardController < ApplicationController
     @nb_combustions = Combustion.count
     @nb_demand_drivers = DemandDriver.count
     @nb_parameter_values = ParameterValue.count
-    @last_changes = Version.order(:created_at).last(10)
+    @last_change = Version.order(:created_at).last
   end
 
   def check_db
@@ -38,9 +38,6 @@ class DashboardController < ApplicationController
       EtemArchive.restore(params[:upload]["db"].tempfile.path)
     end
     redirect_to root_path
-  end
-
-  def log
   end
 
   def reset

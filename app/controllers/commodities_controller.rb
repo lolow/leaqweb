@@ -28,8 +28,7 @@ class CommoditiesController < ApplicationController
 
   def edit
     new_visit(Commodity, params[:id])
-    @commodity = Commodity.includes(:parameter_values).find(params[:id])
-    respond_with(@commodity)
+    respond_with(@commodity = Commodity.find(params[:id]) )
   end
 
   def create
@@ -72,6 +71,10 @@ class CommoditiesController < ApplicationController
 
   private
 
+  def undo_link(object)
+    view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
+  end
+
   def filter_commodities(params={})
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     columns = [nil,"name","description"]
@@ -85,11 +88,14 @@ class CommoditiesController < ApplicationController
               :conditions => conditions,
               :per_page => params[:iDisplayLength]}
     if params[:set] && params[:set]!="null"
-      displayed = Commodity.tagged_with(params[:set]).paginate filter
-      total = Commodity.tagged_with(params[:set]).count :conditions => conditions
+      total = Commodity.tagged_with(params[:set]).count(:conditions => conditions)
+      if current_page * params[:iDisplayLength].to_i > total
+        filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
+      end
+      displayed = Commodity.tagged_with(params[:set]).paginate(filter)
     else
-      displayed = Commodity.paginate filter
-      total = Commodity.count :conditions => conditions
+      total = Commodity.count(:conditions => conditions)
+      displayed = Commodity.paginate(filter)
     end
     return displayed, total
   end

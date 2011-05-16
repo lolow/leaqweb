@@ -1,6 +1,9 @@
+:javascript
+  $(function(){
+    $(".multiselect").multiselect({sortable: false, searchable: true});
+  });
 .grid_3
   = render :partial => 'shortcuts', :locals => { :page => :edit }
-
 .grid_9
   .box
     %h2 Market
@@ -9,10 +12,7 @@
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
-        =f.association :technologies, :collection => Technology.all(:order => 'name')
-        =f.button :submit
+        =f.association :technologies, :collection => Technology.all(:order => 'name'),
+                       :input_html => {:class=>"multiselect", :multiple=>"multiple"}
+        =f.button :submit, :class => "aligned"
 .clear
-:javascript
-  $(document).ready(function() {
-    $('#market_technology_ids').coolMultiple({'delText':'unselect'});
-  });

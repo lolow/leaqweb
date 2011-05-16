@@ -1,0 +1,45 @@
+:javascript
+  $(document).ready(function() {
+  	$('.list_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "aaSorting"      : [[0,'desc']],
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_versions_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
+            $.getJSON( sSource, aoData, function (json) {
+              fnCallback(json)
+            } );
+          },
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [4] } ],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrftpi'
+  	} );
+  } );
+
+.grid_12
+  .box
+    %h2 Browse changes
+    %p
+      %table(class="list_table" summary="Stored query list")
+        %thead
+          %th Time
+          %th Event
+          %th Item
+          %th User
+          %th
+        %tbody
+          %tr
+            %td(colspan="5" class="list_table_empty")
+              Loading data
+      %br
+      %br
+.clear

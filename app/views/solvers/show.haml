@@ -25,11 +25,10 @@
         = link_to 'Browse', solvers_path, :class => "action browse"
         = link_to @solver.solved? ? "Delete" : "Kill", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
       - if @solver.solved? && @solver.has_files?
-        %br
         %p
           = link_to_function("Import into ResultSet",
             "import_res(#{new_output_path.to_json},#{@solver.id})" , :class => "action delete")
-        %p= select_tag "sim_#{@solver.id}", options_for_select([['New ResultSet',0]]+@outputs.map {|o| [o.name,o.id]})
+          = select_tag "sim_#{@solver.id}", options_for_select([['New ResultSet',0]]+@outputs.map {|o| [o.name,o.id]})
   .box
     %h2 parameters
     %block

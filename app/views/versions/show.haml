@@ -1,0 +1,33 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse', versions_path, :class => "action browse"
+
+.grid_10
+  .box
+    %h2 Version
+    .block
+      %h5 Description
+      %p
+        Event:
+        = @version.event + @version.item_type + "(" + @version.item_id.to_s + ")"
+        %br
+        Change on:
+        = @version.created_at
+        %br
+        By:
+        - if @version.whodunnit
+          = User.find(@version.whodunnit).email
+        - else
+          Unknown
+      - if @object
+        %h5 Values Before changes
+        %p
+          - @object.each do |key,value|
+            = key + ":"
+            = value
+            %br
+      - else
+        nothing

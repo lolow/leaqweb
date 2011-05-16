@@ -29,6 +29,8 @@ Leaqweb::Application.routes.draw do |map|
   map.resources :stored_queries,
                 :member => {:duplicate => :get},
                 :collection => {:list => :get, :destroy_all => :delete}
+  map.resources :versions,
+                :collection => {:list => :get}
 
   map.resources :flows
   map.resources :markets
@@ -38,7 +40,6 @@ Leaqweb::Application.routes.draw do |map|
   match '/restore'           => 'dashboard#restore',  :as => 'restore_db'
   match '/check_db'          => 'dashboard#check_db', :as => 'check_db'
   match '/reset'             => 'dashboard#reset',    :as => 'reset_db'
-  match '/log'               => 'dashboard#log',      :as => 'log'
   post "versions/:id/revert" => "versions#revert",    :as => "revert_version"
 
   root :to => 'dashboard#index'

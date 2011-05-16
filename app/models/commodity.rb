@@ -13,7 +13,6 @@ class Commodity < ActiveRecord::Base
   belongs_to :demand_driver
   has_many :combustions, :dependent => :destroy, :foreign_key => :fuel_id
   has_many :combustions, :dependent => :destroy, :foreign_key => :pollutant_id
-
   has_and_belongs_to_many :aggregates
 
   #Validations
@@ -23,7 +22,7 @@ class Commodity < ActiveRecord::Base
                         :message => "Please use only letters, numbers or '-' in name"}
 
   # Categories [name,value]
-  # sets in value has to be sorted!!
+  # sets in value has to be sorted by alphabetical order!!
   CATEGORIES = [
       ["Disabled", ""],
       ["Energy carrier [import]", "C,ENC,IMP"],

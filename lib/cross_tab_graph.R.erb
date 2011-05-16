@@ -1,13 +1,13 @@
-#tentative graph
 library('ggplot2')
 library('gdata')
-data <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
-data <- subset(data,attribute=="<%= @table[:attribute] %>")
+d <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
+d <- subset(d,attribute=="<%= @table[:attribute] %>")
 <% if @table[:filter].size > 0 %>
-data <- subset(data,<%= @table[:filter] %>)
+d <- subset(d,<%= @table[:filter] %>)
 <% end %>
-#data <- cast(data,<%= @table[:formula] %>,fun.aggregate=<%= @table[:aggregate] %>)
-p = ggplot(data=drop.levels(data),aes(x=T,y=value,group=C,colour=C)) + geom_line()
-p = p + opts(title='<%= @table[:name] %>')  + geom_point() + labs(x="",y="",colour="")
-ggsave(filename = "<%= @table[:png] %>",plot=p)
-
+p = ggplot(data=drop.levels(d),aes(x=T,y=value,group=C,colour=C))
+p = p + geom_line()
+p = p + opts(title='<%= @table[:name] %>')
+p = p + geom_point()
+p = p + labs(x="",y="",colour="")
+ggsave(filename = "<%= @table[:png] %>",plot=p,width=1.618*<%=@table[:scale]%>,height=1*<%=@table[:scale]%>)

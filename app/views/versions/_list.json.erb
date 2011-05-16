@@ -1,0 +1,12 @@
+{
+    "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
+    "iTotalRecords":<%= Version.count.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total_versions.to_json.html_safe %>,
+    "aaData":<%= @versions.collect do |o|
+                   [  distance_of_time_in_words(Time.now,o.created_at) + ' ago',
+                      o.event,
+                      o.item_type + '(' + o.item_id.to_s + ')',
+                      o.whodunnit ? User.find(o.whodunnit).email : 'unknown',
+                     link_to('view', o) ]
+                 end.to_json.html_safe %>
+}

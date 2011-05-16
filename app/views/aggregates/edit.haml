@@ -1,3 +1,7 @@
+:javascript
+  $(function(){
+    $(".multiselect").multiselect({sortable: false, searchable: true});
+  });
 .grid_3
   = render :partial => 'shortcuts', :locals => { :page => :edit }
 
@@ -9,10 +13,7 @@
         =f.input :name, :required => true
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "AGG"}
-        =f.association :commodities, :collection => Commodity.all(:order => 'name')
-        =f.button :submit
+        =f.association :commodities, :collection => Commodity.all(:order => 'name'),
+                       :input_html => {:class=>"multiselect", :multiple=>"multiple"}
+        =f.button :submit, :class => "aligned"
 .clear
-:javascript
-  $(document).ready(function() {
-    $('#aggregate_commodity_ids').coolMultiple({'delText':'unselect'});
-  });

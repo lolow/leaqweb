@@ -3,21 +3,32 @@ require 'etem'
 class Technology < ActiveRecord::Base
   include Etem
 
+  #Interfaces
   has_paper_trail
-
   acts_as_taggable_on :sets
 
+  #Relations
   has_many :out_flows, :dependent => :destroy
   has_many :in_flows, :dependent => :destroy
   has_many :flows, :dependent => :destroy
   has_many :parameter_values, :dependent => :delete_all
+  has_and_belongs_to_many :markets
 
+  #Validations
   validates :name, :presence => true,
             :uniqueness => true,
             :format => {:with => /\A[a-zA-Z\d-]+\z/,
                         :message => "Please use only letters, numbers or '-' in name"}
 
-  has_and_belongs_to_many :markets
+  # Categories [name,value]
+  # sets in value has to be sorted by alphabetical order!!
+  CATEGORIES = [
+      ["Disabled", ""],
+      ["Conversion Technology", "P"],
+      ["Fuel Technology", "FUELTECH,P"],
+      ["Demand device", "DMD,P"]
+  ]
+
   scope :activated, tagged_with("P")
 
   def flow_act
@@ -174,6 +185,19 @@ class Technology < ActiveRecord::Base
       share.collect! { |s| coefs[s.commodity_id] * s.value }
       share.inject(0) { |sum, x| sum+x }
     end
+  end
+
+  #return the corresponding set list from the CATEGORIES array
+  def matching_set_list
+    my_set = self.set_list.sort.join(",")
+    s = nil
+    CATEGORIES.each do |c|
+      if c[1]==my_set
+        s = c[1]
+        break
+      end
+    end
+    s
   end
 
 end

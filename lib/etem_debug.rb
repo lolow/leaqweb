@@ -81,7 +81,7 @@ class EtemDebug
     flow  = Flow.all.map(&:id).sort
     unless pv==flow
       (flow-pv).collect{|f|
-        @errors << [:check_disconnected_flow,"Technology #{Flow.find(f).technology_id} has disconnected Flow #{f} - Please define eff_flo parameters"]
+        @errors << [:check_disconnected_flow,"Flow #{f} is disconnected - Please define eff_flo parameters"]
       }
     end
     @errors
@@ -98,7 +98,7 @@ class EtemDebug
   end
 
   def check_in_flow_and_demand
-    demands = Commodity.tagged_with("DEM").map(&:id)
+    demands = Commodity.activated.tagged_with("DEM").map(&:id)
     inflows = InFlow.all.collect{|f|f.commodities.map(&:id)}.flatten.uniq
     ids = demands & inflows
     if ids.size > 0
@@ -108,7 +108,7 @@ class EtemDebug
   end
 
   def check_dmd_and_demand
-    demands = Commodity.demands.map(&:id)
+    demands = Commodity.activated.demands.map(&:id)
     techs   = OutFlow.joins(:commodities).where('commodities.id'=>demands).group(:technology_id).map(&:technology_id)
     dmd     = Technology.tagged_with("DMD").map(&:id)
     ids = techs - dmd
@@ -119,7 +119,7 @@ class EtemDebug
   end
 
     def check_orphan_demand
-    Commodity.demands.each do |dem|
+    Commodity.activated.demands.each do |dem|
       if dem.produced_by.size == 0
         @errors << [:check_dmd_and_demand,"No producer for commodity DEM " + dem.name]
       end
@@ -128,7 +128,7 @@ class EtemDebug
   end
 
   def check_demand_with_no_demand
-    Commodity.demands.each do |dem|
+    Commodity.activated.demands.each do |dem|
       if ParameterValue.of("demand").where(:commodity_id=>dem.id).count == 0
         @errors << [:check_demand_with_no_demand,"No demand value for demand " + dem.name]
       end
@@ -137,7 +137,7 @@ class EtemDebug
   end
 
   def check_presence_of_set
-    ids = Commodity.all.select{|c|c.sets.empty?}.map(&:id)
+    ids = Commodity.activated.select{|c|c.sets.empty?}.map(&:id)
     if ids.size > 0
       @errors << [:check_presence_of_set,"No sets has been defined for Commodity:" + ids.join(",")]
     end

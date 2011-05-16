@@ -1,6 +1,6 @@
-# Copyright (c) 2009-2010, Laurent Drouet. This file is
-# licensed under the Affero General Public License version 3. See
-# the COPYRIGHT file.
+# Copyright (c) 2009-2011, Public Research Center Henri Tudor.
+# This file is licensed under the Affero General Public License
+# version 3. See the COPYRIGHT file.
 
 class TechnologiesController < ApplicationController
 
@@ -112,6 +112,10 @@ class TechnologiesController < ApplicationController
 
   private
 
+  def undo_link(object)
+    view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
+  end
+
   def filter_technologies(params={})
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     columns = [nil,"name","description"]
@@ -125,17 +129,16 @@ class TechnologiesController < ApplicationController
               :conditions => conditions,
               :per_page => params[:iDisplayLength]}
     if params[:set] && params[:set]!="null"
-      displayed = Technology.tagged_with(params[:set]).paginate filter
-      total = Technology.tagged_with(params[:set]).count :conditions => conditions
+      total = Technology.tagged_with(params[:set]).count(:conditions => conditions)
+      if current_page * params[:iDisplayLength].to_i > total
+        filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
+      end
+      displayed = Technology.tagged_with(params[:set]).paginate(filter)
     else
-      displayed = Technology.paginate filter
-      total = Technology.count :conditions => conditions
+      displayed = Technology.paginate(filter)
+      total = Technology.count(:conditions => conditions)
     end
     return displayed, total
-  end
-  
-  def undo_link(object)
-    view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
   end
 
 end
