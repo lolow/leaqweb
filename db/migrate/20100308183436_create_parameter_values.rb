@@ -15,6 +15,15 @@ class CreateParameterValues < ActiveRecord::Migration
       t.text    :source
       t.timestamps
     end
+    add_index :parameter_values, :parameter_id
+    add_index :parameter_values, :technology_id
+    add_index :parameter_values, :commodity_id
+    add_index :parameter_values, :aggregate_id
+    add_index :parameter_values, :flow_id
+    add_index :parameter_values, :out_flow_id
+    add_index :parameter_values, :in_flow_id
+    add_index :parameter_values, :market_id
+    
   end
 
   def self.down

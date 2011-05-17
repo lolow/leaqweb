@@ -1,5 +1,8 @@
-.grid_3
-  =render :partial => 'shortcuts', :locals => { :page => :new }
+.grid_2
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p= link_to 'Browse all', outputs_path, :class => "action browse"
 .grid_6
   .box
     %h2 New resultset

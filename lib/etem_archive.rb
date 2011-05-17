@@ -85,7 +85,7 @@ class EtemArchive
         csv << pv.attributes.values_at(*headers)
       end
 
-      headers = ["name","aggregate","variable","rows","columns","filters"]
+      headers = ["name","aggregate","variable","rows","columns","filters","display","options"]
       write_csv_into_zip(zipfile,StoredQuery,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
@@ -203,12 +203,7 @@ class EtemArchive
       end
 
       readline_zip(filename,StoredQuery) do |row|
-        StoredQuery.create!(:name      => row["name"],
-                            :aggregate => row["aggregate"],
-                            :variable  => row["variable"],
-                            :rows      => row["rows"],
-                            :columns   => row["columns"],
-                            :filters   => row["filters"])
+        StoredQuery.create!(row)
       end
 
       readline_zip(filename,Combustion) do |row|

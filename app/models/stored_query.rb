@@ -4,7 +4,11 @@ class StoredQuery < ActiveRecord::Base
 
   has_paper_trail
 
-  validates :name, :presence => true, :uniqueness => true
+  DISPLAY = %w( pivot_table line_graph )
+
+  validates_presence_of :name
+  validates_uniqueness_of :name
+  validates_inclusion_of :display, :in => DISPLAY, :message => "not valid"
 
   def digest_filter
     filters.split('&').collect { |term|
@@ -13,10 +17,7 @@ class StoredQuery < ActiveRecord::Base
       condition[:not] = term.first.first=="!" ? "not " : ""
       condition[:variable] = term[0].gsub('!', '').strip
       break unless term[1].index("%in%")
-      if term[2].strip.index("grep('^")==0
-        condition[:func] = "start with"
-        condition[:arg] = term[2].strip.split("'")[1][1..-1]
-      elsif term[2].strip.index("grep('")==0
+      if term[2].strip.index("grep('")==0
         condition[:func] = "contain"
         condition[:arg] = term[2].strip.split("'")[1]
       elsif term[2].strip.index("c('")==0
@@ -38,7 +39,9 @@ class StoredQuery < ActiveRecord::Base
         :variable => variable,
         :columns => columns,
         :rows => rows,
-        :filters => filters)
+        :filters => filters,
+        :display => display,
+        :options => options)
   end
 
 end

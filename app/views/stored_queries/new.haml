@@ -10,6 +10,7 @@
     .block
       = simple_form_for @stored_query do |f|
         =f.input :name
+        =f.input :display
         =f.input :aggregate
         =f.input :variable
         =f.input :rows

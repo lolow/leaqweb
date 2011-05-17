@@ -2,8 +2,7 @@ class CreateTechnologies < ActiveRecord::Migration
   def self.up
     create_table :technologies do |t|
       t.string :name
-      t.text :description
-      t.boolean :activated, :default => true
+      t.text   :description
       t.timestamps
     end
     add_index  :technologies, :name, :unique => true

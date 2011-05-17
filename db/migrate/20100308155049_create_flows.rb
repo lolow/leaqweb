@@ -10,7 +10,13 @@ class CreateFlows < ActiveRecord::Migration
       t.belongs_to :flow
       t.belongs_to :commodity
     end
-    
+
+    add_index :flows, :technology_id
+    add_index :flows, :type
+
+    add_index :commodities_flows, :flow_id
+    add_index :commodities_flows, :commodity_id
+
   end
 
   def self.down

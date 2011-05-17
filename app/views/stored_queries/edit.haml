@@ -17,10 +17,6 @@
       }
       s+= filter[i].variable;
       s+=" %in% ";
-      if (filter[i].func == "start with") {
-        s+= "grep('^" + filter[i].arg + "'," +
-          filter[i].variable + ",value=TRUE)";
-      }
       if (filter[i].func == "contain") {
         s+= "grep('" + filter[i].arg + "'," +
           filter[i].variable + ",value=TRUE)";
@@ -63,7 +59,7 @@
       "</select></td>" +
       "<td>must <select id=\"new_not\">" +
   #{options_for_select(['','not ']).to_json} + "</select> <select id=\"new_func\">" +
-  #{options_for_select(['start with','contain','belong to']).to_json} +
+  #{options_for_select(['contain','belong to']).to_json} +
       "<td><input type=\"text\" id=\"new_arg\" /></td>" +
       "<td><a onclick='add_cond()'>Add</a></td>" +
       "</select></td>" +
@@ -117,9 +113,12 @@
           = f.label :name
           = f.text_field :name, :size => 50
         %p
-          = f.label :aggregate
+          = f.label  :display
+          = f.select :display, StoredQuery::DISPLAY.collect{ |a| [a.humanize,a]  }
+        %p
+          = f.label  :aggregate
           = f.select :aggregate, StoredQuery::AGGREGATES.collect{ |a| [a,a.downcase]  }
-          = f.label :variable
+          = f.label  :variable
           = f.select :variable, StoredQuery::VARIABLES.collect{ |a| [a,a] }
         %p
           Columns/Rows (drag and drop elements)

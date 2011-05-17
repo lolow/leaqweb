@@ -1,11 +1,13 @@
 class Output < ActiveRecord::Base
 
-  validates :name, :presence => true, :uniqueness => true
+  validates_uniqueness_of :name, :scope => :display
 
   before_destroy :clear
 
   TMP = "/tmp"
   EXT = %w{txt mod dat csv log gms inc}
+  SCRIPT = {"pivot_table" => 'pivot_table.R.erb',
+            "line_graph"  => 'line_graph.R.erb'}
 
   def self.auto_new
     name = "output_00"
@@ -22,11 +24,14 @@ class Output < ActiveRecord::Base
     EXT.each { |x| FileUtils.cp(solver.file(x), file(x)) if File.exist?(solver.file(x)) }
   end
 
-  def compute_cross_tab(table)
+  def perform_query(query)
+    #clean
+    File.delete(file("res")) if File.exists?(file("res"))
+    
+    template = File.read(File.join(Rails.root, 'lib', SCRIPT[query[:display]]))
     @output = self
-    @table = table
-    File.delete(file("tab")) if File.exists?(file("tab"))
-    template = File.read(File.join(Rails.root, 'lib', 'cross_tab.R.erb'))
+    @query = query
+    
     f = Tempfile.new("R#{self.id}")
     f2 = Tempfile.new("S#{self.id}")
     text = ERB.new(template).result(binding)
@@ -36,10 +41,8 @@ class Output < ActiveRecord::Base
     `R CMD BATCH --vanilla --quiet #{f.path} #{f2.path}`
     f.close
     f2.close
-  end
 
-  def cross_tab
-    File.read(file("tab")) if File.exists?(file("tab"))
+    file("res")
   end
 
   def has_results?

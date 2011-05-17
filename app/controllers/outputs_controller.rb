@@ -10,7 +10,8 @@ class OutputsController < ApplicationController
 
   respond_to :html, :except => :list
   respond_to :json, :only => :list
-
+  respond_to :csv, :only => :file
+  
   def index
   end
 
@@ -18,7 +19,6 @@ class OutputsController < ApplicationController
     @output = Output.find(params[:id])
     @stored_queries = StoredQuery.order(:name)
     params[:stored_query] = Hash.new("")
-    render :show
   end
 
   def list
@@ -51,19 +51,21 @@ class OutputsController < ApplicationController
     if params[:stored_query][:id].to_i>0
       t = StoredQuery.find(params[:stored_query][:id])
       params[:stored_query][:aggregate] = t.aggregate
-      params[:stored_query][:name] = t.name
+      params[:stored_query][:name]      = t.name
       params[:stored_query][:attribute] = t.variable
-      params[:stored_query][:formula] = t.rows + "~" + t.columns
-      params[:stored_query][:filter] = t.filters
+      params[:stored_query][:formula]   = t.rows + "~" + t.columns
+      params[:stored_query][:filter]    = t.filters
+      params[:stored_query][:rows]      = t.rows
+      params[:stored_query][:columns]   = t.columns
+      params[:stored_query][:display]   = t.display
     end
-    @output.compute_cross_tab(params[:stored_query])
-    params[:stored_query][:result] = @output.cross_tab
+    @output.perform_query(params[:stored_query])
     render :show
   end
 
-  def csv
+  def file
     @output = Output.find(params[:id])
-    render :text => File.read(@output.file('csv'))
+    render :text => text(params[:format])
   end
 
   def import
@@ -100,6 +102,14 @@ class OutputsController < ApplicationController
   end
 
   private
+
+  def text(suffix)
+    if File.exist?(@output.file(suffix))
+      File.read(@output.file(suffix))
+    else
+      "error"
+    end
+  end
 
   def filter_outputs(params={})
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
