@@ -9,8 +9,6 @@ class CreateAggregates < ActiveRecord::Migration
       t.belongs_to :aggregate
       t.belongs_to :commodity
     end
-    add_index :aggregates_commodities, :aggregate_id
-    add_index :aggregates_commodities, :commodity_id
   end
 
   def self.down

@@ -7,7 +7,8 @@ class Output < ActiveRecord::Base
   TMP = "/tmp"
   EXT = %w{txt mod dat csv log gms inc}
   SCRIPT = {"pivot_table" => 'pivot_table.R.erb',
-            "line_graph"  => 'line_graph.R.erb'}
+            "line_graph"  => 'line_graph.R.erb',
+            "area_graph"  => 'area_graph.R.erb'}
 
   def self.auto_new
     name = "output_00"

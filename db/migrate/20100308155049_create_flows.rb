@@ -14,9 +14,6 @@ class CreateFlows < ActiveRecord::Migration
     add_index :flows, :technology_id
     add_index :flows, :type
 
-    add_index :commodities_flows, :flow_id
-    add_index :commodities_flows, :commodity_id
-
   end
 
   def self.down

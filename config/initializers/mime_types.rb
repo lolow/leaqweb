@@ -4,4 +4,4 @@
 # Mime::Type.register "text/richtext", :rtf
 # Mime::Type.register_alias "text/html", :iphone
 Mime::Type.register "image/png", :png
-Mime::Type.register "image/csv", :csv
+#Mime::Type.register "text/csv", :csv

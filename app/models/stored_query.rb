@@ -4,11 +4,14 @@ class StoredQuery < ActiveRecord::Base
 
   has_paper_trail
 
-  DISPLAY = %w( pivot_table line_graph )
+  DISPLAY = %w( pivot_table line_graph area_graph )
 
   validates_presence_of :name
-  validates_uniqueness_of :name
+  validates_uniqueness_of :name, :scope => :display
   validates_inclusion_of :display, :in => DISPLAY, :message => "not valid"
+
+  scope :pivot_tables, where(:display=>"pivot_table")
+  scope :line_graphs, where(:display=>"line_graph")
 
   def digest_filter
     filters.split('&').collect { |term|

@@ -10,6 +10,7 @@ class StoredQueriesController < ApplicationController
   respond_to :json, :only => :list
 
   def index
+    params[:display] = "pivot_table" unless params[:display]
   end
 
   def list
@@ -71,8 +72,17 @@ class StoredQueriesController < ApplicationController
               :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
               :conditions => conditions,
               :per_page => params[:iDisplayLength]}
-    displayed = StoredQuery.paginate filter
-    total = StoredQuery.count :conditions => conditions
+    if params[:display] && params[:display]!="null"
+      total = StoredQuery.where(:display=>params[:display]).count :conditions => conditions
+      if current_page * params[:iDisplayLength].to_i > total
+        filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
+      end
+      displayed = StoredQuery.where(:display=>params[:display]).paginate(filter)
+    else
+      total = StoredQuery.count :conditions => conditions
+      displayed = StoredQuery.paginate(filter)
+    end
+
     return displayed, total
   end
 

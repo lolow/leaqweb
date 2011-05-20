@@ -9,8 +9,6 @@ class CreateMarkets < ActiveRecord::Migration
       t.belongs_to :market
       t.belongs_to :technology
     end
-    add_index :markets_technologies, :market_id
-    add_index :markets_technologies, :technology_id
   end
 
   def self.down
