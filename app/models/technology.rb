@@ -200,4 +200,6 @@ class Technology < ActiveRecord::Base
     s
   end
 
+
+
 end

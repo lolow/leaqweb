@@ -6,6 +6,8 @@ class Parameter < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => true
 
+  scope :named, lambda {|name| where(:name=>name)}
+
   def to_s
     name
   end

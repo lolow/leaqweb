@@ -18,6 +18,7 @@ class OutputsController < ApplicationController
   def show
     @output = Output.find(params[:id])
     @stored_queries = StoredQuery.order(:name)
+    @file_ext = Dir[File.join(@output.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
     params[:stored_query] = Hash.new("")
   end
 
@@ -60,6 +61,7 @@ class OutputsController < ApplicationController
       params[:stored_query][:display]   = t.display
     end
     @output.perform_query(params[:stored_query])
+    @file_ext = Dir[File.join(@output.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
     render :show
   end
 

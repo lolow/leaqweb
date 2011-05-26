@@ -9,6 +9,7 @@
         }
     });
   }
+
   $(document).ready(function() {
     $('#cancel').click(function() {
           $.unblockUI();
@@ -22,6 +23,11 @@
       sel.removeAllRanges();
       sel.addRange(r);
       })
+    $('#extname').change(function(){
+      url = #{file_output_path(@output).to_json} + "." + $('#extname').val().toLowerCase();
+      $('#get_file').attr('href',url);
+    })
+    $('#extname').change();
   });
 
 .grid_2
@@ -30,11 +36,12 @@
     .block
       %p
         = link_to 'Browse all', outputs_path, :class => "action browse"
-      %p
       - if @output.has_results?
-        %h5 Download
         %p
-          = link_to "CSV", file_output_path(@output) + ".csv", :class => "action download"
+          = link_to "Download", output_path(@output) , :class => "action download", :id=>"get_file"
+          = select_tag "extname", options_for_select(@file_ext)
+
+
 
 - if @output.has_results?
   .grid_10
@@ -48,9 +55,9 @@
               - StoredQuery::DISPLAY.each do |display|
                 %optgroup(label="#{display.humanize.pluralize}")
                   - StoredQuery.where(:display=>display).order(:name).each do |q|
-                    %option(value="#{q.id}")= q.name
+                    %option{:value=>q.id,:selected=>(params[:stored_query][:id]==q.id.to_s)}= q.name
             = submit_tag 'Send query', :disable_with => 'Execute...'
-            %a(href="#" onclick="custom_query()") custom query
+            -# %a(href="#" onclick="custom_query()") custom query
           %br
         %p= link_to 'Reinit query', @output
   .clear

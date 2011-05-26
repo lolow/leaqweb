@@ -4,7 +4,6 @@ class Output < ActiveRecord::Base
 
   before_destroy :clear
 
-  TMP = "/tmp"
   EXT = %w{txt mod dat csv log gms inc}
   SCRIPT = {"pivot_table" => 'pivot_table.R.erb',
             "line_graph"  => 'line_graph.R.erb',
@@ -21,7 +20,8 @@ class Output < ActiveRecord::Base
 
   def store_solver(solver)
     FileUtils.mkdir_p(path) unless File.exists?(path)
-    File.delete(file("Renv")) if File.exists?(file("Renv"))
+    path_content = Dir[File.join(path,"file.*")]
+    path_content.each{|f| File.delete(f) if File.exists?(f)}
     EXT.each { |x| FileUtils.cp(solver.file(x), file(x)) if File.exist?(solver.file(x)) }
   end
 
@@ -54,11 +54,11 @@ class Output < ActiveRecord::Base
     File.join(path, "file.#{ext}")
   end
 
-  private
-
   def path
     File.join(Rails.root, 'public', 'files', 'out', self.id.to_s)
   end
+
+  private
 
   def clear
     EXT.each { |x| File.delete(file(x)) if File.exists?(file(x)) }
