@@ -1,6 +1,6 @@
 class Output < ActiveRecord::Base
 
-  validates_uniqueness_of :name, :scope => :display
+  validates_uniqueness_of :name
 
   before_destroy :clear
 

@@ -203,7 +203,14 @@ class EtemArchive
       end
 
       readline_zip(filename,StoredQuery) do |row|
-        StoredQuery.create!(row)
+        StoredQuery.create!(:name      => row["name"],
+                            :aggregate => row["aggregate"],
+                            :variable  => row["variable"],
+                            :rows      => row["rows"],
+                            :columns   => row["columns"],
+                            :filters   => row["filters"],
+                            :display   => row["display"],
+                            :options   => row["options"])
       end
 
       readline_zip(filename,Combustion) do |row|
