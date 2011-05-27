@@ -394,7 +394,7 @@ put 'C_PRICE,'year(T);
 out.nd = 6;
 put ','S.tl',,'C.tl','EQ_COMBAL.m(T,S,C)/;
 )))
-LOOP(T,LOOP(C$SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C)),
+LOOP(T,LOOP(C$(SUM(S,fraction(S)*EQ_COMBAL.m(T,S,C))),
 out.nd = 0;
 put 'C_PRICE,'year(T);
 out.nd = 6;
