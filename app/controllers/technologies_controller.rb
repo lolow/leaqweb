@@ -102,7 +102,7 @@ class TechnologiesController < ApplicationController
 
   def destroy_all
     Technology.destroy(checkbox_ids)
-    redirect_to(commodities_url)
+    redirect_to(technologies_url)
   end
 
   def destroy

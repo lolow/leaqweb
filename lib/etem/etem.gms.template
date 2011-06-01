@@ -421,6 +421,19 @@ out.nd = 6;
 put ',ANNUAL,,'DEM.tl','demand(T,DEM)/;
 ))
 
+LOOP(T,LOOP(S,LOOP(IMP,
+out.nd = 0;
+put 'COST_IMP,'year(T);
+out.nd = 6;
+put ','S.tl',,'IMP.tl','cost_imp(T,S,IMP)/;
+)))
+LOOP(T,LOOP(IMP,
+out.nd = 0;
+put 'COST_IMP,'year(T);
+out.nd = 6;
+put ',ANNUAL,,'IMP.tl','SUM(S,cost_imp(T,S,IMP))/;
+))
+
 LOOP(T,LOOP(S,LOOP(AGG$AGGREGATE.l(T,S,AGG),
 out.nd = 0;
 put 'AGGREGATE,'year(T);
