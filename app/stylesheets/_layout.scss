@@ -9,9 +9,10 @@ a {
 	font-weight:bold;
 	text-decoration: none;
     cursor: pointer;
-}
-a:hover {
-	color:$text_color;
+
+    &:hover {
+      color:$text_color;
+    }
 }
 
 /* container
@@ -23,9 +24,15 @@ a:hover {
 /* headings
 ----------------------------------------------- */
 h1, h2, h3, h4, h5, h6 {
-	line-height:1.2em; 
-	margin-bottom:.3em;
+  line-height:1.2em;
+  margin-bottom:.3em;
+
+  a {
+	font-weight:normal;
+  }
+
 }
+
 h5 {
 	font-size:1em;
 	text-transform:uppercase;
@@ -34,93 +41,83 @@ h6 {
 	font-size:1.1em;
 	text-transform:uppercase;
 }
-h1 a {
-	font-weight:normal;
-}
+
 
 /* logo
 ----------------------------------------------- */
-h1#logo {
-	font-weight:normal;
-	font-size:3em;
-	text-align:left;
-	background:$logo_background;
-	padding:.25em 1em;
-	margin-bottom:0;
-}
+logo {
+  @extend h1;
+  font: {
+    weight: normal;
+    size: 3em;
+  }
+  text-align:left;
+  background:$logo_background;
+  padding:.25em 1em;
+  margin-bottom:0;
 
-h1#logo a {
-	color:$logo_color;
+  a {
+    color:$logo_color;
+  }
 }
 
 /* page heading
 ----------------------------------------------- */
-h2#page-heading {
-	font-weight:normal;
-	padding:.25em;
-	margin:0 0 10px 0;
-	border-bottom:1px solid $white;
+page-heading {
+  @extend h2;
+  font-weight:normal;
+  padding:.25em;
+  margin:0 0 10px 0;
+  border-bottom:1px solid $white;
 }
 
 /* boxes
 ----------------------------------------------- */
 .box {
-	background:$box-background;
-	margin-bottom:20px;
-	padding:10px 10px 1px 10px;
-    @include corner(5px);
-}
+  background:$box-background;
+  margin-bottom:20px;
+  padding:10px 10px 1px 10px;
+  @include corner(5px);
 
-.box h2 {
-	font-size:1em;
-	font-weight:normal;
-	text-transform:uppercase;
-	color:$h2_color;
-	background:$h2_background;
-	margin:-10px -10px 0 -10px;
-	padding:6px 12px;
-    @include corner_top(5px);
-}
-.box h2 a,
-.box h2 a.visible {
-	color:$h2_color;
-	background:$h2_background url("/images/switch_minus.gif") 97% 50% no-repeat;
-	display:block;
-	padding:6px 12px;
-	margin:-6px -12px;
-	border:none;
-    @include corner_top(5px);
+  h2 {
+    font-size:1em;
     font-weight:normal;
-}
-.grid_4 .box h2 a {
-	background-position: 97% 50%;
-}
-.grid_5 .box h2 a {
-	background-position: 98% 50%;
-}
-.grid_12 .box h2 a {
-	background-position: 99% 50%;
-}
+    text-transform:uppercase;
+    color:$h2_color;
+    background:$h2_background;
+    margin:-10px -10px 0 -10px;
+    padding:6px 12px;
+    @include corner_top(5px);
 
-
-.box h2 a.hidden,
-.box h2 a.hidden:hover {
+/*    a, a.visible {
+      color:$h2_color;
+      background:$h2_background url("/images/switch_minus.gif") 97% 50% no-repeat;
+      display:block;
+      padding:6px 12px;
+      margin:-6px -12px;
+      border:none;
+      @include corner_top(5px);
+      font-weight:normal;
+    }
+    a.hidden, a.hidden:hover {
 	background-image: url("/images/switch_plus.gif");
+    }
+     */
+  }
 }
-.box h2 a:hover {
-	background-color:#111;
-}
+
 .block {
-	padding-top:10px;
+  padding-top:10px;
+  padding-bottom:1px;
 }
 div.menu {
-	padding:0;
-}
-div.menu h2 {
-	margin:0;
-}
-div.menu .block {
-	padding-top:0;
+  padding:0;
+  h2 {
+    margin:0;
+  }
+  .block {
+    padding-top:0;
+  }
 }
 
 .footer {
@@ -144,102 +141,41 @@ ul, ol {
 /* menus
 ----------------------------------------------- */
 ul.menu {
-	list-style:none;
-	border-top:1px solid #bbb;
+  list-style:none;
+  border-top:1px solid #bbb;
+
+  li {
+    margin:0;
+  }
+
+  li a {
+    display:block;
+    padding:4px 10px;
+    border-bottom:1px solid #ccc;
+
+    &:hover {
+      background:#eee;
+    }
+
+    &:active {
+      background:#ccc;
+    }
+  }
 }
-ul.menu li {
-	margin:0;
-}
-ul.menu li a {
-	display:block;
-	padding:4px 10px;
-	border-bottom:1px solid #ccc;
-}
-ul.menu li a:hover {
-	background:#eee;
-}
-ul.menu li a:active {
-	background:#ccc;
-}
-ul.menu li a.active {
-	background:#ccc;
-}
+
 
 /* submenus
 ----------------------------------------------- */
 ul.menu ul {
-	list-style:none;
-	margin:0;
-}
-ul.menu ul li a {
-	padding-left:30px;
-}
+  list-style:none;
+  margin:0;
 
-
-/* section menus
------------------------------------------------ */
-ul.section {
-	border-top:0;
-	margin-bottom:0;
+  li {
+    a {
+	  padding-left:30px;
+    }
+  }
 }
-ul.section li {
-	text-transform:uppercase;
-}
-ul.section li a {
-	background:#bbb;
-}
-ul.section li a:hover {
-	background:#aaa;
-}
-ul.section li a:active {
-	color:$white;
-	background:#666;
-}
-ul.section li li a {
-	background:#ddd;
-	border-bottom:1px solid #eee;
-}
-ul.section li li a:hover {
-	background:#ccc;
-}
-ul.section li li a:active {
-	color:$link_color;
-	background:$white;
-}
-ul.section ul li {
-	text-transform:none;
-}
-ul.section ul.current li a {
-	background:#eee;
-	border-bottom:1px solid $white;
-}
-ul.section ul.current li a:hover {
-	background:#ddd;
-}
-ul.section ul.current li a:active {
-	background:$white;
-}
-ul.section li a.current {
-	color:$white;
-	background:#666;
-}
-ul.section li a.current:hover {
-	background:#555;
-}
-ul.section li a.current:active {
-	background:#444;
-}
-ul.section li a.active {
-	background:$white;
-	cursor:default;
-}
-ul.section li.current > a.active,
-ul.section li.current > a.active:hover {
-	color:$white;
-	background:#666;
-	cursor:default;
-}
-
 
 /* table
 ----------------------------------------------- */
@@ -254,19 +190,23 @@ th, td {
 	text-align:left;
     vertical-align:middle;
 }
-thead th {
-	border-bottom:2px solid #888;
-	background:#bbb;
-	padding:.4em 1em .2em;
+thead {
+  th {
+    border-bottom:2px solid #888;
+    background:#bbb;
+    padding:.4em 1em .2em;
+
+    .table-head {
+	  font-size:1em;
+	  font-weight:normal;
+	  text-transform:uppercase;
+	  color:$white;
+	  background:#555;
+	  border:1px solid #555;
+    }
+  }
 }
-thead th.table-head {
-	font-size:1em;
-	font-weight:normal;
-	text-transform:uppercase;
-	color:$white;
-	background:#555;
-	border:1px solid #555;
-}
+thead th
 tbody th,
 tbody td {
 	border-top:1px solid #bbb;
@@ -282,17 +222,7 @@ tfoot td {
 	border-top:2px solid #666;
 	background:#eee;
 }
-tfoot tr.total th,
-tfoot tr.total td {
-	border-top:6px double #666;
-}
-tfoot tr.total th {
-	text-transform:uppercase;
-}
-th.currency,
-td.currency {
-	text-align:right;
-}
+
 
 /* AJAX sliding shelf
 ----------------------------------------------- */
@@ -301,9 +231,7 @@ td.currency {
     margin-right:14px;
     margin-top:-2px;
 }
-.block {
-    padding-bottom:1px;
-}
+
 
 /* Accordian
 ----------------------------------------------- */
@@ -331,10 +259,6 @@ td.currency {
 .float-right {
 	padding:10px 20px;
 	float:right;
-}
-
-#accordian-block {
-	padding-bottom:10px;
 }
 
 /* notice */
@@ -434,29 +358,32 @@ float: left;
 }
 
 .input {
-    display: block;
-    margin-bottom: 0.5em;
-    padding: 0;
-}
+  display: block;
+  margin-bottom: 0.5em;
+  padding: 0;
 
-.input label {
+  label {
     float: left;
     padding: 0 7px;
     text-align: right;
     width: 100px;
-}
+  }
 
-.input input, .input textarea {
+  input, textarea {
     border-color: #555555 #CCCCCC #CCCCCC #555555;
     border-style: solid;
     border-width: 1px;
     padding: 1px;
     width: 300px;
-}
 
-.input input:focus, .input textarea:focus {
-    background: none repeat scroll 0 0 $box-background;
-}
+    &:focus {
+      background: none repeat scroll 0 0 $box-background;
+    }
+
+    &.boolean {
+      width: 1em;
+    }
+  }
 
 input.button {
     margin-bottom:5px;
@@ -477,9 +404,7 @@ input.aligned {
     margin-left:114px;
 }
 
-.input input.boolean {
-  width: 1em;
-}
+.input
 
 .simple_form .error {
   clear: left;
@@ -587,67 +512,6 @@ a.action {
  a.action:hover {
   color: #ccc;
  }
-
-/****
-Cool-multiple
-*/
-
-.hidden{
-    display:none;
-}
-.clearfix:after {
-    content: ".";
-    display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
-    height: 0;
-}
-.clearfix {
-    display: inline-block;
-}
-html[xmlns] .clearfix {
-    display: block;
-}
-* html .clearfix {
-    height: 1%;
-}
-
-.coolmulti p{
-    margin:0;
-    padding:0;
-    line-height: 14px;
-}
-.coolmulti-scrollbox{
-    height: 250px;
-    overflow-y: auto;
-    background: #fff;
-    border-color: #555555 #CCCCCC #CCCCCC #555555;
-    border-style: solid;
-    border-width: 1px;
-    float:left;
-    padding: 1px;
-}
-.coolmulti-scrollbox p{
-    padding: 2px 0;
-    cursor: pointer;
-    cursor:hand;
-}
-.coolmulti-scrollbox .coolmulti-selected{
-    background: $box-background;
-}
-.coolmulti-values{
-    font-weight: bold;
-    float:left;
-    margin-left: 15px;
-    width: 200px;
-}
-.coolmulti-values p{
-    padding: 2px 0;
-}
-.coolmulti-values p a{
-    margin-left: 5px;
-}
 
 /*
 DataTable
@@ -765,29 +629,26 @@ th.add {
 
 // LIST TABLE
 
-table.list_table thead th {
-    cursor: pointer;
-}
-
 table.list_table {
-    clear: both;
-    margin-bottom: 5px;
-}
-
-table.list_table input {
+  clear: both;
+  margin-bottom: 5px;
+  thead th {
+    cursor: pointer;
+  }
+  input {
     border-color: #555555 #CCCCCC #CCCCCC #555555;
     border-style: solid;
     border-width: 1px;
     padding: 1px;
-}
-
-table.list_table th.check {
+  }
+  th.check {
     width:1.5em;
+  }
+  th.name {
+    width:25%;
+  }
 }
 
-table.list_table th.name {
-    width:25%;
-}
 
 .paginate_enabled_next, .paginate_enabled_previous, .paginate_button {
   cursor: pointer;
@@ -810,47 +671,81 @@ table.list_table th.name {
 
 /* Multiselect
 ----------------------------------*/
-
-.ui-multiselect {  }
-.ui-multiselect ul { -moz-user-select: none; }
-.ui-multiselect div.list-container { padding: 0; margin: 0; border: 0; float:left; }
-.ui-multiselect ul.list { position: relative; padding: 0; overflow: auto; overflow-x: hidden; margin: 0; list-style: none; width: 100%; }
-.ui-multiselect li { margin: 0; padding: 0; cursor: default; line-height: 20px; height: 20px; font-size: 11px; list-style: none; padding-left: 10px; white-space: nowrap; overflow: hidden; }
-.ui-multiselect li a { color: #999; text-decoration: none; padding: 0; display: block; float: left; cursor: pointer;}
-.ui-multiselect ul.ui-state-highlight { border: none; }
-.ui-multiselect li.ui-draggable-dragging { border: 1px solid; padding-left: 10px; z-index: 99999; }
-
-.ui-multiselect div.selected { border-color: #555555 #CCCCCC #CCCCCC #555555;
-                               border-style: solid;
-                               border-width: 1px;
-                                }
-.ui-multiselect ul.selected { }
-.ui-multiselect ul.selected li { }
-
-.ui-multiselect div.available { border-color: #555555 #CCCCCC #CCCCCC #555555;
-                               border-style: solid;
-                               border-width: 1px;
-                               border-left:none; }
-.ui-multiselect ul.available { }
-.ui-multiselect ul.available li { }
-
-.ui-multiselect .ui-state-default { border: none; margin-bottom: 1px; position: relative; }
-.ui-multiselect .ui-state-hover { border: none; }
-.ui-multiselect .ui-widget-header {border: none; font-size: 11px; margin-bottom: 1px;}
-
-.ui-multiselect .add-all { float: right; padding: 7px; white-space: nowrap; }
-.ui-multiselect .remove-all { float: right; padding: 7px; white-space: nowrap; }
-.ui-multiselect .count { cursor: default; float: left; padding: 7px; }
-.ui-multiselect .search { float: left; padding: 1px; opacity: 0.7; margin: 4px; height: 14px; }
-.ui-multiselect .busy { left: 0px; float: left; padding: 7px 7px 7px 25px; z-index: 1; background: url(images/spinner.gif) 4px 50% no-repeat; }
-.ui-multiselect .overlay { background: #aaaaaa; opacity: .30;filter:Alpha(Opacity=30); }
-
-.ui-multiselect li a.action { position: absolute; border: none; right: 0px; top: 1px; padding-right: 2px; }
-
-.ui-widget {}
-
-/* multiselect styles */
 .multiselect {
-width: 500px;
-height: 250px;
+  width: 500px;
+  height: 250px;
+}
+.ui-multiselect {
+  ul {
+    -moz-user-select: none;
+    &.list {
+      position: relative;
+      padding: 0;
+      overflow: auto;
+      overflow-x: hidden;
+      margin: 0;
+      list-style: none;
+      width: 100%;
+    }
+    &.ui-state-highlight {
+      border: none
+    };
+    }
+  }
+  li {
+    margin: 0;
+    padding: 0;
+    cursor: default;
+    line-height: 20px;
+    height: 20px;
+    font-size: 11px;
+    list-style: none;
+    padding-left: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    a {
+      color: #999;
+      text-decoration: none;
+      padding: 0;
+      display: block;
+      float: left;
+      cursor: pointer;
+
+      &.action { position: absolute; border: none; right: 0px; top: 1px; padding-right: 2px; }
+    }
+    &.ui-draggable-dragging {
+      border: 1px solid;
+      padding-left: 10px;
+      z-index: 99999;
+    }
+  }
+  div {
+    &.list-container {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      float:left;
+    }
+    &.selected {
+      border-color: #555555 #CCCCCC #CCCCCC #555555;
+      border-style: solid;
+      border-width: 1px;
+    }
+    &.available {
+      border-color: #555555 #CCCCCC #CCCCCC #555555;
+      border-style: solid;
+      border-width: 1px;
+      border-left:none;
+    }
+
+  }
+  .ui-state-default { border: none; margin-bottom: 1px; position: relative; }
+  .ui-state-hover { border: none; }
+  .ui-widget-header {border: none; font-size: 11px; margin-bottom: 1px;}
+  .add-all { float: right; padding: 7px; white-space: nowrap; }
+  .remove-all { float: right; padding: 7px; white-space: nowrap; }
+  .count { cursor: default; float: left; padding: 7px; }
+  .search { float: left; padding: 1px; opacity: 0.7; margin: 4px; height: 14px; }
+  .busy { left: 0px; float: left; padding: 7px 7px 7px 25px; z-index: 1; background: url(images/spinner.gif) 4px 50% no-repeat; }
+  .overlay { background: #aaaaaa; opacity: .30;filter:Alpha(Opacity=30); }
 }

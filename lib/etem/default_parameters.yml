@@ -133,7 +133,7 @@
   :default_value: 1.0
 - :name: cost_imp
   :definition: Import price of a commodity
-  :default_value: 10000000000000.0
+  :default_value: 1000.0
 - :name: cost_vom
   :definition: Operation and maintenance variable cost
   :default_value: 0.0
