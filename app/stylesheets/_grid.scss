@@ -3,12 +3,13 @@
 	Learn more ~ http://960.gs/
 
 	Licensed under GPL and MIT.
+    Adapted by me
 */
 
 /* =Containers
 --------------------------------------------------------------------------------*/
 
-.container_#{$grid}
+.container
 {
 	width: $width;
 	margin-left: (100% - $width)/2;
@@ -29,7 +30,7 @@
 }
 
 @for $i from 1 through $grid {
-  .container_#{$grid} .grid_#{$i} { width: 100% / $grid * $i - 2%  ; }
+  .container .grid_#{$i} { width: 100% / $grid * $i - 2%  ; }
 }
 
 /* =Grid >> Children (Alpha ~ First, Omega ~ Last)
@@ -49,14 +50,14 @@
 --------------------------------------------------------------------------------*/
 
 @for $i from 1 through $grid {
-  .container_#{$grid} .prefix_#{$i} { padding-left: 100% / $grid * $i; }
+  .container .prefix_#{$i} { padding-left: 100% / $grid * $i; }
 }
 
 /* =Suffix Extra Space >> Global
 --------------------------------------------------------------------------------*/
 
 @for $i from 1 through $grid {
-  .container_#{$grid} .suffix_#{$i} { padding-right: 100% / $grid * $i; }
+  .container .suffix_#{$i} { padding-right: 100% / $grid * $i; }
 }
 
 /* =Clear Floated Elements

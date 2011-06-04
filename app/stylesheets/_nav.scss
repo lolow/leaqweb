@@ -1,10 +1,5 @@
-/*
------------------------------------------------
-Navigation
------------------------------------------------ */
+/* NAVIGATION MENU */
 
-/* navigation (horizontal subnavigation)
------------------------------------------------ */
 ul.nav,
 ul.nav * { margin:0;padding:0;}
 ul.nav {
@@ -12,157 +7,149 @@ ul.nav {
   background:$nav_background;
   max-width:100%;
   height:2.5em;
-}
-ul.nav li {
-	cursor:pointer;
-	float:left;
-	text-align:center;
-	list-style-type:none;
-	font-weight:normal;
-}
-ul.nav li ul {
-	cursor:default;
-	width:100%;
-	max-width:100%;
-	position:absolute;
-	height:auto;
-	top:2.5em;
-	background-position:0 0 !important;
-	left:-9000px;
-}
-ul.nav li ul li {
-	padding:0;
-	border:none;
-	width:auto;
-	max-width:none;
-}
-ul.nav li a {
-	background:$nav_color;
-	background:$nav_background;
-	font-weight:bold;
-	text-decoration:none;
-	display:block;
-	float:left;
-	padding:0 1em;
-	height:2.4em;
-	line-height:2.5em;
+  li {
+    cursor:pointer;
+    float:left;
+    text-align:center;
+    list-style-type:none;
+    font-weight:normal;
+    &:hover ul {
+      left:0;
+      z-index:10;
+      li a {
+        color:$menu_limit;
+        &:hover {color:#000; background:$nav_color;}
+        &:active {color:$nav_background; background:$nav_color;}
+      }
+    }
+    a {
+      background:$nav_color;
+      background:$nav_background;
+      font-weight:bold;
+      text-decoration:none;
+      display:block;
+      float:left;
+      padding:0 1em;
+      height:2.4em;
+      line-height:2.5em;
+      &:active {color:$nav_background; background:$nav_color;}
+    }
+    ul {
+      cursor:default;
+      width:100%;
+      max-width:100%;
+      position:absolute;
+      height:auto;
+      top:2.5em;
+      background-position:0 0 !important;
+      left:-9000px;
+      li {
+        padding:0;
+        border:none;
+        width:auto;
+        max-width:none;
+        a {
+          position:relative !important; /* ie Mac */
+          cursor:pointer !important;
+          white-space:nowrap;
+          line-height:2em;
+          height:2em;
+          font-weight:normal;
+          color:$nav_background;
+          background-position:0 50% !important;
+        }
+      }
+    }
+  }
 }
 
-ul.nav li ul li a {
-	position:relative !important; /* ie Mac */
-	cursor:pointer !important;
-	white-space:nowrap;
-	line-height:2em;
-	height:2em;
-	font-weight:normal;
-	color:$nav_background;
-	background-position:0 50% !important;
+/* DROP-DOWN MENU */
+
+ul.main {
+  li {
+    position:relative;
+    top:0;
+    left:0;
+    &:hover a {
+      color:$menu_color;
+      background:$menu_background;
+      &:active {
+        background:$menu_background;
+      }
+    }
+    &:hover ul li a {
+      color:$menu_color;
+      &:hover {
+        color:$menu_color;
+        background:$menu_hover;
+      }
+      &:active {
+        color:$menu_color;
+        background:$menu_background;
+      }
+    }
+    ul {
+      border-top:0;
+      li {
+        float:left;
+        a {
+          width:12em;
+          line-height:2em;
+          height:2em;
+          text-align:left;
+          color:$nav_color;
+          border-top:1px solid $menu_limit;
+          background:$menu_limit;
+          &:hover {color:$nav_color; background:$menu_background;}
+        }
+      }
+    }
+    a {
+      height:2.5em;
+      line-height:2.5em;
+      border:0;
+      color:$nav_color;
+      background:$nav_background;
+      &:focus {color:$nav_color; background:$nav_background;}
+    }
+  }
 }
 
-ul.nav li:hover a,
-ul.nav li a:hover,
-ul.nav li a:focus {color:#000; background:#ccc;}
-ul.nav li a:active {color:$nav_background; background:$nav_color;}
-ul.nav li:hover ul {left:0;z-index:10}
-ul.nav li ul,
-ul.nav li {background:#ccc !important}
-ul.nav li:hover ul li a {color:$menu_limit;}
-ul.nav li:hover ul li a:hover {color:#000; background:$nav_color;}
-ul.nav li:hover ul li a:active {color:$nav_background; background:$nav_color;}
+/* SECONDARY  */
 
-ul.nav li.current a {color:$nav_background; background:$nav_color; cursor:default; font-weight:bold;}
-ul.nav li.current ul {left:0;z-index:5}
-ul.nav li.current ul,
-ul.nav li.current {background:#ccc !important}
-ul.nav li.current ul li a {color:$menu_limit; background:#ccc; font-weight:normal;}
-ul.nav li.current ul li a:hover {color:#000; background:$nav_color;}
-ul.nav li ul li.current a,
-ul.nav li ul li.current a:hover,
-ul.nav li.current:hover ul li a:active {color:$nav_background; background:$nav_color;}
-
-
-/* navigation (vertical subnavigation)
------------------------------------------------ */
-ul.nav {
-  background:$nav_background;
-}
-ul.main li {
-  position:relative;
-  top:0;
-  left:0;
-}
-ul.main li ul {
-  border-top:0;
-}
-ul.main li ul li {
-  float:left;
-}
-ul.main li a {
-	height:2.5em;
-	line-height:2.5em;
-	border:0;
-	color:$nav_color;
-	background:$nav_background;
-}
-ul.main li ul li a {
-  width:12em;
-  line-height:2em;
-  height:2em;
-  text-align:left;
-  color:$nav_color;
-  border-top:1px solid $menu_limit;
-  background:$menu_limit;
-}
-ul.main li a:focus {color:$nav_color; background:$nav_background;}
-ul.main li ul li a:hover {
-  color:$nav_color;
-  background:$menu_background;
-}
-ul.main li:hover a {
-  color:$menu_color;
-  background:$menu_background;
-}
-ul.main li:hover ul li a {color:$menu_color;}
-ul.main li:hover ul li a:hover {color:$menu_color; background:$menu_hover;}
-ul.main li:hover a:active {background:$menu_background;}
-ul.main li:hover ul li a:active {color:$menu_color; background:$menu_background;}
-
-
-/* secondary list
------------------------------------------------ */
 ul.nav li.secondary {
-	float:right;
-	color:#cde;
-	background:transparent !important;
+  float:right;
+  color:#cde;
+  background:transparent !important;
+  &:hover a {
+    color:$menu_color;
+    background:$menu_background;
+    &:hover {
+      background:$menu_background;
+    }
+    &:active {background:$menu_limit;}
+  }
+  span.status {
+    float:left;
+    padding:0 1em;
+    line-height:2.77em;
+    height:2.77em;
+    font-size:0.9em;
+    span {
+      text-transform:capitalize;
+    }
+    a {
+      float:none;
+      display:inline;
+      padding:0;
+      height:auto;
+      line-height:auto;
+      color:#cde;
+      background:transparent;
+      &:hover {
+        color:$nav_color;
+        background:transparent;
+      }
+    }
+  }
 }
-ul.nav li.secondary span.status {
-	float:left;
-	padding:0 1em;
-	line-height:2.77em;
-	height:2.77em;
-  font-size:0.9em;
-}
-ul.nav li.secondary span.status a {
-	float:none;
-	display:inline;
-	padding:0;
-	height:auto;
-	line-height:auto;
-	color:#cde;
-	background:transparent;
-}
-ul.nav li.secondary span.status a:hover {
-	color:$nav_color;
-	background:transparent;
-}
-ul.nav li.secondary span.status span {
-	text-transform:capitalize;
-}
-ul.nav li.secondary:hover a {
-	color:$menu_color;
-	background:$menu_background;
-}
-ul.nav li.secondary:hover a:hover {
-	background:$menu_background;
-}
-ul.nav li.secondary:hover a:active {background:$menu_limit;}
