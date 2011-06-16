@@ -11,9 +11,9 @@ class ApplicationController < ActionController::Base
   protected
 
   def layout_info
-    @title = ["ETEM Luxembourg"]
-    @author = "Laurent Drouet"
-    @keywords = %w(leaq geoecu ayltp energy air quality)
+    @title       = ["ETEM Luxembourg"]
+    @author      = "Laurent Drouet"
+    @keywords    = %w(leaq geoecu ayltp energy air quality)
     @description = "LEAQ web interface"
   end
 

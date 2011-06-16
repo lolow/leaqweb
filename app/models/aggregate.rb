@@ -17,4 +17,8 @@ class Aggregate < ActiveRecord::Base
   #Scopes
   scope :activated, tagged_with("AGG")
 
+  def parameter_values_for(parameters)
+    ParameterValue.of(Array(parameters)).where(:aggregate_id=>self).order(:year)
+  end
+
 end

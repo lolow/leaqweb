@@ -12,15 +12,6 @@
             %tr
               %td.col50
                 %select(multiple size="10" id="sel_avail_commodity" class="flow_list")
-                  %optgroup(label="Energy Carriers")
-                    - Commodity.energy_carriers.order(:name).each do |c|
-                      %option= c.name
-                  %optgroup(label="Pollutants")
-                    - Commodity.pollutants.order(:name).each do |c|
-                      %option= c.name
-                  %optgroup(label="Useful demands")
-                    - Commodity.demands.order(:name).each do |c|
-                      %option= c.name
                 %p(style="text-align: center")
                   %a(href="#" id="add_commodity_flow")
                     & add >>

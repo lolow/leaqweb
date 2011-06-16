@@ -57,7 +57,7 @@
           %tfoot
             %tr
               %td
-                %a(href="#" onclick="add_flow('#{flows_path}','In flow',#{@technology.id})")
+                %a(href="#" onclick="add_flow('#{flows_path}','#{commodities_path}','In flow',#{@technology.id})")
                   + Add inflow
         %table
           %thead
@@ -71,7 +71,7 @@
           %tfoot
             %tr
               %td
-                %a(href="#" onclick="add_flow('#{flows_path}','Out flow',#{@technology.id})")
+                %a(href="#" onclick="add_flow('#{flows_path}','#{commodities_path}','Out flow',#{@technology.id})")
                   + Add outflow
         %p
           %select(name="do")

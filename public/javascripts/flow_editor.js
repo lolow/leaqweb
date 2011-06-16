@@ -10,7 +10,33 @@ $(document).ready(function() {
         return false;
     });
 });
-function add_flow(flows_path,flow_type,tech_id){
+function fill_avail_commodities(commodities_path){
+    var options = "";
+    $.getJSON(commodities_path + '.js', function(j){
+        options += '<optgroup label="Energy Carriers">'
+        var c = j.enc;
+        for(var i = 0; i < c.length; i++) {
+          options += '<option>' + c[i] + '</option>';
+        }
+        options += '</optgroup>'
+        options += '<optgroup label="Pollutants">'
+        var c = j.poll;
+        for(var i = 0; i < c.length; i++) {
+          options += '<option>' + c[i] + '</option>';
+        }
+        options += '</optgroup>'
+        options += '<optgroup label="Demands">'
+        var c = j.dem;
+        for(var i = 0; i < c.length; i++) {
+          options += '<option>' + c[i] + '</option>';
+        }
+        options += '</optgroup>';
+        $('#sel_avail_commodity').html(options);
+    })
+
+}
+function add_flow(flows_path,commodities_path,flow_type,tech_id){
+    fill_avail_commodities(commodities_path);
     $('#sel_flow_commodity').html("");
     $('#flow_editor_title').text('New ' + flow_type);
     $('#flow_editor_button').attr('value','Add');
@@ -41,7 +67,8 @@ function add_flow(flows_path,flow_type,tech_id){
         }
     });
 }
-function edit_flow(flow_path,flow_type,id){
+function edit_flow(flow_path,commodities_path,flow_type,id){
+    fill_avail_commodities(commodities_path);
     $.getJSON(flow_path + '.js', function(j){
         var options = "";
         var c = j.flow.commodities;
@@ -49,7 +76,7 @@ function edit_flow(flow_path,flow_type,id){
             options += '<option>' + c[i].commodity.name + '</option>';
         }
         $('#sel_flow_commodity').html(options);
-    })
+    });
     $('#flow_editor_title').text('Edit '+flow_type+' (' + id + ')');
     $('#flow_editor_button').attr('value','Update');
     $('#flow_editor_button').click(function() {

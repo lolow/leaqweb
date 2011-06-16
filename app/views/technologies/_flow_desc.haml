@@ -7,5 +7,5 @@
   %span
     = f.id.to_s + ":"
     = raw commodity_url_list(f)
-%a(href="#" onclick="edit_flow('#{flow_path(f)}','Out flow',#{f.id})") edit
+%a(href="#" onclick="edit_flow('#{flow_path(f)}','#{commodities_path}','Out flow',#{f.id})") edit
 %br

@@ -7,10 +7,16 @@ class CommoditiesController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html, :except => :list
-  respond_to :json, :only => :list
+  respond_to :json, :only => [:list, :index]
 
   def index
-    @last_visited = last_visited(Commodity)
+    respond_to do |format|
+      format.html { @last_visited = last_visited(Commodity) }
+      format.js { render :json => {"enc"  => Commodity.energy_carriers.order(:name).select(:name).map(&:name),
+                                   "poll" => Commodity.pollutants.order(:name).select(:name).map(&:name),
+                                   "dem"  => Commodity.demands.order(:name).select(:name).map(&:name)
+                                  }.to_json }
+    end
   end
 
   def list
