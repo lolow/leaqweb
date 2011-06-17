@@ -1,6 +1,10 @@
-.grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :new }
-.grid_9
+.grid_2
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p= link_to 'Browse all', markets_path, :class => "action browse"
+
+.grid_10
   .box
     %h2 New Market
     .block
@@ -8,5 +12,5 @@
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
-        =f.button :submit
+        =f.button :submit, :class => "aligned"
 .clear

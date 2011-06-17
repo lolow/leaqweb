@@ -1,8 +1,13 @@
-.grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :index }
-.grid_9
+.grid_2
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p
+      = link_to 'New Market', new_market_path, :class => "action new"
+
+.grid_10
   .box
-    %h2 Browse stored queries
+    %h2 Browse markets
     %p
       %table(summary="Markets list")
         %thead

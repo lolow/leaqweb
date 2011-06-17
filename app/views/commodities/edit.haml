@@ -20,9 +20,10 @@
   .box(class="action")
     %h2 Actions
     %br
-    %p= link_to 'Browse all', commodities_path, :class => "action browse"
     %p
+      = link_to 'Browse all', commodities_path, :class => "action browse"
       = link_to 'New commodity', new_commodity_path, :class => "action new"
+    %p
       = link_to 'Duplicate', duplicate_commodity_path, :confirm => 'Are you sure?', :method => :post, :class => "action duplicate"
       = link_to 'Delete', @commodity, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
 

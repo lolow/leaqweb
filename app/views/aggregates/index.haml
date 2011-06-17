@@ -1,14 +1,13 @@
-.grid_3
+.grid_2
   .box(class="action")
     %h2 Actions
     %br
     %p
-      = link_to 'New', new_aggregate_path, :class => "action new"
-      = link_to 'Delete', @aggregate, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+      = link_to 'New Aggregate', new_aggregate_path, :class => "action new"
 
-.grid_9
+.grid_10
   .box
-    %h2 Browse stored queries
+    %h2 Browse aggregates
     %p
       %table(summary="Aggregate list")
         %thead

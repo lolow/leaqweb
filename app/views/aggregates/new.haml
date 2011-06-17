@@ -1,10 +1,10 @@
-.grid_3
+.grid_2
   .box(class="action")
     %h2 Actions
     %br
-    %p= link_to 'Browse', aggregates_path, :class => "action browse"
+    %p= link_to 'Browse all', aggregates_path, :class => "action browse"
 
-.grid_9
+.grid_10
   .box
     %h2 New Aggregate
     .block
@@ -12,5 +12,5 @@
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "AGG"}
-        =f.button :submit
+        =f.button :submit, :class => "aligned"
 .clear
