@@ -1,7 +1,4 @@
 :javascript
-  $(function(){
-    $(".multiselect").multiselect({sortable: false, searchable: true});
-  });
   function add_parameter_value(pid) {
     $('#form_' + pid + ' #do').attr('value','add_pv');
     $('#form_' + pid).submit();
@@ -12,11 +9,97 @@
       $('#form_' + pid).submit();
     };
   }
+  function fill_avail_commodities(commodities_path,filter){
+    var options = "";
+    $.getJSON(commodities_path + '.js', function(j){
+        options += '<optgroup label="Energy Carriers">'
+        var c = j.enc;
+        for(var i = 0; i < c.length; i++) {
+          if (filter.size<2 || c[i].indexOf(filter)>-1 ){
+            options += '<option>' + c[i] + '</option>';
+          }
+        }
+        options += '</optgroup>'
+        options += '<optgroup label="Pollutants">'
+        var c = j.poll;
+        for(var i = 0; i < c.length; i++) {
+          if (filter.size<2 || c[i].indexOf(filter)>-1 ){
+            options += '<option>' + c[i] + '</option>';
+          }
+        }
+        options += '</optgroup>'
+        options += '<optgroup label="Demands">'
+        var c = j.dem;
+        for(var i = 0; i < c.length; i++) {
+          if (filter.size<2 || c[i].indexOf(filter)>-1 ){
+            options += '<option>' + c[i] + '</option>';
+          }
+        }
+        options += '</optgroup>';
+        $('#avail_commodity').html(options);
+    })
+
+  }
+  function fill_aggregate(aggregate_path){
+    $.getJSON(aggregate_path + '.js', function(j){
+      var options = "";
+      var c = j.aggregate.commodities;
+      for(var i = 0; i < c.length; i++) {
+        options += '<option>' + c[i].commodity.name + '</option>';
+      }
+      $('#agg_commodity').html(options);
+      $("#agg_commodity").html($("#agg_commodity option").sort(function (a, b) {
+        return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+      }));
+    });
+  }
   $(document).ready(function() {
     $('.check_all').click(function () {
       $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
     });
-  } );
+    $('#filter_commodity').change(function () {
+      fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
+    });
+    $('#add_commodity_agg').click(function() {
+        $('#avail_commodity option:selected').clone().appendTo('#agg_commodity');
+        //remove duplicates
+        map = {};
+        $('#agg_commodity option').each(function(){
+            var value = $(this).text();
+            if (map[value] == null){
+                map[value] = true;
+            } else {
+                $(this).remove();
+            }
+        });
+        // Sort by name
+        $("#agg_commodity").html($("#agg_commodity option").sort(function (a, b) {
+          return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+        }));
+    });
+    $('#remove_commodity_agg').click(function() {
+        return !$('#agg_commodity option:selected').remove();
+    });
+    fill_avail_commodities('#{commodities_path}','');
+    fill_aggregate('#{aggregate_path(@aggregate)}');
+    $('#apply').click(function() {
+        var com = $('#agg_commodity option');
+        var s = "";
+        for(var i = 0; i < com.length; i++) {
+            s += com[i].text + ",";
+        }
+        $.ajax({
+            url:#{aggregate_path(@aggregate).to_json},
+            type:'PUT',
+            data:{
+                'commodities':s.substring(0,s.length-1),
+                'do':'update_commodities'
+            },
+            async:false
+        });
+        location.reload();
+    });
+  });
 
 .grid_3
 
@@ -42,11 +125,28 @@
   .box
     %h2 Commodities
     .block
-      =simple_form_for @aggregate do |f|
-        =f.association :commodities, :collection => Commodity.all(:order => 'name'),
-                       :input_html => {:class=>"multiselect", :multiple=>"multiple"}
-        =f.button :submit, :class => "aligned"
-        %input(type="hidden" name="do" value="update")
+    %p
+      %table
+        %thead
+          %tr
+            %th
+              Available commodities
+              %input(id="filter_commodity")
+            %th Commodity selected
+        %tbody
+          %tr
+            %td.col50
+              %select(multiple size="10" id="avail_commodity" class="flow_list")
+              %p(style="text-align: center")
+                %a(href="#" id="add_commodity_agg")
+                  & add >>
+            %td.col50
+              %select(multiple size="10" id="agg_commodity" class="flow_list")
+              %p(style="text-align: center")
+                %a(href="#" id="remove_commodity_agg")
+                  & << remove
+      = link_to 'Apply', '', :id => "apply", :class => "action"
+      = link_to 'Undo', aggregate_path(@aggregate), :class => "action"
 
   .box
     %h2 Parameters

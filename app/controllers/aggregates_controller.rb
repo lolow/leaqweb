@@ -4,14 +4,20 @@
 
 class AggregatesController < ApplicationController
   before_filter :authenticate_user!
+
   respond_to :html
+  respond_to :json, :only => [:show]
 
   def index
     @aggregates = Aggregate.order(:name)
   end
 
   def show
-    redirect_to edit_aggregate_path(Aggregate.find(params[:id]))
+    @aggregate = Aggregate.find(params[:id])
+    respond_to do |format|
+      format.html { redirect_to edit_aggregate_path(@aggregate) }
+      format.js { render :json => {:aggregate=>{:id=>@aggregate.id, :commodities=>@aggregate.commodities}}.to_json }
+    end
   end
 
   def new
@@ -29,6 +35,9 @@ class AggregatesController < ApplicationController
   def update
     @aggregate = Aggregate.find(params[:id])
     case params[:do]
+      when "update_commodities"
+        @aggregate.commodities = Commodity.find_by_list_name(params[:commodities])
+        flash[:notice] = 'Flow was successfully created.' if @aggregate.save
       when "update"
         @aggregate.update_attributes(params[:aggregate])
         respond_with(@aggregate)
