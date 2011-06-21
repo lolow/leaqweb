@@ -1,18 +1,145 @@
 :javascript
+  function add_parameter_value(pid) {
+    $('#form_' + pid + ' #do').attr('value','add_pv');
+    $('#form_' + pid).submit();
+  }
+  function delete_parameter_values(pid) {
+    if (confirm("Are you sure?")) {
+      $('#form_' + pid + ' #do').attr('value','delete_pv');
+      $('#form_' + pid).submit();
+    };
+  }
+  function fill_avail_technologies(technologies_path,filter){
+    var options = "";
+    $.getJSON(technologies_path + '.js', {'filter':filter}, function(j){
+        var c = j.tech;
+        for(var i = 0; i < c.length; i++) {
+          options += '<option>' + c[i] + '</option>';
+        }
+        $('#avail_technology').html(options);
+    })
+  }
+  function fill_market(market_path){
+    $.getJSON(market_path + '.js', function(j){
+      var options = "";
+      var c = j.market.technologies;
+      for(var i = 0; i < c.length; i++) {
+        options += '<option>' + c[i].technology.name + '</option>';
+      }
+      $('#market_technology').html(options);
+      $("#market_technology").html($("#market_technology option").sort(function (a, b) {
+        return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+      }));
+    });
+  }
   $(function(){
-    $(".multiselect").multiselect({sortable: false, searchable: true});
+    $('.check_all').click(function () {
+      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
+    });
+    $('#filter_technology').change(function () {
+      fill_avail_technologies('#{technologies_path}',$('#filter_technology').val());
+    });
+    fill_avail_technologies('#{technologies_path}','');
+    fill_market('#{market_path(@market)}');
+    $('#add_technology_market').click(function() {
+        $('#avail_technology option:selected').clone().appendTo('#market_technology');
+        //remove duplicates
+        map = {};
+        $('#market_technology option').each(function(){
+            var value = $(this).text();
+            if (map[value] == null){
+                map[value] = true;
+            } else {
+                $(this).remove();
+            }
+        });
+        // Sort by name
+        $("#market_technology").html($("#market_technology option").sort(function (a, b) {
+          return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
+        }));
+    });
+    $('#remove_technology_market').click(function() {
+        return !$('#market_technology option:selected').remove();
+    });
+    $('#apply').click(function() {
+        var item = $('#market_technology option');
+        var s = "";
+        for(var i = 0; i < item.length; i++) {
+            s += item[i].text + ",";
+        }
+        $.ajax({
+            url:#{market_path(@market).to_json},
+            type:'PUT',
+            data:{
+                'technologies':s.substring(0,s.length-1),
+                'do':'update_technologies'
+            },
+            async:false
+        });
+        location.reload();
+    });
   });
+
+
 .grid_3
-  = render :partial => 'shortcuts', :locals => { :page => :edit }
-.grid_9
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p
+      = link_to 'Browse all', markets_path, :class => "action browse"
+      = link_to 'New Market', new_market_path, :class => "action new"
+    %p
+      = link_to 'Delete', @market, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+
   .box
     %h2 Market
-    .block
-      =simple_form_for @market do |f|
-        =f.input :name
-        =f.input :description, :input_html => {:rows => 2}
+    .block(id="idcard")
+      = simple_form_for @market do |f|
+        =f.input :name, :required => true, :input_html => { :size => nil }
+        =f.input :description, :as => :text, :input_html => {:rows => 2, :cols=>nil}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
-        =f.association :technologies, :collection => Technology.all(:order => 'name'),
-                       :input_html => {:class=>"multiselect", :multiple=>"multiple"}
-        =f.button :submit, :class => "aligned"
+        =f.button :submit
+        %input(type="hidden" name="do" value="update")
+
+.grid_9
+  .box
+    %h2 Technologies
+    .block
+    %p
+      %table
+        %thead
+          %tr
+            %th
+              Available technologies
+              %input(id="filter_technology")
+            %th Technology selected
+        %tbody
+          %tr
+            %td.col50
+              %select(multiple size="10" id="avail_technology" class="flow_list")
+              %p(style="text-align: center")
+                %a(href="#" id="add_technology_market")
+                  & add >>
+            %td.col50
+              %select(multiple size="10" id="market_technology" class="flow_list")
+              %p(style="text-align: center")
+                %a(href="#" id="remove_technology_market")
+                  & << remove
+      = link_to 'Apply', '', :id => "apply", :class => "action"
+      = link_to 'Undo', market_path(@market), :class => "action"
+
+  .box
+    %h2 Parameters
+    .block
+      :erb
+        <%= render :partial => 'shared/parameter_table',
+                  :locals => { :object => @market,
+                               :pid => "param",
+                               :length_change => "false",
+                               :filter => "false",
+                               :request_path => market_path(@market),
+                               :parameters => %w{market_share_bnd_lo market_share_bnd_up market_share_bnd_fx},
+                               :cols => %w{parameter sub_market year value source},
+                               :editable => %w{value source},
+                               :rules => {} }%>
 .clear

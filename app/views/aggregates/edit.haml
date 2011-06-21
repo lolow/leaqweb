@@ -11,29 +11,23 @@
   }
   function fill_avail_commodities(commodities_path,filter){
     var options = "";
-    $.getJSON(commodities_path + '.js', function(j){
+    $.getJSON(commodities_path + '.js', {'filter':filter}, function(j){
         options += '<optgroup label="Energy Carriers">'
         var c = j.enc;
         for(var i = 0; i < c.length; i++) {
-          if (filter.size<2 || c[i].indexOf(filter)>-1 ){
-            options += '<option>' + c[i] + '</option>';
-          }
+          options += '<option>' + c[i] + '</option>';
         }
         options += '</optgroup>'
         options += '<optgroup label="Pollutants">'
         var c = j.poll;
         for(var i = 0; i < c.length; i++) {
-          if (filter.size<2 || c[i].indexOf(filter)>-1 ){
-            options += '<option>' + c[i] + '</option>';
-          }
+          options += '<option>' + c[i] + '</option>';
         }
         options += '</optgroup>'
         options += '<optgroup label="Demands">'
         var c = j.dem;
         for(var i = 0; i < c.length; i++) {
-          if (filter.size<2 || c[i].indexOf(filter)>-1 ){
-            options += '<option>' + c[i] + '</option>';
-          }
+          options += '<option>' + c[i] + '</option>';
         }
         options += '</optgroup>';
         $('#avail_commodity').html(options);

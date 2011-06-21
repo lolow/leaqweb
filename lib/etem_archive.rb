@@ -79,7 +79,7 @@ class EtemArchive
       end
 
       headers = ["parameter_id","technology_id","commodity_id","aggregate_id","flow_id",
-                 "in_flow_id","out_flow_id","market_id","time_slice",
+                 "in_flow_id","out_flow_id","market_id","sub_market_id","time_slice",
                  "year","value","source"]
       write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
@@ -230,6 +230,7 @@ class EtemArchive
         pv.in_flow_id    = h[:flo][row["in_flow_id"]]
         pv.out_flow_id   = h[:flo][row["out_flow_id"]]
         pv.market_id     = h[:mkt][row["market_id"]]
+        pv.sub_market_id = h[:mkt][row["sub_market_id"]]
         pv.time_slice    = row["time_slice"]
         pv.year          = row["year"]
         pv.value         = row["value"]

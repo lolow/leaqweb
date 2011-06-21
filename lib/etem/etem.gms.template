@@ -13,6 +13,29 @@ $OFFDIGIT
 
 $INCLUDE '#{@f_inc}'
 
+
+set C_MAP(P,C);
+set P_CONS(C,P);
+set P_PROD(C,P);
+
+LOOP(FLOW,
+  LOOP(C$C_ITEMS(FLOW,C),
+    LOOP(P$FLOW_IN(P,FLOW),
+      C_MAP(P,C)  = yes;
+      P_CONS(C,P) = yes;
+    );
+  );
+);
+
+LOOP(FLOW,
+  LOOP(C$C_ITEMS(FLOW,C),
+    LOOP(P$FLOW_OUT(P,FLOW),
+      C_MAP(P,C)  = yes;
+      P_PROD(C,P) = yes;
+    );
+  );
+);
+
 parameter nb_completed_years(T);
 nb_completed_years(T)=(ord(T)-1)*period_length;
 
@@ -96,8 +119,10 @@ Equations
   EQ_TOTAL_NET_AMOUNT
   EQ_AGG           Aggregate commodities
   EQ_AGG_UP_T
-  EQ_DEGREE_OF_USE Maximum share of a commodity in an aggregate
-  EQ_RATE_OF_PENETRATION rate of penetration of a commodity in an aggregate
+  EQ_DEGREE_OF_USE       Maximum share of a commodity in an aggregate
+  EQ_RATE_OF_PENETRATION Rate of penetration of a commodity in an aggregate
+  EQ_MARKET_SHARE_BND_FX
+  EQ_MARKET_SHARE_BND_LO
   EQ_MARKET_SHARE_BND_UP
 ;
 
@@ -258,7 +283,7 @@ EQ_AGG(T,S,AGG)..
 EQ_AGG_UP_T(T,AGG)$(aggregate_annual_up(T,AGG) ge 0)..
   SUM(S,AGGREGATE(T,S,AGG)) =L= aggregate_annual_up(T,AGG);
 
-EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) ge 0))..
+EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) gt 0))..
   agg_coef(C,AGG) * SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) ))
   =L= degree_of_use(T,C,AGG) * SUM(S,AGGREGATE(T,S,AGG));
 
@@ -267,9 +292,17 @@ EQ_RATE_OF_PENETRATION(T,C)$(rate_of_penetration(t,c) ne 0)..
   (1+rate_of_penetration(T,C)) *
   SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T-1,S,P,C)) + VAR_EXP(T-1,S,C)$EXP(C)) ;
 
-EQ_MARKET_SHARE_BND_UP(T,SUBMARKET,MARKET)$(market_share_up(t,submarket,market) ge 0)..
+EQ_MARKET_SHARE_BND_UP(T,SUBMARKET,MARKET)$(market_share_bnd_up(t,submarket,market) gt 0)..
   SUM(P1$P_MARKET(SUBMARKET,P1),CAPACITY(T,P1))
-  =L= market_share_up(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
+  =L= market_share_bnd_up(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
+
+EQ_MARKET_SHARE_BND_LO(T,SUBMARKET,MARKET)$(market_share_bnd_lo(t,submarket,market) gt 0)..
+  SUM(P1$P_MARKET(SUBMARKET,P1),CAPACITY(T,P1))
+  =G= market_share_bnd_lo(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
+
+EQ_MARKET_SHARE_BND_FX(T,SUBMARKET,MARKET)$(market_share_bnd_fx(t,submarket,market) gt 0)..
+  SUM(P1$P_MARKET(SUBMARKET,P1),CAPACITY(T,P1))
+  =E= market_share_bnd_fx(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
 
 MODEL ETEM /
   EQ_OBJ
@@ -312,6 +345,9 @@ MODEL ETEM /
   EQ_AGG_UP_T
   EQ_DEGREE_OF_USE
   EQ_RATE_OF_PENETRATION
+  EQ_MARKET_SHARE_BND_FX
+  EQ_MARKET_SHARE_BND_LO
+  EQ_MARKET_SHARE_BND_UP
 /;
 
 *OPTIONS

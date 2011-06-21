@@ -10,6 +10,7 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :out_flow
   belongs_to :in_flow
   belongs_to :market
+  belongs_to :sub_market, :class_name => "Market"
 
   validates :value, :presence => true, :numericality => true
   validates :parameter, :presence => true

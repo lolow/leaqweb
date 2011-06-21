@@ -37,7 +37,7 @@ class AggregatesController < ApplicationController
     case params[:do]
       when "update_commodities"
         @aggregate.commodities = Commodity.find_by_list_name(params[:commodities])
-        flash[:notice] = 'Flow was successfully created.' if @aggregate.save
+        flash[:notice] = 'Aggregate was successfully created.' if @aggregate.save
       when "update"
         @aggregate.update_attributes(params[:aggregate])
         respond_with(@aggregate)
@@ -47,6 +47,7 @@ class AggregatesController < ApplicationController
       when "add_pv"
         att = params[:pv]
         att[:parameter] = Parameter.find_by_name(att[:parameter])
+        att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
         att[:aggregate] = @aggregate
         pv = ParameterValue.new(att)
         flash[:notice] = 'Parameter value was successfully added.' if pv.save

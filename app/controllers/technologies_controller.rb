@@ -7,10 +7,20 @@ class TechnologiesController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html, :except => :list
-  respond_to :json, :only => :list
+  respond_to :json, :only => [:list, :index]
 
   def index
-    @last_visited = last_visited(Technology)
+    respond_to do |format|
+      format.html { @last_visited = last_visited(Technology) }
+      format.js do
+        technologies = Technology.order(:name).select(:name)
+        if params[:filter] && params[:filter]!=""
+          technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
+        end
+        render :json => {"tech"  => technologies.map(&:name)
+                        }.to_json
+      end
+    end
   end
 
   def list

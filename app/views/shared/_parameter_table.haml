@@ -77,6 +77,8 @@
               %td= v.fuel
             - when "pollutant"
               %td= v.pollutant
+            - when "sub_market"
+              %td= v.sub_market.name
             - else
               %td
                 %span(id="#{v.id}-#{c}" class="#{"edit" if editable.include? c}")>= v.attributes[c]
@@ -118,6 +120,10 @@
             %th
               %select(id="#{pid}_#{c}" name="pv[#{c}]")
                 = options_for_select(Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
+          - elsif c=="market" || c=="sub_market"
+            %th
+              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+                = options_for_select(Market.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="pollutant"
             %th
               %select(id="#{pid}_#{c}" name="pv[#{c}]")

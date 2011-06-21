@@ -2,9 +2,17 @@
 aggregate_annual_up:
 - period
 - aggregate
-market_share_up:
+market_share_bnd_up:
 - period
+- sub_market
 - market
+market_share_bnd_fx:
+- period
+- sub_market
+- market
+market_share_bnd_lo:
+- period
+- sub_market
 - market
 rate_of_penetration:
 - period

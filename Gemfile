@@ -9,6 +9,7 @@ gem 'tenjin'
 gem 'mysql2', "~> 0.2.7"
 gem 'mongrel', '>= 1.2.0.pre2'
 gem 'workflow'
+gem 'delayed_job'
 gem 'paper_trail'
 gem 'jquery-rails'
 gem 'simple_form'

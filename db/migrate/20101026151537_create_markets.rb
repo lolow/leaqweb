@@ -3,6 +3,7 @@ class CreateMarkets < ActiveRecord::Migration
     create_table :markets do |t|
       t.string :name
       t.text   :description
+      t.string :type
       t.timestamps
     end
     create_table :markets_technologies, :id => false do |t|

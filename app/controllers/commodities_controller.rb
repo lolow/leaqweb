@@ -12,10 +12,16 @@ class CommoditiesController < ApplicationController
   def index
     respond_to do |format|
       format.html { @last_visited = last_visited(Commodity) }
-      format.js { render :json => {"enc"  => Commodity.energy_carriers.order(:name).select(:name).map(&:name),
-                                   "poll" => Commodity.pollutants.order(:name).select(:name).map(&:name),
-                                   "dem"  => Commodity.demands.order(:name).select(:name).map(&:name)
-                                  }.to_json }
+      format.js do
+        commodities = Commodity.order(:name).select(:name)
+        if params[:filter] && params[:filter]!=""
+          commodities = commodities.where(["name LIKE ?", "%#{params[:filter]}%"])
+        end
+        render :json => {"enc"  => commodities.energy_carriers.map(&:name),
+                         "poll" => commodities.pollutants.map(&:name),
+                         "dem"  => commodities.demands.map(&:name)
+                        }.to_json
+      end
     end
   end
 

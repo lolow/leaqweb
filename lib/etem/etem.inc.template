@@ -70,37 +70,19 @@ set C_ITEMS(FLOW,C) /
 
 set C_AGG(AGG,C) /
 <?rb @s_c_agg.each do |agg,comms| ?>
-#{agg}.(#{comms.join(",")})
+<?rb comms.each do |c| ?>
+#{agg}.#{c}
+<?rb end ?>
 <?rb end ?>
 /;
 
 set P_MARKET(MARKET,P) /
 <?rb @s_p_market.each do |market,techs| ?>
-#{market}.(#{techs.join(",")})
+<?rb techs.each do |t| ?>
+#{market}.#{t}
+<?rb end ?>
 <?rb end ?>
 /;
-
-set C_MAP(P,C);
-set P_CONS(C,P);
-set P_PROD(C,P);
-
-LOOP(FLOW,
-  LOOP(C$C_ITEMS(FLOW,C),
-    LOOP(P$FLOW_IN(P,FLOW),
-      C_MAP(P,C)  = yes;
-      P_CONS(C,P) = yes;
-    );
-  );
-);
-
-LOOP(FLOW,
-  LOOP(C$C_ITEMS(FLOW,C),
-    LOOP(P$FLOW_OUT(P,FLOW),
-      C_MAP(P,C)  = yes;
-      P_PROD(C,P) = yes;
-    );
-  );
-);
 
 set FLOW_ACT(P,FLOW) /
 <?rb e = @p_flow_act.to_enum ?>
@@ -360,13 +342,6 @@ degree_of_use(T,C,AGG)=#{@p_degree_of_use_d} ;
   degree_of_use('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
-parameter market_share_up(T,MARKET,MARKET);
-market_share_up(T,MARKET,MARKET)=#{@p_market_share_up_d} ;
-<?rb e = @p_market_share_up.to_enum ?>
-<?rb loop do ?>
-  market_share_up'#{e.next}','#{e.next}','#{e.next}') = #{e.next};
-<?rb end ?>
-
 parameter rate_of_penetration(T,C);
 rate_of_penetration(T,C)=#{@p_rate_of_penetration_d} ;
 <?rb e = @p_rate_of_penetration.to_enum ?>
@@ -435,4 +410,25 @@ network_efficiency(C)=#{@p_network_efficiency_d} ;
 <?rb e = @p_network_efficiency.to_enum ?>
 <?rb loop do ?>
   network_efficiency('#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter market_share_bnd_up(T,MARKET,MARKET);
+market_share_bnd_up(T,MARKET,MARKET)=#{@p_market_share_bnd_up_d} ;
+<?rb e = @p_market_share_bnd_up.to_enum ?>
+<?rb loop do ?>
+  market_share_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter market_share_bnd_lo(T,MARKET,MARKET);
+market_share_bnd_lo(T,MARKET,MARKET)=#{@p_market_share_bnd_lo_d} ;
+<?rb e = @p_market_share_bnd_lo.to_enum ?>
+<?rb loop do ?>
+  market_share_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb end ?>
+
+parameter market_share_bnd_fx(T,MARKET,MARKET);
+market_share_bnd_fx(T,MARKET,MARKET)=#{@p_market_share_bnd_fx_d} ;
+<?rb e = @p_market_share_bnd_fx.to_enum ?>
+<?rb loop do ?>
+  market_share_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>

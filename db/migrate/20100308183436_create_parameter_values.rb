@@ -9,6 +9,7 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :out_flow
       t.belongs_to :in_flow
       t.belongs_to :market
+      t.belongs_to :sub_market
       t.integer :year
       t.string  :time_slice
       t.decimal :value, :precision => 20, :scale => 10, :null => false
@@ -23,6 +24,7 @@ class CreateParameterValues < ActiveRecord::Migration
     add_index :parameter_values, :out_flow_id
     add_index :parameter_values, :in_flow_id
     add_index :parameter_values, :market_id
+    add_index :parameter_values, :sub_market_id
     
   end
 

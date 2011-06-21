@@ -9,4 +9,8 @@ class Market < ActiveRecord::Base
             :format => {:with => /\A[a-zA-Z\d-]+\z/,
                         :message => "Please use only letters, numbers or '-' in name"}
 
+  def parameter_values_for(parameters)
+    ParameterValue.of(Array(parameters)).where(:market_id=>self).order(:year)
+  end
+
 end

@@ -1,4 +1,13 @@
 ---
+- :name: market_share_bnd_up
+  :definition:  Maximum share of a submarket in an market
+  :default_value: -1.0
+- :name: market_share_bnd_lo
+  :definition:  minimum share of a submarket in an market
+  :default_value: 0.0
+- :name: market_share_bnd_fx
+  :definition:  minimum share of a submarket in an market
+  :default_value: -1.0
 - :name: aggregate_annual_up
   :definition: Annual upper bound on an aggregate
   :default_value: -1.0

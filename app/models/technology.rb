@@ -200,6 +200,7 @@ class Technology < ActiveRecord::Base
     s
   end
 
-
-
+  def self.find_by_list_name(list)
+    Technology.where(:name=>list.split(","))
+  end
 end
