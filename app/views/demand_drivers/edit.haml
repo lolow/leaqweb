@@ -1,3 +1,20 @@
+:javascript
+  function add_parameter_value(pid) {
+    $('#form_' + pid + ' #do').attr('value','add_pv');
+    $('#form_' + pid).submit();
+  }
+  function delete_parameter_values(pid) {
+    if (confirm("Are you sure?")) {
+      $('#form_' + pid + ' #do').attr('value','delete_pv');
+      $('#form_' + pid).submit();
+    };
+  }
+  $(document).ready(function() {
+    $('.check_all').click(function () {
+      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
+    });
+  } );
+
 .grid_3
   .box(class="action")
     %h2 Actions
