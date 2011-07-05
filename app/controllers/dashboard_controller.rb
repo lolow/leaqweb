@@ -20,7 +20,7 @@ class DashboardController < ApplicationController
     @last_change = Version.order(:created_at).last
     #Cleaning
     if Version.all.size > 100
-      Version.delete_all ["created_at < ?", 1.month.ago]
+      Version.delete_all ["created_at < ?", 1.week.ago]
     end
   end
 
