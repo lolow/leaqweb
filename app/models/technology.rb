@@ -88,7 +88,8 @@ class Technology < ActiveRecord::Base
       f.commodities.each { |c| ff.commodities << c }
       t.flows << ff
     }
-    params = Parameter.where(:name=>PARAM_TECHNOLOGIES).map(&:id)
+    parameters = signature.keys.select{|k| signature[k] && signature[k].include?("technology")}
+    params = Parameter.where(:name=>parameters).map(&:id)
     self.parameter_values.where(:parameter_id=>params).each { |pv|
       attributes = pv.attributes
       %w{flow_id in_flow_id out_flow_id}.each do |att|

@@ -108,7 +108,8 @@ class Commodity < ActiveRecord::Base
                          :description => description,
                          :set_list => set_list.join(", "),
                          :demand_driver => demand_driver)
-    parameter_values.of(PARAM_COMMODITIES).each do |pv|
+    parameters = signature.keys.select{|k| signature[k] && signature[k].include?("commodity")}
+    parameter_values.of(parameters).each do |pv|
       c.parameter_values << ParameterValue.create(pv.attributes)
     end
     c.save

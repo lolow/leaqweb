@@ -8,20 +8,6 @@ module Etem
   VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
                %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
                %w{C_PRICE AGGREGATE COST_IMP}
-  PARAM_COMMODITIES = %w{demand frac_dem} +
-                      %w{network_efficiency peak_reserve} +
-                      %w{cost_imp cost_exp imp_bnd_lo imp_bnd_fx imp_bnd_up} +
-                      %w{exp_bnd_lo exp_bnd_fx exp_bnd_up } +
-                      %w{com_net_bnd_up_t com_net_bnd_up_ts}
-  PARAM_TECHNOLOGIES = %w{input output eff_flo flow_act} +
-                       %w{flo_bnd_lo flo_bnd_fx flo_bnd_up} +
-                       %w{flo_share_lo flo_share_fx flo_share_up} +
-                       %w{peak_prod cost_delivery act_flo} + %w{fixed_cap} +
-                       %w{life avail cap_act  avail_factor} +
-                       %w{cost_vom cost_fom cost_icap} +
-                       %w{act_bnd_lo act_bnd_fx act_bnd_up} +
-                       %w{cap_bnd_lo cap_bnd_fx cap_bnd_up} +
-                       %w{icap_bnd_lo icap_bnd_fx icap_bnd_up market}
   INDEX = { "T" => "Time period",
             "S" => "Time slice",
             "P" => "Processes",
@@ -45,6 +31,7 @@ module Etem
   TIME_SLICES = %w{WD WN SD SN ID IN}
 
   def signature
+    @opts = DEF_OPTS unless @opts
     @signature ||= YAML.load_file(File.join(@opts[:model_path],'param_sign.yml'))
   end
 
