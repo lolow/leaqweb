@@ -10,6 +10,7 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :in_flow
       t.belongs_to :market
       t.belongs_to :sub_market
+      t.belongs_to :scenario, :default => 1, :null => false
       t.integer :year
       t.string  :time_slice
       t.decimal :value, :precision => 20, :scale => 10, :null => false

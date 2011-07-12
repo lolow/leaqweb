@@ -2,12 +2,12 @@
   .box(class="action")
     %h2 Actions
     %br
-    %p= link_to 'Browse all', outputs_path, :class => "action browse"
+    %p= link_to 'Browse all', result_sets_path, :class => "action browse"
 .grid_6
   .box
     %h2 New resultset
     .block
-      = simple_form_for @output do |f|
+      = simple_form_for @result_set do |f|
         %p
           = f.input :name
           = f.button :submit

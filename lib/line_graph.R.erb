@@ -1,6 +1,6 @@
 library('ggplot2')
 library('gdata')
-d <- read.table("<%= @output.file('csv') %>",sep=",",dec=".",h=TRUE)
+d <- read.table("<%= @result_set.file('csv') %>",sep=",",dec=".",h=TRUE)
 d <- subset(d,attribute=="<%= @query[:attribute] %>")
 <% if @query[:filter].size > 0 %>
 d <- subset(d,<%= @query[:filter] %>)
@@ -12,4 +12,4 @@ p = p + geom_line()
 p = p + opts(title='<%= @query[:name] %>')
 p = p + geom_point()
 p = p + labs(x="",y="",colour="")
-ggsave(filename = "<%= @output.file('png') %>",plot=p,device=png,width=1618/2,height=1000/2,dpi=72,scale=1)
+ggsave(filename = "<%= @result_set.file('png') %>",plot=p,device=png,width=1618/2,height=1000/2,dpi=72,scale=1)

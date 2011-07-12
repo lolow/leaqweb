@@ -13,9 +13,9 @@ gem 'delayed_job'
 gem 'paper_trail'
 gem 'jquery-rails'
 gem 'simple_form'
+gem 'awesome_nested_set'
 gem 'acts-as-taggable-on'
-gem "compass", ">= 0.10.5"
-gem 'will_paginate', ">= 3.0.pre2"
+gem "compass", '>= 0.10.5'
+gem 'will_paginate', '>= 3.0.pre2'
 gem 'rubyzip', :require => 'zip/zip'
 gem 'sqlite3-ruby', :require => 'sqlite3'
-gem 'fastercsv', :require => 'faster_csv'

@@ -22,7 +22,7 @@ Leaqweb::Application.routes.draw do |map|
   map.resources :parameter_values,
                 :collection => {:update_value => :put}
 
-  map.resources :outputs,
+  map.resources :result_sets,
                 :member => {:file => :get, :import => :get},
                 :collection => {:list => :get, :destroy_all => :delete}
 

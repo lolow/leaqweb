@@ -2,10 +2,10 @@
   :javascript
     setTimeout(function(){location.reload();}, 15000);
 :javascript
-  function import_res(new_output_path,id) {
+  function import_res(new_result_set_path,id) {
     var sim_id = $('#sim_' +id+ ' option:selected')[0].value
     if(sim_id=="0"){
-      location.href=new_output_path;
+      location.href=new_result_set_path;
       return false;
     }
     $.blockUI({ message: '<b>Please wait...</b>',
@@ -15,7 +15,7 @@
         opacity: .5,
         color: '#fff'
       }});
-    location.href = '/outputs/' + sim_id + '/import?solver_id=' + id;
+    location.href = '/result_sets/' + sim_id + '/import?solver_id=' + id;
   }
 .grid_2
   .box
@@ -27,8 +27,8 @@
       - if @solver.solved? && @solver.has_files?
         %p
           = link_to_function("Import into ResultSet",
-            "import_res(#{new_output_path.to_json},#{@solver.id})" , :class => "action delete")
-          = select_tag "sim_#{@solver.id}", options_for_select([['New ResultSet',0]]+@outputs.map {|o| [o.name,o.id]})
+            "import_res(#{new_result_set_path.to_json},#{@solver.id})" , :class => "action delete")
+          = select_tag "sim_#{@solver.id}", options_for_select([['New ResultSet',0]]+@result_sets.map {|o| [o.name,o.id]})
   .box
     %h2 parameters
     %block

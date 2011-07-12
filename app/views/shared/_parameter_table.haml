@@ -90,24 +90,24 @@
         - cols.each do |c|
           - if c=="parameter"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 - parameters.each do |p|
                   %option= p
           - elsif c=="in_flow"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 - object.in_flows.each do |f|
                   %option(value="#{f.id}")
                     = short_flow(f)
           - elsif c=="out_flow"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 - object.out_flows.each do |f|
                   %option(value="#{f.id}")
                     = short_flow(f)
           - elsif c=="flow"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 %optgroup(label="In flow")
                   - object.in_flows.each do |f|
                     %option(value="#{f.id}")
@@ -118,23 +118,23 @@
                       = short_flow(f)
           - elsif c=="fuel"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 = options_for_select(Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="market" || c=="sub_market"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 = options_for_select(Market.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="pollutant"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 = options_for_select(Commodity.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="commodity"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 = options_for_select(object.commodities.map(&:name))
           - elsif c=="time_slice"
             %th
-              %select(id="#{pid}_#{c}" name="pv[#{c}]")
+              %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
                 = options_for_select(%w{AN SD SN ID IN WN WD})
           - elsif c=="year"
             %th

@@ -1,8 +1,8 @@
 {
     "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
-    "iTotalRecords":<%= Output.count.to_json.html_safe %>,
-    "iTotalDisplayRecords":<%= @total_outputs.to_json.html_safe %>,
-    "aaData":<%= @outputs.collect do |o|
+    "iTotalRecords":<%= ResultSet.count.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total_result_sets.to_json.html_safe %>,
+    "aaData":<%= @result_sets.collect do |o|
                    [ check_box_tag("cb#{o.id}"),
                      link_to(o.name, o)]
                  end.to_json.html_safe %>

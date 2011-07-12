@@ -11,6 +11,7 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :in_flow
   belongs_to :market
   belongs_to :sub_market, :class_name => "Market"
+  belongs_to :scenario
 
   validates :value, :presence => true, :numericality => true
   validates :parameter, :presence => true

@@ -1,4 +1,4 @@
-class Output < ActiveRecord::Base
+class ResultSet < ActiveRecord::Base
 
   validates_uniqueness_of :name
 
@@ -10,12 +10,12 @@ class Output < ActiveRecord::Base
             "area_graph"  => 'area_graph.R.erb'}
 
   def self.auto_new
-    name = "output_00"
+    name = "result_set_00"
     (1..999).each do |i|
       name.succ!
-      break unless Output.find_name(name)
+      break unless ResultSet.find_name(name)
     end
-    Output.create!(:name=>name)
+    ResultSet.create!(:name=>name)
   end
 
   def store_solver(solver)
@@ -28,11 +28,11 @@ class Output < ActiveRecord::Base
   def perform_query(query)
     #clean
     File.delete(file("res")) if File.exists?(file("res"))
-    
+
     template = File.read(File.join(Rails.root, 'lib', SCRIPT[query[:display]]))
-    @output = self
+    @result_set = self
     @query = query
-    
+
     f = Tempfile.new("R#{self.id}")
     f2 = Tempfile.new("S#{self.id}")
     text = ERB.new(template).result(binding)

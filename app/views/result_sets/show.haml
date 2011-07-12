@@ -24,7 +24,7 @@
       sel.addRange(r);
       })
     $('#extname').change(function(){
-      url = #{file_output_path(@output).to_json} + "." + $('#extname').val().toLowerCase();
+      url = #{file_result_set_path(@result_set).to_json} + "." + $('#extname').val().toLowerCase();
       $('#get_file').attr('href',url);
     })
     $('#extname').change();
@@ -35,22 +35,22 @@
     %h2 Action
     .block
       %p
-        = link_to 'Browse all', outputs_path, :class => "action browse"
-      - if @output.has_results?
+        = link_to 'Browse all', result_sets_path, :class => "action browse"
+      - if @result_set.has_results?
         %p
-          = link_to "Download", output_path(@output) , :class => "action download", :id=>"get_file"
+          = link_to "Download", result_set_path(@result_set) , :class => "action download", :id=>"get_file"
           = select_tag "extname", options_for_select(@file_ext)
 
 
 
-- if @output.has_results?
+- if @result_set.has_results?
   .grid_10
     .box
       %h2 Query
       .block#request
         %h5 Stored queries
         %p
-          = form_tag output_path(@output), :method => :put do
+          = form_tag result_set_path(@result_set), :method => :put do
             %select(id="stored_query_id" name="stored_query[id]")
               - StoredQuery::DISPLAY.each do |display|
                 %optgroup(label="#{display.humanize.pluralize}")
@@ -59,9 +59,9 @@
             = submit_tag 'Send query', :disable_with => 'Execute...'
             -# %a(href="#" onclick="custom_query()") custom query
           %br
-        %p= link_to 'Reinit query', @output
+        %p= link_to 'Reinit query', @result_set
   .clear
-  -if params[:stored_query][:display] == "pivot_table" && File.exists?(@output.file('res'))
+  -if params[:stored_query][:display] == "pivot_table" && File.exists?(@result_set.file('res'))
     .grid_12
       .box(id='box_result')
         %h2 Query result
@@ -70,7 +70,7 @@
           %div(id="query_result")
             - header = true
             %table(id="table_query")
-              - CSV.foreach(@output.file('res')) do |row|
+              - CSV.foreach(@result_set.file('res')) do |row|
                 - if header
                   %thead
                     %tr
@@ -101,14 +101,14 @@
         %h2 Query result
         .block
           %p(align="center")
-            %img(src="/files/out/#{@output.id}/file.png")
+            %img(src="/files/out/#{@result_set.id}/file.png")
 .clear
 %div(id="query_editor" style="display:none; cursor: default")
   .box
     %h2 Stored Query Editor
     .block
       %p
-        = form_tag output_path(@output), :method => :put do
+        = form_tag result_set_path(@result_set), :method => :put do
           = hidden_field :stored_query, :name, :value => ""
           = hidden_field :stored_query, :id, :value => 0
           %table

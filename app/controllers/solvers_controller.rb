@@ -58,7 +58,7 @@ class SolversController < ApplicationController
   end
 
   def show
-    @outputs = Output.all
+    @result_sets = ResultSet.all
     @solver = Solver.find(params[:id])
     @solver.update_status
     @refresh = @solver.solving?

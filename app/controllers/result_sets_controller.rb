@@ -1,10 +1,9 @@
 # Copyright (c) 2009-2011, Public Research Center Henri Tudor.
 # This file is licensed under the Affero General Public License
 # version 3. See the COPYRIGHT file.
-
 require 'csv'
 
-class OutputsController < ApplicationController
+class ResultSetsController < ApplicationController
 
   before_filter :authenticate_user!
 
@@ -16,14 +15,14 @@ class OutputsController < ApplicationController
   end
 
   def show
-    @output = Output.find(params[:id])
+    @result_set = ResultSet.find(params[:id])
     @stored_queries = StoredQuery.order(:name)
-    @file_ext = Dir[File.join(@output.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
+    @file_ext = Dir[File.join(@result_set.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
     params[:stored_query] = Hash.new("")
   end
 
   def list
-    @outputs, @total_outputs = filter_outputs(params)
+    @result_sets, @total_result_sets = filter_result_sets(params)
     render :layout => false, :partial => "list.json"
   end
 
@@ -47,7 +46,7 @@ class OutputsController < ApplicationController
         return
       end
     end
-    @output = Output.find(params[:id])
+    @result_set = ResultSet.find(params[:id])
     @stored_queries = StoredQuery.order(:name)
     if params[:stored_query][:id].to_i>0
       t = StoredQuery.find(params[:stored_query][:id])
@@ -60,65 +59,65 @@ class OutputsController < ApplicationController
       params[:stored_query][:columns]   = t.columns
       params[:stored_query][:display]   = t.display
     end
-    @output.perform_query(params[:stored_query])
-    @file_ext = Dir[File.join(@output.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
+    @result_set.perform_query(params[:stored_query])
+    @file_ext = Dir[File.join(@result_set.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
     render :show
   end
 
   def file
-    @output = Output.find(params[:id])
+    @result_set = ResultSet.find(params[:id])
     render :text => text(params[:format])
   end
 
   def import
-    @output = Output.find(params[:id])
-    @output.store_solver(Solver.find(params[:solver_id]))
+    @result_set = ResultSet.find(params[:id])
+    @result_set.store_solver(Solver.find(params[:solver_id]))
     respond_to do |format|
-      format.html { redirect_to(@output) }
+      format.html { redirect_to(@result_set) }
       format.js { render :json => "" }
     end
   end
 
   def new
-    @output = Output.new
+    @result_set = ResultSet.new
   end
 
   def create
-    @output = Output.new(params[:output])
-    if @output.save
-      flash[:notice] = 'Output was successfully created.'
-      redirect_to(@output)
+    @result_set = ResultSet.new(params[:result_set])
+    if @result_set.save
+      flash[:notice] = 'ResultSet was successfully created.'
+      redirect_to(@result_set)
     else
       render :action => "new"
     end
   end
 
   def destroy
-    Output.destroy(params[:id])
-    redirect_to(outputs_url)
+    ResultSet.destroy(params[:id])
+    redirect_to(result_sets_url)
   end
 
   def destroy_all
-    Output.destroy(checkbox_ids)
-    redirect_to(outputs_url)
+    ResultSet.destroy(checkbox_ids)
+    redirect_to(result_sets_url)
   end
 
   private
 
   def text(suffix)
-    if File.exist?(@output.file(suffix))
-      File.read(@output.file(suffix))
+    if File.exist?(@result_set.file(suffix))
+      File.read(@result_set.file(suffix))
     else
       "error"
     end
   end
 
-  def filter_outputs(params={})
+  def filter_result_sets(params={})
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     filter = {:page => current_page,
               :per_page => params[:iDisplayLength]}
-    displayed = Output.all.paginate filter
-    total     = Output.count
+    displayed = ResultSet.all.paginate filter
+    total     = ResultSet.count
     return displayed, total
   end
 

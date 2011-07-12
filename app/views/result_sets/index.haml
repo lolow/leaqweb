@@ -12,7 +12,7 @@
     "sPaginationType": "full_numbers",
     "iDisplayLength" : 25,
     "bAutoWidth"     : false,
-  	"sAjaxSource"    : #{list_outputs_path.to_json},
+  	"sAjaxSource"    : #{list_result_sets_path.to_json},
         "fnServerData"   : function ( sSource, aoData, fnCallback ) {
             aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
             $.getJSON( sSource, aoData, function (json) {
@@ -32,13 +32,13 @@
   .box
     %h2 Action
     .block
-      %p= link_to('New result set', new_output_path, :class => 'action new')
+      %p= link_to('New result set', new_result_set_path, :class => 'action new')
 
 .grid_10
   .box
     %h2 Browse Result Sets
     %p
-      = form_tag(destroy_all_outputs_path,:method => "delete") do
+      = form_tag(destroy_all_result_sets_path,:method => "delete") do
         %table(class="list_table" summary="Technology list")
           %thead
             %th(class='check')

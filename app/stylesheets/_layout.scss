@@ -3,6 +3,7 @@
 body {
   background: $background_color;
   color: $text_color;
+  font-family: Ubuntu,sans-serif;
 }
 
 /* HEADINGS */
@@ -193,6 +194,10 @@ td.col50 {
 
 select.flow_list {
     width:100%;
+}
+
+select.tiny {
+  font-size:100%;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
