@@ -28,7 +28,6 @@ class EtemArchive
       ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
       ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
       ActiveRecord::Base.connection.execute("DELETE FROM `aggregates_commodities`")
-
     ensure
       PaperTrail.enabled = paper_trail_state
     end

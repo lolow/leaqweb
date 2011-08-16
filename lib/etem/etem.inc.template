@@ -20,7 +20,7 @@ set IMP(C) /
 <?rb end ?>
 /;
 
-set EXP(C) /
+set EXO(C) /
 <?rb @s_exp.each do |item| ?>
 #{item}
 <?rb end ?>

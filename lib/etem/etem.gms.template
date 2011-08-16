@@ -4,7 +4,7 @@
 ***********************
 * ETEM model for LEAQ *
 ***********************
-* Version  : 1.0
+* Version  : 1.1
 * Authors  : L. Drouet
 
 $OFFLISTING
@@ -144,7 +144,7 @@ VAR_OBJVAR =E= SUM(T, annualized*
       SUM(S,
          SUM(P, cost_vom(T,P) * ACTIVITY(T,S,P) )
        + SUM(IMP, cost_imp(T,S,IMP) * VAR_IMP(T,S,IMP))
-       - SUM(EXP, cost_exp(T,S,EXP) * VAR_EXP(T,S,EXP))
+       - SUM(EXO, cost_exp(T,S,EXO) * VAR_EXP(T,S,EXO))
        + SUM(P,SUM(C$C_MAP(P,C), cost_delivery(T,S,P,C) * VAR_COM(T,S,P,C) ))
       )
     )
@@ -159,7 +159,7 @@ EQ_COMBAL(T,S,C)$(not DEM(C))..
   ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) *
     network_efficiency(C)
   =G=
-    SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C);
+    SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXO(C);
 
 EQ_DEMBAL(T,S,DEM)..
    SUM(P$P_PROD(DEM,P), VAR_COM(T,S,P,DEM) )
@@ -200,7 +200,7 @@ EQ_PEAK(T,S,C)$(peak_reserve(T,S,C) ne 0)..
    )
    =G=
     SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C) ) +
-    VAR_EXP(T,S,C)$EXP(C);
+    VAR_EXP(T,S,C)$EXO(C);
 
 EQ_ACT_LO(T,S,P)$(act_bnd_lo(T,S,P) gt 0)..
 ACTIVITY(T,S,P) =G= act_bnd_lo(T,S,P);
@@ -220,14 +220,14 @@ VAR_IMP(T,S,IMP) =L= imp_bnd_up(T,S,IMP);
 EQ_IMP_FX(T,S,IMP)$(imp_bnd_fx(T,S,IMP) ge 0)..
 VAR_IMP(T,S,IMP) =E= imp_bnd_fx(T,S,IMP);
 
-EQ_EXP_LO(T,S,EXP)$(exp_bnd_lo(T,S,EXP) gt 0)..
-VAR_EXP(T,S,EXP) =G= exp_bnd_lo(T,S,EXP);
+EQ_EXP_LO(T,S,EXO)$(exp_bnd_lo(T,S,EXO) gt 0)..
+VAR_EXP(T,S,EXO) =G= exp_bnd_lo(T,S,EXO);
 
-EQ_EXP_UP(T,S,EXP)$(exp_bnd_up(T,S,EXP) ge 0)..
-VAR_EXP(T,S,EXP) =L= exp_bnd_up(T,S,EXP);
+EQ_EXP_UP(T,S,EXO)$(exp_bnd_up(T,S,EXO) ge 0)..
+VAR_EXP(T,S,EXO) =L= exp_bnd_up(T,S,EXO);
 
-EQ_EXP_FX(T,S,EXP)$(exp_bnd_fx(T,S,EXP) ge 0)..
-VAR_EXP(T,S,EXP) =E= exp_bnd_fx(T,S,EXP);
+EQ_EXP_FX(T,S,EXO)$(exp_bnd_fx(T,S,EXO) ge 0)..
+VAR_EXP(T,S,EXO) =E= exp_bnd_fx(T,S,EXO);
 
 EQ_FLO_LO(T,S,P,FLOW)$( (flo_bnd_lo(T,S,FLOW) gt 0) and (FLOW_IN(P,FLOW) or FLOW_OUT(P,FLOW)) )..
 SUM(C$C_ITEMS(FLOW,C), VAR_COM(T,S,P,C)) =G= flo_bnd_lo(T,S,FLOW);
@@ -274,7 +274,7 @@ EQ_ACTIVITY(T,S,P)..
 EQ_TOTAL_NET_AMOUNT(T,S,C)..
   TOTAL_NET_AMOUNT(T,S,C) =E=
   ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMP(C) ) -
-  ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) );
+  ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXO(C) );
 
 EQ_AGG(T,S,AGG)..
   AGGREGATE(T,S,AGG)
@@ -284,13 +284,13 @@ EQ_AGG_UP_T(T,AGG)$(aggregate_annual_up(T,AGG) ge 0)..
   SUM(S,AGGREGATE(T,S,AGG)) =L= aggregate_annual_up(T,AGG);
 
 EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) gt 0))..
-  agg_coef(C,AGG) * SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C) ))
+  agg_coef(C,AGG) * SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXO(C) ))
   =L= degree_of_use(T,C,AGG) * SUM(S,AGGREGATE(T,S,AGG));
 
 EQ_RATE_OF_PENETRATION(T,C)$(rate_of_penetration(t,c) ne 0)..
-  SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXP(C)) =L=
+  SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXO(C)) =L=
   (1+rate_of_penetration(T,C)) *
-  SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T-1,S,P,C)) + VAR_EXP(T-1,S,C)$EXP(C)) ;
+  SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T-1,S,P,C)) + VAR_EXP(T-1,S,C)$EXO(C)) ;
 
 EQ_MARKET_SHARE_BND_UP(T,SUBMARKET,MARKET)$(market_share_bnd_up(t,submarket,market) gt 0)..
   SUM(P1$P_MARKET(SUBMARKET,P1),CAPACITY(T,P1))
@@ -412,17 +412,17 @@ out.nd = 6;
 put ',ANNUAL,,'IMP.tl','SUM(S,VAR_IMP.l(T,S,IMP))/;
 ))
 
-LOOP(T,LOOP(S,LOOP(EXP$VAR_EXP.l(T,S,EXP),
+LOOP(T,LOOP(S,LOOP(EXO$VAR_EXP.l(T,S,EXO),
 out.nd = 0;
 put 'VAR_EXP,'year(T);
 out.nd = 6;
-put ','S.tl',,'EXP.tl','VAR_EXP.l(T,S,EXP)/;
+put ','S.tl',,'EXO.tl','VAR_EXP.l(T,S,EXO)/;
 )))
-LOOP(T,LOOP(EXP$SUM(S,VAR_EXP.l(T,S,EXP)),
+LOOP(T,LOOP(EXO$SUM(S,VAR_EXP.l(T,S,EXO)),
 out.nd = 0;
 put 'VAR_EXP,'year(T);
 out.nd = 6;
-put ',ANNUAL,,'EXP.tl','SUM(S,VAR_EXP.l(T,S,EXP))/;
+put ',ANNUAL,,'EXO.tl','SUM(S,VAR_EXP.l(T,S,EXO))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(C$EQ_COMBAL.m(T,S,C),

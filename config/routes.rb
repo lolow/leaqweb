@@ -1,40 +1,86 @@
-Leaqweb::Application.routes.draw do |map|
+Leaqweb::Application.routes.draw do
   
   devise_for :users
 
-  map.resources :commodities,
-                :member => {:duplicate => :post},
-                :collection => {:list => :get, :destroy_all => :delete}
+  resources :commodities do
+    member do
+      post :duplicate
+    end
+    collection do
+      get :list
+      delete :destroy_all
+    end
+  end
 
-  map.resources :technologies,
-                :member => {:duplicate => :post, :emission => :post},
-                :collection => {:list => :get, :destroy_all => :delete}
+  resources :technologies do
+    member do
+      post :duplicate
+      post :emission
+    end
+    collection do
+      get :list
+      delete :destroy_all
+    end
+  end
 
-  map.resources :demand_drivers,
-                :collection => {:list => :get, :destroy_all => :delete}
+  resources :demand_drivers do
+    collection do
+      get :list
+      delete :destroy_all
+    end
+  end
 
-  map.resources :combustions,
-                :collection => {:list => :get, :destroy_all => :delete, :update_value => :put}
+  resources :combustions do
+    collection do
+      get :list
+      delete :destroy_all
+      put :update_value
+    end
+  end
 
-  map.resources :solvers,
-                :collection => {:list => :get, :destroy_all => :delete}
+  resources :solvers do
+    collection do
+      get :list
+      delete :destroy_all
+    end
+  end
 
-  map.resources :parameter_values,
-                :collection => {:update_value => :put}
+  resources :parameter_values do
+    collection do
+      put :update_value
+    end
+  end
 
-  map.resources :result_sets,
-                :member => {:file => :get, :import => :get},
-                :collection => {:list => :get, :destroy_all => :delete}
+  resources :result_sets do
+     member do
+       get :file
+       get :import
+     end
+     collection do
+       get :list
+       delete :destroy_all
+     end
+  end
 
-  map.resources :stored_queries,
-                :member => {:duplicate => :get},
-                :collection => {:list => :get, :destroy_all => :delete}
-  map.resources :versions,
-                :collection => {:list => :get}
+  resources :stored_queries do
+     member do
+       get :duplicate
+     end
+     collection do
+       get :list
+       delete :destroy_all
+     end
+  end
 
-  map.resources :flows
-  map.resources :markets
-  map.resources :aggregates
+  resources :versions do
+     member do
+       get :list
+     end
+  end
+
+  resources :flows
+  resources :markets
+  resources :aggregates
   
   match '/backup.zip'        => 'dashboard#backup',   :as => 'backup_db'
   match '/restore'           => 'dashboard#restore',  :as => 'restore_db'
