@@ -2,22 +2,34 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.1.0.rc6'
 
-gem 'haml'
-gem 'warden'
-gem 'tenjin'
+# Database wrappers
 gem 'mysql2'
+gem 'sqlite3'
+
+# Web Server
 gem 'mongrel', '>= 1.2.0.pre2'
-gem 'workflow'
-gem 'delayed_job'
-gem 'paper_trail'
+
+# Rails 3.1 - JavaScript
 gem 'jquery-rails'
+
+# HTML engine/template
+gem 'haml'
 gem 'simple_form'
-gem 'awesome_nested_set'
+
+# User identification
 gem 'devise',              :git => "git://github.com/plataformatec/devise.git"
+gem 'warden'
+
+# Model extensions
+gem 'awesome_nested_set'
 gem 'acts-as-taggable-on', :git => 'https://github.com/mbleigh/acts-as-taggable-on'
 gem 'will_paginate',       :git => 'https://github.com/mislav/will_paginate.git'
+gem 'paper_trail'
+
+# Backup + Template engine + State Machine
 gem 'rubyzip', :require => 'zip/zip'
-gem 'sqlite3'
+gem 'tenjin'
+gem 'workflow'
 
 group :assets do
   gem 'sass-rails', "~> 3.1.0.rc"
