@@ -14,4 +14,6 @@ Gemfile.lock
 .bundle
 rails/
 225*/
-mosek.opt
+*.opt
+.sass-cache/
+public/assets/

@@ -979,12 +979,12 @@ select.tiny {
  */
 /* line 207, ../../app/stylesheets/_layout.scss */
 .sorting_asc {
-  background: url("/images/sort_asc.gif") no-repeat center right;
+  background: url("/assets/sort_asc.gif") no-repeat center right;
 }
 
 /* line 211, ../../app/stylesheets/_layout.scss */
 .sorting_desc {
-  background: url("/images/sort_desc.gif") no-repeat center right;
+  background: url("/assets/sort_desc.gif") no-repeat center right;
 }
 
 /* line 215, ../../app/stylesheets/_layout.scss */
@@ -1159,7 +1159,7 @@ input.aligned {
 a.action {
   text-decoration: none;
   padding: 4px 9px 4px 25px;
-  background-image: url("/images/a_go.png");
+  background-image: url("/assets/a_go.png");
   background-color: #5a3e36;
   background-position: 6px center;
   background-repeat: no-repeat;
@@ -1173,17 +1173,17 @@ a.action {
 
 /* line 369, ../../app/stylesheets/_layout.scss */
 a.new {
-  background-image: url("/images/a_new.png");
+  background-image: url("/assets/a_new.png");
 }
 
 /* line 373, ../../app/stylesheets/_layout.scss */
 a.duplicate {
-  background-image: url("/images/a_duplicate.png");
+  background-image: url("/assets/a_duplicate.png");
 }
 
 /* line 377, ../../app/stylesheets/_layout.scss */
 a.delete {
-  background-image: url("/images/a_delete.png");
+  background-image: url("/assets/a_delete.png");
 }
 
 /* line 381, ../../app/stylesheets/_layout.scss */
@@ -1194,48 +1194,48 @@ a.delete_values {
 
 /* line 386, ../../app/stylesheets/_layout.scss */
 a.browse {
-  background-image: url("/images/a_browse.png");
+  background-image: url("/assets/a_browse.png");
 }
 
 /* line 390, ../../app/stylesheets/_layout.scss */
 a.download {
-  background-image: url("/images/a_download.png");
+  background-image: url("/assets/a_download.png");
 }
 
 /* line 394, ../../app/stylesheets/_layout.scss */
 a.import {
-  background-image: url("/images/a_import.png");
+  background-image: url("/assets/a_import.png");
 }
 
 /* line 398, ../../app/stylesheets/_layout.scss */
 a.check_db {
-  background-image: url("/images/a_check_db.png");
+  background-image: url("/assets/a_check_db.png");
 }
 
 /* line 402, ../../app/stylesheets/_layout.scss */
 a.backup_db {
-  background-image: url("/images/a_backup_db.png");
+  background-image: url("/assets/a_backup_db.png");
 }
 
 /* line 406, ../../app/stylesheets/_layout.scss */
 a.reset_db {
-  background-image: url("/images/a_reset_db.png");
+  background-image: url("/assets/a_reset_db.png");
 }
 
 /* line 410, ../../app/stylesheets/_layout.scss */
 a.sign_up {
-  background-image: url("/images/a_sign_up.png");
+  background-image: url("/assets/a_sign_up.png");
 }
 
 /* line 414, ../../app/stylesheets/_layout.scss */
 a.sign_in {
-  background-image: url("/images/a_sign_in.png");
+  background-image: url("/assets/a_sign_in.png");
 }
 
 /* line 418, ../../app/stylesheets/_layout.scss */
 input.restore_db {
   padding: 4px 9px 4px 25px;
-  background-image: url("/images/a_restore_db.png");
+  background-image: url("/assets/a_restore_db.png");
 }
 
 /* line 423, ../../app/stylesheets/_layout.scss */
@@ -1365,12 +1365,12 @@ th.add {
 
 /* line 531, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_previous {
-  background-image: url("/images/resultset_previous.png");
+  background-image: url("/assets/resultset_previous.png");
 }
 
 /* line 535, ../../app/stylesheets/_layout.scss */
 .paginate_enabled_next {
-  background-image: url("/images/resultset_next.png");
+  background-image: url("/assets/resultset_next.png");
 }
 
 /* LIST TABLE */

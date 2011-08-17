@@ -84,7 +84,7 @@ class SolversController < ApplicationController
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     filter = {:page => current_page,
               :per_page => params[:iDisplayLength]}
-    displayed = Solver.all.paginate filter
+    displayed = Solver.paginate filter
     total     = Solver.count
     return displayed, total
   end

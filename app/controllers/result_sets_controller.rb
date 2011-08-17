@@ -116,7 +116,7 @@ class ResultSetsController < ApplicationController
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     filter = {:page => current_page,
               :per_page => params[:iDisplayLength]}
-    displayed = ResultSet.all.paginate filter
+    displayed = ResultSet.paginate filter
     total     = ResultSet.count
     return displayed, total
   end

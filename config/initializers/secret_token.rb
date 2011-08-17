@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Leaqweb::Application.config.secret_token = 'f9b60dbdd4247fec9b931e51fe8f5f088a77f2b270d2a3f3da8ae9091cc2ce084213a56a631c6898d305a8a15b63a4a5e9f4239753697474583467b2b5373e8a'
+Leaqweb::Application.config.secret_token = 'cdba78f3a9c3467f814d99418ec07558acf6b02bf3ff6bf7b0aa2d09279862dd12716d5965fb4f14b74f31439e516e38f1e98ee426610b851b05c1e0a779ca75'

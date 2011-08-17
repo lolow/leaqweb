@@ -4,12 +4,14 @@
   %meta(name="keywords" content="#{@keywords.join ', '}")
   %meta(name="author" content=@author)
   %title= @title.join ' - '
-  = stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin'
-  = stylesheet_link_tag 'screen.css', :media => 'screen, projection'
-  = stylesheet_link_tag 'print.css', :media => 'print'
-  /[if IE]
-    = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
-  = stylesheet_link_tag  "jquery-ui"
+  -#= stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin'
+  -#= stylesheet_link_tag 'screen.css', :media => 'screen, projection'
+  -#= stylesheet_link_tag 'print.css', :media => 'print'
+  -#/[if IE]
+  -#  = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
+  -#= stylesheet_link_tag  "jquery-ui"
   <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-  = common_js
+  -#= javascript_include_tag 'jquery.min.js'
+  = stylesheet_link_tag    "application"
+  = javascript_include_tag "application"
   = csrf_meta_tag
