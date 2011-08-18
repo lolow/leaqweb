@@ -6,9 +6,6 @@ gem 'rails', '3.1.0.rc6'
 gem 'mysql2'
 gem 'sqlite3'
 
-# Web Server
-gem 'mongrel', '>= 1.2.0.pre2'
-
 # Rails 3.1 - JavaScript
 gem 'jquery-rails'
 
@@ -32,8 +29,6 @@ gem 'tenjin'
 gem 'workflow'
 
 group :assets do
-  gem 'sass-rails', "~> 3.1.0.rc"
   gem 'coffee-rails', "~> 3.1.0.rc"
   gem 'uglifier'
-  gem 'compass', :git => 'git://github.com/chriseppstein/compass.git', :branch => 'rails31'
 end

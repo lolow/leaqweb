@@ -86,7 +86,7 @@
     %tfoot
       %tr
         %th(class="check")
-          = link_to_function "Delete", "delete_parameter_values('#{pid}')", :class => "action delete_values", :confirm => "Are you sure?"
+          = link_to "Delete", '#', :class => "action delete_pv", :confirm => "Are you sure?"
         - cols.each do |c|
           - if c=="parameter"
             %th
@@ -146,7 +146,7 @@
             %th
               %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]")
         %th
-          = link_to_function "Add", "add_parameter_value('#{pid}')", :class => "action add_value"
+          = link_to "Add", '#', :class => "action add_pv"
   - if parameters.size==1
     %input(type="hidden" id="#{pid}_parameter" name="pv[parameter]" value="#{parameters.first}")
   %input(type="hidden" id="do" name="do" value="")

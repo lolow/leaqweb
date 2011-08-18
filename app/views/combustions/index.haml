@@ -1,14 +1,4 @@
 :javascript
-  function add_combustion() {
-    $('#form_ #do').attr('value','add_pv');
-    $('#form_').submit();
-  }
-  function delete_combustions() {
-    if (confirm("Are you sure?")) {
-      $('#form_ #do').attr('value','delete_pv');
-      $('#form_').submit();
-    };
-  }
   function draw_editable() {
     $('.edit').editable(#{raw update_value_combustions_path.to_json},{
         style   : 'inherit',
@@ -73,7 +63,7 @@
           %tfoot
             %tr
               %th(class="check")
-                = link_to_function "Delete", "delete_combustions()", :class => "action delete_values", :confirm => "Are you sure?"
+                = link_to "Delete", "#", :class => "action delete_pv", :confirm => "Are you sure?"
               %th
                 %select(id="combustion_fuel" name="combustion[fuel_id]")
                   = options_for_select(Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
@@ -85,7 +75,7 @@
               %th
                 %input(type="textcell" id="combustion_source" name="combustion[source]")
               %th(class="check")
-                = link_to_function "Add", "add_combustion()", :class => "action add_value"
+                = link_to_function "Add", "add_combustion()", :class => "action add_pv"
 
     %br
     %br

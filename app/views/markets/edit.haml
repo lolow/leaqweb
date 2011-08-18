@@ -1,14 +1,4 @@
 :javascript
-  function add_parameter_value(pid) {
-    $('#form_' + pid + ' #do').attr('value','add_pv');
-    $('#form_' + pid).submit();
-  }
-  function delete_parameter_values(pid) {
-    if (confirm("Are you sure?")) {
-      $('#form_' + pid + ' #do').attr('value','delete_pv');
-      $('#form_' + pid).submit();
-    };
-  }
   function fill_avail_technologies(technologies_path,filter){
     var options = "";
     $.getJSON(technologies_path + '.js', {'filter':filter}, function(j){
