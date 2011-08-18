@@ -88,25 +88,15 @@ class CommoditiesController < ApplicationController
   end
 
   def filter_commodities(params={})
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    columns = [nil,"name","description"]
-    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
-    conditions = []
-    if params[:sSearch] && params[:sSearch]!=""
-      conditions = ['name LIKE ? OR description LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
-    end
-    filter = {:page => current_page,
-              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
+    filter = build_filter(params)
     if params[:set] && params[:set]!="null"
-      total = Commodity.tagged_with(params[:set]).count(:conditions => conditions)
+      total = Commodity.tagged_with(params[:set]).count(:conditions => filter[:conditions])
       if current_page * params[:iDisplayLength].to_i > total
         filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
       end
       displayed = Commodity.tagged_with(params[:set]).paginate(filter)
     else
-      total = Commodity.count(:conditions => conditions)
+      total = Commodity.count(:conditions => filter[:conditions])
       displayed = Commodity.paginate(filter)
     end
     return displayed, total

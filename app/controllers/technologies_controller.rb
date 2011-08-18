@@ -14,9 +14,9 @@ class TechnologiesController < ApplicationController
       format.html { @last_visited = last_visited(Technology) }
       format.js do
         technologies = Technology.order(:name).select(:name)
-        if params[:filter] && params[:filter]!=""
-          technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
-        end
+        #if params[:filter] && params[:filter]!=""
+        #  technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
+        #end
         render :json => {"tech"  => technologies.map(&:name)
                         }.to_json
       end
@@ -127,26 +127,16 @@ class TechnologiesController < ApplicationController
   end
 
   def filter_technologies(params={})
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    columns = [nil,"name","description"]
-    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
-    conditions = []
-    if params[:sSearch] && params[:sSearch]!=""
-      conditions = ['name LIKE ? OR description LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
-    end
-    filter = {:page => current_page,
-              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
+    filter = build_filter(params)
     if params[:set] && params[:set]!="null"
-      total = Technology.tagged_with(params[:set]).count(:conditions => conditions)
+      total = Technology.tagged_with(params[:set]).count(:conditions => filter[:conditions])
       if current_page * params[:iDisplayLength].to_i > total
         filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
       end
       displayed = Technology.tagged_with(params[:set]).paginate(filter)
     else
       displayed = Technology.paginate(filter)
-      total = Technology.count(:conditions => conditions)
+      total = Technology.count(:conditions => filter[:conditions])
     end
     return displayed, total
   end

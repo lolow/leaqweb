@@ -36,19 +36,12 @@ class CombustionsController < ApplicationController
   end
 
   def update_value
-    value = Combustion.update(field[:id], field[:field]=>params[:value]) ? params[:value] : ""
+    f = params[:field].split("-")
+    value = Combustion.update(f.first.to_i, f.last=>params[:value]) ? params[:value] : ""
     render :json => value
   end
 
   private
-
-  def field
-    f = params[:field].split("-")
-    {
-        :id => f.first.to_i,
-        :field => f.last
-    }
-  end
 
   def filter_combustion(params={})
     combustions = Combustion.includes(:fuel).includes(:pollutant)

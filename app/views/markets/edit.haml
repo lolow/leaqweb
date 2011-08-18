@@ -14,7 +14,7 @@
       var options = "";
       var c = j.market.technologies;
       for(var i = 0; i < c.length; i++) {
-        options += '<option>' + c[i].technology.name + '</option>';
+        options += '<option>' + c[i].name + '</option>';
       }
       $('#market_technology').html(options);
       $("#market_technology").html($("#market_technology option").sort(function (a, b) {

@@ -31,4 +31,18 @@ class ApplicationController < ActionController::Base
     session["last-#{active_model}"] = list[0, 10]
   end
 
+  def build_filter(params={})
+    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
+    columns = [nil,"name","description"]
+    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
+    conditions = []
+    if params[:sSearch] && params[:sSearch]!=""
+      conditions = ['name LIKE ? OR description LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
+    end
+    filter = {:page => current_page,
+              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
+              :conditions => conditions,
+              :per_page => params[:iDisplayLength]}
+  end
+
 end

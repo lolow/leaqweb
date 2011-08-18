@@ -1,14 +1,4 @@
 :javascript
-  function add_parameter_value(pid) {
-    $('#form_' + pid + ' #do').attr('value','add_pv');
-    $('#form_' + pid).submit();
-  }
-  function delete_parameter_values(pid) {
-    if (confirm("Are you sure?")) {
-      $('#form_' + pid + ' #do').attr('value','delete_pv');
-      $('#form_' + pid).submit();
-    };
-  }
   function fill_avail_commodities(commodities_path,filter){
     var options = "";
     $.getJSON(commodities_path + '.js', {'filter':filter}, function(j){
@@ -39,7 +29,7 @@
       var options = "";
       var c = j.aggregate.commodities;
       for(var i = 0; i < c.length; i++) {
-        options += '<option>' + c[i].commodity.name + '</option>';
+        options += '<option>' + c[i].name + '</option>';
       }
       $('#agg_commodity').html(options);
       $("#agg_commodity").html($("#agg_commodity option").sort(function (a, b) {
