@@ -24,9 +24,6 @@
   	"sDom"           : 'lrft<"dataTable_delete">pi'
   	} );
     $("div.dataTable_delete").html(#{submit_tag('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
-    $('.check_all').click(function () {
-      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
-    } );
   } );
 .grid_2
   .box

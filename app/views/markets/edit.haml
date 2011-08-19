@@ -23,9 +23,6 @@
     });
   }
   $(function(){
-    $('.check_all').click(function () {
-      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
-    });
     $('#filter_technology').change(function () {
       fill_avail_technologies('#{technologies_path}',$('#filter_technology').val());
     });
@@ -84,13 +81,7 @@
   .box
     %h2 Market
     .block(id="idcard")
-      = simple_form_for @market do |f|
-        =f.input :name, :required => true, :input_html => { :size => nil }
-        =f.input :description, :as => :text, :input_html => {:rows => 2, :cols=>nil}
-        =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
-        =f.button :submit
-        %input(type="hidden" name="do" value="update")
-
+      = render :partial => 'shared/id_card', :locals => {:object => @market , :categories => nil}
 .grid_9
   .box
     %h2 Technologies

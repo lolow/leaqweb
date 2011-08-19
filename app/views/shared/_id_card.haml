@@ -1,0 +1,7 @@
+= simple_form_for object do |f|
+  =f.input :name, :input_html => { :size => nil }
+  =f.input :description, :as => :text, :input_html => { :rows => 2, :cols=>nil }
+  - if categories
+    =f.input :set_list, :collection => categories, :selected => object.matching_set_list, :label => "Category"
+  =f.button :submit
+  %input(type="hidden" name="do" value="update")

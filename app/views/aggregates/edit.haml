@@ -38,9 +38,6 @@
     });
   }
   $(document).ready(function() {
-    $('.check_all').click(function () {
-      $(this).parents('table:eq(0)').find(':checkbox').attr('checked', this.checked);
-    });
     $('#filter_commodity').change(function () {
       fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
     });
@@ -99,12 +96,7 @@
   .box
     %h2 Aggregate
     .block(id="idcard")
-      = simple_form_for @aggregate do |f|
-        =f.input :name, :required => true, :input_html => { :size => nil }
-        =f.input :description, :as => :text, :input_html => {:rows => 2, :cols=>nil}
-        =f.input :set_list, :as => :hidden, :input_html => {:value => "AGG"}
-        =f.button :submit
-        %input(type="hidden" name="do" value="update")
+      = render :partial => 'shared/id_card', :locals => {:object => @aggregate , :categories => nil}
 
 .grid_9
   .box

@@ -13,13 +13,7 @@
   .box
     %h2 Commodity
     .block(id="idcard")
-      = simple_form_for @commodity do |f|
-        =f.input :name, :input_html => { :size => nil }
-        =f.input :description, :as => :text, :input_html => { :rows => 2, :cols=>nil }
-        =f.input :set_list, :collection => Commodity::CATEGORIES, :selected => @commodity.matching_set_list, :label => "Type"
-        =f.button :submit
-        %input(type="hidden" name="do" value="update")
-
+      = render :partial => 'shared/id_card', :locals => {:object => @commodity, :categories => Commodity::CATEGORIES}
   - if @commodity.activated?
     .box
       %h2 Flows

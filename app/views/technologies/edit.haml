@@ -16,12 +16,7 @@
   .box
     %h2 Technology
     .block(id="idcard")
-      = simple_form_for @technology do |f|
-        =f.input :name, :input_html => { :size => nil }
-        =f.input :description, :as => :text, :input_html => { :rows => 2, :cols=>nil }
-        =f.input :set_list, :collection => Technology::CATEGORIES, :selected => @technology.matching_set_list, :label => "Type"
-        =f.button :submit
-        %input(type="hidden" name="do" value="update")
+      = render :partial => 'shared/id_card', :locals => {:object => @technology, :categories => Technology::CATEGORIES}
   .box
     %h2 Flows
     .block
