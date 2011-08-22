@@ -9,10 +9,11 @@ $(document).ready(function() {
         $.unblockUI();
         return false;
     });
+
 });
-function fill_avail_commodities(commodities_path){
+function fill_avail_commodities(commodities_path,filter){
     var options = "";
-    $.getJSON(commodities_path + '.js', function(j){
+    $.getJSON(commodities_path + '.js', {'filter':filter}, function(j){
         options += '<optgroup label="Energy Carriers">'
         var c = j.enc;
         for(var i = 0; i < c.length; i++) {
@@ -37,7 +38,8 @@ function fill_avail_commodities(commodities_path){
 }
 function add_flow(flows_path,commodities_path,flow_type,tech_id){
     fill_avail_commodities(commodities_path);
-    $('#sel_flow_commodity').html("");
+    $('#sel_flow_commodity').html('');
+    $('#filter_commodity').val('');
     $('#flow_editor_title').text('New ' + flow_type);
     $('#flow_apply').text('Add');
     $('#flow_apply').click(function() {
@@ -69,6 +71,7 @@ function add_flow(flows_path,commodities_path,flow_type,tech_id){
 }
 function edit_flow(flow_path,commodities_path,flow_type,id){
     fill_avail_commodities(commodities_path);
+    $('#filter_commodity').val('');
     $.getJSON(flow_path + '.js', function(j){
         var options = "";
         var c = j.flow.commodities;
