@@ -1,0 +1,23 @@
+{
+    "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
+    "iTotalRecords":<%= @totalpv.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total.to_json.html_safe %>,
+    "aaData":<%= @displayed.collect do |c|
+                   [ check_box_tag("cb#{c.id}"),
+                     c.parameter.name,
+                     c.year,
+                     c.time_slice,
+                     c.technology ?  c.technology.name : "",
+                     c.commodity ?  c.commodity.name : "",
+                     short_flow(c.flow),
+                     short_flow(c.in_flow),
+                     short_flow(c.out_flow),
+                     c.aggregate ?  c.aggregate.name : "",
+                     c.market  ?  c.market.name : "",
+                     c.sub_market  ?  c.sub_market.name : "",
+                     "<span id='#{c.id}-value' class='edit'>#{c.value}</span>",
+                     "<span id='#{c.id}-source' class='edit'>#{c.source}</span>",
+                     c.scenario  ?  c.scenario.name : ""
+                   ]
+                 end.to_json.html_safe %>
+}

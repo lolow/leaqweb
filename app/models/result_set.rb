@@ -9,6 +9,9 @@ class ResultSet < ActiveRecord::Base
             "line_graph"  => 'line_graph.R.erb',
             "area_graph"  => 'area_graph.R.erb'}
 
+  scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
+  scope :matching_tag #empty
+
   def self.auto_new
     name = "result_set_00"
     (1..999).each do |i|

@@ -1,3 +1,9 @@
+:javascript
+  $(document).ready(function() {
+    $('#filter_commodity').keyup(function () {
+      fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
+    });
+  });
 %div(id="flow_editor" style="display:none; cursor: default")
   .box
     %h2#flow_editor_title Flow Editor
@@ -13,14 +19,14 @@
         %tbody
           %tr
             %td.col50
-              %select(multiple size="10" id="sel_avail_commodity" class="flow_list")
+              %select(multiple size="10" id="avail_commodity" class="flow_list")
               %p(style="text-align: center")
-                %a(href="#" id="add_commodity_flow")
+                %a(href="#" id="add_commodity")
                   & add >>
             %td.col50
-              %select(multiple size="10" id="sel_flow_commodity" class="flow_list")
+              %select(multiple size="10" id="commodity_list" class="flow_list")
               %p(style="text-align: center")
-                %a(href="#" id="remove_commodity_flow")
+                %a(href="#" id="remove_commodity")
                   & << remove
       = link_to 'Apply', '', :id => "flow_apply", :class => "action"
-      = link_to 'Cancel', '' , :id => "flow_cancel", :class => "action"
+      = link_to 'Cancel', '' , :id => "flow_editor_cancel", :class => "action"

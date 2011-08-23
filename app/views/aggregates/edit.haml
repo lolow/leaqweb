@@ -1,70 +1,12 @@
 :javascript
-  function fill_avail_commodities(commodities_path,filter){
-    var options = "";
-    $.getJSON(commodities_path + '.js', {'filter':filter}, function(j){
-        options += '<optgroup label="Energy Carriers">'
-        var c = j.enc;
-        for(var i = 0; i < c.length; i++) {
-          options += '<option>' + c[i] + '</option>';
-        }
-        options += '</optgroup>'
-        options += '<optgroup label="Pollutants">'
-        var c = j.poll;
-        for(var i = 0; i < c.length; i++) {
-          options += '<option>' + c[i] + '</option>';
-        }
-        options += '</optgroup>'
-        options += '<optgroup label="Demands">'
-        var c = j.dem;
-        for(var i = 0; i < c.length; i++) {
-          options += '<option>' + c[i] + '</option>';
-        }
-        options += '</optgroup>';
-        $('#avail_commodity').html(options);
-    })
-
-  }
-  function fill_aggregate(aggregate_path){
-    $.getJSON(aggregate_path + '.js', function(j){
-      var options = "";
-      var c = j.aggregate.commodities;
-      for(var i = 0; i < c.length; i++) {
-        options += '<option>' + c[i].name + '</option>';
-      }
-      $('#agg_commodity').html(options);
-      $("#agg_commodity").html($("#agg_commodity option").sort(function (a, b) {
-        return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
-      }));
-    });
-  }
   $(document).ready(function() {
-    $('#filter_commodity').change(function () {
+    $('#filter_commodity').keyup(function () {
       fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
     });
-    $('#add_commodity_agg').click(function() {
-        $('#avail_commodity option:selected').clone().appendTo('#agg_commodity');
-        //remove duplicates
-        map = {};
-        $('#agg_commodity option').each(function(){
-            var value = $(this).text();
-            if (map[value] == null){
-                map[value] = true;
-            } else {
-                $(this).remove();
-            }
-        });
-        // Sort by name
-        $("#agg_commodity").html($("#agg_commodity option").sort(function (a, b) {
-          return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
-        }));
-    });
-    $('#remove_commodity_agg').click(function() {
-        return !$('#agg_commodity option:selected').remove();
-    });
-    fill_avail_commodities('#{commodities_path}','');
+    fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
     fill_aggregate('#{aggregate_path(@aggregate)}');
     $('#apply').click(function() {
-        var com = $('#agg_commodity option');
+        var com = $('#commodity_list option');
         var s = "";
         for(var i = 0; i < com.length; i++) {
             s += com[i].text + ",";
@@ -83,7 +25,6 @@
   });
 
 .grid_3
-
   .box(class="action")
     %h2 Actions
     %br
@@ -115,15 +56,15 @@
             %td.col50
               %select(multiple size="10" id="avail_commodity" class="flow_list")
               %p(style="text-align: center")
-                %a(href="#" id="add_commodity_agg")
+                %a(href="#" id="add_commodity")
                   & add >>
             %td.col50
-              %select(multiple size="10" id="agg_commodity" class="flow_list")
+              %select(multiple size="10" id="commodity_list" class="flow_list")
               %p(style="text-align: center")
-                %a(href="#" id="remove_commodity_agg")
+                %a(href="#" id="remove_commodity")
                   & << remove
       = link_to 'Apply', '', :id => "apply", :class => "action"
-      = link_to 'Undo', aggregate_path(@aggregate), :class => "action"
+      = link_to 'Reset Changes', aggregate_path(@aggregate), :class => "action"
 
   .box
     %h2 Parameters

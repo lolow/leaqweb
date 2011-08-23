@@ -22,7 +22,7 @@ class SolversController < ApplicationController
   end
 
   def list
-    @solvers, @total_solvers = filter_solvers(params)
+    @solvers, @total_solvers = filter_list(Solver)
     render :layout => false, :partial => "list.json"
   end
 
@@ -77,17 +77,5 @@ class SolversController < ApplicationController
 
   def run
   end
-
-  private
-
-  def filter_solvers(params={})
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    filter = {:page => current_page,
-              :per_page => params[:iDisplayLength]}
-    displayed = Solver.paginate filter
-    total     = Solver.count
-    return displayed, total
-  end
-
 
 end

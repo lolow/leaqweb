@@ -14,7 +14,7 @@ class StoredQueriesController < ApplicationController
   end
 
   def list
-    @stored_queries, @total_stored_queries = filter_stored_queries(params)
+    @stored_queries, @total_stored_queries = filter_list(StoredQuery,["name"])
     render :layout => false, :partial => "list.json"
   end
 
@@ -56,34 +56,6 @@ class StoredQueriesController < ApplicationController
   def destroy_all
     StoredQuery.destroy(checkbox_ids)
     redirect_to(stored_queries_url)
-  end
-
-  private
-
-  def filter_stored_queries(params={})
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    columns = [nil,"name"]
-    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
-    conditions = []
-    if params[:sSearch] && params[:sSearch]!=""
-      conditions = ['name LIKE ?'] + ["%#{params[:sSearch]}%"]
-    end
-    filter = {:page => current_page,
-              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
-    if params[:display] && params[:display]!="null"
-      total = StoredQuery.where(:display=>params[:display]).count :conditions => conditions
-      if current_page * params[:iDisplayLength].to_i > total
-        filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
-      end
-      displayed = StoredQuery.where(:display=>params[:display]).paginate(filter)
-    else
-      total = StoredQuery.count :conditions => conditions
-      displayed = StoredQuery.paginate(filter)
-    end
-
-    return displayed, total
   end
 
 end

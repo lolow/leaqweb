@@ -13,7 +13,7 @@ class DemandDriversController < ApplicationController
   end
 
   def list
-    @demand_drivers, @total_demand_drivers  = filter_demand_drivers(params)
+    @demand_drivers, @total_demand_drivers  = filter_list(DemandDriver,["name","definition"])
     render :layout => false, :partial => "list.json"
   end
 
@@ -85,30 +85,6 @@ class DemandDriversController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(edit_demand_driver_path(@demand_driver)) }
     end
-  end
-
-  private
-
-  def filter_demand_drivers(params={})
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    columns = [nil,"name","definition"]
-    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
-    conditions = []
-    if params[:sSearch] && params[:sSearch]!=""
-      conditions = ['name LIKE ? OR definition LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
-    end
-    filter = {:page => current_page,
-              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
-    if params[:set] && params[:set]!="null"
-      displayed = DemandDriver.tagged_with(params[:set]).paginate filter
-      total = DemandDriver.tagged_with(params[:set]).count :conditions => conditions
-    else
-      displayed = DemandDriver.paginate filter
-      total = DemandDriver.count :conditions => conditions
-    end
-    return displayed, total
   end
 
 end

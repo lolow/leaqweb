@@ -14,7 +14,8 @@ class CombustionsController < ApplicationController
   end
 
   def list
-    @combustions, @total_combustions  = filter_combustion(params)
+    combustions = Combustion.includes(:fuel).includes(:pollutant)
+    @combustions, @total_combustions  = filter_list(combustions,["commodities.name","pollutants_combustions.name","value","source"])
     render :layout => false, :partial => "list.json"
   end
 
@@ -39,26 +40,6 @@ class CombustionsController < ApplicationController
     f = params[:field].split("-")
     value = Combustion.update(f.first.to_i, f.last=>params[:value]) ? params[:value] : ""
     render :json => value
-  end
-
-  private
-
-  def filter_combustion(params={})
-    combustions = Combustion.includes(:fuel).includes(:pollutant)
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    columns = [nil,"commodities.name","pollutants_combustions.name","value","source"]
-    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
-    conditions = []
-    if params[:sSearch] && params[:sSearch]!=""
-      conditions = ['commodities.name LIKE ? OR pollutants_combustions.name LIKE ? OR combustions.source LIKE ?'] + ["%#{params[:sSearch]}%"] * 3
-    end
-    filter = {:page => current_page,
-              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
-    displayed = combustions.paginate filter
-    total = combustions.count :conditions => conditions
-    return displayed, total
   end
 
 end

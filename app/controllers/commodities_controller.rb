@@ -13,10 +13,7 @@ class CommoditiesController < ApplicationController
     respond_to do |format|
       format.html { @last_visited = last_visited(Commodity) }
       format.js do
-        commodities = Commodity.order(:name).select(:name)
-        if params[:filter] && params[:filter]!=""
-          commodities = commodities.where(["name LIKE ?", "%#{params[:filter]}%"])
-        end
+        commodities = Commodity.matching_text(params[:filter]).order(:name).select(:name)
         render :json => {"enc"  => commodities.energy_carriers.map(&:name),
                          "poll" => commodities.pollutants.map(&:name),
                          "dem"  => commodities.demands.map(&:name)
@@ -26,7 +23,7 @@ class CommoditiesController < ApplicationController
   end
 
   def list
-    @commodities, @total_commodities  = filter_commodities(params)
+    @commodities, @total_commodities  = filter_list(Commodity,["name","description"])
     render :layout => false, :partial => "list.json"
   end
 
@@ -85,21 +82,6 @@ class CommoditiesController < ApplicationController
 
   def undo_link(object)
     view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
-  end
-
-  def filter_commodities(params={})
-    filter = build_filter(params)
-    if params[:set] && params[:set]!="null"
-      total = Commodity.tagged_with(params[:set]).count(:conditions => filter[:conditions])
-      if current_page * params[:iDisplayLength].to_i > total
-        filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
-      end
-      displayed = Commodity.tagged_with(params[:set]).paginate(filter)
-    else
-      total = Commodity.count(:conditions => filter[:conditions])
-      displayed = Commodity.paginate(filter)
-    end
-    return displayed, total
   end
 
 end

@@ -14,9 +14,9 @@ class TechnologiesController < ApplicationController
       format.html { @last_visited = last_visited(Technology) }
       format.js do
         technologies = Technology.order(:name).select(:name)
-        #if params[:filter] && params[:filter]!=""
-        #  technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
-        #end
+        if params[:filter] && params[:filter]!=""
+          technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
+        end
         render :json => {"tech"  => technologies.map(&:name)
                         }.to_json
       end
@@ -24,7 +24,7 @@ class TechnologiesController < ApplicationController
   end
 
   def list
-    @technologies, @total_technologies  = filter_technologies(params)
+    @technologies, @total_technologies  = filter_list(Technology,["name","description"])
     render :layout => false, :partial => "list.json"
   end
 
@@ -124,21 +124,6 @@ class TechnologiesController < ApplicationController
 
   def undo_link(object)
     view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
-  end
-
-  def filter_technologies(params={})
-    filter = build_filter(params)
-    if params[:set] && params[:set]!="null"
-      total = Technology.tagged_with(params[:set]).count(:conditions => filter[:conditions])
-      if current_page * params[:iDisplayLength].to_i > total
-        filter[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
-      end
-      displayed = Technology.tagged_with(params[:set]).paginate(filter)
-    else
-      displayed = Technology.paginate(filter)
-      total = Technology.count(:conditions => filter[:conditions])
-    end
-    return displayed, total
   end
 
 end

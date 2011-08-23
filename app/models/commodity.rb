@@ -39,6 +39,8 @@ class Commodity < ActiveRecord::Base
   scope :activated, tagged_with("C")
   scope :imports, tagged_with("IMP")
   scope :exports, tagged_with("EXP")
+  scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
+  scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
   def out_flows
     OutFlow.joins(:commodities).where("commodities.id"=>self)

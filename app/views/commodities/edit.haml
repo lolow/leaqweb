@@ -14,7 +14,8 @@
     %h2 Commodity
     .block(id="idcard")
       = render :partial => 'shared/id_card', :locals => {:object => @commodity, :categories => Commodity::CATEGORIES}
-  - if @commodity.activated?
+  -# TODO very bad performance, so the connected flow is deactivated for now
+  - if false && @commodity.activated?
     .box
       %h2 Flows
       .block

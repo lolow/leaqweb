@@ -30,6 +30,8 @@ class Technology < ActiveRecord::Base
   ]
 
   scope :activated, tagged_with("P")
+  scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
+  scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
   def flow_act
     ParameterValue.of("flow_act").technology(self).first.flow

@@ -16,6 +16,8 @@ class Aggregate < ActiveRecord::Base
 
   #Scopes
   scope :activated, tagged_with("AGG")
+  scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
+  scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
   def parameter_values_for(parameters)
     ParameterValue.of(Array(parameters)).where(:aggregate_id=>self).order(:year)

@@ -10,4 +10,8 @@ class Combustion < ActiveRecord::Base
   #Validations
   validates :value, :presence => true, :numericality => true
 
+  #Scopes
+  scope :matching_text, lambda {|text| where(['commodities.name LIKE ? OR pollutants_combustions.name LIKE ? OR combustions.source LIKE ?'] + ["%#{text}%"] * 3 ) }
+  scope :matching_tag #empty because not taggable
+
 end

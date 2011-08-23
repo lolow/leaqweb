@@ -2,6 +2,7 @@ require 'etem_solver'
 require 'yaml'
 
 class Solver < ActiveRecord::Base
+  include Workflow
 
   before_destroy :reset
 
@@ -11,8 +12,10 @@ class Solver < ActiveRecord::Base
   validates :first_year,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
   validates :language,        :presence => true, :inclusion => {:in => %w(GAMS GLPK)}
 
+  scope :matching_text, lambda {|text| where(['workflow_state LIKE ?'] + ["%#{text}%"]) }
+  scope :matching_tag #empty
+
   # State Machine
-  include Workflow
   workflow do
     state :new do
       event :solve, :transitions_to => :solving

@@ -11,6 +11,11 @@ class MarketsController < ApplicationController
     @markets = Market.order(:name)
   end
 
+  def list
+    @markets, @total_markets  = filter_list(Market,["name","description"])
+    render :layout => false, :partial => "list.json"
+  end
+
   def show
     @market = Market.find(params[:id])
     respond_to do |format|
@@ -58,4 +63,10 @@ class MarketsController < ApplicationController
     Market.destroy(params[:id])
     redirect_to(markets_url)
   end
+
+  def destroy_all
+    Market.destroy(checkbox_ids)
+    redirect_to(markets_url)
+  end
+
 end

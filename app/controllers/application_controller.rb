@@ -31,18 +31,17 @@ class ApplicationController < ActionController::Base
     session["last-#{active_model}"] = list[0, 10]
   end
 
-  def build_filter(params={})
+  def filter_list(active_record,columns=[])
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    columns = [nil,"name","description"]
-    order   = columns[params[:iSortCol_0] ? params[:iSortCol_0].to_i : 0]
-    conditions = []
-    if params[:sSearch] && params[:sSearch]!=""
-      conditions = ['name LIKE ? OR description LIKE ?'] + ["%#{params[:sSearch]}%"] * 2
-    end
-    filter = {:page => current_page,
-              :order => "#{order} #{params[:sSortDir_0] || "DESC"}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
+    order        = params[:iSortCol_0] ? columns[params[:iSortCol_0].to_i-1] : nil
+    info = {:page => current_page, :per_page => params[:iDisplayLength]}
+    info[:order] = "#{order} #{params[:sSortDir_0] || "DESC"}" if order
+    total = active_record.matching_text(params[:sSearch]).matching_tag(params[:set]).count
+    if current_page * params[:iDisplayLength].to_i > total
+        info[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
+      end
+    displayed = active_record.matching_text(params[:sSearch]).matching_tag(params[:set]).paginate(info)
+    return displayed, total
   end
 
 end

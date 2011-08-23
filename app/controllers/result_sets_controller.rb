@@ -22,7 +22,7 @@ class ResultSetsController < ApplicationController
   end
 
   def list
-    @result_sets, @total_result_sets = filter_result_sets(params)
+    @result_sets, @total_result_sets = filter_list(ResultSet)
     render :layout => false, :partial => "list.json"
   end
 
@@ -116,8 +116,8 @@ class ResultSetsController < ApplicationController
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     filter = {:page => current_page,
               :per_page => params[:iDisplayLength]}
-    displayed = ResultSet.paginate filter
-    total     = ResultSet.count
+    displayed = ResultSet.matching_text(params[:sSearch]).paginate filter
+    total     = ResultSet.matching_text(params[:sSearch]).count
     return displayed, total
   end
 

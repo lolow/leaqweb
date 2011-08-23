@@ -1,3 +1,30 @@
+:javascript
+  $(document).ready(function() {
+  	$('#list_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_aggregates_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
+            $.getJSON( sSource, aoData, function (json) {
+              fnCallback(json)
+            } );
+          },
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0] } ],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	} );
+    $("div.dataTable_delete").html(#{submit_tag('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
+  } );
 .grid_2
   .box(class="action")
     %h2 Actions
@@ -9,16 +36,18 @@
   .box
     %h2 Browse aggregates
     %p
-      %table(summary="Aggregate list")
+    = form_tag(destroy_all_aggregates_path,:method => "delete") do
+      %table(id="list_table" summary="Aggregate list")
         %thead
-          %tr
-            %th Name
-            %th Description
-            %th
+          %th(class='check')
+            = check_box_tag("click_check",nil,nil,:class=>"check_all")
+          %th(class='name') Name
+          %th Description
         %tbody
-          - @aggregates.each do |aggregate|
-            %tr
-              %td= link_to aggregate.name, edit_aggregate_path(aggregate)
-              %td= link_to aggregate.description, edit_aggregate_path(aggregate)
-              %td= link_to 'delete', aggregate, :confirm => 'Are you sure?', :method => :delete
+          %tr
+            %td(colspan="3" class="list_table_empty")
+              Loading data
+    %br
+    %br
+    %br
 .clear

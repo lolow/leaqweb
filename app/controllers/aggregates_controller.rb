@@ -12,6 +12,11 @@ class AggregatesController < ApplicationController
     @aggregates = Aggregate.order(:name)
   end
 
+  def list
+    @aggregates, @total_aggregates  = filter_list(Aggregate,["name","description"])
+    render :layout => false, :partial => "list.json"
+  end
+
   def show
     @aggregate = Aggregate.find(params[:id])
     respond_to do |format|
@@ -57,6 +62,12 @@ class AggregatesController < ApplicationController
 
   def destroy
     Aggregate.destroy(params[:id])
-    redirect_to(aggregate_url)
+    redirect_to(aggregates_url)
   end
+
+  def destroy_all
+    Aggregate.destroy(checkbox_ids)
+    redirect_to(aggregates_url)
+  end
+
 end

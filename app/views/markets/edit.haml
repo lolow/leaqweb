@@ -23,10 +23,10 @@
     });
   }
   $(function(){
-    $('#filter_technology').change(function () {
+    $('#filter_technology').keyup(function () {
       fill_avail_technologies('#{technologies_path}',$('#filter_technology').val());
     });
-    fill_avail_technologies('#{technologies_path}','');
+    fill_avail_technologies('#{technologies_path}',$('#filter_technology').val());
     fill_market('#{market_path(@market)}');
     $('#add_technology_market').click(function() {
         $('#avail_technology option:selected').clone().appendTo('#market_technology');

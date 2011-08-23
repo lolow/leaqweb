@@ -1,0 +1,112 @@
+:javascript
+  function draw_editable() {
+    $('.edit').editable(#{raw update_value_parameter_values_path.to_json},{
+        style   : 'inherit',
+        width   : "100%",
+        height  : 15,
+        method  : "PUT",
+        id      : 'field',
+        submitdata: {
+          authenticity_token: #{raw form_authenticity_token.to_json}
+        }
+    });
+  }
+  var pvtable;
+  $(document).ready(function() {
+  	pvtable = $('#parameter_value_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_parameter_values_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            $.ajax( {
+              "dataType": 'json',
+              "type":     "POST",
+              "url": sSource,
+              "data": aoData,
+              "success": fnCallback
+            } );
+          },
+        "fnDrawCallback": function() { draw_editable(); },
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0,6,7,8] } ],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	} );
+    $("div.dataTable_delete").html(#{link_to('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
+    $("thead input").keyup( function () {
+      pvtable.fnFilter(this.value, this.id.substr(3,2));
+    });
+    //fill input saved search
+    for each (var i in [1, 2, 4, 5, 9, 10, 11, 12, 13, 14])
+      $("#col"+i).val(pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i][0]);
+  });
+
+
+.grid_12
+  .box
+    %h2 Browse Parameter Values
+    %p
+    = form_tag(destroy_all_parameter_values_path) do
+      %table(id="parameter_value_table" summary="Parameter Values list")
+        %thead
+          %tr
+            %th
+            %th Parameter
+            %th Year
+            %th TS
+            %th Technology
+            %th Commodity
+            %th Flow
+            %th InFlow
+            %th OutFlow
+            %th Aggregate
+            %th Market
+            %th SubMarket
+            %th Value
+            %th Source
+            %th Scenario
+          %tr
+            %th(class='check')
+              = check_box_tag("click_check",nil,nil,:class=>"check_all")
+            %th
+              %input(type="textcell" id="col1")
+            %th
+              %input(type="textcell" id="col2" size="4")
+            %th
+              %select(id="col3")
+                = options_for_select([""] + %w{AN SD SN ID IN WN WD})
+            %th
+              %input(type="textcell" id="col4")
+            %th
+              %input(type="textcell" id="col5")
+            %th
+            %th
+            %th
+            %th
+              %input(type="textcell" id="col9")
+            %th
+              %input(type="textcell" id="col10")
+            %th
+              %input(type="textcell" id="col11")
+            %th
+              %input(type="textcell" id="col12")
+            %th
+              %input(type="textcell" id="col13")
+            %th
+              %input(type="textcell" id="col14")
+        %tbody
+          %tr
+            %td(colspan="15" class="list_table_empty")
+              Loading data
+    %br
+    %br
+    %br
+.clear
