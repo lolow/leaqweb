@@ -14,10 +14,14 @@ class ResultSetsController < ApplicationController
   def index
   end
 
+  def file_extensions
+    Dir[File.join(@result_set.path, "file.*")].collect { |f| File.extname(f)[1..-1].upcase }.sort
+  end
+
   def show
     @result_set = ResultSet.find(params[:id])
     @stored_queries = StoredQuery.order(:name)
-    @file_ext = Dir[File.join(@result_set.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
+    @file_ext = file_extensions
     params[:stored_query] = Hash.new("")
   end
 
@@ -60,7 +64,7 @@ class ResultSetsController < ApplicationController
       params[:stored_query][:display]   = t.display
     end
     @result_set.perform_query(params[:stored_query])
-    @file_ext = Dir[File.join(@result_set.path,"file.*")].collect{|f|File.extname(f)[1..-1].upcase}.sort
+    @file_ext = file_extensions
     render :show
   end
 

@@ -1,4 +1,6 @@
 :javascript
+  var pvtable;
+  var currentcol = null;
   function draw_editable() {
     $('.edit').editable(#{raw update_value_parameter_values_path.to_json},{
         style   : 'inherit',
@@ -11,7 +13,29 @@
         }
     });
   }
-  var pvtable;
+  function delete_all() {
+    if (confirm("Are you sure you want to delete")) {
+      var mydata = new Object();
+      $('input:checkbox:checked').each(function() {
+        mydata[$(this).attr('id')]=$(this).val();
+      });
+      $.ajax({
+        'url': #{destroy_all_parameter_values_path.to_json},
+        'type': 'POST',
+        'data': mydata,
+        'async': false,
+        'dataType': 'json'
+      });
+      pvtable.fnDraw();
+    }
+  }
+  var typewatch = (function(){
+    var timer = 0;
+    return function(callback, ms){
+      clearTimeout (timer);
+      timer = setTimeout(callback, ms);
+    }
+  })();
   $(document).ready(function() {
   	pvtable = $('#parameter_value_table').dataTable( {
   		"bProcessing"    : true,
@@ -38,18 +62,32 @@
         "fnDrawCallback": function() { draw_editable(); },
         "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0,6,7,8] } ],
   	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
-  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	    "sDom"           : 'lrit<"dataTable_delete">p<"dataTable_add">'
   	} );
-    $("div.dataTable_delete").html(#{link_to('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
-    $("thead input").keyup( function () {
-      pvtable.fnFilter(this.value, this.id.substr(3,2));
+    $("div.dataTable_delete").html(#{link_to_function('Delete checked','delete_all()',:class=>'action delete').to_json});
+    $("div.dataTable_add").html(#{link_to('Add','#',:class=>'action add_pv',:confirm => "Are you sure?" ).to_json});
+    $( ".suggest_commodity" ).autocomplete({
+      source: #{suggest_commodities_path.to_json},
+      minLength: 2
     });
-    //fill input saved search
-    for each (var i in [1, 2, 4, 5, 9, 10, 11, 12, 13, 14])
-      $("#col"+i).val(pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i][0]);
+    $( ".suggest_technology" ).autocomplete({
+      source: #{suggest_technologies_path.to_json},
+      minLength: 2
+    });
+    $( ".suggest_parameter" ).autocomplete({
+      source: #{suggest_parameters_path.to_json},
+      minLength: 2
+    });
+    for each (var i in [1, 2, 4, 5, 9, 10, 11, 12, 13, 14]){
+      $("thead input#col"+i).keyup( function () {
+        currentcol = this.id.substr(3,2);
+        typewatch(function () {
+          pvtable.fnFilter($("thead input#col"+currentcol).val(),currentcol);
+        }, 500);
+      });
+      $("thead input#col"+i).val(pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i][0]);
+    }
   });
-
-
 .grid_12
   .box
     %h2 Browse Parameter Values
@@ -58,7 +96,7 @@
       %table(id="parameter_value_table" summary="Parameter Values list")
         %thead
           %tr
-            %th
+            %th(class='check')
             %th Parameter
             %th Year
             %th TS
@@ -74,39 +112,87 @@
             %th Source
             %th Scenario
           %tr
-            %th(class='check')
+            %th(class='check inputs')
               = check_box_tag("click_check",nil,nil,:class=>"check_all")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col1")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col2" size="4")
-            %th
-              %select(id="col3")
+            %th(class='inputs')
+              %select(id="col3" class="tiny")
                 = options_for_select([""] + %w{AN SD SN ID IN WN WD})
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col4")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col5")
-            %th
-            %th
-            %th
-            %th
+            %th(class='inputs')
+            %th(class='inputs')
+            %th(class='inputs')
+            %th(class='inputs')
               %input(type="textcell" id="col9")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col10")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col11")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col12")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col13")
-            %th
+            %th(class='inputs')
               %input(type="textcell" id="col14")
         %tbody
           %tr
             %td(colspan="15" class="list_table_empty")
               Loading data
-    %br
-    %br
-    %br
+        %tfoot
+          %tr
+            %th(class='check')
+            %th Parameter
+            %th Year
+            %th TS
+            %th Technology
+            %th Commodity
+            %th Flow
+            %th InFlow
+            %th OutFlow
+            %th Aggregate
+            %th Market
+            %th SubMarket
+            %th Value
+            %th Source
+            %th Scenario
+          %tr
+            %th(class="check inputs")
+            %th(class='inputs')
+              %input(type="textcell" class="suggest_parameter" id="new_parameter" name="pv[parameter]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_year" name="pv[new_year]")
+            %th(class='inputs')
+              %select(id="col3" class="tiny")
+                = options_for_select([""] + %w{AN SD SN ID IN WN WD})
+            %th(class='inputs')
+              %input(type="textcell" class="suggest_technology" id="new_technology" name="pv[technology]")
+            %th(class='inputs')
+              %input(type="textcell" class="suggest_commodity" id="new_commodity" name="pv[commodity]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_flow" name="pv[flow]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_in_flow" name="pv[in_flow]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_out_flow" name="pv[out_flow]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_aggregate" name="pv[aggregate]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_market" name="pv[market]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_sub_market" name="pv[sub_market]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_value" name="pv[value]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_source" name="pv[source]")
+            %th(class='inputs')
+              %input(type="textcell" id="new_scenario" name="pv[scenario]")
+      %br
+      %br
+      %br
 .clear

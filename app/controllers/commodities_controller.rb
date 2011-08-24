@@ -7,7 +7,7 @@ class CommoditiesController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html, :except => :list
-  respond_to :json, :only => [:list, :index]
+  respond_to :json, :only => [:list, :index, :suggest]
 
   def index
     respond_to do |format|
@@ -76,6 +76,13 @@ class CommoditiesController < ApplicationController
         flash[:notice] = 'Parameter value was successfully added.' if pv.save
     end if params[:do]
     redirect_to(edit_commodity_path(@commodity))
+  end
+
+  def suggest
+    text = params[:term]
+    res = Commodity.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render :json => res.to_json
   end
 
   private

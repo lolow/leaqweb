@@ -43,19 +43,21 @@ class Commodity < ActiveRecord::Base
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
   def out_flows
-    OutFlow.joins(:commodities).where("commodities.id"=>self)
+    OutFlow.joins(:commodities).where("commodities.id"=>id)
   end
 
   def in_flows
-    InFlow.joins(:commodities).where("commodities.id"=>self)
+    InFlow.joins(:commodities).where("commodities.id"=>id)
   end
 
   def produced_by
-    Technology.joins(:flows).where("flows.id"=>out_flows)
+    ids = OutFlow.joins(:commodities).where("commodities.id"=>id).select(:technology_id).map{|f|f.technology_id}
+    Technology.where(:id=>ids)
   end
 
   def consumed_by
-    Technology.joins(:flows).where("flows.id"=>in_flows)
+    ids = InFlow.joins(:commodities).where("commodities.id"=>id).select(:technology_id).map{|f|f.technology_id}
+    Technology.where(:id=>ids)
   end
 
   def activated?

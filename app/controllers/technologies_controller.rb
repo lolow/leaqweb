@@ -7,7 +7,7 @@ class TechnologiesController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html, :except => :list
-  respond_to :json, :only => [:list, :index]
+  respond_to :json, :only => [:list, :index, :suggest]
 
   def index
     respond_to do |format|
@@ -118,6 +118,13 @@ class TechnologiesController < ApplicationController
   def destroy
     Technology.destroy(params[:id])
     redirect_to(technologies_url)
+  end
+
+  def suggest
+    text = params[:term]
+    res = Technology.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render :json => res.to_json
   end
 
   private

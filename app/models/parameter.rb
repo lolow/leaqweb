@@ -7,6 +7,8 @@ class Parameter < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
 
   scope :named, lambda {|name| where(:name=>name)}
+  scope :matching_text, lambda {|text| where(['name LIKE ? OR definition LIKE ?'] + ["%#{text}%"] * 2) }
+  scope :matching_tag
 
   def to_s
     name

@@ -135,15 +135,9 @@ thead th {
   border-bottom:2px solid #888;
   background:#bbb;
   padding:.4em 1em .2em;
+  text-align: center;
 }
-thead th.table-head {
-  font-size:1em;
-  font-weight:normal;
-  text-transform:uppercase;
-  color:$white;
-  background:#555;
-  border:1px solid #555;
-}
+
 tbody th,
 tbody td {
   border-top:1px solid #bbb;
@@ -158,6 +152,12 @@ tfoot th,
 tfoot td {
   border-top:2px solid #666;
   background:#eee;
+  text-align: center;
+}
+
+tfoot th.inputs, thead th.inputs {
+  border:0px;
+  text-align: center;
 }
 
 /* AJAX sliding shelf
@@ -519,6 +519,12 @@ th.add {
   float:left;
   display:block;
   width:40%;
+}
+
+.dataTable_add {
+  float:right;
+    text-align:right;
+    width:30%;
 }
 
 .paginate_enabled_previous, .paginate_enabled_next, .paginate_disabled_previous, .paginate_disabled_next {

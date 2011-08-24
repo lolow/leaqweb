@@ -4,10 +4,17 @@
 
 class ParameterValuesController < ApplicationController
 
+  before_filter :authenticate_user!
+
   respond_to :html, :only => [:index]
-  respond_to :json, :only => [:update_pv]
+  respond_to :json, :only => [:update_pv,:destroy_all]
 
   def index
+  end
+
+  def destroy_all
+    ParameterValue.destroy(checkbox_ids)
+    render :json => "ok"
   end
 
   def list

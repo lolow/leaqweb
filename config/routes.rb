@@ -1,5 +1,7 @@
 Leaqweb::Application.routes.draw do
 
+  get "parameter/suggest"
+
   devise_for :users
 
   resources :commodities do
@@ -9,6 +11,7 @@ Leaqweb::Application.routes.draw do
     collection do
       get :list
       delete :destroy_all
+      get :suggest
     end
   end
 
@@ -20,6 +23,7 @@ Leaqweb::Application.routes.draw do
     collection do
       get :list
       delete :destroy_all
+      get :suggest
     end
   end
 
@@ -62,8 +66,14 @@ Leaqweb::Application.routes.draw do
   resources :parameter_values do
     collection do
       put :update_value
-      delete :destroy_all
+      post :destroy_all
       post :list
+    end
+  end
+
+  resources :parameters do
+    collection do
+      get :suggest
     end
   end
 
