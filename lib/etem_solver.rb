@@ -125,7 +125,6 @@ class EtemSolver
       puts "Sets generation" if debug
       technologies = Technology.activated
       commodities  = Commodity.activated
-      flows = Flow.joins(:technology).where(:technology_id=>technologies)
       markets = Market.activated
       aggregates = Aggregate.activated
       c[:s_s]    = TIME_SLICES
@@ -137,7 +136,6 @@ class EtemSolver
       c[:s_exp]  = id_list_name(commodities.exports)
       c[:s_dem]  = id_list_name(commodities.demands)
       c[:s_agg]  = id_list_name(aggregates.all)
-      c[:s_flow] = id_list_flow(flows.all)
 
       c[:s_in_flow]  = Hash.new
       c[:s_out_flow] = Hash.new
@@ -145,6 +143,10 @@ class EtemSolver
         c[:s_in_flow][t.name]  = id_list_flow(t.in_flows)
         c[:s_out_flow][t.name] = id_list_flow(t.out_flows)
       end
+
+      technology_ids = technologies.all.map(&:id)
+      flows = Flow.joins(:technology).where(:technology_id=>technology_ids)
+      c[:s_flow] = id_list_flow(flows.all)
 
       c[:s_c_items] = Hash.new
       flows.all.each{|f| c[:s_c_items]["f_#{f.id}"] = id_list_name(f.commodities)&c[:s_c]}
@@ -156,19 +158,25 @@ class EtemSolver
       markets.all.each{|m| c[:s_p_market][m.name] = id_list_name(m.technologies)&c[:s_p]}
 
       puts "Parameters generation" if debug
+
+      commodity_ids  = commodities.all.map(&:id)
+      aggregate_ids  = aggregates.all.map(&:id)
+      flow_ids       = flows.all.map(&:id)
+      market_ids     = markets.all.map(&:id)
+
       signature.each_key do |param|
         puts "- #{param}" if debug
         c["p_#{param}_d".to_sym] = default_value_for(param)
         if signature[param]
           pv = ParameterValue.of(param.to_s)
-          pv = pv.where(:technology_id=> technologies) if signature[param].include?("technology")
-          pv = pv.where(:commodity_id=> commodities)   if signature[param].include?("commodity")
-          pv = pv.where(:aggregate_id=> aggregates) if signature[param].include?("aggregate")
-          pv = pv.where(:in_flow_id => flows)          if signature[param].include?("in_flow")
-          pv = pv.where(:out_flow_id => flows)         if signature[param].include?("out_flow")
-          pv = pv.where(:flow_id => flows)             if signature[param].include?("flow")
-          pv = pv.where(:market_id => markets)         if signature[param].include?("market")
-          pv = pv.where(:sub_market_id => markets)     if signature[param].include?("sub_market")
+          pv = pv.where(:technology_id=> technology_ids) if signature[param].include?("technology")
+          pv = pv.where(:commodity_id=> commodity_ids)   if signature[param].include?("commodity")
+          pv = pv.where(:aggregate_id=> aggregate_ids) if signature[param].include?("aggregate")
+          pv = pv.where(:in_flow_id => flow_ids)          if signature[param].include?("in_flow")
+          pv = pv.where(:out_flow_id => flow_ids)         if signature[param].include?("out_flow")
+          pv = pv.where(:flow_id => flow_ids)             if signature[param].include?("flow")
+          pv = pv.where(:market_id => market_ids)         if signature[param].include?("market")
+          pv = pv.where(:sub_market_id => market_ids)     if signature[param].include?("sub_market")
           c["p_#{param}".to_sym] = values_for(param,pv)
         end
       end
@@ -196,7 +204,7 @@ class EtemSolver
     dv = Parameter.find_by_name(parameter.to_s).default_value
     case parameter
       when "avail" then period(dv)
-      when "life"  then dv/period_duration
+      when "life"  then dv.to_i/period_duration
       else dv
     end
   end
