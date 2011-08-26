@@ -7,6 +7,8 @@ gem 'mysql2'
 gem 'sqlite3'
 
 # Rails 3.1 - JavaScript
+gem 'execjs'
+gem 'therubyracer'
 gem 'jquery-rails'
 
 # HTML engine/template
@@ -14,7 +16,7 @@ gem 'haml'
 gem 'simple_form'
 
 # User identification
-gem 'devise',              :git => "git://github.com/plataformatec/devise.git"
+gem 'devise'
 gem 'warden'
 
 # Model extensions

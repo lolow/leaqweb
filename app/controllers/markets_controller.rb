@@ -69,4 +69,11 @@ class MarketsController < ApplicationController
     redirect_to(markets_url)
   end
 
+  def suggest
+    text = params[:term]
+    res = Market.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render :json => res.to_json
+  end
+
 end

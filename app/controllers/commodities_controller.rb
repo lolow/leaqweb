@@ -6,8 +6,8 @@ class CommoditiesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => :list
-  respond_to :json, :only => [:list, :index, :suggest]
+  respond_to :html, :except => [:list, :suggest]
+  respond_to :json, :only => [:list, :suggest]
 
   def index
     respond_to do |format|

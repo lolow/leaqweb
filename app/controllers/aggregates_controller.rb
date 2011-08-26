@@ -6,7 +6,7 @@ class AggregatesController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html
-  respond_to :json, :only => [:show]
+  respond_to :json, :only => [:show, :suggest]
 
   def index
     @aggregates = Aggregate.order(:name)
@@ -68,6 +68,13 @@ class AggregatesController < ApplicationController
   def destroy_all
     Aggregate.destroy(checkbox_ids)
     redirect_to(aggregates_url)
+  end
+
+  def suggest
+    text = params[:term]
+    res = Aggregate.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render :json => res.to_json
   end
 
 end

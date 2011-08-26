@@ -38,6 +38,7 @@ Leaqweb::Application.routes.draw do
     collection do
       get :list
       delete :destroy_all
+      get :suggest
     end
   end
 
@@ -45,6 +46,7 @@ Leaqweb::Application.routes.draw do
     collection do
       get :list
       delete :destroy_all
+      get :suggest
     end
   end
 
@@ -86,6 +88,12 @@ Leaqweb::Application.routes.draw do
        get :list
        delete :destroy_all
      end
+  end
+
+  resources :scenarios do
+    collection do
+      get :suggest
+    end
   end
 
   resources :stored_queries do

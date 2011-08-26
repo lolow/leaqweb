@@ -36,6 +36,12 @@
       timer = setTimeout(callback, ms);
     }
   })();
+  function ShowHide(iCol){
+    var bVis = pvtable.fnSettings().aoColumns[iCol].bVisible;
+    pvtable.fnSetColumnVis( iCol, bVis ? false : true );
+
+    $("a#switch"+iCol).toggleClass('colVisible');
+  }
   $(document).ready(function() {
   	pvtable = $('#parameter_value_table').dataTable( {
   		"bProcessing"    : true,
@@ -47,7 +53,7 @@
         "bInfo"          : true,
         "aaSorting"      : [[1,'asc']],
         "sPaginationType": "full_numbers",
-        "iDisplayLength" : 25,
+        "iDisplayLength" : 10,
         "bAutoWidth"     : false,
   		"sAjaxSource"    : #{list_parameter_values_path.to_json},
   	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
@@ -65,7 +71,7 @@
   	    "sDom"           : 'lrit<"dataTable_delete">p<"dataTable_add">'
   	} );
     $("div.dataTable_delete").html(#{link_to_function('Delete checked','delete_all()',:class=>'action delete').to_json});
-    $("div.dataTable_add").html(#{link_to('Add','#',:class=>'action add_pv',:confirm => "Are you sure?" ).to_json});
+    $("div.dataTable_add").html(#{link_to('Add','',:class=>'action add_pv',:confirm => "Are you sure?" ).to_json});
     $( ".suggest_commodity" ).autocomplete({
       source: #{suggest_commodities_path.to_json},
       minLength: 2
@@ -78,7 +84,19 @@
       source: #{suggest_parameters_path.to_json},
       minLength: 2
     });
-    for each (var i in [1, 2, 4, 5, 9, 10, 11, 12, 13, 14]){
+    $( ".suggest_aggregate" ).autocomplete({
+      source: #{suggest_aggregates_path.to_json},
+      minLength: 2
+    });
+    $( ".suggest_market" ).autocomplete({
+      source: #{suggest_markets_path.to_json},
+      minLength: 2
+    });
+    $( ".suggest_scenario" ).autocomplete({
+      source: #{suggest_scenarios_path.to_json},
+      minLength: 2
+    });
+    for each (var i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]){
       $("thead input#col"+i).keyup( function () {
         currentcol = this.id.substr(3,2);
         typewatch(function () {
@@ -86,12 +104,45 @@
         }, 500);
       });
       $("thead input#col"+i).val(pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i][0]);
+      if (pvtable.fnSettings().aoColumns[i].bVisible) {
+        $("a#switch"+i).addClass('colVisible')
+      }
     }
   });
 .grid_12
   .box
     %h2 Browse Parameter Values
     %p
+      %br
+      Show/hide:
+      = link_to_function 'Parameter', 'ShowHide(1)', :id => "switch1"
+      |
+      = link_to_function 'Year', 'ShowHide(2)', :id => "switch2"
+      |
+      = link_to_function 'TS', 'ShowHide(3)' , :id => "switch3"
+      |
+      = link_to_function 'Technology', 'ShowHide(4)', :id => "switch4"
+      |
+      = link_to_function 'Commodity', 'ShowHide(5)', :id => "switch5"
+      |
+      = link_to_function 'Flow', 'ShowHide(6)', :id => "switch6"
+      |
+      = link_to_function 'InFlow', 'ShowHide(7)', :id => "switch7"
+      |
+      = link_to_function 'OutFlow', 'ShowHide(8)', :id => "switch8"
+      |
+      = link_to_function 'Aggregate', 'ShowHide(9)', :id => "switch9"
+      |
+      = link_to_function 'Market', 'ShowHide(10)', :id => "switch10"
+      |
+      = link_to_function 'SubMarket', 'ShowHide(11)', :id => "switch11"
+      |
+      = link_to_function 'Value', 'ShowHide(12)', :id => "switch12"
+      |
+      = link_to_function 'Source', 'ShowHide(13)', :id => "switch13"
+      |
+      = link_to_function 'Scenario', 'ShowHide(14)', :id => "switch14"
+
     = form_tag(destroy_all_parameter_values_path) do
       %table(id="parameter_value_table" summary="Parameter Values list")
         %thead
@@ -181,17 +232,17 @@
             %th(class='inputs')
               %input(type="textcell" id="new_out_flow" name="pv[out_flow]")
             %th(class='inputs')
-              %input(type="textcell" id="new_aggregate" name="pv[aggregate]")
+              %input(type="textcell" class="suggest_aggregate" id="new_aggregate" name="pv[aggregate]")
             %th(class='inputs')
-              %input(type="textcell" id="new_market" name="pv[market]")
+              %input(type="textcell" class="suggest_market" id="new_market" name="pv[market]")
             %th(class='inputs')
-              %input(type="textcell" id="new_sub_market" name="pv[sub_market]")
+              %input(type="textcell" class="suggest_market" id="new_sub_market" name="pv[sub_market]")
             %th(class='inputs')
               %input(type="textcell" id="new_value" name="pv[value]")
             %th(class='inputs')
               %input(type="textcell" id="new_source" name="pv[source]")
             %th(class='inputs')
-              %input(type="textcell" id="new_scenario" name="pv[scenario]")
+              %input(type="textcell" class="suggest_scenario" id="new_scenario" name="pv[scenario]")
       %br
       %br
       %br
