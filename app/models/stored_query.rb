@@ -13,7 +13,7 @@ class StoredQuery < ActiveRecord::Base
   scope :pivot_tables, where(:display=>"pivot_table")
   scope :line_graphs, where(:display=>"line_graph")
   scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
-  scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
+  scope :matching_tag, lambda {|tag| where(:display=>tag) if (tag && tag!="" && tag != "null") }
 
 
   def digest_filter

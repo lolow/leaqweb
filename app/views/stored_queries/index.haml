@@ -14,7 +14,7 @@
         "bAutoWidth"     : false,
   		"sAjaxSource"    : #{list_stored_queries_path.to_json},
   	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
-            aoData.push( { "name": "display", "value": #{params[:display].to_json} } );
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
             $.getJSON( sSource, aoData, function (json) {
               fnCallback(json)
             } );
@@ -37,8 +37,8 @@
       %ul.menu
         %li
           - StoredQuery::DISPLAY.each do |display|
-            - c = "active" if display==params[:display]
-            %li= link_to display.humanize.pluralize, {:controller => "stored_queries", :display => display}, :class => c
+            - c = "active" if display==params[:set]
+            %li= link_to display.humanize.pluralize, {:controller => "stored_queries", :set => display}, :class => c
 
 .grid_10
   .box
