@@ -15,21 +15,21 @@
                                :length_change => "false",
                                :filter => "false", 
                                :request_path => commodity_path(@commodity), 
-                               :parameters => %w{demand frac_dem}, 
+                               :parameters => %w{demand frac_dem demand_elasticity},
                                :cols => %w{parameter time_slice year value source}, 
                                :editable => %w{value source}, 
-                               :rules => {"=demand" => %w{time_slice}, "=frac_dem" => %w{year} } }%>
+                               :rules => {">demand" => %w{time_slice}, "=frac_dem" => %w{year} } }%>
     .block
       .block#demand_projection
         = form_for(@commodity) do |f|
           = f.label :demand_driver_id, 'Follow demand driver:'
           = f.collection_select(:demand_driver_id, DemandDriver.all, :id, :name, {:include_blank=>true})
-          = f.label :demand_elasticity, 'Demand elasticity:', :disabled => (@commodity.demand_driver_id ? nil: "disabled") 
-          = f.text_field :demand_elasticity, 
-                         :size=>nil, 
-                         :class=>'demand_elasticity',
+          = f.label :default_demand_elasticity, 'Default demand elasticity:', :disabled => (@commodity.demand_driver_id ? nil: "disabled")
+          = f.text_field :default_demand_elasticity,
+                         :size=>nil,
                          :disabled => (@commodity.demand_driver_id ? nil: "disabled")
           %input(type="hidden" name="do" value="update")
           = f.submit 'Update', :class => "button"
       .block#demand_graph
         #chartdiv{:style=>"height:200px;"}
+      .clear

@@ -54,10 +54,9 @@
             %br
 
 .grid_10
-
   .box
     %h2 Browse commodities
-    %p
+    .block
       = form_tag(destroy_all_commodities_path,:method => "delete") do
         %table(class="list_table" summary="Commodity list")
           %thead
@@ -69,7 +68,4 @@
             %tr
               %td(colspan="3" class="list_table_empty")
                 Loading data
-    %br
-    %br
-
-.clear
+    .clear

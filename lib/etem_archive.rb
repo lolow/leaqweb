@@ -62,9 +62,9 @@ class EtemArchive
         csv << [t.id,t.name,t.description,t.set_list.join(',')]
       end
 
-      headers = ["id","name","description","sets","demand_driver_id","demand_elasticity"]
+      headers = ["id","name","description","sets","demand_driver_id","default_demand_elasticity"]
       write_csv_into_zip(zipfile,Commodity, headers) do |c,csv|
-        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.demand_elasticity]
+        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.default_demand_elasticity]
       end
 
       headers = ["id","type","technology_id","commodities"]
@@ -163,7 +163,7 @@ class EtemArchive
         c = Commodity.create!(:name              => row["name"],
                               :description       => row["description"],
                               :demand_driver_id  => h[:par][row["demand_driver_id"]],
-                              :demand_elasticity => row["demand_elasticity"])
+                              :default_demand_elasticity => row["default_demand_elasticity"])
         c.set_list = row["sets"]
         c.save!
         h[:com][row["id"]] = c.id

@@ -58,6 +58,7 @@ class EtemSolver
     end
 
     puts "Run command" if debug
+    puts command
     run(command)
 
   end

@@ -64,7 +64,7 @@ class Technology < ActiveRecord::Base
   end
 
   def parameter_values_for(parameters)
-    ParameterValue.of(Array(parameters)).technology(self).order(:year)
+    ParameterValue.of(Array(parameters)).where(:technology_id=>self).order(:year)
   end
 
   def to_s
@@ -90,9 +90,10 @@ class Technology < ActiveRecord::Base
       f.commodities.each { |c| ff.commodities << c }
       t.flows << ff
     }
-    parameters = signature.keys.select{|k| signature[k] && signature[k].include?("technology")}
-    params = Parameter.where(:name=>parameters).map(&:id)
-    self.parameter_values.where(:parameter_id=>params).each { |pv|
+    parameters = signature.keys.select{|k| signature[k] &&
+            (signature[k].include?("technology")||signature[k].include?("flow")||signature[k].include?("in_flow"))} +
+            ["input","output"]
+    parameter_values_for(parameters).each { |pv|
       attributes = pv.attributes
       %w{flow_id in_flow_id out_flow_id}.each do |att|
         attributes[att] = flow_hash[attributes[att]]

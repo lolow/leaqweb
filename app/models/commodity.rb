@@ -81,18 +81,26 @@ class Commodity < ActiveRecord::Base
     return "Energy Carrier"
   end
 
+  #return demand_values
   def demand_values(first_year)
     return [] unless demand?
     if demand_driver
       dv = parameter_values.of("demand").where(:year=>first_year).first
       base_year_value = dv ? dv.value : 0
-
       driver_values = ParameterValue.of(demand_driver.to_s).order(:year)
       driver_values.collect! { |pv| [pv.year, pv.value] }
       demand_projection(driver_values, base_year_value, self.demand_elasticity)
     else
       parameter_values.of("demand").order(:year).collect { |pv| [pv.year, pv.value] }
     end
+  end
+
+  def demand_elasticity
+    elas = Hash.new(self.default_demand_elasticity)
+    parameter_values_for('demand_elasticity').each do |pv|
+      elas[pv.year.to_i] = pv.value
+    end
+    elas
   end
 
   def parameter_values_for(parameters)

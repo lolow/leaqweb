@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc6'
+gem 'rails', '3.1.0'
 
 # Database wrappers
 gem 'mysql2'
@@ -31,6 +31,6 @@ gem 'tenjin'
 gem 'workflow'
 
 group :assets do
-  gem 'coffee-rails', "~> 3.1.0.rc"
+  gem 'coffee-rails'
   gem 'uglifier'
 end

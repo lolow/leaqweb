@@ -106,8 +106,9 @@ module Etem
 
   # project useful demand
   def demand_projection(driver_hash,base_year_value,elasticity)
-    elasticity = 1 unless elasticity
-    driver_hash.collect{|year,value| [year,base_year_value.to_f*value.to_f**elasticity]}
+    elasticity = Hash.new(1) unless elasticity
+    elasticity = Hash.new(elasticity) unless elasticity.is_a?(Hash)
+    driver_hash.collect{|year,value| [year.to_i,base_year_value.to_f*value.to_f**elasticity[year.to_i].to_f]}
   end
 
   def interpolate(x1,x2,y1,y2,x)
