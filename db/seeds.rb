@@ -8,4 +8,4 @@ admin = User.create(:email => "admin@domain.com", :password => "password")
 admin.confirm!
 
 #Create base scenario
-Scenario.create(:id=>1,:name=>"BASE")
+Scenario.create(:name=>"BASE")

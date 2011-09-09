@@ -12,7 +12,7 @@ module Etem
             "S" => "Time slice",
             "P" => "Processes",
             "C" => "Commodities"}.freeze
-  VALID_NAME_MSG = "Please use only letters, numbers or symbol '-' in name"
+  VALID_NAME_MSG = "Please use only letters or numbers in name"
 
 
   DEF_OPTS = {:temp_path => "/tmp",
@@ -25,7 +25,8 @@ module Etem
               :write_output => true,
               :period_duration => 1,
               :nb_periods => 26,
-              :first_year => 2005
+              :first_year => 2005,
+              :scenarios => "BASE"
              }.freeze
 
   TIME_SLICES = %w{WD WN SD SN ID IN}

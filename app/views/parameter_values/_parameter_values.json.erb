@@ -17,7 +17,7 @@
                      c.sub_market  ?  c.sub_market.name : "",
                      "<span id='#{c.id}-value' class='edit'>#{c.value}</span>",
                      "<span id='#{c.id}-source' class='edit'>#{c.source}</span>",
-                     c.scenario  ?  c.scenario.name : ""
+                     c.scenario ?  c.scenario.name : ""
                    ]
                  end.to_json.html_safe %>
 }

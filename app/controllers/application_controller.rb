@@ -2,6 +2,8 @@
 # This file is licensed under the Affero General Public License
 # version 3. See the COPYRIGHT file.
 
+require 'etem'
+
 class ApplicationController < ActionController::Base
 
   protect_from_forgery
@@ -34,12 +36,12 @@ class ApplicationController < ActionController::Base
   def filter_list(active_record,columns=[])
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
     order        = params[:iSortCol_0] ? columns[params[:iSortCol_0].to_i-1] : nil
-    info = {:page => current_page, :per_page => params[:iDisplayLength]}
+    info = {:page => current_page, :per_page => params[:iDisplayLength].to_i}
     info[:order] = "#{order} #{params[:sSortDir_0] || "DESC"}" if order
     total = active_record.matching_text(params[:sSearch]).matching_tag(params[:set]).count
-    if current_page * params[:iDisplayLength].to_i > total
-        info[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
-      end
+    if (current_page - 1) * params[:iDisplayLength].to_i > total
+      info[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
+    end
     displayed = active_record.matching_text(params[:sSearch]).matching_tag(params[:set]).paginate(info)
     return displayed, total
   end

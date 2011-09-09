@@ -14,15 +14,13 @@ class ResultSetsController < ApplicationController
   def index
   end
 
-  def file_extensions
-    Dir[File.join(@result_set.path, "file.*")].collect { |f| File.extname(f)[1..-1].upcase }.sort
+  def show
+    redirect_to edit_result_set_path(ResultSet.find(params[:id]))
   end
 
-  def show
+  def edit
     @result_set = ResultSet.find(params[:id])
-    @stored_queries = StoredQuery.order(:name)
-    @file_ext = file_extensions
-    params[:stored_query] = Hash.new("")
+    @file_ext = Dir[File.join(@result_set.path, "file.*")].collect { |f| File.extname(f)[1..-1].upcase }.sort
   end
 
   def list
@@ -31,46 +29,53 @@ class ResultSetsController < ApplicationController
   end
 
   def update
-    if params[:commit]=="Store this query as"
-      @stored_query = StoredQuery.new()
-      name = params[:stored_query][:name]
-      @stored_query.name = @stored_query.next_available_name(StoredQuery, name)
-      @stored_query.aggregate = params[:stored_query][:aggregate]
-      @stored_query.variable = params[:stored_query][:attribute]
-      formula = params[:stored_query][:formula].split("~")
-      @stored_query.rows = formula[0] if formula.size==2
-      @stored_query.columns = formula[1] if formula.size==2
-      @stored_query.filters = params[:stored_query][:filter]
-      if @stored_query.save
-        redirect_to @stored_query
-        return
-      else
-        flash[:notice] = "Wrong query definition"
-        render :template => "stored_query/new"
-        return
-      end
-    end
+    #if params[:commit]=="Store this query as"
+    #  @stored_query = StoredQuery.new()
+    #  name = params[:stored_query][:name]
+    #  @stored_query.name = @stored_query.next_available_name(StoredQuery, name)
+    #  @stored_query.aggregate = params[:stored_query][:aggregate]
+    #  @stored_query.variable = params[:stored_query][:attribute]
+    #  formula = params[:stored_query][:formula].split("~")
+    #  @stored_query.rows = formula[0] if formula.size==2
+    #  @stored_query.columns = formula[1] if formula.size==2
+    #  @stored_query.filters = params[:stored_query][:filter]
+    #  if @stored_query.save
+    #    redirect_to @stored_query
+    #    return
+    #  else
+    #    flash[:notice] = "Wrong query definition"
+    #    render :template => "stored_query/new"
+    #    return
+    #  end
+    #end
+    #@result_set = ResultSet.find(params[:id])
+    #@stored_queries = StoredQuery.order(:name)
+    #if params[:stored_query][:id].to_i>0
+    #  t = StoredQuery.find(params[:stored_query][:id])
+    #  params[:stored_query][:aggregate] = t.aggregate
+    #  params[:stored_query][:name]      = t.name
+    #  params[:stored_query][:attribute] = t.variable
+    #  params[:stored_query][:formula]   = t.rows + "~" + t.columns
+    #  params[:stored_query][:filter]    = t.filters
+    #  params[:stored_query][:rows]      = t.rows
+    #  params[:stored_query][:columns]   = t.columns
+    #  params[:stored_query][:display]   = t.display
+    #end
+    #@result_set.perform_query(params[:stored_query])
+    #@file_ext = file_extensions
+    #render :show
     @result_set = ResultSet.find(params[:id])
-    @stored_queries = StoredQuery.order(:name)
-    if params[:stored_query][:id].to_i>0
-      t = StoredQuery.find(params[:stored_query][:id])
-      params[:stored_query][:aggregate] = t.aggregate
-      params[:stored_query][:name]      = t.name
-      params[:stored_query][:attribute] = t.variable
-      params[:stored_query][:formula]   = t.rows + "~" + t.columns
-      params[:stored_query][:filter]    = t.filters
-      params[:stored_query][:rows]      = t.rows
-      params[:stored_query][:columns]   = t.columns
-      params[:stored_query][:display]   = t.display
+    if @result_set.update_attributes(params[:result_set])
+      redirect_to(@result_set, :notice => 'Result set was successfully updated.')
+    else
+      render :action => "edit"
     end
-    @result_set.perform_query(params[:stored_query])
-    @file_ext = file_extensions
-    render :show
   end
 
   def file
     @result_set = ResultSet.find(params[:id])
-    render :text => text(params[:format])
+    file = @result_set.file(params[:format])
+    render :text => (File.exist?(file) ?  File.read(file) : "error" )
   end
 
   def import
@@ -104,25 +109,6 @@ class ResultSetsController < ApplicationController
   def destroy_all
     ResultSet.destroy(checkbox_ids)
     redirect_to(result_sets_url)
-  end
-
-  private
-
-  def text(suffix)
-    if File.exist?(@result_set.file(suffix))
-      File.read(@result_set.file(suffix))
-    else
-      "error"
-    end
-  end
-
-  def filter_result_sets(params={})
-    current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    filter = {:page => current_page,
-              :per_page => params[:iDisplayLength]}
-    displayed = ResultSet.matching_text(params[:sSearch]).paginate filter
-    total     = ResultSet.matching_text(params[:sSearch]).count
-    return displayed, total
   end
 
 end

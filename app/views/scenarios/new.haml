@@ -1,0 +1,14 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse all', scenarios_path, :class => "action browse"
+.grid_10
+  .box
+    %h2 New Scenario
+    .block
+      = simple_form_for @scenario do |f|
+        =f.input :name
+        =f.button :submit, :class => "aligned"
+.clear

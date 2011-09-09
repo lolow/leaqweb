@@ -15,7 +15,6 @@ class EtemArchive
     PaperTrail.enabled = false
 
     begin
-
       Technology.delete_all
       Commodity.delete_all
       Flow.delete_all
@@ -25,6 +24,7 @@ class EtemArchive
       Aggregate.delete_all
       StoredQuery.delete_all
       Combustion.delete_all
+      Scenario.delete_all
       ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
       ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
       ActiveRecord::Base.connection.execute("DELETE FROM `aggregates_commodities`")
@@ -79,7 +79,7 @@ class EtemArchive
 
       headers = ["parameter_id","technology_id","commodity_id","aggregate_id","flow_id",
                  "in_flow_id","out_flow_id","market_id","sub_market_id","time_slice",
-                 "year","value","source"]
+                 "year","value","source","scenario_id"]
       write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
@@ -103,7 +103,12 @@ class EtemArchive
       write_csv_into_zip(zipfile,Aggregate,headers) do |a,csv|
         csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]
       end
-      
+
+      headers = ["id","name"]
+      write_csv_into_zip(zipfile,Scenario,headers) do |a,csv|
+        csv << [a.id,a.name]
+      end
+
     end
 
   end
@@ -155,15 +160,16 @@ class EtemArchive
         param.name = row["name"]
         param.definition = row["definition"]
         param.default_value = row["default_value"]
-        param.save!
+        param.save
         h[:par][row["id"]] = param.id
       end
 
       readline_zip(filename,Commodity) do |row|
-        c = Commodity.create!(:name              => row["name"],
+        c = Commodity.create({:name              => row["name"],
                               :description       => row["description"],
                               :demand_driver_id  => h[:par][row["demand_driver_id"]],
-                              :default_demand_elasticity => row["default_demand_elasticity"])
+                              :default_demand_elasticity => row["default_demand_elasticity"]},
+                             :without_protection => true)
         c.set_list = row["sets"]
         c.save!
         h[:com][row["id"]] = c.id
@@ -175,17 +181,18 @@ class EtemArchive
                        :commodity_ids => commodity_ids }
         case row["type"]
         when "InFlow"
-          h[:flo][row["id"]]=InFlow.create!(attributes).id
+          h[:flo][row["id"]]=InFlow.create(attributes,:without_protection => true).id
         when "OutFlow"
-          h[:flo][row["id"]]=OutFlow.create!(attributes).id
+          h[:flo][row["id"]]=OutFlow.create(attributes,:without_protection => true).id
         end
       end
 
       readline_zip(filename,Market) do |row|
         technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tec][c]}
-        m = Market.create!(:name            => row["name"],
+        m = Market.create({:name            => row["name"],
                            :description     => row["description"],
-                           :technology_ids  => technology_ids)
+                           :technology_ids  => technology_ids},
+                          :without_protection => true)
         m.set_list = row["sets"]
         m.save!
         h[:mkt][row["id"]] = m.id
@@ -193,30 +200,44 @@ class EtemArchive
 
       readline_zip(filename,Aggregate) do |row|
         commodity_ids = row["commodities"].scan(/\d+/).collect{|c|h[:com][c]}
-        a = Aggregate.create!(:name          => row["name"],
+        a = Aggregate.create({:name          => row["name"],
                               :description   => row["description"],
-                              :commodity_ids => commodity_ids)
+                              :commodity_ids => commodity_ids},
+                             :without_protection => true)
         a.set_list = row["sets"]
         a.save!
         h[:agg][row["id"]] = a.id
       end
 
       readline_zip(filename,StoredQuery) do |row|
-        StoredQuery.create!(:name      => row["name"],
+        StoredQuery.create({:name      => row["name"],
                             :aggregate => row["aggregate"],
                             :variable  => row["variable"],
                             :rows      => row["rows"],
                             :columns   => row["columns"],
                             :filters   => row["filters"],
                             :display   => row["display"],
-                            :options   => row["options"])
+                            :options   => row["options"]},
+                           :without_protection => true)
       end
 
       readline_zip(filename,Combustion) do |row|
-        c = Combustion.create!(:fuel_id      => h[:com][row["fuel_id"]],
+        c = Combustion.create({:fuel_id      => h[:com][row["fuel_id"]],
                                :pollutant_id => h[:com][row["pollutant_id"]],
                                :value        => row["value"],
-                               :source       => row["source"])
+                               :source       => row["source"]},
+                              :without_protection => true)
+      end
+
+      #Default scenario
+      s = Scenario.create(:name=>"BASE")
+      h[:sce] = Hash.new(s.id)
+
+      readline_zip(filename,Scenario) do |row|
+        unless row["name"]=="BASE"
+          s = Scenario.create({:name => row["name"]},:without_protection => true)
+          h[:sce][row["id"]] = s.id
+        end
       end
 
       readline_zip(filename,ParameterValue) do |row|
@@ -230,11 +251,12 @@ class EtemArchive
         pv.out_flow_id   = h[:flo][row["out_flow_id"]]
         pv.market_id     = h[:mkt][row["market_id"]]
         pv.sub_market_id = h[:mkt][row["sub_market_id"]]
+        pv.scenario_id   = h[:sce][row["scenario_id"]]
         pv.time_slice    = row["time_slice"]
         pv.year          = row["year"]
         pv.value         = row["value"]
         pv.source        = row["source"]
-        pv.save!
+        pv.save
       end
 
     ensure

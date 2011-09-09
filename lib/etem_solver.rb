@@ -165,20 +165,28 @@ class EtemSolver
       flow_ids       = flows.all.map(&:id)
       market_ids     = markets.all.map(&:id)
 
+      #Select scenarios
+      scenarios = ["BASE"] + @opts[:scenarios].scan(/[a-zA-Z\d]+/)
+      scenario_ids = scenarios.collect{|s|Scenario.find_by_name(s)}.compact
+      scenario_ids.uniq!
+
       signature.each_key do |param|
         puts "- #{param}" if debug
         c["p_#{param}_d".to_sym] = default_value_for(param)
         if signature[param]
-          pv = ParameterValue.of(param.to_s)
-          pv = pv.where(:technology_id=> technology_ids) if signature[param].include?("technology")
-          pv = pv.where(:commodity_id=> commodity_ids)   if signature[param].include?("commodity")
-          pv = pv.where(:aggregate_id=> aggregate_ids) if signature[param].include?("aggregate")
-          pv = pv.where(:in_flow_id => flow_ids)          if signature[param].include?("in_flow")
-          pv = pv.where(:out_flow_id => flow_ids)         if signature[param].include?("out_flow")
-          pv = pv.where(:flow_id => flow_ids)             if signature[param].include?("flow")
-          pv = pv.where(:market_id => market_ids)         if signature[param].include?("market")
-          pv = pv.where(:sub_market_id => market_ids)     if signature[param].include?("sub_market")
-          c["p_#{param}".to_sym] = values_for(param,pv)
+          c["p_#{param}".to_sym] = []
+          scenario_ids.each do |scenario_id|
+            pv = ParameterValue.of(param.to_s).where(:scenario_id=>scenario_id)
+            pv = pv.where(:technology_id=> technology_ids) if signature[param].include?("technology")
+            pv = pv.where(:commodity_id=> commodity_ids)   if signature[param].include?("commodity")
+            pv = pv.where(:aggregate_id=> aggregate_ids)   if signature[param].include?("aggregate")
+            pv = pv.where(:in_flow_id => flow_ids)         if signature[param].include?("in_flow")
+            pv = pv.where(:out_flow_id => flow_ids)        if signature[param].include?("out_flow")
+            pv = pv.where(:flow_id => flow_ids)            if signature[param].include?("flow")
+            pv = pv.where(:market_id => market_ids)        if signature[param].include?("market")
+            pv = pv.where(:sub_market_id => market_ids)    if signature[param].include?("sub_market")
+            c["p_#{param}".to_sym] += values_for(param,pv)
+          end
         end
       end
       c[:p_nb_periods_d]    = nb_periods
@@ -214,6 +222,7 @@ class EtemSolver
   # Values are projected over periods if necessary.
   def values_for(parameter,parameter_values)
     pv = parameter_values
+    return [] unless pv.count > 0
     # If Values are time-dependent
     if signature[parameter].include?("period")
       values = Hash.new

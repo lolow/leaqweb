@@ -1,0 +1,51 @@
+:javascript
+  $(document).ready(function() {
+  	$('.list_table').dataTable( {
+  		"bProcessing"    : true,
+  		"bServerSide"    : true,
+  	    "bFilter"        : true,
+        "bLengthChange"  : true,
+        "bStateSave"     : true,
+        "bSort"          : true,
+        "bInfo"          : true,
+        "aaSorting"      : [[1,'asc']],
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 25,
+        "bAutoWidth"     : false,
+  		"sAjaxSource"    : #{list_scenarios_path.to_json},
+  	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
+            aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
+            $.getJSON( sSource, aoData, function (json) {
+              fnCallback(json)
+            } );
+          },
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0] } ],
+  	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
+  	    "sDom"           : 'lrft<"dataTable_delete">pi'
+  	} );
+    $("div.dataTable_delete").html(#{submit_tag('Delete',:class=>'button delete',:confirm => "Are you sure?" ).to_json});
+  } );
+
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p= link_to('New Scenario', new_scenario_path, :class => 'action new')
+
+.grid_10
+  .box
+    %h2 Browse scenarios
+    %p
+      = form_tag(destroy_all_scenarios_path,:method => "delete") do
+        %table(class="list_table" summary="Scenario list")
+          %thead
+            %th(class='check')
+              = check_box_tag("click_check",nil,nil,:class=>"check_all")
+            %th Name
+          %tbody
+            %tr
+              %td(colspan="2" class="list_table_empty")
+                Loading data
+      %br
+      %br
+.clear

@@ -1,0 +1,102 @@
+:javascript
+  $(document).ready(function() {
+    $('#select_table').click(function(){
+      var r = document.createRange();
+      var w = document.getElementById("table_query");
+      r.selectNodeContents(w);
+      var sel=window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      })
+  });
+
+.grid_12
+  .box
+    %h2 Query Definition
+    .block#request
+      %p
+        = form_tag query_path, :method => :put do
+          Stored queries:
+          %select
+            - StoredQuery::DISPLAY.each do |display|
+              %optgroup(label="#{display.humanize.pluralize}")
+                - StoredQuery.where(:display=>display).order(:name).each do |q|
+                  %option{:value=>q.id,:selected=>("TODO"==q.id.to_s)}= q.name
+          = submit_tag 'Execute query', :disable_with => 'Execute...'
+          -# %a(href="#" onclick="custom_query()") custom query
+      %p
+        Custom query
+      %p= link_to 'Reset query', query_path
+.clear
+
+-if "TODO" == "pivot_table" && File.exists?(@result_set.file('res'))
+  .grid_12
+    .box(id='box_result')
+      %h2 Query result
+      .block
+        %input(type="button" id="select_table" value="Select table")
+        %div(id="query_result")
+          - header = true
+          %table(id="table_query")
+            - CSV.foreach(@result_set.file('res')) do |row|
+              - if header
+                %thead
+                  %tr
+                    %th(colspan="#{row.size() - 1}" class="table-head")
+                      - if params[:stored_query][:name]==""
+                        Custom stored query
+                      - else
+                        = params[:stored_query][:name]
+                  - row = row.collect{|x|x.split("_")}
+                  - iter = row.collect{|x|x.size}.max - 1
+                  - 0.upto(iter).each do |i|
+                    %tr
+                      - row[1...row.size].each do |x|
+                        %td= x[i]
+                <tbody>
+                - header = false
+              - else
+                - if row[1...row.size].map(&:to_f).sum > 0
+                  %tr
+                    %td(style="white-space: nowrap;")= row[1]
+                    - row[2...row.size].each do |x|
+                      %td= x
+            </tbody>
+        %br
+  -if params[:stored_query][:display] == "line_graph"  || params[:stored_query][:display] == "area_graph"
+    .grid_12
+      .box(id='box_result')
+        %h2 Query result
+        .block
+          %p(align="center")
+            %img(src="/files/out/#{@result_set.id}/file.png")
+.clear
+
+-#%div(id="query_editor" style="display:none; cursor: default")
+  .box
+    %h2 Stored Query Editor
+    .block
+      %p
+        = form_tag result_set_path(@result_set), :method => :put do
+          = hidden_field :stored_query, :name, :value => ""
+          = hidden_field :stored_query, :id, :value => 0
+          %table
+            %tr
+              %td= label :stored_query, :aggregate
+              %td= select_tag "stored_query[aggregate]", options_for_select(StoredQuery::AGGREGATES.collect{ |a| [a,a.downcase]}, :selected => params[:stored_query][:aggregate])
+            %tr
+              %td= label :stored_query, :attribute
+              %td= select_tag "stored_query[attribute]", options_for_select(StoredQuery::VARIABLES.collect{ |a| [a,a]}, :selected => params[:stored_query][:attribute])
+            %tr
+              %td= label :stored_query, :formula
+              %td= text_field :stored_query, :formula, :value => params[:stored_query][:formula]
+            %tr
+              %td= label :stored_query, :filter
+              %td= text_field :stored_query, :filter, :value => params[:stored_query][:filter]
+          %p
+            = submit_tag 'Display'
+            %input(type="button" id="cancel" value="Cancel")
+          %p
+            %br
+            = submit_tag 'Store this query as'
+            = text_field :stored_query, :name, :value => params[:stored_query][:name]

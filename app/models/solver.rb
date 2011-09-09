@@ -58,11 +58,13 @@ class Solver < ActiveRecord::Base
   end
 
   def opts
-    YAML.load(self.options)
-  end
-
-  def opts=(hash)
-    self.options = hash.to_yaml
+    {
+      :first_year => first_year.to_i,
+      :nb_periods => nb_periods.to_i,
+      :period_duration => period_duration.to_i,
+      :language => language,
+      :scenarios => scenarios
+    }
   end
 
   private

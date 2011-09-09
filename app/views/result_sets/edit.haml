@@ -1,0 +1,52 @@
+:javascript
+  function custom_query(){
+    $.blockUI({
+        message: $('#query_editor'),
+        css: {
+            width: '500px',
+            border: '0px',
+            background: 'none'
+        }
+    });
+  }
+
+  $(document).ready(function() {
+    $('#cancel').click(function() {
+          $.unblockUI();
+          return false;
+      });
+    $('#select_table').click(function(){
+      var r = document.createRange();
+      var w = document.getElementById("table_query");
+      r.selectNodeContents(w);
+      var sel=window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(r);
+      })
+    $('#extname').change(function(){
+      url = #{file_result_set_path(@result_set).to_json} + "." + $('#extname').val().toLowerCase();
+      $('#get_file').attr('href',url);
+    })
+    $('#extname').change();
+  });
+
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse all', result_sets_path, :class => "action browse"
+      - if @result_set.has_results?
+        %p
+          = link_to "Download", result_set_path(@result_set) , :class => "action download", :id=>"get_file"
+          = select_tag "extname", options_for_select(@file_ext)
+
+.grid_10
+  .box
+    %h2 Update result set
+    .block
+      = simple_form_for @result_set do |f|
+        %p
+          = f.input :name
+          = f.button :submit, :class => "aligned"
+.clear

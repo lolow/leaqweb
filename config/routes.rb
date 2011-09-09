@@ -91,9 +91,14 @@ Leaqweb::Application.routes.draw do
   end
 
   resources :scenarios do
-    collection do
-      get :suggest
-    end
+     member do
+       get :duplicate
+     end
+     collection do
+       get :list
+       get :suggest
+       delete :destroy_all
+     end
   end
 
   resources :stored_queries do
@@ -118,6 +123,7 @@ Leaqweb::Application.routes.draw do
   match '/restore'           => 'dashboard#restore',  :as => 'restore_db'
   match '/check_db'          => 'dashboard#check_db', :as => 'check_db'
   match '/reset'             => 'dashboard#reset',    :as => 'reset_db'
+  match 'query'              => 'query#index',        :as => 'query'
   post "versions/:id/revert" => "versions#revert",    :as => "revert_version"
 
   root :to => 'dashboard#index'

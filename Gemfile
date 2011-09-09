@@ -20,7 +20,6 @@ gem 'devise'
 gem 'warden'
 
 # Model extensions
-gem 'awesome_nested_set'
 gem 'acts-as-taggable-on', :git => 'https://github.com/mbleigh/acts-as-taggable-on'
 gem 'will_paginate',       :git => 'https://github.com/mislav/will_paginate.git'
 gem 'paper_trail'
@@ -30,7 +29,9 @@ gem 'rubyzip', :require => 'zip/zip'
 gem 'tenjin'
 gem 'workflow'
 
+# Gems used only for assets and not required
+# in production environments by default.
 group :assets do
-  gem 'coffee-rails'
+  gem 'coffee-rails', " ~> 3.1.0"
   gem 'uglifier'
 end

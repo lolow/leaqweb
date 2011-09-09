@@ -17,6 +17,7 @@ class ParameterValue < ActiveRecord::Base
   validates :parameter, :presence => true
   validates :year, :numericality => {:only_integer => true, :minimum => -1}, :allow_nil => true
   validates :time_slice, :inclusion => {:in => %w(AN IN ID SN SD WN WD)}, :allow_nil => true
+  validates :scenario, :presence => true
 
   scope :of, lambda { |names| joins(:parameter).where("parameters.name"=>names).order("parameters.name") }
   scope :technology, lambda { |tech| where(:technology_id=>tech) }

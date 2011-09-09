@@ -1,0 +1,19 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse all', scenarios_path, :class => "action browse"
+      %p
+        = link_to 'New Scenario', new_scenario_path, :class => "action new"
+      %p
+        = link_to 'Delete', @scenario, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+
+.grid_10
+  .box
+    %h2 Edit Scenario
+    .block
+      = simple_form_for @scenario do |f|
+        =f.input :name
+        =f.button :submit, :class => "aligned"
+.clear
