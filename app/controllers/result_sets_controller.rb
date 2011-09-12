@@ -1,15 +1,12 @@
 # Copyright (c) 2009-2011, Public Research Center Henri Tudor.
 # This file is licensed under the Affero General Public License
 # version 3. See the COPYRIGHT file.
-require 'csv'
-
 class ResultSetsController < ApplicationController
 
   before_filter :authenticate_user!
 
   respond_to :html, :except => :list
   respond_to :json, :only => :list
-  respond_to :csv, :only => :file
   
   def index
   end
@@ -29,41 +26,6 @@ class ResultSetsController < ApplicationController
   end
 
   def update
-    #if params[:commit]=="Store this query as"
-    #  @stored_query = StoredQuery.new()
-    #  name = params[:stored_query][:name]
-    #  @stored_query.name = @stored_query.next_available_name(StoredQuery, name)
-    #  @stored_query.aggregate = params[:stored_query][:aggregate]
-    #  @stored_query.variable = params[:stored_query][:attribute]
-    #  formula = params[:stored_query][:formula].split("~")
-    #  @stored_query.rows = formula[0] if formula.size==2
-    #  @stored_query.columns = formula[1] if formula.size==2
-    #  @stored_query.filters = params[:stored_query][:filter]
-    #  if @stored_query.save
-    #    redirect_to @stored_query
-    #    return
-    #  else
-    #    flash[:notice] = "Wrong query definition"
-    #    render :template => "stored_query/new"
-    #    return
-    #  end
-    #end
-    #@result_set = ResultSet.find(params[:id])
-    #@stored_queries = StoredQuery.order(:name)
-    #if params[:stored_query][:id].to_i>0
-    #  t = StoredQuery.find(params[:stored_query][:id])
-    #  params[:stored_query][:aggregate] = t.aggregate
-    #  params[:stored_query][:name]      = t.name
-    #  params[:stored_query][:attribute] = t.variable
-    #  params[:stored_query][:formula]   = t.rows + "~" + t.columns
-    #  params[:stored_query][:filter]    = t.filters
-    #  params[:stored_query][:rows]      = t.rows
-    #  params[:stored_query][:columns]   = t.columns
-    #  params[:stored_query][:display]   = t.display
-    #end
-    #@result_set.perform_query(params[:stored_query])
-    #@file_ext = file_extensions
-    #render :show
     @result_set = ResultSet.find(params[:id])
     if @result_set.update_attributes(params[:result_set])
       redirect_to(@result_set, :notice => 'Result set was successfully updated.')

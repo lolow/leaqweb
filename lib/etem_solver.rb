@@ -312,7 +312,7 @@ class EtemSolver
 
   def copy_template(ext)
     puts "copy template #{ext}" if debug
-    origin = File.join(model_path,"etem.#{ext}.template")
+    origin = File.join(@opts[:model_path],"etem.#{ext}.template")
     destination = template(ext)
     if !File.exist?(destination) || (File.ctime(origin)-File.ctime(destination))>0
       FileUtils.cp(origin,destination)
@@ -320,11 +320,11 @@ class EtemSolver
   end
 
   def template(ext)
-    File.join(temp_path,"etem.#{ext}.template")
+    File.join(@opts[:temp_path],"etem.#{ext}.template")
   end
 
   def file(ext)
-    File.join(temp_path,"temp-#{@token}.#{ext}")
+    File.join(@opts[:temp_path],"temp-#{@token}.#{ext}")
   end
 
   def run(cmd)

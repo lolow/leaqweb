@@ -1,9 +1,9 @@
 library('ggplot2')
 library('gdata')
-d <- read.table("<%= @result_set.file('csv') %>",sep=",",dec=".",h=TRUE)
-d <- subset(d,attribute=="<%= @query[:attribute] %>")
-<% if @query[:filter].size > 0 %>
-d <- subset(d,<%= @query[:filter] %>)
+d <- read.table("<%= @query[:input_files].first %>",sep=",",dec=".",h=TRUE)
+d <- subset(d,attribute=="<%= @query[:variable] %>")
+<% if @query[:filters].size > 0 %>
+d <- subset(d,<%= @query[:filters] %>)
 <% end %>
 d <- drop.levels(d)
 d <- cast(d, <%=@query[:rows]%> + <%=@query[:columns]%> ~ ., fun.aggregate=<%=@query[:aggregate]%>, add.missing=TRUE)
@@ -14,4 +14,4 @@ p = p + geom_area()
 #p = p + scale_fill_brewer(palette="Spectral")
 p = p + opts(title='<%= @query[:name] %>')
 p = p + labs(fill="",x="",y="",colour="")
-ggsave(filename = "<%= @result_set.file('png') %>",plot=p,device=png,width=1618/2,height=1000/2,dpi=72,scale=1)
+ggsave(filename = "<%= @query[:result_file] %>",plot=p,device=png,width=1618/2,height=1000/2,dpi=72,scale=1)

@@ -15,7 +15,7 @@ module Etem
   VALID_NAME_MSG = "Please use only letters or numbers in name"
 
 
-  DEF_OPTS = {:temp_path => "/tmp",
+  DEF_OPTS = {:temp_path => Dir.tmpdir,
               :model_path => File.join(Rails.root,'lib','etem'),
               :wait_solver => false,
               :language => "GAMS", # or "GMPL"
@@ -52,15 +52,6 @@ module Etem
 
   def inherit_ts
     @inherit_ts ||= YAML.load_file(File.join(@opts[:model_path],'param_inherit_ts.yml'))
-  end
-
-
-  def model_path
-    @opts[:model_path]
-  end
-
-  def temp_path
-    @opts[:temp_path]
   end
 
   # projection of the couples (year,value) in the time periods of ETEM (1..nb_periods)

@@ -1,8 +1,8 @@
 library('reshape')
-data <- read.table("<%= @result_set.file('csv') %>",sep=",",dec=".",h=TRUE)
-data <- subset(data,attribute=="<%= @query[:attribute] %>")
-<% if @query[:filter].size > 0 %>
-data <- subset(data,<%= @query[:filter] %>)
+data <- read.table("<%= @query[:input_files].first %>",sep=",",dec=".",h=TRUE)
+data <- subset(data,attribute=="<%= @query[:variable] %>")
+<% if @query[:filters].size > 0 %>
+data <- subset(data,<%= @query[:filters] %>)
 <% end %>
-data <- cast(data,<%= @query[:formula] %>,fun.aggregate=<%= @query[:aggregate] %>)
-write.csv(data,file="<%= @result_set.file("res") %>")
+data <- cast(data,<%=@query[:rows]%> ~ <%=@query[:columns]%>,fun.aggregate=<%= @query[:aggregate] %>)
+write.csv(data,file="<%= @query[:result_file] %>")

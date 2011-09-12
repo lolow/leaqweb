@@ -15,7 +15,7 @@
         "bLengthChange": true,
         "bFilter": true,
         "sPaginationType": "full_numbers",
-        "iDisplayLength" : 25,
+        "iDisplayLength" : 10,
         "bSort": true,
         "aaSorting"      : [[1,'asc']],
         "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0,-1] } ],
@@ -150,4 +150,5 @@
   - if parameters.size==1
     %input(type="hidden" id="#{pid}_parameter" name="pv[parameter]" value="#{parameters.first}")
   %input(type="hidden" id="do" name="do" value="")
+  %input(type="hidden" name="pv[scenario_id]" value="#{params[:scenario_id] || Scenario.base.id}")
 .clear

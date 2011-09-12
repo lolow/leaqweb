@@ -124,6 +124,7 @@ Leaqweb::Application.routes.draw do
   match '/check_db'          => 'dashboard#check_db', :as => 'check_db'
   match '/reset'             => 'dashboard#reset',    :as => 'reset_db'
   match 'query'              => 'query#index',        :as => 'query'
+  get   'query_plot'         => 'query#result_plot',  :as => 'query_plot', :defaults => { :format => 'png' }
   post "versions/:id/revert" => "versions#revert",    :as => "revert_version"
 
   root :to => 'dashboard#index'

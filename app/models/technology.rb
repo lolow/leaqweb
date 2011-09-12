@@ -143,6 +143,7 @@ class Technology < ActiveRecord::Base
                                 :in_flow_id=>kk[0],
                                 :out_flow_id=>kk[1],
                                 :value=>efficiency,
+                                :scenario=>Scenario.base,
                                 :source=>"Preprocessed")
         end
 
@@ -166,6 +167,7 @@ class Technology < ActiveRecord::Base
                                     :flow_id=>kk[x],
                                     :commodity_id=>j.id,
                                     :value=> coef[j.id],
+                                    :scenario=>Scenario.base,
                                     :source=>"Preprocessed")
             end
           end

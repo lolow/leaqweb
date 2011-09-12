@@ -17,6 +17,7 @@ class ParameterValuesController < ApplicationController
     render :json => "wrong data" unless params[:pv]
 
     # Clean the fields if necessary
+    params[:pv].keys.each{|k|params[:pv][k]=params[:pv][k].strip}
     params[:pv][:parameter] = Parameter.find_by_name(params[:pv][:parameter])
 
     params[:pv][:year] = nil unless params[:pv][:year] && params[:pv][:year].size > 0
