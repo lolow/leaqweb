@@ -1,3 +1,12 @@
+:javascript
+  $(document).ready(function() {
+    $('#extname').change(function(){
+      url = #{file_result_set_path(@result_set).to_json} + "." + $('#extname').val().toLowerCase();
+      $('#get_file').attr('href',url);
+    })
+    $('#extname').change();
+  });
+
 .grid_2
   .box
     %h2 Action
