@@ -16,7 +16,7 @@
                                :filter => "false", 
                                :request_path => commodity_path(@commodity), 
                                :parameters => %w{demand frac_dem demand_elasticity},
-                               :cols => %w{parameter time_slice year value source}, 
+                               :cols => %w{parameter time_slice year value source},
                                :editable => %w{value source}, 
                                :rules => {">demand" => %w{time_slice}, "=frac_dem" => %w{year} } }%>
     .block

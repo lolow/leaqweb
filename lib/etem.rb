@@ -19,7 +19,7 @@ module Etem
               :model_path => File.join(Rails.root,'lib','etem'),
               :wait_solver => false,
               :language => "GAMS", # or "GMPL"
-              :debug => false,
+              :debug => true,
               :log_file => true,
               :ignore_equations => [],
               :write_output => true,

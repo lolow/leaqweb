@@ -33,6 +33,7 @@ class EtemArchive
     end
 
     Version.delete_all
+    Scenario.create(:name=>"BASE")
 
   end
 
@@ -230,9 +231,7 @@ class EtemArchive
       end
 
       #Default scenario
-      s = Scenario.create(:name=>"BASE")
-      h[:sce] = Hash.new(s.id)
-
+      h[:sce] = Hash.new(Scenario.where(:name=>"BASE").find(:first).id)
       readline_zip(filename,Scenario) do |row|
         unless row["name"]=="BASE"
           s = Scenario.create({:name => row["name"]},:without_protection => true)
