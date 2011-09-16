@@ -21,7 +21,6 @@ module Etem
               :language => "GAMS", # or "GMPL"
               :debug => true,
               :log_file => true,
-              :ignore_equations => [],
               :write_output => true,
               :period_duration => 1,
               :nb_periods => 26,

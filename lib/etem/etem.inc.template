@@ -14,13 +14,13 @@ set C /
 <?rb end ?>
 /;
 
-set IMP(C) /
+set IMPORT(C) /
 <?rb @s_imp.each do |item| ?>
 #{item}
 <?rb end ?>
 /;
 
-set EXO(C) /
+set EXPORT(C) /
 <?rb @s_exp.each do |item| ?>
 #{item}
 <?rb end ?>

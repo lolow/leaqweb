@@ -1,109 +1,98 @@
 data;
 
-set S:= #{@s_s};
+set S:= #{@s_s.join(" ")};
 
-set P:= #{@s_p};
+set P:= #{@s_p.join(" ")};
 
-set M:= #{@s_m};
+set C:= #{@s_c.join(" ")};
 
-set C:= #{@s_c};
+set IMP:= #{@s_imp.join(" ")};
 
-set IMP:= #{@s_imp};
+set EXP:= #{@s_exp.join(" ")};
 
-set EXP:= #{@s_exp};
+set DEM:= #{@s_dem.join(" ")};
 
-set DEM:= #{@s_dem};
+set AGG:= #{@s_agg.join(" ")};
 
-set AGG:= #{@s_agg};
+set MARKET:= #{@s_m.join(" ")};
 
-set FLOW:= #{@s_flow};
+set FLOW:= #{@s_flow.join(" ")};
 
 <?rb @s_in_flow.each do |tech,flow|  ?>
-set FLOW_IN[#{tech}]:=#{flow};
+set FLOW_IN[#{tech}]:=#{flow.join(" ")};
 <?rb end ?>
 
 <?rb @s_out_flow.each do |tech,flow|  ?>
-set FLOW_OUT[#{tech}]:=#{flow};
+set FLOW_OUT[#{tech}]:=#{flow.join(" ")};
 <?rb end ?>
 
 <?rb @s_c_items.each do |flow,comm|  ?>
-set C_ITEMS[#{flow}]:=#{comm};
+set C_ITEMS[#{flow}]:=#{comm.join(" ")};
 <?rb end ?>
 
-param flow_act := #{@p_flow_act};
+<?rb @s_c_agg.each do |agg,comm|  ?>
+set C_ITEMS[#{agg}]:=#{comm.join(" ")};
+<?rb end ?>
+
+<?rb @s_p_market.each do |market,techs|  ?>
+set P_MARKET[#{market}]:=#{techs.join(" ")};
+<?rb end ?>
+
+param flow_act := #{@p_flow_act.join(" ")};
 
 param nb_periods := #{@p_nb_periods_d};
 param period_length := #{@p_period_length_d};
-param cost_delivery default #{@p_cost_delivery_d} := #{@p_cost_delivery};
-
-param fixed_cap default #{@p_fixed_cap_d} := #{@p_fixed_cap};
-
-param cap_act default #{@p_cap_act_d} := #{@p_cap_act};
-
-param avail default #{@p_avail_d} := #{@p_avail};
-
 param discount_rate := #{@p_discount_rate_d};
+param first_year := #{@p_first_year_d};
 
-param fraction:= #{@p_fraction};
-
-param cost_icap default #{@p_cost_icap_d} := #{@p_cost_icap};
-
-param cost_fom default #{@p_cost_fom_d} := #{@p_cost_fom};
-
-param cost_vom default #{@p_cost_vom_d} := #{@p_cost_vom};
-
-param life default #{@p_life_d} := #{@p_life};
-
-param avail_factor default #{@p_avail_factor_d} := #{@p_avail_factor};
-
-param demand  default #{@p_demand_d} := #{@p_demand};
-
+param act_bnd_fx default #{@p_act_bnd_fx_d} := #{@p_act_bnd_fx};
+param act_bnd_lo default #{@p_act_bnd_lo_d} := #{@p_act_bnd_lo};
+param act_bnd_up default #{@p_act_bnd_up_d} := #{@p_act_bnd_up};
 param act_flo  default #{@p_act_flo_d}  := #{@p_act_flo};
 param agg_coef default #{@p_agg_coef_d} := #{@p_agg_coef};
-
+param aggregate_annual_up default #{@p_aggregate_annual_up_d} := #{@p_aggregate_annual_up};
+param avail default #{@p_avail_d} := #{@p_avail};
+param avail_factor default #{@p_avail_factor_d} := #{@p_avail_factor};
+param cap_act default #{@p_cap_act_d} := #{@p_cap_act};
+param cap_bnd_fx default #{@p_cap_bnd_fx_d} :=  #{@p_cap_bnd_fx};
+param cap_bnd_lo default #{@p_cap_bnd_lo_d} := #{@p_cap_bnd_lo};
+param cap_bnd_up default #{@p_cap_bnd_up_d} := #{@p_cap_bnd_up};
+param com_net_bnd_up_t default #{@p_com_net_bnd_up_t_d} :=  #{@p_com_net_bnd_up_t};
+param com_net_bnd_up_ts default #{@p_com_net_bnd_up_ts_d} := #{@p_com_net_bnd_up_ts};
+param cost_delivery default #{@p_cost_delivery_d} := #{@p_cost_delivery};
+param cost_exp default #{@p_cost_exp_d} := #{@p_cost_exp};
+param cost_fom default #{@p_cost_fom_d} := #{@p_cost_fom};
+param cost_icap default #{@p_cost_icap_d} := #{@p_cost_icap};
 param cost_imp default #{@p_cost_imp_d} := #{@p_cost_imp};
-
-param cost_exp     default #{@p_cost_exp_d} := #{@p_cost_exp};
-param peak_reserve default #{@p_peak_reserve_d} := #{@p_peak_reserve};
-param peak_prod    default #{@p_peak_prod_d} := #{@p_peak_prod};
-
-param eff_flo      default #{@p_eff_flo_d} := #{@p_eff_flo};
-
-param flo_share_lo default #{@p_flo_share_lo_d} := #{@p_flo_share_lo};
-param flo_share_up default #{@p_flo_share_up_d} := #{@p_flo_share_up};
-param flo_share_fx default #{@p_flo_share_fx_d} := #{@p_flo_share_fx};
-
-param act_bnd_fx  default #{@p_act_bnd_fx_d} := #{@p_act_bnd_fx};
-param act_bnd_lo  default #{@p_act_bnd_lo_d} := #{@p_act_bnd_lo};
-param act_bnd_up  default #{@p_act_bnd_up_d} := #{@p_act_bnd_up};
-
-param cap_bnd_fx  default #{@p_cap_bnd_fx_d} :=  #{@p_cap_bnd_fx};
-param cap_bnd_lo  default #{@p_cap_bnd_lo_d} := #{@p_cap_bnd_lo};
-param cap_bnd_up  default #{@p_cap_bnd_up_d} := #{@p_cap_bnd_up};
-
-param exp_bnd_fx   default #{@p_exp_bnd_fx_d} := #{@p_exp_bnd_fx};
-param exp_bnd_lo   default #{@p_exp_bnd_lo_d} := #{@p_exp_bnd_lo};
-param exp_bnd_up   default #{@p_exp_bnd_up_d} := #{@p_exp_bnd_up};
-
+param cost_vom default #{@p_cost_vom_d} := #{@p_cost_vom};
+param degree_of_use default #{@p_degree_of_use_d} := #{@p_degree_of_use};
+param demand default #{@p_demand_d} := #{@p_demand};
+param eff_flo default #{@p_eff_flo_d} := #{@p_eff_flo};
+param exp_bnd_fx default #{@p_exp_bnd_fx_d} := #{@p_exp_bnd_fx};
+param exp_bnd_lo default #{@p_exp_bnd_lo_d} := #{@p_exp_bnd_lo};
+param exp_bnd_up default #{@p_exp_bnd_up_d} := #{@p_exp_bnd_up};
+param fixed_cap default #{@p_fixed_cap_d} := #{@p_fixed_cap};
 param flo_bnd_fx   default #{@p_flo_bnd_fx_d} := #{@p_flo_bnd_fx};
 param flo_bnd_lo   default #{@p_flo_bnd_lo_d} := #{@p_flo_bnd_lo};
 param flo_bnd_up   default #{@p_flo_bnd_up_d} := #{@p_flo_bnd_up};
-
-param icap_bnd_fx  default #{@p_icap_bnd_fx_d} := #{@p_icap_bnd_fx};
-param icap_bnd_lo  default #{@p_icap_bnd_lo_d} := #{@p_icap_bnd_lo};
-param icap_bnd_up default #{@p_icap_bnd_up_d} := #{@p_icap_bnd_up};
-
-param imp_bnd_fx   default #{@p_imp_bnd_fx_d} := #{@p_imp_bnd_fx};
-param imp_bnd_lo   default #{@p_imp_bnd_lo_d} := #{@p_imp_bnd_lo};
-param imp_bnd_up   default #{@p_imp_bnd_up_d} := #{@p_imp_bnd_up};
-
-param com_net_bnd_up_t default #{@p_com_net_bnd_up_t_d} :=  #{@p_com_net_bnd_up_t};
-param com_net_bnd_up_ts default #{@p_com_net_bnd_up_ts_d} := #{@p_com_net_bnd_up_ts};
-
+param flo_share_fx default #{@p_flo_share_fx_d} := #{@p_flo_share_fx};
+param flo_share_lo default #{@p_flo_share_lo_d} := #{@p_flo_share_lo};
+param flo_share_up default #{@p_flo_share_up_d} := #{@p_flo_share_up};
 param frac_dem := #{@p_frac_dem};
-
+param fraction:= #{@p_fraction};
+param icap_bnd_fx default #{@p_icap_bnd_fx_d} := #{@p_icap_bnd_fx};
+param icap_bnd_lo default #{@p_icap_bnd_lo_d} := #{@p_icap_bnd_lo};
+param icap_bnd_up default #{@p_icap_bnd_up_d} := #{@p_icap_bnd_up};
+param imp_bnd_fx default #{@p_imp_bnd_fx_d} := #{@p_imp_bnd_fx};
+param imp_bnd_lo default #{@p_imp_bnd_lo_d} := #{@p_imp_bnd_lo};
+param imp_bnd_up default #{@p_imp_bnd_up_d} := #{@p_imp_bnd_up};
+param life default #{@p_life_d} := #{@p_life};
+param market_share_bnd_fx default #{@p_market_share_bnd_fx_d} := #{@p_market_share_bnd_fx};
+param market_share_bnd_lo default #{@p_market_share_bnd_lo_d} := #{@p_market_share_bnd_lo};
+param market_share_bnd_up default #{@p_market_share_bnd_up_d} := #{@p_market_share_bnd_up};
 param network_efficiency default #{@p_network_efficiency_d} := #{@p_network_efficiency};
-
-param market default #{@p_market_d} := #{@p_market};
+param peak_prod default #{@p_peak_prod_d} := #{@p_peak_prod};
+param peak_reserve default #{@p_peak_reserve_d} := #{@p_peak_reserve};
+param rate_of_penetration default #{@p_rate_of_penetration_d} := #{@p_rate_of_penetration};
 
 end;

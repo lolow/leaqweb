@@ -1,14 +1,6 @@
 #######################
-#                     #
 # ETEM model for LEAQ #
-#                     #
 #######################
-# Date     : 09/2010
-# Version  : 3.0
-# Authors  : L. Drouet, J.Thénié
-# Language : GMPL
-# command  : glpsol -m model_file.mod -d data_file.dat -y display_file.txt -o output_file.txt
-# example  : glpsol -m etem.mod -d geneva.dat
 
 param nb_periods    >=1;
 param period_length >=1;     # expressed in year.
@@ -18,8 +10,8 @@ set S;                       # slice periods
 set P;                       # processes
 set C;                       # commodities
 set DEM within C;            # useful demands
-set IMP within C;            # imported commodities
-set EXP within C;            # exported commodities
+set IMPORT within C;            # imported commodities
+set EXPORT within C;            # exported commodities
 set AGG within C;            # aggregates
 set FLOW;                    # commodities groups labels
 set FLOW_IN{P} within FLOW;  # incoming flows 
@@ -27,6 +19,7 @@ set FLOW_OUT{P} within FLOW; # outcoming flows
 set C_ITEMS{FLOW} within C;  # set of commodities
 set C_AGG{AGG} within C;     # set of aggregated commodities
 set M;                       # markets
+set P_MARKET{M} within P;
 
 # COMPUTED SETS
 set C_MAP{p in P}  within C := setof{f in FLOW_IN[p], c in C_ITEMS[f]}(c) union setof{f in FLOW_OUT[p], c in C_ITEMS[f]}(c); 
@@ -35,6 +28,7 @@ set P_CONS{c in C} within P := setof{p in P, f in FLOW_IN[p]: c in C_ITEMS[f]}(p
 
 # GIVEN PARAMETERS
 param discount_rate;
+param first_year;
 param act_flo{P,C};                 # conversion factor from flow to activity.
 param agg_coef{AGG,C};              # coefficient factor in aggregate
 param avail_factor{T,S,P};          # availability factor
@@ -68,18 +62,26 @@ param cap_bnd_lo{T,P};              # lower bound on capacity
 param cap_bnd_up{T,P};              # upper bound on capacity
 param com_net_bnd_up_ts{T,S,C};     # upper bound on total net amount
 param com_net_bnd_up_t{T,C};        # upper bound on total net amount
-param exp_bnd_fx{T,S,EXP};          # fixed exportation
-param exp_bnd_lo{T,S,EXP};          # lower bound on exportation
-param exp_bnd_up{T,S,EXP};          # upper bound on exportation
+param exp_bnd_fx{T,S,EXPORT};       # fixed exportation
+param exp_bnd_lo{T,S,EXPORT};       # lower bound on exportation
+param exp_bnd_up{T,S,EXPORT};       # upper bound on exportation
 param flo_bnd_fx{T,S,FLOW};         # fixed flow
 param flo_bnd_lo{T,S,FLOW};         # lower bound on flow
 param flo_bnd_up{T,S,FLOW};         # upper bound on flow
 param icap_bnd_fx{T,P};             # fixed new capacity
 param icap_bnd_lo{T,P};             # lower bound on new capacity
 param icap_bnd_up{T,P};             # upper bound on new capacity
-param imp_bnd_fx{T,S,IMP};          # fixed importation
-param imp_bnd_lo{T,S,IMP};          # lower bound on importation
-param imp_bnd_up{T,S,IMP};          # upper bound on importation
+param imp_bnd_fx{T,S,IMPORT};       # fixed importation
+param imp_bnd_lo{T,S,IMPORT};       # lower bound on importation
+param imp_bnd_up{T,S,IMPORT};       # upper bound on importation
+param aggregate_annual_up{T,AGG};
+param aggregate_annual_lo{T,AGG};
+param aggregate_annual_fx{T,AGG};
+param degree_of_use{T,C,AGG};
+param rate_of_penetration{T,C};
+param market_share_bnd_up{T,M,M};
+param market_share_bnd_lo{T,M,M};
+param market_share_bnd_fx{T,M,M};
 
 param market{P,M};                  # =1 if the process p belongs to the market m
 param renewal_rate{T,M};            # renewal rate in market m
@@ -92,7 +94,9 @@ param annualized :=                 # factor to annualize a period
 param salvage{t in T, p in P} :=    # parameter used for salvage value
    (1-(1+discount_rate)**(-period_length*(t+life[p]-nb_periods-1)))
   /(  (1+discount_rate)**( period_length*(nb_periods+1-t)))
-  /(1-(1+discount_rate)**(-period_length*life[p])); 
+  /(1-(1+discount_rate)**(-period_length*life[p]));
+param year{t in T} :=           # convert period into year
+  first_year + (t-1) * period_length;
 
 # VARIABLES (objective part)
 var VAR_OBJINV >=0;      # investment part of objective function.
@@ -102,8 +106,8 @@ var VAR_OBJSAL >=0;      # salvage value part of objective function.
 
 # VARIABLES (decisions)
 var VAR_ICAP{T,P}   >=0;               # investment capacity
-var VAR_IMP{T,S,IMP}  >=0;             # import activities 
-var VAR_EXP{T,S,EXP}  >=0;             # export activities
+var VAR_IMP{T,S,IMPORT}  >=0;             # import activities
+var VAR_EXP{T,S,EXPORT}  >=0;             # export activities
 var VAR_COM{T,S,p in P,C_MAP[p]}>=0;   # commodity flow
 var VAR_AGG{T,S,AGG}>=0;               # aggregate activities
 
@@ -111,8 +115,8 @@ var VAR_AGG{T,S,AGG}>=0;               # aggregate activities
 ### Objective function
 ###
 
-minimize OBJECTIVE : VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL;
-
+minimize OBJECTIVE : VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL +
+0.00001 * sum{a in AGG, t in T, s in S} VAR_AGG[t,s,a];
 
 ###
 ### Constraints
@@ -134,8 +138,8 @@ subject to EQ_OBJVAR :
       sum{s in S} (
         sum{p in P} cost_vom[t,p] * 
                     sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c] # activity[t,s,p] 
-       +sum{c in IMP} cost_imp[t,s,c] * VAR_IMP[t,s,c]
-       -sum{c in EXP} cost_exp[t,s,c] * VAR_EXP[t,s,c]
+       +sum{c in IMPORT} cost_imp[t,s,c] * VAR_IMP[t,s,c]
+       -sum{c in EXPORT} cost_exp[t,s,c] * VAR_EXP[t,s,c]
        +sum{p in P, c in C_MAP[p]} cost_delivery[t,s,p,c] * VAR_COM[t,s,p,c]
       )
     )
@@ -148,7 +152,7 @@ subject to EQ_OBJSAL :
 # Basic commodity balance equations (by type) ensuring that production >=/= consumption
 subject to EQ_COMBAL {t in T, s in S, c in C} :
   (sum {p in P_PROD[c]} VAR_COM[t,s,p,c] +
-	if c in IMP then
+	if c in IMPORT then
 		VAR_IMP[t,s,c]
 	else
 		0
@@ -156,7 +160,7 @@ subject to EQ_COMBAL {t in T, s in S, c in C} :
   >=
   if c not in DEM then 
     sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + 
-	if c in EXP then
+	if c in EXPORT then
 		VAR_EXP[t,s,c]
 	else
 	 	0
@@ -192,14 +196,14 @@ subject to EQ_PEAK {t in T, s in S, c in C:peak_reserve[t,s,c]>0} :
       sum{p in P_PROD[c] : c in C_ITEMS[flow_act[p]]} cap_act[p]*act_flo[p,c]*peak_prod[p,s,c]*fraction[s]*
                               (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p] 
     + sum{p in P_PROD[c] : c not in C_ITEMS[flow_act[p]]} peak_prod[p,s,c]*VAR_COM[t,s,p,c] 
-    + if c in IMP then
+    + if c in IMPORT then
 		VAR_IMP[t,s,c]
 	else
 		0
   )
   >=
   sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + 	
-    if c in EXP then
+    if c in EXPORT then
 		VAR_EXP[t,s,c]
 	else
 	 	0;
@@ -219,23 +223,23 @@ subject to EQ_ACT_FX {t in T, s in S, p in P : act_bnd_fx[t,s,p]>=0} :
 
 
 # importation bound constraints
-subject to EQ_IMP_LO {t in T, s in S, c in IMP : imp_bnd_lo[t,s,c]>0} :
+subject to EQ_IMP_LO {t in T, s in S, c in IMPORT : imp_bnd_lo[t,s,c]>0} :
 VAR_IMP[t,s,c] >= imp_bnd_lo[t,s,c];
 
-subject to EQ_IMP_UP {t in T, s in S, c in IMP : imp_bnd_up[t,s,c]>=0} :
+subject to EQ_IMP_UP {t in T, s in S, c in IMPORT : imp_bnd_up[t,s,c]>=0} :
 VAR_IMP[t,s,c] <= imp_bnd_up[t,s,c];
 
-subject to EQ_IMP_FX {t in T, s in S, c in IMP : imp_bnd_fx[t,s,c]>=0} :
+subject to EQ_IMP_FX {t in T, s in S, c in IMPORT : imp_bnd_fx[t,s,c]>=0} :
 VAR_IMP[t,s,c] = imp_bnd_fx[t,s,c];
 
 # exportation bound constraints
-subject to EQ_EXP_LO {t in T, s in S, c in EXP : exp_bnd_lo[t,s,c]>0} :
+subject to EQ_EXP_LO {t in T, s in S, c in EXPORT : exp_bnd_lo[t,s,c]>0} :
 VAR_EXP[t,s,c] >= exp_bnd_lo[t,s,c];
 
-subject to EQ_EXP_UP {t in T, s in S, c in EXP : exp_bnd_up[t,s,c]>=0} :
+subject to EQ_EXP_UP {t in T, s in S, c in EXPORT : exp_bnd_up[t,s,c]>=0} :
 VAR_EXP[t,s,c] <= exp_bnd_up[t,s,c];
 
-subject to EQ_EXP_FX {t in T, s in S, c in EXP : exp_bnd_fx[t,s,c]>=0} :
+subject to EQ_EXP_FX {t in T, s in S, c in EXPORT : exp_bnd_fx[t,s,c]>=0} :
 VAR_EXP[t,s,c] = exp_bnd_fx[t,s,c];
 
 # flow bound constraints
@@ -274,20 +278,60 @@ subject to EQ_CAP_FX {t in T, p in P : cap_bnd_fx[t,p]>=0} :
 
 # net amount bound constraints per time slice (t,s)
 subject to EQ_COM_NET_UP_TS {t in T, s in S, c in C : com_net_bnd_up_ts[t,s,c]>=0} :
-	(sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0) - # procurement
-	(sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
+	(sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) - # procurement
+	(sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
 	 <= com_net_bnd_up_ts[t,s,c];
 
 # net amount bound constraints per time period (t)
 subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
     sum{s in S}(
-	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0) - # procurement
-	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0)   # disposal
+	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) - # procurement
+	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
 	) <= com_net_bnd_up_t[t,c];
 
 # aggregate commodities
 subject to EQ_AGG{t in T, s in S, agg in AGG} :
-    VAR_AGG[t,s,agg] =  sum{c in C_AGG[agg], p in P_PROD[c]} VAR_COM[t,s,p,c] * agg_coef[agg,c];
+    VAR_AGG[t,s,agg] = sum{c in C_AGG[agg]} agg_coef[agg,c] *(
+	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) - # procurement
+	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
+	);
+
+subject to EQ_AGG_UP_T{t in T, agg in AGG : aggregate_annual_up[t,agg]>=0} :
+    sum{s in S} VAR_AGG[t,s,agg] <= aggregate_annual_up[t,agg];
+
+subject to EQ_DEGREE_OF_USE{t in T, agg in AGG, c in C_AGG[agg] : degree_of_use[t,c,agg] > 0 } :
+    agg_coef[c,agg] * (sum{s in S}
+    (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
+    ) <=
+    degree_of_use[t,c,agg] * sum{s in S} VAR_AGG[t,s,agg];
+
+subject to EQ_RATE_OF_PENETRATION{t in T, c in C : t > 1 and rate_of_penetration[t,c] <> 0} :
+    (sum{s in S}
+    (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
+     ) <= (1+rate_of_penetration[t,c]) * (sum{s in S}
+    (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
+     );
+
+subject to EQ_MARKET_SHARE_BND_UP{t in T, sub_m in M, m in M : market_share_bnd_up[t,sub_m,m] >= 0 }:
+    sum{p in P_MARKET[sub_m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    <= market_share_bnd_up[t,sub_m,m] * sum{p in P_MARKET[m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    ;
+
+subject to EQ_MARKET_SHARE_BND_LO{t in T, sub_m in M, m in M : market_share_bnd_lo[t,sub_m,m] > 0 }:
+    sum{p in P_MARKET[sub_m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    >= market_share_bnd_lo[t,sub_m,m] * sum{p in P_MARKET[m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    ;
+
+subject to EQ_MARKET_SHARE_BND_FX{t in T, sub_m in M, m in M : market_share_bnd_fx[t,sub_m,m] >= 0 }:
+    sum{p in P_MARKET[sub_m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    = market_share_bnd_fx[t,sub_m,m] * sum{p in P_MARKET[m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    ;
 
 ###
 ### Solve statement
@@ -311,10 +355,10 @@ param production{t in T, s in S, c in C} := sum{ p in P_PROD[c] inter P } VAR_CO
 param consumption{t in T, s in S, c in C} := sum{ p in P_CONS[c] inter P } VAR_COM[t,s,p,c];
 
 # Commodity procurement
-param procurement{t in T, s in S, c in C} := sum{ p in P_PROD[c] } VAR_COM[t,s,p,c] + if c in IMP then VAR_IMP[t,s,c] else 0;
+param procurement{t in T, s in S, c in C} := sum{ p in P_PROD[c] } VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0;
 
 # Commodity disposal
-param disposal{t in T, s in S, c in C} := sum{ p in P_CONS[c] } VAR_COM[t,s,p,c] + if c in EXP then VAR_EXP[t,s,c] else 0;
+param disposal{t in T, s in S, c in C} := sum{ p in P_CONS[c] } VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0;
 
 # Commodity net amount
 param total_net_amount{t in T, s in S, c in C} := procurement[t,s,c] - disposal[t,s,c];
@@ -351,16 +395,16 @@ for {t in T,p in P:(sum {s in S} activity[t,s,p])<>0}{
 }
 
 #T, S, C
-for {t in T, s in S, c in IMP:VAR_IMP[t,s,c] <> 0}{
+for {t in T, s in S, c in IMPORT:VAR_IMP[t,s,c] <> 0}{
   printf "VAR_IMP,%s,%s,,%s,%f\n", t, s, c, VAR_IMP[t,s,c];
 }
-for {t in T, c in IMP:(sum {s in S}VAR_IMP[t,s,c]) <> 0}{
+for {t in T, c in IMPORT:(sum {s in S}VAR_IMP[t,s,c]) <> 0}{
   printf "VAR_IMP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_IMP[t,s,c];
 }
-for {t in T, s in S, c in EXP:VAR_EXP[t,s,c] <> 0}{
+for {t in T, s in S, c in EXPORT:VAR_EXP[t,s,c] <> 0}{
   printf "VAR_EXP,%s,%s,,%s,%f\n", t, s, c, VAR_EXP[t,s,c];
 }
-for {t in T, c in EXP:(sum {s in S}VAR_EXP[t,s,c]) <> 0}{
+for {t in T, c in EXPORT:(sum {s in S}VAR_EXP[t,s,c]) <> 0}{
   printf "VAR_EXP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_EXP[t,s,c];
 }
 

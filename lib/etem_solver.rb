@@ -58,7 +58,6 @@ class EtemSolver
     end
 
     puts "Run command" if debug
-    puts command
     run(command)
 
   end
@@ -345,7 +344,7 @@ class EtemSolver
     (@opts[:log_file] ? "> #{file("log")} " : "") +
     case @opts[:language]
     when "GMPL"
-      "&& nice glpsoldot -m #{file("mod")} -d #{file("dat")} -y #{file("out")} " +
+      "&& nice glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} " +
       (@opts[:log_file] ? ">> #{file("log")} " : "")
     when "GAMS"
       "&& gams #{file("gms")} -o #{file("lst")} lo=3 ll=0 " +
