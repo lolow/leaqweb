@@ -10,16 +10,16 @@ set S;                       # slice periods
 set P;                       # processes
 set C;                       # commodities
 set DEM within C;            # useful demands
-set IMPORT within C;            # imported commodities
-set EXPORT within C;            # exported commodities
-set AGG within C;            # aggregates
+set IMPORT within C;         # imported commodities
+set EXPORT within C;         # exported commodities
 set FLOW;                    # commodities groups labels
 set FLOW_IN{P} within FLOW;  # incoming flows 
 set FLOW_OUT{P} within FLOW; # outcoming flows
 set C_ITEMS{FLOW} within C;  # set of commodities
+set AGG;                     # aggregates
 set C_AGG{AGG} within C;     # set of aggregated commodities
-set M;                       # markets
-set P_MARKET{M} within P;
+set MARKET;                  # markets
+set P_MARKET{MARKET} within P;
 
 # COMPUTED SETS
 set C_MAP{p in P}  within C := setof{f in FLOW_IN[p], c in C_ITEMS[f]}(c) union setof{f in FLOW_OUT[p], c in C_ITEMS[f]}(c); 
@@ -30,7 +30,7 @@ set P_CONS{c in C} within P := setof{p in P, f in FLOW_IN[p]: c in C_ITEMS[f]}(p
 param discount_rate;
 param first_year;
 param act_flo{P,C};                 # conversion factor from flow to activity.
-param agg_coef{AGG,C};              # coefficient factor in aggregate
+param agg_coef{C,AGG};              # coefficient factor in aggregate
 param avail_factor{T,S,P};          # availability factor
 param avail{P};                     # availability period.
 param cap_act{P};                   # conversion factor from capacity to activity
@@ -79,12 +79,12 @@ param aggregate_annual_lo{T,AGG};
 param aggregate_annual_fx{T,AGG};
 param degree_of_use{T,C,AGG};
 param rate_of_penetration{T,C};
-param market_share_bnd_up{T,M,M};
-param market_share_bnd_lo{T,M,M};
-param market_share_bnd_fx{T,M,M};
+param market_share_bnd_up{T,MARKET,MARKET};
+param market_share_bnd_lo{T,MARKET,MARKET};
+param market_share_bnd_fx{T,MARKET,MARKET};
 
-param market{P,M};                  # =1 if the process p belongs to the market m
-param renewal_rate{T,M};            # renewal rate in market m
+param market{P,MARKET};                  # =1 if the process p belongs to the market m
+param renewal_rate{T,MARKET};            # renewal rate in market m
 
 # COMPUTED PARAMETERS
 param nb_completed_years{t in T} := # number of completed years
@@ -291,7 +291,7 @@ subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
 
 # aggregate commodities
 subject to EQ_AGG{t in T, s in S, agg in AGG} :
-    VAR_AGG[t,s,agg] = sum{c in C_AGG[agg]} agg_coef[agg,c] *(
+    VAR_AGG[t,s,agg] = sum{c in C_AGG[agg]} agg_coef[c,agg] *(
 	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) - # procurement
 	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
 	);
@@ -312,21 +312,21 @@ subject to EQ_RATE_OF_PENETRATION{t in T, c in C : t > 1 and rate_of_penetration
     (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
      );
 
-subject to EQ_MARKET_SHARE_BND_UP{t in T, sub_m in M, m in M : market_share_bnd_up[t,sub_m,m] >= 0 }:
+subject to EQ_MARKET_SHARE_BND_UP{t in T, sub_m in MARKET, m in MARKET : market_share_bnd_up[t,sub_m,m] > 0 }:
     sum{p in P_MARKET[sub_m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     <= market_share_bnd_up[t,sub_m,m] * sum{p in P_MARKET[m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     ;
 
-subject to EQ_MARKET_SHARE_BND_LO{t in T, sub_m in M, m in M : market_share_bnd_lo[t,sub_m,m] > 0 }:
+subject to EQ_MARKET_SHARE_BND_LO{t in T, sub_m in MARKET, m in MARKET : market_share_bnd_lo[t,sub_m,m] > 0 }:
     sum{p in P_MARKET[sub_m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     >= market_share_bnd_lo[t,sub_m,m] * sum{p in P_MARKET[m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     ;
 
-subject to EQ_MARKET_SHARE_BND_FX{t in T, sub_m in M, m in M : market_share_bnd_fx[t,sub_m,m] >= 0 }:
+subject to EQ_MARKET_SHARE_BND_FX{t in T, sub_m in MARKET, m in MARKET : market_share_bnd_fx[t,sub_m,m] > 0 }:
     sum{p in P_MARKET[sub_m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     = market_share_bnd_fx[t,sub_m,m] * sum{p in P_MARKET[m]}
