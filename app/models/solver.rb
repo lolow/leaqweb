@@ -10,11 +10,13 @@ class Solver < ActiveRecord::Base
 
   before_destroy :reset
 
+  LANGUAGES = %w{GAMS GMPL}
+
   validate :check_available_slots, :on => :create
   validates :nb_periods,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
   validates :period_duration, :presence => true, :numericality => {:only_integer => true, :minimum => -1}
   validates :first_year,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
-  validates :language,        :presence => true, :inclusion => {:in => %w(GAMS GLPK)}
+  validates :language,        :presence => true, :inclusion => {:in => LANGUAGES}
 
   scope :matching_text, lambda {|text| where(['workflow_state LIKE ?'] + ["%#{text}%"]) }
   scope :matching_tag #empty

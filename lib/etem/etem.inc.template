@@ -98,135 +98,125 @@ scalar first_year /#{@p_first_year_d}/;
 
 parameter cost_delivery(T,S,P,C);
 cost_delivery(T,S,P,C)=#{@p_cost_delivery_d};
-<?rb e = @p_cost_delivery.to_enum ?>
-<?rb loop do ?>
-  cost_delivery('#{e.next}','#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_cost_delivery.each_slice(5) do |s| ?>
+  cost_delivery('#{s[0..3].join("','")}') = #{s[4]};
 <?rb end ?>
 
 parameter avail_factor(T,S,P);
 avail_factor(T,S,P)=#{@p_avail_factor_d};
 <?rb e = @p_avail_factor.to_enum ?>
-<?rb loop do ?>
-  avail_factor('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_avail_factor.each_slice(4) do |s| ?>
+  avail_factor('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter act_bnd_fx(T,S,P);
 act_bnd_fx(T,S,P)=#{@p_act_bnd_fx_d};
-<?rb e = @p_act_bnd_fx.to_enum ?>
-<?rb loop do ?>
-  act_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_act_bnd_fx.each_slice(4) do |s| ?>
+  act_bnd_fx('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter act_bnd_lo(T,S,P);
 act_bnd_lo(T,S,P)=#{@p_act_bnd_lo_d};
-<?rb e = @p_act_bnd_lo.to_enum ?>
-<?rb loop do ?>
-  act_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_act_bnd_lo.each_slice(4) do |s| ?>
+  act_bnd_lo('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter act_bnd_up(T,S,P);
 act_bnd_up(T,S,P)=#{@p_act_bnd_up_d};
-<?rb e = @p_act_bnd_up.to_enum ?>
-<?rb loop do ?>
-  act_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_act_bnd_up.each_slice(4) do |s| ?>
+  act_bnd_up('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter peak_reserve(T,S,C);
 peak_reserve(T,S,C)=#{@p_peak_reserve_d};
-<?rb e = @p_peak_reserve.to_enum ?>
-<?rb loop do ?>
-  peak_reserve('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_peak_reserve.each_slice(4) do |s| ?>
+  peak_reserve('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter cost_imp(T,S,C);
 cost_imp(T,S,C)=#{@p_cost_imp_d};
-<?rb e = @p_cost_imp.to_enum ?>
-<?rb loop do ?>
-  cost_imp('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_cost_imp.each_slice(4) do |s| ?>
+  cost_imp('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter cost_exp(T,S,C);
 cost_exp(T,S,C)=#{@p_cost_exp_d};
-<?rb e = @p_cost_exp.to_enum ?>
-<?rb loop do ?>
-  cost_exp('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_cost_exp.each_slice(4) do |s| ?>
+  cost_exp('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter peak_prod(P,S,C);
 peak_prod(P,S,C)=#{@p_peak_prod_d};
-<?rb e = @p_peak_prod.to_enum ?>
-<?rb loop do ?>
-  peak_prod('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_peak_prod.each_slice(4) do |s| ?>
+  peak_prod('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter exp_bnd_fx(T,S,C);
 exp_bnd_fx(T,S,C)=#{@p_exp_bnd_fx_d};
-<?rb e = @p_exp_bnd_fx.to_enum ?>
-<?rb loop do ?>
-  exp_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_exp_bnd_fx.each_slice(4) do |s| ?>
+  exp_bnd_fx('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter exp_bnd_lo(T,S,C);
 exp_bnd_lo(T,S,C)=#{@p_exp_bnd_lo_d};
-<?rb e = @p_exp_bnd_lo.to_enum ?>
-<?rb loop do ?>
-  exp_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_exp_bnd_lo.each_slice(4) do |s| ?>
+  exp_bnd_lo('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter exp_bnd_up(T,S,C);
 exp_bnd_up(T,S,C)=#{@p_exp_bnd_up_d};
-<?rb e = @p_exp_bnd_up.to_enum ?>
-<?rb loop do ?>
-  exp_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_exp_bnd_up.each_slice(4) do |s| ?>
+  exp_bnd_up('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter imp_bnd_fx(T,S,C);
 imp_bnd_fx(T,S,C)=#{@p_imp_bnd_fx_d};
-<?rb e = @p_imp_bnd_fx.to_enum ?>
-<?rb loop do ?>
-  imp_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_imp_bnd_fx.each_slice(4) do |s| ?>
+  imp_bnd_fx('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter imp_bnd_lo(T,S,C);
 imp_bnd_lo(T,S,C)=#{@p_imp_bnd_lo_d};
-<?rb e = @p_imp_bnd_lo.to_enum ?>
-<?rb loop do ?>
-  imp_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_imp_bnd_lo.each_slice(4) do |s| ?>
+  imp_bnd_lo('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter imp_bnd_up(T,S,C);
 imp_bnd_up(T,S,C)=#{@p_imp_bnd_up_d};
 <?rb e = @p_imp_bnd_up.to_enum ?>
-<?rb loop do ?>
-  imp_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_imp_bnd_up.each_slice(4) do |s| ?>
+  imp_bnd_up('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter flo_bnd_fx(T,S,FLOW);
 flo_bnd_fx(T,S,FLOW)=#{@p_flo_bnd_fx_d};
-<?rb e = @p_flo_bnd_fx.to_enum ?>
-<?rb loop do ?>
-  flo_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_flo_bnd_fx.each_slice(4) do |s| ?>
+  flo_bnd_fx('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter flo_bnd_lo(T,S,FLOW);
 flo_bnd_lo(T,S,FLOW)=#{@p_flo_bnd_lo_d};
 <?rb e = @p_flo_bnd_lo.to_enum ?>
-<?rb loop do ?>
-  flo_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_flo_bnd_lo.each_slice(4) do |s| ?>
+  flo_bnd_lo('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter flo_bnd_up(T,S,FLOW);
 flo_bnd_up(T,S,FLOW)=#{@p_flo_bnd_up_d};
-<?rb e = @p_flo_bnd_up.to_enum ?>
-<?rb loop do ?>
-  flo_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_flo_bnd_up.each_slice(4) do |s| ?>
+  flo_bnd_up('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
 
 parameter com_net_bnd_up_ts(T,S,C);
 com_net_bnd_up_ts(T,S,C)=#{@p_com_net_bnd_up_ts_d};
-<?rb e = @p_com_net_bnd_up_ts.to_enum ?>
-<?rb loop do ?>
-  com_net_bnd_up_ts('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_com_net_bnd_up_ts.each_slice(4) do |s| ?>
+  com_net_bnd_up_ts('#{s[0..2].join("','")}') = #{s[3]};
 <?rb end ?>
+
 parameter com_net_bnd_up_t(T,C);
 com_net_bnd_up_t(T,C)=#{@p_com_net_bnd_up_t_d};
-<?rb e = @p_com_net_bnd_up_t.to_enum ?>
-<?rb loop do ?>
-  com_net_bnd_up_t('#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_com_net_bnd_up_t.each_slice(3) do |s| ?>
+  com_net_bnd_up_t('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter frac_dem(S,DEM);
@@ -344,37 +334,33 @@ degree_of_use(T,C,AGG)=#{@p_degree_of_use_d} ;
 
 parameter rate_of_penetration(T,C);
 rate_of_penetration(T,C)=#{@p_rate_of_penetration_d} ;
-<?rb e = @p_rate_of_penetration.to_enum ?>
-<?rb loop do ?>
-  rate_of_penetration('#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_rate_of_penetration.each_slice(3) do |s| ?>
+  rate_of_penetration('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter eff_flo(FLOW,FLOW);
 eff_flo(FLOW,FLOW)=#{@p_eff_flo_d} ;
-<?rb e = @p_eff_flo.to_enum ?>
-<?rb loop do ?>
-  eff_flo('#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_eff_flo.each_slice(3) do |s| ?>
+  eff_flo('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter flo_share_lo(FLOW,C);
 flo_share_lo(FLOW,C)=#{@p_flo_share_lo_d} ;
 <?rb e = @p_flo_share_lo.to_enum ?>
-<?rb loop do ?>
-  flo_share_lo('#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_flo_share_lo.each_slice(3) do |s| ?>
+  flo_share_lo('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter flo_share_up(FLOW,C);
 flo_share_up(FLOW,C)=#{@p_flo_share_up_d} ;
-<?rb e = @p_flo_share_up.to_enum ?>
-<?rb loop do ?>
-  flo_share_up('#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_flo_share_up.each_slice(3) do |s| ?>
+  flo_share_up('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter flo_share_fx(FLOW,C);
 flo_share_fx(FLOW,C)=#{@p_flo_share_fx_d} ;
-<?rb e = @p_flo_share_fx.to_enum ?>
-<?rb loop do ?>
-  flo_share_fx('#{e.next}','#{e.next}') = #{e.next};
+<?rb @p_flo_share_fx.each_slice(3) do |s| ?>
+  flo_share_fx('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter cap_act(P);

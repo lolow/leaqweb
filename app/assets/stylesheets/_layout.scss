@@ -319,16 +319,14 @@ input.aligned {
 
 .simple_form .error {
   clear: left;
-  font-size: 12px;
+  margin-left: 0.5em;
   color: $red;
-  display: block;
 }
 
 .simple_form .hint {
   clear: left;
   margin-left: 120px;
   color: $grey;
-  display: block;
   font-style: italic;
 }
 

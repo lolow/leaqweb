@@ -184,7 +184,26 @@ class EtemSolver
             pv = pv.where(:flow_id => flow_ids)            if signature[param].include?("flow")
             pv = pv.where(:market_id => market_ids)        if signature[param].include?("market")
             pv = pv.where(:sub_market_id => market_ids)    if signature[param].include?("sub_market")
-            c["p_#{param}".to_sym] += values_for(param,pv)
+            new_values = values_for(param,pv)
+            if scenario_id == scenario_ids.first
+              c["p_#{param}".to_sym] += new_values
+            else
+              if new_values.size > 0
+                # if new values exist, replace values
+                idx = signature[param].length
+                c_idx = c["p_#{param}".to_sym].each_slice(idx+1).collect{|x|x[0..-2].join(" ")}
+                to_add = []
+                new_values.each_slice(idx+1) do |slice|
+                  find = c_idx.index(slice[0..-2].join(" "))
+                  if find
+                    c["p_#{param}".to_sym][find*(idx+1)+idx] = slice[-1]
+                  else
+                    to_add += slice
+                  end
+                end
+                c["p_#{param}".to_sym] += to_add
+              end
+            end
           end
         end
       end
@@ -344,7 +363,7 @@ class EtemSolver
     (@opts[:log_file] ? "> #{file("log")} " : "") +
     case @opts[:language]
     when "GMPL"
-      "&& nice glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("out")} " +
+      "&& nice glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("csv")} " +
       (@opts[:log_file] ? ">> #{file("log")} " : "")
     when "GAMS"
       "&& gams #{file("gms")} -o #{file("lst")} lo=3 ll=0 " +

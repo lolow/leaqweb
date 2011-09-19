@@ -378,20 +378,20 @@ printf "VAR_OBJSAL,,,,,%f\n", VAR_OBJSAL;
 
 #T,P
 for {t in T, p in P: capacity[t,p]<>0}{
-  printf "CAPACITY,%s,,%s,,%f\n", t, p , capacity[t,p];
+  printf "CAPACITY,%s,,%s,,%f\n", year[t], p , capacity[t,p];
 }
 
 #T,P
 for {t in T, p in P:VAR_ICAP[t,p]<>0}{
-  printf "VAR_ICAP,%s,,%s,,%f\n", t , p , VAR_ICAP[t,p];
+  printf "VAR_ICAP,%s,,%s,,%f\n", year[t] , p , VAR_ICAP[t,p];
 }
 
 #T, S, P
 for {t in T, s in S, p in P:activity[t,s,p]<>0}{
-  printf "ACTIVITY,%s,%s,%s,,%f\n", t, s, p , activity[t,s,p];
+  printf "ACTIVITY,%s,%s,%s,,%f\n", year[t], s, p , activity[t,s,p];
 }
 for {t in T,p in P:(sum {s in S} activity[t,s,p])<>0}{
-  printf "ACTIVITY,%s,ANNUAL,%s,,%f\n", t , p , sum {s in S} activity[t,s,p];
+  printf "ACTIVITY,%s,ANNUAL,%s,,%f\n", year[t] , p , sum {s in S} activity[t,s,p];
 }
 
 #T, S, C
@@ -399,36 +399,60 @@ for {t in T, s in S, c in IMPORT:VAR_IMP[t,s,c] <> 0}{
   printf "VAR_IMP,%s,%s,,%s,%f\n", t, s, c, VAR_IMP[t,s,c];
 }
 for {t in T, c in IMPORT:(sum {s in S}VAR_IMP[t,s,c]) <> 0}{
-  printf "VAR_IMP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_IMP[t,s,c];
+  printf "VAR_IMP,%s,ANNUAL,,%s,%f\n", year[t], c, sum {s in S}VAR_IMP[t,s,c];
 }
 for {t in T, s in S, c in EXPORT:VAR_EXP[t,s,c] <> 0}{
   printf "VAR_EXP,%s,%s,,%s,%f\n", t, s, c, VAR_EXP[t,s,c];
 }
 for {t in T, c in EXPORT:(sum {s in S}VAR_EXP[t,s,c]) <> 0}{
-  printf "VAR_EXP,%s,ANNUAL,,%s,%f\n", t, c, sum {s in S}VAR_EXP[t,s,c];
+  printf "VAR_EXP,%s,ANNUAL,,%s,%f\n", year[t], c, sum {s in S}VAR_EXP[t,s,c];
 }
 
 #T, S, C
 for {t in T, s in S, c in C:EQ_COMBAL[t,s,c].dual<> 0}{
-  printf "C_PRICE,%s,%s,,%s,%f\n", t, s, c, EQ_COMBAL[t,s,c].dual;
+  printf "C_PRICE,%s,%s,,%s,%f\n", year[t], s, c, EQ_COMBAL[t,s,c].dual;
 }
+#T, C
 for {t in T, c in C:(sum{s in S} fraction[s]*EQ_COMBAL[t,s,c].dual) <> 0}{
-  printf "C_PRICE,%s,ANNUAL,,%s,%f\n", t, c, sum{s in S} fraction[s]*EQ_COMBAL[t,s,c].dual;
+  printf "C_PRICE,%s,ANNUAL,,%s,%f\n", year[t], c, sum{s in S} fraction[s]*EQ_COMBAL[t,s,c].dual;
 }
 
 #T,S,P,C
 for {t in T, s in S, p in P, c in C_MAP[p]:VAR_COM[t,s,p,c] <> 0}{
-  printf "VAR_COM,%s,%s,%s,%s,%f\n", t, s, p, c, VAR_COM[t,s,p,c];
+  printf "VAR_COM,%s,%s,%s,%s,%f\n", year[t], s, p, c, VAR_COM[t,s,p,c];
 }
 
 #T,P,C
 for {t in T, p in P, c in C_MAP[p]:(sum{s in S} VAR_COM[t,s,p,c]) <> 0}{
-  printf "VAR_COM,%s,ANNUAL,%s,%s,%f\n", t, p, c, sum{s in S} VAR_COM[t,s,p,c];
+  printf "VAR_COM,%s,ANNUAL,%s,%s,%f\n", year[t], p, c, sum{s in S} VAR_COM[t,s,p,c];
 }
 
 #T,C
 for {t in T, c in DEM:demand[t,c] <> 0}{
-  printf "DEMAND,%s,ANNUAL,,%s,%f\n", t, c, demand[t,c];
+  printf "DEMAND,%s,ANNUAL,,%s,%f\n", year[t], c, demand[t,c];
+}
+
+#T, S, C
+for {t in T, s in S, c in IMPORT}{
+  printf "COST_IMP,%s,%s,,%s,%f\n", year[t], s, c, cost_imp[t,s,c];
+}
+
+#T, S, AGG
+for {t in T, s in S, agg in AGG : VAR_AGG[t,s,agg] <>0}{
+  printf "AGGREGATE,%s,%s,,%s,%f\n", year[t], s, agg, VAR_AGG[t,s,agg];
+}
+#T, AGG
+for {t in T, agg in AGG:(sum{s in S} VAR_AGG[t,s,agg]) <> 0}{
+  printf "AGGREGATE,%s,ANNUAL,,%s,%f\n", year[t], agg, sum{s in S} VAR_AGG[t,s,agg];
+}
+
+#T, S, C
+for {t in T, s in S, c in C:total_net_amount[t,s,c] <> 0}{
+  printf "TOTAL_NET_AMOUNT,%s,%s,,%s,%f\n", year[t], s, c, total_net_amount[t,s,c];
+}
+#T, C
+for {t in T, c in C:(sum{s in S} total_net_amount[t,s,c]) <> 0}{
+  printf "TOTAL_NET_AMOUNT,%s,ANNUAL,,%s,%f\n", year[t], c, sum{s in S} total_net_amount[t,s,c];
 }
 
 end;

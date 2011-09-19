@@ -23,6 +23,6 @@
         =f.input :nb_periods, :as => :integer
         =f.input :period_duration, :as => :integer
         =f.input :scenarios
-        =f.input :language, :collection => [["GAMS","GAMS"],["GLPK","GLPK"]], :include_blank => false
+        =f.input :language, :collection => Solver::LANGUAGES, :include_blank => false
         = button_to_function "Launch solver", "start_solver()", :class => "button aligned"
 .clear

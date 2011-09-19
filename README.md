@@ -52,7 +52,13 @@ http://rubygems.org/pages/download
     # R
     # install.packages('ggplot2',dependencies=TRUE)
     # install.packages('gdata',dependencies=TRUE)
-  
+
+8) Solver requirements
+
+   You need a GMPL or a GAMS interpreter along with a LP solver:
+   - GLPK > 4.45
+   - GAMS with LP solver (CPLEX, XPRESS, MOSEK...)
+
 8) Run it
   
     # rails server
