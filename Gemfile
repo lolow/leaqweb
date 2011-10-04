@@ -35,3 +35,12 @@ group :assets do
   gem 'coffee-rails', " ~> 3.1.0"
   gem 'uglifier'
 end
+
+#test
+gem "rspec-rails", :group => [:test, :development]
+group :test do
+  gem "factory_girl_rails"
+  gem "capybara"
+  gem "guard-rspec"
+  gem "faker"
+end
