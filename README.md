@@ -12,7 +12,7 @@ The following instructions describe how to install the application
 on an ubuntu machine (it works also on Mac OS X, not tested on windows yet).
 
 
-1) Install ruby (works with ruby 1.9.2)
+1) Install ruby (works with ruby 1.9.2) [it is better to use RVM+gemset...]
 
     # sudo apt-get install ruby ruby-dev rubygems libopenssl-ruby
 
