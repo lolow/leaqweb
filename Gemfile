@@ -3,12 +3,10 @@ source 'http://rubygems.org'
 gem 'rails', '3.1.0'
 
 # Database wrappers
-gem 'mysql2'
 gem 'sqlite3'
 
 # Rails 3.1 - JavaScript
 gem 'execjs'
-gem 'therubyracer'
 gem 'jquery-rails'
 
 # HTML engine/template
@@ -21,7 +19,7 @@ gem 'warden'
 
 # Model extensions
 gem 'acts-as-taggable-on', :git => 'https://github.com/mbleigh/acts-as-taggable-on'
-gem 'will_paginate',       :git => 'https://github.com/mislav/will_paginate.git'
+gem 'will_paginate'
 gem 'paper_trail'
 
 # Backup + Template engine + State Machine

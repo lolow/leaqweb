@@ -21,12 +21,3 @@ production:
   pool: 5
   timeout: 5000
 
-
-#development:
-#    adapter: mysql2
-#    encoding: utf8
-#    database: leaq
-#    username: root
-#    password:
-#    reconnect: true
-#
