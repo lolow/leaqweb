@@ -71,28 +71,28 @@ Under Windows
 
 2) [OPTIONAL] Set up a MySQL database using your favorite tools
 
-  # gem install mysql2
+    # gem install mysql2
 
 3) Open a Terminal (Start-> Execute...-> "cmd.exe")
 
 4) Go somewhere to download the application
 
-  # c:
-  # cd c:\Sites
+    # c:
+    # cd c:\Sites
 
 5) Clone the repository, configure and install gems:
 
-  # git clone git://github.com/lolow/leaqweb.git
-  # cd leaqweb
-  # cp config/database.yml.default config/database.yml
-  # gem install bundler
-  # bundle install 
-  # bundle exec rake db:migrate
-  # bundle exec rake db:seed
+    # git clone git://github.com/lolow/leaqweb.git
+    # cd leaqweb
+    # cp config/database.yml.default config/database.yml
+    # gem install bundler
+    # bundle install 
+    # bundle exec rake db:migrate
+    # bundle exec rake db:seed
 
 8) Run it
  
-  # bundle exec rails server
+    # bundle exec rails server
 
 9) Access through the browser at http://localhost:3000/
 
@@ -101,8 +101,8 @@ Default User
 
 The default user, created via rake db:seed, is
 
-  # email: admin@domain.com
-  # password: adminpass
+    # email: admin@domain.com
+    # password: adminpass
 
 Copyright
 ---------
