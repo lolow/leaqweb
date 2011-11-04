@@ -1,12 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0'
+gem 'rails', '3.1.1'
 
 # Database wrappers
 gem 'sqlite3'
 
 # Rails 3.1 - JavaScript
 gem 'execjs'
+gem 'therubyracer' if RUBY_PLATFORM.downcase.include?("linux")
 gem 'jquery-rails'
 
 # HTML engine/template

@@ -117,14 +117,16 @@
       source: #{suggest_scenarios_path.to_json},
       minLength: 2
     });
-    for each (var i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]){
+    for(var i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]){
       $("thead input#col"+i).keyup( function () {
         currentcol = this.id.substr(3,2);
         typewatch(function () {
           pvtable.fnFilter($("thead input#col"+currentcol).val(),currentcol);
         }, 500);
       });
-      $("thead input#col"+i).val(pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i][0]);
+      if (pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i]){
+        $("thead input#col"+i).val(pvtable.dataTableSettings[0].oLoadedState.aaSearchCols[i][0]);
+      }
       if (pvtable.fnSettings().aoColumns[i].bVisible) {
         $("a#switch"+i).addClass('colVisible')
       }

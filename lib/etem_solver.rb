@@ -49,11 +49,11 @@ class EtemSolver
      f.puts "Period duration:#{period_duration}"
      f.puts('Commodity')
      Commodity.activated.each do |c|
-       f.puts "#{c.name}\t#{c.description}"
+       f.puts "#{c.name}\t#{c.description}".force_encoding('UTF-8')
       end
       f.puts('Technology')
       Technology.activated.each do |t|
-        f.puts "#{t.name}\t#{t.description}"
+        f.puts "#{t.name}\t#{t.description}".force_encoding('UTF-8')
       end
     end
 
