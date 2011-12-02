@@ -55,8 +55,12 @@ http://rubygems.org/pages/download
 8) Solver requirements
 
    You need a GMPL or a GAMS interpreter along with a LP solver:
-   - GLPK > 4.45
-   - GAMS with LP solver (CPLEX, XPRESS, MOSEK...)
+
+* GLPK > 4.45
+
+   # sudo apt-get install glpk-utils
+
+* GAMS with LP solver (CPLEX, XPRESS, MOSEK...)
 
 8) Run it
   
