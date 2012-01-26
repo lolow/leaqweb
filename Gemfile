@@ -1,9 +1,10 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.1'
+gem 'rails', '3.2'
 
 # Database wrappers
-gem 'sqlite3'
+#gem 'sqlite3'
+gem 'mysql2'
 
 # Rails 3.1 - JavaScript
 gem 'execjs'
@@ -31,8 +32,9 @@ gem 'workflow'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'coffee-rails', " ~> 3.1.0"
-  gem 'uglifier'
+  gem 'coffee-rails', " ~> 3.2.1"
+  gem 'sass-rails', " ~> 3.2.3"
+  gem 'uglifier', ">= 1.0.3"
 end
 
 #test

@@ -165,7 +165,7 @@ EQ_DEMBAL(T,S,DEM)..
 
 EQ_CAPACT(T,S,P)..
    ACTIVITY(T,S,P)
-   =L=
+  =L=
    avail_factor(T,S,P)*cap_act(P)*fraction(S)*CAPACITY(T,P);
 
 EQ_PTRANS(T,S,P,INFLOW,OUTFLOW)$( (eff_flo(INFLOW,OUTFLOW) gt 0) and FLOW_IN(P,INFLOW) and FLOW_OUT(P,OUTFLOW) )..
@@ -275,14 +275,15 @@ EQ_TOTAL_NET_AMOUNT(T,S,C)..
 
 EQ_AGG(T,S,AGG)..
   AGGREGATE(T,S,AGG)
-  =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * TOTAL_NET_AMOUNT(T,S,C)) ;
+  =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMPORT(C) ) ) ;
 
 EQ_AGG_UP_T(T,AGG)$(aggregate_annual_up(T,AGG) ge 0)..
   SUM(S,AGGREGATE(T,S,AGG)) =L= aggregate_annual_up(T,AGG);
 
 EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) gt 0))..
-  agg_coef(C,AGG) * SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXPORT(C) ))
-  =L= degree_of_use(T,C,AGG) * SUM(S,AGGREGATE(T,S,AGG));
+   SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXPORT(C) ))
+  =G= degree_of_use(T,C,AGG) *
+   SUM(C1$C_AGG(AGG,C1),SUM(S,( SUM(P$P_CONS(C1,P), VAR_COM(T,S,P,C1)) + VAR_EXP(T,S,C1)$EXPORT(C1) )));
 
 EQ_RATE_OF_PENETRATION(T,C)$(ord(T) gt 1 and rate_of_penetration(t,c) ne 0)..
   SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXPORT(C)) =L=

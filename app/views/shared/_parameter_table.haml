@@ -81,7 +81,7 @@
               %td= v.sub_market.name
             - else
               %td
-                %span(id="#{v.id}-#{c}" class="#{"edit" if editable.include? c}")>= v.attributes[c]
+                %span(id="#{v.id}-#{c}" class="#{"edit" if editable.include? c}")>= v.attributes[c].to_s
           %td
     %tfoot
       %tr

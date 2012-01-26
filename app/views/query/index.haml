@@ -24,7 +24,7 @@
               %optgroup(label="#{display.humanize.pluralize}")
                 - StoredQuery.where("display LIKE ?",display).order(:name).each do |q|
                   %option{:value=>q.id,:selected=>(params[:stored_query_id]==q.id.to_s)}= q.name
-          = submit_tag 'Load query', :disable_with => 'Execute...'
+          = submit_tag 'Execute query', :disable_with => 'Executing...'
           %input(type="hidden" name="do" value="load_stored_query")
       %p= link_to 'Reset query', query_path
 .clear

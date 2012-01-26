@@ -57,10 +57,9 @@
       timer = setTimeout(callback, ms);
     }
   })();
-  function ShowHide(iCol){
-    var bVis = pvtable.fnSettings().aoColumns[iCol].bVisible;
-    pvtable.fnSetColumnVis( iCol, bVis ? false : true );
-
+  function ShowHide(iCol,iCol2){
+    var bVis = pvtable.fnSettings().aoColumns[iCol2].bVisible;
+    pvtable.fnSetColumnVis( iCol2, bVis ? false : true );
     $("a#switch"+iCol).toggleClass('colVisible');
   }
   $(document).ready(function() {
@@ -117,7 +116,7 @@
       source: #{suggest_scenarios_path.to_json},
       minLength: 2
     });
-    for(var i in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]){
+    for(var i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]){
       $("thead input#col"+i).keyup( function () {
         currentcol = this.id.substr(3,2);
         typewatch(function () {
@@ -137,35 +136,12 @@
     %h2 Browse Parameter Values
     %p
       %br
-      Show/hide columns:
-      = link_to_function 'Parameter', 'ShowHide(1)', :id => "switch1"
+      Show/hide columns
       |
-      = link_to_function 'Year', 'ShowHide(2)', :id => "switch2"
-      |
-      = link_to_function 'TS', 'ShowHide(3)' , :id => "switch3"
-      |
-      = link_to_function 'Technology', 'ShowHide(4)', :id => "switch4"
-      |
-      = link_to_function 'Commodity', 'ShowHide(5)', :id => "switch5"
-      |
-      = link_to_function 'Flow', 'ShowHide(6)', :id => "switch6"
-      |
-      = link_to_function 'InFlow', 'ShowHide(7)', :id => "switch7"
-      |
-      = link_to_function 'OutFlow', 'ShowHide(8)', :id => "switch8"
-      |
-      = link_to_function 'Aggregate', 'ShowHide(9)', :id => "switch9"
-      |
-      = link_to_function 'Market', 'ShowHide(10)', :id => "switch10"
-      |
-      = link_to_function 'SubMarket', 'ShowHide(11)', :id => "switch11"
-      |
-      = link_to_function 'Value', 'ShowHide(12)', :id => "switch12"
-      |
-      = link_to_function 'Source', 'ShowHide(13)', :id => "switch13"
-      |
-      = link_to_function 'Scenario', 'ShowHide(14)', :id => "switch14"
-
+      - cols = %w{Parameter Year TS Technology Commodity Flow InFlow OutFlow Aggregate Market SubMarket Value Source Scenario}
+      - cols.each_with_index do |col,i|
+        = link_to_function col, "ShowHide(#{i},#{i+1})", :id => "switch#{i}"
+        |
     = form_tag(destroy_all_parameter_values_path) do
       %table(id="parameter_value_table" summary="Parameter Values list")
         %thead
