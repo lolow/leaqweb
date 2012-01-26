@@ -102,11 +102,11 @@ cost_delivery(T,S,P,C)=#{@p_cost_delivery_d};
   cost_delivery('#{s[0..3].join("','")}') = #{s[4]};
 <?rb end ?>
 
-parameter avail_factor(T,S,P);
-avail_factor(T,S,P)=#{@p_avail_factor_d};
+parameter avail_factor(S,P);
+avail_factor(S,P)=#{@p_avail_factor_d};
 <?rb e = @p_avail_factor.to_enum ?>
 <?rb @p_avail_factor.each_slice(4) do |s| ?>
-  avail_factor('#{s[0..2].join("','")}') = #{s[3]};
+  avail_factor('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
 parameter act_bnd_fx(T,S,P);

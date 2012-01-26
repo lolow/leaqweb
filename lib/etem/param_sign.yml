@@ -47,7 +47,6 @@ demand:
 - period
 - commodity
 avail_factor:
-- period
 - time_slice
 - technology
 exp_bnd_fx:

@@ -166,7 +166,7 @@ EQ_DEMBAL(T,S,DEM)..
 EQ_CAPACT(T,S,P)..
    ACTIVITY(T,S,P)
   =L=
-   avail_factor(T,S,P)*cap_act(P)*fraction(S)*CAPACITY(T,P);
+   avail_factor(S,P)*cap_act(P)*fraction(S)*CAPACITY(T,P);
 
 EQ_PTRANS(T,S,P,INFLOW,OUTFLOW)$( (eff_flo(INFLOW,OUTFLOW) gt 0) and FLOW_IN(P,INFLOW) and FLOW_OUT(P,OUTFLOW) )..
   SUM(C$C_ITEMS(OUTFLOW,C), VAR_COM(T,S,P,C) )

@@ -2,7 +2,6 @@
 act_bnd_fx: interpolation
 act_bnd_lo: interpolation
 act_bnd_up: interpolation
-avail_factor: extrapolation
 cap_bnd_fx: interpolation
 cap_bnd_lo: interpolation
 cap_bnd_up: interpolation

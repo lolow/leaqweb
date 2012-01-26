@@ -1,6 +1,9 @@
 #######################
 # ETEM model for LEAQ #
 #######################
+# Version 3.0.1
+# Maintainer: Laurent Drouet
+#######################
 
 param nb_periods    >=1;
 param period_length >=1;     # expressed in year.
@@ -31,7 +34,7 @@ param discount_rate;
 param first_year;
 param act_flo{P,C};                 # conversion factor from flow to activity.
 param agg_coef{C,AGG};              # coefficient factor in aggregate
-param avail_factor{T,S,P};          # availability factor
+param avail_factor{S,P};            # availability factor
 param avail{P};                     # availability period.
 param cap_act{P};                   # conversion factor from capacity to activity
 param cost_delivery{T,S,P,C};       # delivery cost of a commodity for a process

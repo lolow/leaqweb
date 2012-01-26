@@ -302,13 +302,28 @@ class EtemSolver
       str
     else
       pv.collect{ |v|
-        str = parameter_value_indexes(parameter,v)
-        str <<  case parameter
-                when "flow_act" then "f_#{v.flow.id}"
-                when "avail"    then "#{period(v.value)}"
-                when "life"     then "#{v.value/period_duration}"
-                else "#{v.value}"
-                end
+        key = parameter_value_indexes(parameter,v).join(" ")
+        value =  case parameter
+                 when "flow_act" then "f_#{v.flow.id}"
+                 when "avail"    then "#{period(v.value)}"
+                 when "life"     then "#{v.value/period_duration}"
+                 else "#{v.value}"
+                 end
+        str = []
+        if key.index("_AN")
+          TIME_SLICES.each { |ts|
+            str.concat(key.sub("_AN",ts).split)
+            if inherit_ts[parameter]==:same
+              str << value
+            elsif inherit_ts[parameter]==:fraction
+              str << value * fraction[ts]
+            end
+          }
+        else
+          str.concat(key.split)
+          str << value
+        end
+
       }.flatten
     end
   end
