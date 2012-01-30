@@ -313,17 +313,19 @@ class EtemSolver
         if key.index("_AN")
           TIME_SLICES.each { |ts|
             str.concat(key.sub("_AN",ts).split)
+            puts key.sub("_AN",ts).split
             if inherit_ts[parameter]==:same
+              puts "** #{value}"
               str << value
             elsif inherit_ts[parameter]==:fraction
-              str << value * fraction[ts]
+              str << value.to_f * fraction[ts]
             end
           }
         else
           str.concat(key.split)
           str << value
         end
-
+        str
       }.flatten
     end
   end

@@ -2,7 +2,7 @@
 # ETEM model for LEAQ #
 #######################
 # Version 3.0.1
-# Maintainer: Laurent Drouet
+# Maintainer: L. Drouet
 #######################
 
 param nb_periods    >=1;
@@ -295,8 +295,7 @@ subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
 # aggregate commodities
 subject to EQ_AGG{t in T, s in S, agg in AGG} :
     VAR_AGG[t,s,agg] = sum{c in C_AGG[agg]} agg_coef[c,agg] *(
-	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) - # procurement
-	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
+	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) # procurement
 	);
 
 subject to EQ_AGG_UP_T{t in T, agg in AGG : aggregate_annual_up[t,agg]>=0} :

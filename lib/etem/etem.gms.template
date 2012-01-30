@@ -1,8 +1,9 @@
 ***********************
 * ETEM model for LEAQ *
 ***********************
-* Version  : 1.1
-* Authors  : L. Drouet
+# Version 3.0.1
+# Maintainer: L. Drouet
+***********************
 
 $OFFLISTING
 $ONEMPTY

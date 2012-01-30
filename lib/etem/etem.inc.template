@@ -105,7 +105,7 @@ cost_delivery(T,S,P,C)=#{@p_cost_delivery_d};
 parameter avail_factor(S,P);
 avail_factor(S,P)=#{@p_avail_factor_d};
 <?rb e = @p_avail_factor.to_enum ?>
-<?rb @p_avail_factor.each_slice(4) do |s| ?>
+<?rb @p_avail_factor.each_slice(3) do |s| ?>
   avail_factor('#{s[0..1].join("','")}') = #{s[2]};
 <?rb end ?>
 
