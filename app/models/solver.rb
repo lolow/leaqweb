@@ -31,7 +31,6 @@ class Solver < ActiveRecord::Base
 
   LANGUAGES = %w{GAMS GMPL}
 
-  validate :check_available_slots, :on => :create
   validates :nb_periods,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
   validates :period_duration, :presence => true, :numericality => {:only_integer => true, :minimum => -1}
   validates :first_year,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
@@ -100,10 +99,6 @@ class Solver < ActiveRecord::Base
 
   def reset
     etem.reset
-  end
-
-  def check_available_slots
-    errors.add(:base, "No job slot available") unless Solver.count < 999
   end
 
 end

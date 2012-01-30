@@ -173,7 +173,7 @@ subject to EQ_COMBAL {t in T, s in S, c in C} :
 # capacity utilization equation
 subject to EQ_CAPACT {t in T, s in S, p in P} :
   sum{c in C_ITEMS[flow_act[p]]} VAR_COM[t,s,p,c]/act_flo[p,c] # activity[t,s,p]
-   <= avail_factor[t,s,p]*cap_act[p]*fraction[s]*
+   <= avail_factor[s,p]*cap_act[p]*fraction[s]*
   (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]); # capacity[t,p]
 
 # flow to flow transformation constraint

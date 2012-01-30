@@ -21,12 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-require 'csv'
 require 'zip/zip'
 require 'zip/zipfilesystem'
+require 'zip_tools'
 
 class EtemArchive
-  
+include ZipTools
+
   # Vide rapidement la base de données 
   def self.clean_database
 
@@ -59,73 +60,57 @@ class EtemArchive
   # Backup data in a zipped file containing csv files.
   def self.backup(filename)
 
-    def self.write_csv_into_zip(zipfile, active_record, headers)
-      require 'benchmark'
-      puts "-- #{active_record.name}"
-      time = Benchmark.measure {
-        zipfile.put_next_entry(active_record.name)
-        text = CSV.generate do |csv|
-          csv << headers
-          active_record.all.each {|o| yield(o,csv)}
-        end
-        # zipfile.print(text) is buggy in ruby 1.9
-        # the following line replaces it
-        zipfile << text << $\.to_s
-      }
-      puts "   -> %.4fs" % time.real
-    end
-
     Zip::ZipOutputStream.open(filename) do |zipfile|
 
       headers = ["id","name","description","sets"]
-      write_csv_into_zip(zipfile,Technology, headers) do |t,csv|
+      ZipTools::write_csv_into_zip(zipfile,Technology, headers) do |t,csv|
         csv << [t.id,t.name,t.description,t.set_list.join(',')]
       end
 
       headers = ["id","name","description","sets","demand_driver_id","default_demand_elasticity"]
-      write_csv_into_zip(zipfile,Commodity, headers) do |c,csv|
+      ZipTools::write_csv_into_zip(zipfile,Commodity, headers) do |c,csv|
         csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.default_demand_elasticity]
       end
 
       headers = ["id","type","technology_id","commodities"]
-      write_csv_into_zip(zipfile,Flow, headers) do |f,csv|
+      ZipTools::write_csv_into_zip(zipfile,Flow, headers) do |f,csv|
         csv << [f.id,f.class,f.technology_id,f.commodity_ids.join(' ')]
       end
 
       headers = ["id","type","name","definition","default_value"]
-      write_csv_into_zip(zipfile,Parameter,headers) do |p,csv|
+      ZipTools::write_csv_into_zip(zipfile,Parameter,headers) do |p,csv|
         csv << p.attributes.values_at(*headers)
       end
 
       headers = ["parameter_id","technology_id","commodity_id","aggregate_id","flow_id",
                  "in_flow_id","out_flow_id","market_id","sub_market_id","time_slice",
                  "year","value","source","scenario_id"]
-      write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
+      ZipTools::write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
 
       headers = ["name","aggregate","variable","rows","columns","filters","display","options"]
-      write_csv_into_zip(zipfile,StoredQuery,headers) do |pv,csv|
+      ZipTools::write_csv_into_zip(zipfile,StoredQuery,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
       
       headers = ["fuel_id","pollutant_id","value","source"]
-      write_csv_into_zip(zipfile,Combustion,headers) do |pv,csv|
+      ZipTools::write_csv_into_zip(zipfile,Combustion,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
 
       headers = ["id","name","description","technologies","sets"]
-      write_csv_into_zip(zipfile,Market,headers) do |m,csv|
+      ZipTools::write_csv_into_zip(zipfile,Market,headers) do |m,csv|
         csv << [m.id,m.name,m.description,m.technology_ids.join(' '),m.set_list.join(',')]
       end
 
       headers = ["id","name","description","commodities","sets"]
-      write_csv_into_zip(zipfile,Aggregate,headers) do |a,csv|
+      ZipTools::write_csv_into_zip(zipfile,Aggregate,headers) do |a,csv|
         csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]
       end
 
       headers = ["id","name"]
-      write_csv_into_zip(zipfile,Scenario,headers) do |a,csv|
+      ZipTools::write_csv_into_zip(zipfile,Scenario,headers) do |a,csv|
         csv << [a.id,a.name]
       end
 
@@ -145,24 +130,7 @@ class EtemArchive
       h = Hash.new
       [:loc,:tec,:com,:flo,:par,:mkt, :agg].each { |x| h[x] = Hash.new  }
 
-      def self.readline_zip(zipfile,active_record)
-        require 'benchmark'
-        puts "-- #{active_record.name}"
-        time = Benchmark.measure {
-          active_record.transaction {
-            Zip::ZipInputStream::open(zipfile) { |file|
-            while (entry = file.get_next_entry)
-              if entry.name==active_record.name
-                CSV.parse(file.read,{:headers=>true}) {|row| yield row}
-              end
-            end
-            }
-          }
-        }
-        puts "   -> %.4fs" % time.real
-      end
-
-      readline_zip(filename,Technology) do |row|
+      ZipTools::readline_zip(filename,Technology) do |row|
         t = Technology.create!(:name        => row["name"],
                                :description => row["description"])
         t.set_list = row["sets"]
@@ -170,7 +138,7 @@ class EtemArchive
         h[:tec][row["id"]] = t.id
       end
 
-      readline_zip(filename,Parameter) do |row|
+      ZipTools::readline_zip(filename,Parameter) do |row|
         case row["type"]
         when "DemandDriver"
           param = DemandDriver.new
@@ -184,7 +152,7 @@ class EtemArchive
         h[:par][row["id"]] = param.id
       end
 
-      readline_zip(filename,Commodity) do |row|
+      ZipTools::readline_zip(filename,Commodity) do |row|
         c = Commodity.create({:name              => row["name"],
                               :description       => row["description"],
                               :demand_driver_id  => h[:par][row["demand_driver_id"]],
@@ -195,7 +163,7 @@ class EtemArchive
         h[:com][row["id"]] = c.id
       end
 
-      readline_zip(filename,Flow) do |row|
+      ZipTools::readline_zip(filename,Flow) do |row|
         commodity_ids = row["commodities"].scan(/\d+/).collect{|c|h[:com][c]}
         attributes = { :technology_id => h[:tec][row["technology_id"]],
                        :commodity_ids => commodity_ids }
@@ -207,7 +175,7 @@ class EtemArchive
         end
       end
 
-      readline_zip(filename,Market) do |row|
+      ZipTools::readline_zip(filename,Market) do |row|
         technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tec][c]}
         m = Market.create({:name            => row["name"],
                            :description     => row["description"],
@@ -218,7 +186,7 @@ class EtemArchive
         h[:mkt][row["id"]] = m.id
       end
 
-      readline_zip(filename,Aggregate) do |row|
+      ZipTools::readline_zip(filename,Aggregate) do |row|
         commodity_ids = row["commodities"].scan(/\d+/).collect{|c|h[:com][c]}
         a = Aggregate.create({:name          => row["name"],
                               :description   => row["description"],
@@ -229,7 +197,7 @@ class EtemArchive
         h[:agg][row["id"]] = a.id
       end
 
-      readline_zip(filename,StoredQuery) do |row|
+      ZipTools::readline_zip(filename,StoredQuery) do |row|
         StoredQuery.create({:name      => row["name"],
                             :aggregate => row["aggregate"],
                             :variable  => row["variable"],
@@ -241,7 +209,7 @@ class EtemArchive
                            :without_protection => true)
       end
 
-      readline_zip(filename,Combustion) do |row|
+      ZipTools::readline_zip(filename,Combustion) do |row|
         c = Combustion.create({:fuel_id      => h[:com][row["fuel_id"]],
                                :pollutant_id => h[:com][row["pollutant_id"]],
                                :value        => row["value"],
@@ -251,14 +219,14 @@ class EtemArchive
 
       #Default scenario
       h[:sce] = Hash.new(Scenario.where(:name=>"BASE").find(:first).id)
-      readline_zip(filename,Scenario) do |row|
+      ZipTools::readline_zip(filename,Scenario) do |row|
         unless row["name"]=="BASE"
           s = Scenario.create({:name => row["name"]},:without_protection => true)
           h[:sce][row["id"]] = s.id
         end
       end
 
-      readline_zip(filename,ParameterValue) do |row|
+      ZipTools::readline_zip(filename,ParameterValue) do |row|
         pv = ParameterValue.new
         pv.parameter_id  = h[:par][row["parameter_id"]]
         pv.technology_id = h[:tec][row["technology_id"]]

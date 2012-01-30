@@ -11,13 +11,15 @@ $(document).ready(function() {
                 $(this).remove();
             }
         });
+        nb_selected();
         // Sort by name
         $("#commodity_list").html($("#commodity_list option").sort(function (a, b) {
           return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
         }));
     });
     $('#remove_commodity').click(function() {
-        return !$('#commodity_list option:selected').remove();
+        !$('#commodity_list option:selected').remove();
+        return nb_selected();
     });
     // Flow Editor
     $('#flow_editor_cancel').click(function() {
@@ -26,6 +28,11 @@ $(document).ready(function() {
     });
 
 });
+
+function nb_selected(){
+    $("#nb_commodity").html("Commodity selected ("+$('#commodity_list option').size()+")");
+    return true;
+}
 
 function fill_avail_commodities(commodities_path,filter){
     var options = "";
@@ -61,6 +68,7 @@ function fill_aggregate(aggregate_path){
         options += '<option>' + c[i].name + '</option>';
       }
       $('#commodity_list').html(options);
+      nb_selected();
       $("#commodity_list").html($("#commodity_list option").sort(function (a, b) {
         return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
       }));

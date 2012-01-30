@@ -17,10 +17,15 @@
         options += '<option>' + c[i].name + '</option>';
       }
       $('#market_technology').html(options);
+      nb_tech_selected();
       $("#market_technology").html($("#market_technology option").sort(function (a, b) {
         return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
       }));
     });
+  }
+  function nb_tech_selected(){
+    $("#nb_technology").html("Technology selected ("+$('#market_technology option').size()+")");
+    return true;
   }
   $(function(){
     $('#filter_technology').keyup(function () {
@@ -40,13 +45,15 @@
                 $(this).remove();
             }
         });
+        nb_tech_selected();
         // Sort by name
         $("#market_technology").html($("#market_technology option").sort(function (a, b) {
           return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
         }));
     });
     $('#remove_technology_market').click(function() {
-        return !$('#market_technology option:selected').remove();
+        !$('#market_technology option:selected').remove();
+        return nb_tech_selected();
     });
     $('#apply').click(function() {
         var item = $('#market_technology option');
@@ -93,7 +100,7 @@
             %th
               Available technologies
               %input(id="filter_technology")
-            %th Technology selected
+            %th#nb_technology Technology selected
         %tbody
           %tr
             %td.col50
