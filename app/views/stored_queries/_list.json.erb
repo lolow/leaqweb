@@ -4,6 +4,7 @@
     "iTotalDisplayRecords":<%= @total_stored_queries.to_json.html_safe %>,
     "aaData":<%= @stored_queries.collect do |o|
                    [ check_box_tag("cb#{o.id}"),
-                     link_to(o.name, o) ]
+                     link_to(o.name, o),
+                     o.display.humanize ]
                  end.to_json.html_safe %>
 }

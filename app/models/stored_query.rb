@@ -21,14 +21,23 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-require 'etem'
+require 'zip_tools'
 
 class StoredQuery < ActiveRecord::Base
-  include Etem
 
   has_paper_trail
 
   DISPLAY = %w( pivot_table line_graph area_graph )
+
+  INDEX = { "T" => "Time period",
+            "S" => "Time slice",
+            "P" => "Processes",
+            "C" => "Commodities"}
+  AGGREGATES = %w{SUM MEAN}
+  VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
+               %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
+               %w{C_PRICE AGGREGATE COST_IMP}
+
 
   validates_presence_of :name
   validates_uniqueness_of :name, :scope => :display
@@ -72,6 +81,29 @@ class StoredQuery < ActiveRecord::Base
         :filters => filters,
         :display => display,
         :options => options)
+  end
+
+  def import(filename)
+    ZipTools::readline_zip(filename,StoredQuery) do |row|
+      StoredQuery.create({:name      => row["name"],
+                          :aggregate => row["aggregate"],
+                          :variable  => row["variable"],
+                          :rows      => row["rows"],
+                          :columns   => row["columns"],
+                          :filters   => row["filters"],
+                          :display   => row["display"],
+                          :options   => row["options"]},
+                         :without_protection => true)
+    end
+  end
+
+  def zip(filename,subset_ids=nil)
+    Zip::ZipOutputStream.open(filename) do |zipfile|
+      headers = ["name","aggregate","variable","rows","columns","filters","display","options"]
+      ZipTools::write_csv_into_zip(zipfile,StoredQuery,headers,subset_ids) do |pv,csv|
+        csv << pv.attributes.values_at(*headers)
+      end
+    end
   end
 
 end

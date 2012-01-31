@@ -68,6 +68,14 @@ class StoredQueriesController < ApplicationController
     end
   end
 
+  def import
+    redirect_to(stored_queries_url)
+  end
+
+  def save
+    redirect_to(stored_queries_url)
+  end
+
   def destroy
     StoredQuery.destroy(params[:id])
     redirect_to(stored_queries_url)

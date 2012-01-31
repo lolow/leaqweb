@@ -390,7 +390,7 @@ a.action {
  }
 
  a.import {
-  background-image:url("a_import.png");
+  background-image:url("a_restore_db.png");
  }
 
  a.check_db {
@@ -425,6 +425,11 @@ a.action {
 a.colVisible {
   font-weight:normal;
 }
+
+.sq_db_file {
+  width:100%;
+}
+
 /*
 DataTable
 */

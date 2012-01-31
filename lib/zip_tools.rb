@@ -28,13 +28,18 @@ require 'benchmark'
 
 module ZipTools
 
-  def self.write_csv_into_zip(zipfile, active_record, headers)
+  def self.write_csv_into_zip(zipfile, active_record, headers, subset_ids=nil)
     puts "-- #{active_record.name}"
     time = Benchmark.measure {
       zipfile.put_next_entry(active_record.name)
       text = CSV.generate do |csv|
         csv << headers
-        active_record.all.each {|o| yield(o,csv)}
+        if subset_ids
+          res = active_record.find(ids)
+        else
+          res = active_record.all
+        end
+        res.each {|o| yield(o,csv)}
       end
       # zipfile.print(text) is buggy in ruby 1.9
       # the following line replaces it

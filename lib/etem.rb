@@ -23,16 +23,7 @@
 
 module Etem
 
-  AGGREGATES = %w{SUM MEAN}
-  VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
-               %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
-               %w{C_PRICE AGGREGATE COST_IMP}
-  INDEX = { "T" => "Time period",
-            "S" => "Time slice",
-            "P" => "Processes",
-            "C" => "Commodities"}.freeze
   VALID_NAME_MSG = "Please use only letters or numbers in name"
-
 
   DEF_OPTS = {:temp_path => Dir.tmpdir,
               :model_path => File.join(Rails.root,'lib','etem'),

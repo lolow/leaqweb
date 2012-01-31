@@ -107,6 +107,9 @@ Leaqweb::Application.routes.draw do
      end
      collection do
        get :list
+       get :import
+       get :save
+       get :save
        delete :destroy_all
      end
   end

@@ -88,11 +88,6 @@ include ZipTools
       ZipTools::write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
-
-      headers = ["name","aggregate","variable","rows","columns","filters","display","options"]
-      ZipTools::write_csv_into_zip(zipfile,StoredQuery,headers) do |pv,csv|
-        csv << pv.attributes.values_at(*headers)
-      end
       
       headers = ["fuel_id","pollutant_id","value","source"]
       ZipTools::write_csv_into_zip(zipfile,Combustion,headers) do |pv,csv|
@@ -195,18 +190,6 @@ include ZipTools
         a.set_list = row["sets"]
         a.save!
         h[:agg][row["id"]] = a.id
-      end
-
-      ZipTools::readline_zip(filename,StoredQuery) do |row|
-        StoredQuery.create({:name      => row["name"],
-                            :aggregate => row["aggregate"],
-                            :variable  => row["variable"],
-                            :rows      => row["rows"],
-                            :columns   => row["columns"],
-                            :filters   => row["filters"],
-                            :display   => row["display"],
-                            :options   => row["options"]},
-                           :without_protection => true)
       end
 
       ZipTools::readline_zip(filename,Combustion) do |row|

@@ -19,7 +19,7 @@
               fnCallback(json)
             } );
           },
-        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0] } ],
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0,2] } ],
   	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
   	    "sDom"           : 'lrft<"dataTable_delete">pi'
   	} );
@@ -30,15 +30,20 @@
   .box
     %h2 Action
     .block
-      %p= link_to('New Stored Query', new_stored_query_path, :class => 'action new')
+      %p
+        =link_to('New Stored Query...', new_stored_query_path, :class => 'action new')
+      %p
+        =link_to('Import...', import_stored_query_path, :class => 'action import')
+        =link_to('Save...', save_stored_query_path, :class => 'action backup_db')
+
   .box
     %h2 Display type
     .block
       %ul.menu
-        %li
-          - StoredQuery::DISPLAY.each do |display|
-            - c = "active" if display==params[:set]
-            %li= link_to display.humanize.pluralize, {:controller => "stored_queries", :set => display}, :class => c
+        - StoredQuery::DISPLAY.each do |display|
+          - c = "active" if display==params[:set]
+          %li= link_to display.humanize.pluralize, {:controller => "stored_queries", :set => display}, :class => c
+        %li=  link_to "All", stored_queries_url, :class => (params[:set]?nil:"active")
 
 .grid_10
   .box
@@ -50,9 +55,10 @@
             %th(class='check')
               = check_box_tag("click_check",nil,nil,:class=>"check_all")
             %th Name
+            %th Display Type
           %tbody
             %tr
-              %td(colspan="2" class="list_table_empty")
+              %td(colspan="3" class="list_table_empty")
                 Loading data
       %br
       %br

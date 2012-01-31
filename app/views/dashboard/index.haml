@@ -32,6 +32,6 @@
       %br
       = form_tag(restore_db_path, :multipart => true) do
         = submit_tag "Restore", :disable_with => "Please wait...", :class => "button restore_db"
-        = file_field 'upload', 'db', :class => "db_file", :size => nil
+        = file_field 'upload', 'db', :class => "db_file"
 
 .clear
