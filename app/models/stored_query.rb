@@ -83,7 +83,7 @@ class StoredQuery < ActiveRecord::Base
         :options => options)
   end
 
-  def import(filename)
+  def self.import(filename)
     ZipTools::readline_zip(filename,StoredQuery) do |row|
       StoredQuery.create({:name      => row["name"],
                           :aggregate => row["aggregate"],
@@ -92,12 +92,11 @@ class StoredQuery < ActiveRecord::Base
                           :columns   => row["columns"],
                           :filters   => row["filters"],
                           :display   => row["display"],
-                          :options   => row["options"]},
-                         :without_protection => true)
+                          :options   => row["options"]})
     end
   end
 
-  def zip(filename,subset_ids=nil)
+  def self.zip(filename,subset_ids=nil)
     Zip::ZipOutputStream.open(filename) do |zipfile|
       headers = ["name","aggregate","variable","rows","columns","filters","display","options"]
       ZipTools::write_csv_into_zip(zipfile,StoredQuery,headers,subset_ids) do |pv,csv|

@@ -68,12 +68,26 @@ class StoredQueriesController < ApplicationController
     end
   end
 
-  def import
-    redirect_to(stored_queries_url)
+  def upload
+    if params[:import] && File.exist?(params[:import]["stored_query"].tempfile.path)
+      StoredQuery.import(params[:import]["stored_query"].tempfile.path)
+      redirect_to(stored_queries_url, :notice => 'File has been imported.')
+    else
+      redirect_to(stored_queries_url, :notice => 'No file to upload.')
+    end
   end
 
-  def save
-    redirect_to(stored_queries_url)
+  def zip
+    sq = StoredQuery.where(:id=>params[:stored_queries_id])
+    if sq.size > 0
+      f = Tempfile.new("queries")
+      StoredQuery.zip(f.path,params[:stored_queries_id])
+      send_file f.path, :type => "application/zip",
+                        :filename => "stored_queries.zip"
+      f.close
+    else
+      redirect_to(stored_queries_url, :notice => 'No stored queries selected.')
+    end
   end
 
   def destroy

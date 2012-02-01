@@ -1,0 +1,14 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse...', stored_queries_path, :class => "action browse"
+.grid_10
+  .box
+    %h2 Import Stored queries from a zipped file
+    .block
+      = form_tag(upload_stored_queries_path, :multipart => true) do
+        = submit_tag "Upload", :disable_with => "Please wait...", :class => "button restore_db"
+        = file_field 'import', 'stored_query', :class => "db_file"
+.clear

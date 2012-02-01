@@ -33,17 +33,17 @@
       %p
         =link_to('New Stored Query...', new_stored_query_path, :class => 'action new')
       %p
-        =link_to('Import...', import_stored_query_path, :class => 'action import')
-        =link_to('Save...', save_stored_query_path, :class => 'action backup_db')
+        =link_to('Import...', import_stored_queries_path, :class => 'action import')
+        =link_to('Download...', download_stored_queries_path, :class => 'action backup_db')
 
   .box
     %h2 Display type
     .block
       %ul.menu
+        %li=  link_to "All", stored_queries_url, :class => (params[:set]?nil:"active")
         - StoredQuery::DISPLAY.each do |display|
           - c = "active" if display==params[:set]
           %li= link_to display.humanize.pluralize, {:controller => "stored_queries", :set => display}, :class => c
-        %li=  link_to "All", stored_queries_url, :class => (params[:set]?nil:"active")
 
 .grid_10
   .box

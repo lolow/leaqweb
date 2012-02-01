@@ -1,12 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2'
+gem 'rails', '3.2.1'
 
 # Database wrappers
 #gem 'sqlite3'
 gem 'mysql2'
 
-# Rails 3.1 - JavaScript
+# Rails 3.2 - JavaScript
 gem 'execjs'
 gem 'therubyracer' if RUBY_PLATFORM.downcase.include?("linux")
 gem 'jquery-rails'

@@ -35,7 +35,7 @@ module ZipTools
       text = CSV.generate do |csv|
         csv << headers
         if subset_ids
-          res = active_record.find(ids)
+          res = active_record.where(:id =>subset_ids)
         else
           res = active_record.all
         end

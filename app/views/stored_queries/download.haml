@@ -1,0 +1,25 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse...', stored_queries_path, :class => "action browse"
+.grid_10
+  .box
+    %h2 Download a zipped file containing stored query
+    .block
+      = form_tag(zip_stored_queries_path, :multipart => true) do
+        %p
+          Stored queries:
+          = link_to_function("select all",'$("#stored_queries option").attr("selected", true);')
+          &dash;
+          = link_to_function("select none",'$("#stored_queries option").attr("selected", false);')
+          %br
+          %select(id="stored_queries" name="stored_queries_id[]" multiple="true" size="20")
+            - StoredQuery::DISPLAY.each do |display|
+              %optgroup(label="#{display.humanize.pluralize}")
+                - StoredQuery.where("display LIKE ?",display).order(:name).each do |q|
+                  %option{:value=>q.id,:selected=>(params[:stored_query_id]==q.id.to_s)}= q.name
+          %br
+          = submit_tag "Download", :class => "button"
+.clear
