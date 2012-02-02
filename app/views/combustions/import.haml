@@ -1,0 +1,14 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse...', combustions_path, :class => "action browse"
+.grid_10
+  .box
+    %h2 Import combustion coefficients from a zipped file
+    .block
+      = form_tag(upload_combustions_path, :multipart => true) do
+        = submit_tag "Upload", :disable_with => "Please wait...", :class => "button restore_db"
+        = file_field 'import', 'combustion', :class => "db_file"
+.clear

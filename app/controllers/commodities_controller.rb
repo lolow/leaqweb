@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009-2011, Public Research Center Henri Tudor
+# Copyright (c) 2009-2012, Public Research Center Henri Tudor
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -100,6 +100,20 @@ class CommoditiesController < ApplicationController
   def suggest
     text = params[:term]
     res = Commodity.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render :json => res.to_json
+  end
+
+  def suggest_pollutant
+    text = params[:term]
+    res = Commodity.pollutants.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render :json => res.to_json
+  end
+
+  def suggest_fuel
+    text = params[:term]
+    res = Commodity.energy_carriers.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
     render :json => res.to_json
   end

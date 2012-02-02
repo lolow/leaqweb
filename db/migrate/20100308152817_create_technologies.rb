@@ -3,6 +3,7 @@ class CreateTechnologies < ActiveRecord::Migration
     create_table :technologies do |t|
       t.string :name
       t.text   :description
+      t.belongs_to :energy_system
       t.timestamps
     end
     add_index  :technologies, :name, :unique => true

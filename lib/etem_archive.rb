@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009-2011, Public Research Center Henri Tudor
+# Copyright (c) 2009-2012, Public Research Center Henri Tudor
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -42,8 +42,6 @@ include ZipTools
       ParameterValue.delete_all
       Market.delete_all
       Aggregate.delete_all
-      StoredQuery.delete_all
-      Combustion.delete_all
       Scenario.delete_all
       ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
       ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
@@ -88,11 +86,6 @@ include ZipTools
       ZipTools::write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
-      
-      headers = ["fuel_id","pollutant_id","value","source"]
-      ZipTools::write_csv_into_zip(zipfile,Combustion,headers) do |pv,csv|
-        csv << pv.attributes.values_at(*headers)
-      end
 
       headers = ["id","name","description","technologies","sets"]
       ZipTools::write_csv_into_zip(zipfile,Market,headers) do |m,csv|
@@ -121,7 +114,7 @@ include ZipTools
 
     begin
 
-      #Hashes de correspondance
+      #Hashes de correspondence
       h = Hash.new
       [:loc,:tec,:com,:flo,:par,:mkt, :agg].each { |x| h[x] = Hash.new  }
 
@@ -190,14 +183,6 @@ include ZipTools
         a.set_list = row["sets"]
         a.save!
         h[:agg][row["id"]] = a.id
-      end
-
-      ZipTools::readline_zip(filename,Combustion) do |row|
-        c = Combustion.create({:fuel_id      => h[:com][row["fuel_id"]],
-                               :pollutant_id => h[:com][row["pollutant_id"]],
-                               :value        => row["value"],
-                               :source       => row["source"]},
-                              :without_protection => true)
       end
 
       #Default scenario

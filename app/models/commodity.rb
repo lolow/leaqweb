@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009-2011, Public Research Center Henri Tudor
+# Copyright (c) 2009-2012, Public Research Center Henri Tudor
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -31,6 +31,7 @@ class Commodity < ActiveRecord::Base
   acts_as_taggable_on :sets
 
   #Relations
+  belongs_to :energy_system
   has_and_belongs_to_many :flows
   has_many :parameter_values, :dependent => :delete_all
   belongs_to :demand_driver

@@ -1,0 +1,13 @@
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        = link_to 'Browse...', combustions_path, :class => "action browse"
+.grid_10
+  .box
+    %h2 Download a zipped file containing the combustion coefficients
+    .block
+      = form_tag(zip_combustions_path, :multipart => true) do
+        %p= submit_tag "Download", :class => "button"
+.clear

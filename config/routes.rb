@@ -12,6 +12,8 @@ Leaqweb::Application.routes.draw do
       get :list
       delete :destroy_all
       get :suggest
+      get :suggest_pollutant
+      get :suggest_fuel
     end
   end
 
@@ -53,6 +55,10 @@ Leaqweb::Application.routes.draw do
   resources :combustions do
     collection do
       get :list
+      get :import
+      get :download
+      post :zip
+      post :upload
       delete :destroy_all
       put :update_value
     end

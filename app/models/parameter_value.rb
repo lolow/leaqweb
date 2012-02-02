@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009-2011, Public Research Center Henri Tudor
+# Copyright (c) 2009-2012, Public Research Center Henri Tudor
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -25,6 +25,7 @@ class ParameterValue < ActiveRecord::Base
 
   has_paper_trail
 
+  belongs_to :energy_system
   belongs_to :parameter
   belongs_to :technology
   belongs_to :commodity

@@ -36,9 +36,26 @@
   	    "oLanguage"      : {"sSearch": "Filter:","sProcessing": #{image_tag("spinner.gif").to_json}},
   	    "sDom"           : 'lrftpi'
   	} );
+    $( ".suggest_pollutant" ).autocomplete({
+       source: #{suggest_pollutant_commodities_path.to_json},
+       minLength: 2
+     });
+    $( ".suggest_fuel" ).autocomplete({
+      source: #{suggest_fuel_commodities_path.to_json},
+      minLength: 2
+    });
   } );
 
-.grid_12
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p
+        =link_to('Import...', import_combustions_path, :class => 'action import')
+        =link_to('Download all...', download_combustions_path, :class => 'action backup_db')
+
+
+.grid_10
   .box
     %h2 Combustion coefficients
     %p
@@ -61,12 +78,10 @@
             %tr
               %th(class="check")
                 = link_to "Delete", "#", :class => "action delete_pv", :confirm => "Are you sure?"
-              %th
-                %select(id="combustion_fuel" name="combustion[fuel_id]")
-                  = options_for_select(Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
-              %th
-                %select(id="combustion_pollutant" name="combustion[pollutant_id]")
-                  = options_for_select(Commodity.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
+              %th(class='inputs')
+                %input(type="textcell" class="suggest_fuel" id="new_fuel" name="pv[fuel]")
+              %th(class='inputs')
+                %input(type="textcell" class="suggest_pollutant" id="new_pollutant" name="pv[pollutant]")
               %th
                 %input(type="textcell" id="combustion_value" name="combustion[value]")
               %th

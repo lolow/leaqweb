@@ -152,12 +152,7 @@ tfoot th,
 tfoot td {
   border-top:2px solid #666;
   background:#eee;
-  text-align: center;
-}
-
-tfoot th.inputs, thead th.inputs {
-  border:0px;
-  text-align: center;
+  text-align: left;
 }
 
 /* AJAX sliding shelf

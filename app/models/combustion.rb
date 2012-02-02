@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009-2011, Public Research Center Henri Tudor
+# Copyright (c) 2009-2012, Public Research Center Henri Tudor
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,20 +21,36 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
+require 'zip_tools'
+
 class Combustion < ActiveRecord::Base
 
   #Interfaces
   has_paper_trail
 
-  #Relations
-  belongs_to :fuel, :class_name => "Commodity"
-  belongs_to :pollutant, :class_name => "Commodity"
-
   #Validations
   validates :value, :presence => true, :numericality => true
 
   #Scopes
-  scope :matching_text, lambda {|text| where(['commodities.name LIKE ? OR pollutants_combustions.name LIKE ? OR combustions.source LIKE ?'] + ["%#{text}%"] * 3 ) }
+  scope :matching_text, lambda {|text| where(['combustions.pollutant LIKE ? OR combustions.fuel LIKE ? OR combustions.source LIKE ?'] + ["%#{text}%"] * 3 ) }
   scope :matching_tag #empty because not taggable
+
+  def self.import(filename)
+    ZipTools::readline_zip(filename,StoredQuery) do |row|
+      Combustion.create({:fuel      => row["fuel"],
+                         :pollutant => row["pollutant"],
+                         :value     => row["value"],
+                         :source    => row["source"]})
+    end
+  end
+
+  def self.zip(filename,subset_ids=nil)
+    Zip::ZipOutputStream.open(filename) do |zipfile|
+      headers = ["fuel","pollutant","value","source"]
+      ZipTools::write_csv_into_zip(zipfile,Combustion,headers,subset_ids) do |pv,csv|
+        csv << pv.attributes.values_at(*headers)
+      end
+    end
+  end
 
 end

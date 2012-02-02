@@ -1,5 +1,5 @@
 #--
-# Copyright (c) 2009-2011, Public Research Center Henri Tudor
+# Copyright (c) 2009-2012, Public Research Center Henri Tudor
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -33,8 +33,8 @@ class CombustionsController < ApplicationController
   end
 
   def list
-    combustions = Combustion.includes(:fuel).includes(:pollutant)
-    @combustions, @total_combustions  = filter_list(combustions,["commodities.name","pollutants_combustions.name","value","source"])
+    combustions = Combustion
+    @combustions, @total_combustions  = filter_list(combustions,["fuel","pollutant","value","source"])
     render :layout => false, :partial => "list.json"
   end
 
@@ -59,6 +59,22 @@ class CombustionsController < ApplicationController
     f = params[:field].split("-")
     value = Combustion.update(f.first.to_i, f.last=>params[:value]) ? params[:value] : ""
     render :json => value
+  end
+
+  def upload
+    if params[:import] && File.exist?(params[:import]["combustion"].tempfile.path)
+      Combustion.import(params[:import]["combustion"].tempfile.path)
+      redirect_to(combustions_url, :notice => 'File has been imported.')
+    else
+      redirect_to(combustions_url, :notice => 'No file to upload.')
+    end
+  end
+
+  def zip
+    f = Tempfile.new("combustions")
+    Combustion.zip(f.path,params[:combustions_id])
+    send_file f.path, :type => "application/zip",
+                      :filename => "combustions.zip"
   end
 
 end
