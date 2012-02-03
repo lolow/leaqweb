@@ -25,6 +25,7 @@ class ParameterValue < ActiveRecord::Base
 
   has_paper_trail
 
+  #Relations
   belongs_to :energy_system
   belongs_to :parameter
   belongs_to :technology
@@ -37,6 +38,7 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :sub_market, :class_name => "Market"
   belongs_to :scenario
 
+  #Validations
   validates :value, :presence => true, :numericality => true
   validates :parameter, :presence => true
   validates :year, :numericality => {:only_integer => true, :minimum => -1}, :allow_nil => true
