@@ -1,7 +1,7 @@
 ---
-aggregate_annual_up:
+commodity_set_annual_up:
 - period
-- aggregate
+- commodity_set
 market_share_bnd_up:
 - period
 - sub_market
@@ -20,10 +20,10 @@ rate_of_penetration:
 degree_of_use:
 - period
 - commodity
-- aggregate
+- commodity_set
 agg_coef:
 - commodity
-- aggregate
+- commodity_set
 market:
 - technology
 - market

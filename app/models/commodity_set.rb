@@ -21,7 +21,7 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Aggregate < ActiveRecord::Base
+class CommoditySet < ActiveRecord::Base
 
   #Interfaces
   has_paper_trail
@@ -43,7 +43,7 @@ class Aggregate < ActiveRecord::Base
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
   def parameter_values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(:aggregate_id=>self).order(:year)
+    ParameterValue.of(Array(parameters)).where(:commodity_set_id=>self).order(:year)
   end
 
 end

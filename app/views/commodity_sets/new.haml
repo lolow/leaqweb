@@ -2,13 +2,13 @@
   .box(class="action")
     %h2 Actions
     %br
-    %p= link_to 'Browse all', aggregates_path, :class => "action browse"
+    %p= link_to 'Browse all', commodity_sets_path, :class => "action browse"
 
 .grid_10
   .box
-    %h2 New Aggregate
+    %h2 New CommoditySet
     .block
-      =simple_form_for @aggregate do |f|
+      =simple_form_for @commodity_set do |f|
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "AGG"}

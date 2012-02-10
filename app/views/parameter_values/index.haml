@@ -33,7 +33,7 @@
     var mydata = new Object();
     var attributes = new Object();
     var fields = ['parameter','year','time_slice','commodity','flow','in_flow','out_flow',
-                  'aggregate','market','sub_market','value','source','scenario']
+                  'commodity_set','market','sub_market','value','source','scenario']
     fields.forEach(function (element) {
       if ($('#new_'+element)) {
         console.log(element + ': ' + $('#new_'+element).val());
@@ -104,8 +104,8 @@
       source: #{suggest_parameters_path.to_json},
       minLength: 2
     });
-    $( ".suggest_aggregate" ).autocomplete({
-      source: #{suggest_aggregates_path.to_json},
+    $( ".suggest_commodity_set" ).autocomplete({
+      source: #{suggest_commodity_sets_path.to_json},
       minLength: 2
     });
     $( ".suggest_market" ).autocomplete({
@@ -138,7 +138,7 @@
       %br
       Show/hide columns
       |
-      - cols = %w{Parameter Year TS Technology Commodity Flow InFlow OutFlow Aggregate Market SubMarket Value Source Scenario}
+      - cols = %w{Parameter Year TS Technology Commodity Flow InFlow OutFlow CommoditySet Market SubMarket Value Source Scenario}
       - cols.each_with_index do |col,i|
         = link_to_function col, "ShowHide(#{i},#{i+1})", :id => "switch#{i}"
         |
@@ -155,7 +155,7 @@
             %th Flow
             %th InFlow
             %th OutFlow
-            %th Aggregate
+            %th CommoditySet
             %th Market
             %th SubMarket
             %th Value
@@ -215,7 +215,7 @@
             %th(class='inputs')
               %input(type="textcell" id="new_out_flow" name="pv[out_flow]")
             %th(class='inputs')
-              %input(type="textcell" class="suggest_aggregate" id="new_aggregate" name="pv[aggregate]")
+              %input(type="textcell" class="suggest_commodity_set" id="new_commodity_set" name="pv[commodity_set]")
             %th(class='inputs')
               %input(type="textcell" class="suggest_market" id="new_market" name="pv[market]")
             %th(class='inputs')

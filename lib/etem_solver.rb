@@ -145,7 +145,7 @@ class EtemSolver
       technologies = Technology.activated
       commodities  = Commodity.activated
       markets = Market.activated
-      aggregates = Aggregate.activated
+      commodity_sets = CommoditySet.activated
       c[:s_s]    = TIME_SLICES
       c[:s_p]    = id_list_name(technologies.all)
       c[:s_m]    = id_list_name(markets.all)
@@ -154,7 +154,7 @@ class EtemSolver
       c[:s_imp]  = id_list_name(commodities.imports)
       c[:s_exp]  = id_list_name(commodities.exports)
       c[:s_dem]  = id_list_name(commodities.demands)
-      c[:s_agg]  = id_list_name(aggregates.all)
+      c[:s_agg]  = id_list_name(commodity_sets.all)
 
       c[:s_in_flow]  = Hash.new
       c[:s_out_flow] = Hash.new
@@ -171,7 +171,7 @@ class EtemSolver
       flows.all.each{|f| c[:s_c_items]["f_#{f.id}"] = id_list_name(f.commodities)&c[:s_c]}
 
       c[:s_c_agg] = Hash.new
-      aggregates.all.each{|agg| c[:s_c_agg][agg.name] = id_list_name(agg.commodities)&c[:s_c]}
+      commodity_sets.all.each{|agg| c[:s_c_agg][agg.name] = id_list_name(agg.commodities)&c[:s_c]}
 
       c[:s_p_market] = Hash.new
       markets.all.each{|m| c[:s_p_market][m.name] = id_list_name(m.technologies)&c[:s_p]}
@@ -179,7 +179,7 @@ class EtemSolver
       puts "Parameters generation" if debug
 
       commodity_ids  = commodities.all.map(&:id)
-      aggregate_ids  = aggregates.all.map(&:id)
+      commodity_set_ids  = commodity_sets.all.map(&:id)
       flow_ids       = flows.all.map(&:id)
       market_ids     = markets.all.map(&:id)
 
@@ -197,7 +197,7 @@ class EtemSolver
             pv = ParameterValue.of(param.to_s).where(:scenario_id=>scenario_id)
             pv = pv.where(:technology_id=> technology_ids) if signature[param].include?("technology")
             pv = pv.where(:commodity_id=> commodity_ids)   if signature[param].include?("commodity")
-            pv = pv.where(:aggregate_id=> aggregate_ids)   if signature[param].include?("aggregate")
+            pv = pv.where(:commodity_set_id=> commodity_set_ids)   if signature[param].include?("commodity_set")
             pv = pv.where(:in_flow_id => flow_ids)         if signature[param].include?("in_flow")
             pv = pv.where(:out_flow_id => flow_ids)        if signature[param].include?("out_flow")
             pv = pv.where(:flow_id => flow_ids)            if signature[param].include?("flow")
@@ -347,7 +347,7 @@ class EtemSolver
       when "period"        then "_T"
       when "time_slice"    then (row.time_slice=="AN" ? "_AN" : row.time_slice)
       when "commodity"     then row.commodity.name
-      when "aggregate"     then row.aggregate.name
+      when "commodity_set" then row.commodity_set.name
       when "technology"    then row.technology.name
       when "flow"          then "f_#{row.flow.id}"
       when "in_flow"       then "f_#{row.in_flow.id}"

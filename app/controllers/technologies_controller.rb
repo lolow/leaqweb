@@ -96,17 +96,16 @@ class TechnologiesController < ApplicationController
           param = Parameter.find_by_name("eff_flo")
           pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?", param, in_flow.id, out_flow.id).first
           if pv
-            puts "update"
             pv.update_attributes(:value=>coef,
                                  :source=>"Combustion coefficients")
           else
-            puts "create"
-            ParameterValue.create(:parameter=>param,
-                                  :technology=>@technology,
-                                  :in_flow=>in_flow,
-                                  :out_flow=>out_flow,
-                                  :value=>coef,
-                                  :source=>"Combustion coefficients")
+            ParameterValue.create!(:parameter=>param,
+                                   :technology=>@technology,
+                                   :in_flow=>in_flow,
+                                   :out_flow=>out_flow,
+                                   :value=>coef,
+                                   :source=>"Combustion coefficients",
+                                   :scenario=>Scenario.base)
           end
         end
       when "add_pv"

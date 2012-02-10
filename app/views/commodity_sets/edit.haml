@@ -4,7 +4,7 @@
       fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
     });
     fill_avail_commodities('#{commodities_path}',$('#filter_commodity').val());
-    fill_aggregate('#{aggregate_path(@aggregate)}');
+    fill_commodity_set('#{commodity_set_path(@commodity_set)}');
     $('#apply').click(function() {
         var com = $('#commodity_list option');
         var s = "";
@@ -12,7 +12,7 @@
             s += com[i].text + ",";
         }
         $.ajax({
-            url:#{aggregate_path(@aggregate).to_json},
+            url:#{commodity_set_path(@commodity_set).to_json},
             type:'PUT',
             data:{
                 'commodities':s.substring(0,s.length-1),
@@ -29,15 +29,15 @@
     %h2 Actions
     %br
     %p
-      = link_to 'Browse all', aggregates_path, :class => "action browse"
-      = link_to 'New Aggregate', new_aggregate_path, :class => "action new"
+      = link_to 'Browse all', commodity_sets_path, :class => "action browse"
+      = link_to 'New CommoditySet', new_commodity_set_path, :class => "action new"
     %p
-      = link_to 'Delete', @aggregate, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+      = link_to 'Delete', @commodity_set, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
 
   .box
-    %h2 Aggregate
+    %h2 CommoditySet
     .block(id="idcard")
-      = render :partial => 'shared/id_card', :locals => {:object => @aggregate , :categories => nil}
+      = render :partial => 'shared/id_card', :locals => {:object => @commodity_set , :categories => nil}
 
 .grid_9
   .box
@@ -54,30 +54,30 @@
         %tbody
           %tr
             %td.col50
-              %select(multiple size="10" id="avail_commodity" class="flow_list")
+              %select(multiple="multiple" size="10" id="avail_commodity" class="flow_list")
               %p(style="text-align: center")
                 %a(href="#" id="add_commodity")
                   & add >>
             %td.col50
-              %select(multiple size="10" id="commodity_list" class="flow_list")
+              %select(multiple="multiple" size="10" id="commodity_list" class="flow_list")
               %p(style="text-align: center")
                 %a(href="#" id="remove_commodity")
                   & << remove
       = link_to 'Apply', '', :id => "apply", :class => "action"
-      = link_to 'Reset Changes', aggregate_path(@aggregate), :class => "action"
+      = link_to 'Reset Changes', commodity_set_path(@commodity_set), :class => "action"
 
   .box
     %h2 Parameters
     .block
       :erb
         <%= render :partial => 'shared/parameter_table',
-                  :locals => { :object => @aggregate,
+                  :locals => { :object => @commodity_set,
                                :pid => "param",
                                :length_change => "false",
                                :filter => "false",
-                               :request_path => aggregate_path(@aggregate),
-                               :parameters => %w{agg_coef aggregate_annual_up degree_of_use},
+                               :request_path => commodity_set_path(@commodity_set),
+                               :parameters => %w{agg_coef commodity_set_annual_up degree_of_use},
                                :cols => %w{parameter commodity year value source},
                                :editable => %w{value source},
-                               :rules => {"=agg_coef" => %w{year}, "=aggregate_annual_up" => %w{commodity} } }%>
+                               :rules => {"=agg_coef" => %w{year}, "=commodity_set_annual_up" => %w{commodity} } }%>
 .clear

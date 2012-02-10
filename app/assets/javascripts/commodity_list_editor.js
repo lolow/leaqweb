@@ -60,10 +60,10 @@ function fill_avail_commodities(commodities_path,filter){
 
 }
 
-function fill_aggregate(aggregate_path){
-    $.getJSON(aggregate_path + '.js', function(j){
+function fill_commodity_set(commodity_set_path){
+    $.getJSON(commodity_set_path + '.js', function(j){
       var options = "";
-      var c = j.aggregate.commodities;
+      var c = j.commodity_set.commodities;
       for(var i = 0; i < c.length; i++) {
         options += '<option>' + c[i].name + '</option>';
       }

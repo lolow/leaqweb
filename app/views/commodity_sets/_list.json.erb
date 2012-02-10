@@ -1,0 +1,10 @@
+{
+    "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
+    "iTotalRecords":<%= CommoditySet.count.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total_commodity_sets.to_json.html_safe %>,
+    "aaData":<%= @commodity_sets.collect do |c|
+                   [ check_box_tag("cb#{c.id}"),
+                     link_to(c.name, edit_commodity_set_path(c)),
+                     truncate(c.description, :omission => "...", :length => 100)]
+                 end.to_json.html_safe %>
+}

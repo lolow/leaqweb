@@ -1,8 +1,8 @@
 ***********************
 * ETEM model for LEAQ *
 ***********************
-# Version 3.0.1
-# Maintainer: L. Drouet
+* Version 3.0.1
+* Maintainer: L. Drouet
 ***********************
 
 $OFFLISTING
@@ -71,7 +71,7 @@ Positive Variables
 ;
 
 Positive Variables
-  AGGREGATE(T,S,AGG)
+  COMMODITY_SET(T,S,AGG)
   CAPACITY(T,P)
   ACTIVITY(T,S,P)
   TOTAL_NET_AMOUNT(T,S,C)
@@ -114,10 +114,10 @@ Equations
   EQ_CAPACITY
   EQ_ACTIVITY
   EQ_TOTAL_NET_AMOUNT
-  EQ_AGG           Aggregate commodities
-  EQ_AGG_UP_T
-  EQ_DEGREE_OF_USE       Maximum share of a commodity in an aggregate
-  EQ_RATE_OF_PENETRATION Rate of penetration of a commodity in an aggregate
+  EQ_COM_SET           commodity_set commodities
+  EQ_COM_SET_UP_T
+  EQ_DEGREE_OF_USE       Maximum share of a commodity in a commodity_set
+  EQ_RATE_OF_PENETRATION Rate of penetration of a commodity in a commodity_set
   EQ_MARKET_SHARE_BND_FX
   EQ_MARKET_SHARE_BND_LO
   EQ_MARKET_SHARE_BND_UP
@@ -125,7 +125,7 @@ Equations
 
 EQ_OBJ..
 VAR_OBJ =E= VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL +
-0.00001 * SUM(AGG,SUM(T,SUM(S,AGGREGATE(T,S,AGG))));
+0.00001 * SUM(AGG,SUM(T,SUM(S,COMMODITY_SET(T,S,AGG))));
 
 EQ_OBJINV..
 VAR_OBJINV =E= SUM((T,P), cost_icap(T,P)*VAR_ICAP(T,P)
@@ -274,12 +274,12 @@ EQ_TOTAL_NET_AMOUNT(T,S,C)..
   ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMPORT(C) ) -
   ( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXPORT(C) );
 
-EQ_AGG(T,S,AGG)..
-  AGGREGATE(T,S,AGG)
+EQ_COM_SET(T,S,AGG)..
+  COMMODITY_SET(T,S,AGG)
   =E= SUM(C$C_AGG(AGG,C), agg_coef(C,AGG) * ( SUM(P$P_PROD(C,P), VAR_COM(T,S,P,C)) + VAR_IMP(T,S,C)$IMPORT(C) ) ) ;
 
-EQ_AGG_UP_T(T,AGG)$(aggregate_annual_up(T,AGG) ge 0)..
-  SUM(S,AGGREGATE(T,S,AGG)) =L= aggregate_annual_up(T,AGG);
+EQ_COM_SET_UP_T(T,AGG)$(commodity_set_annual_up(T,AGG) ge 0)..
+  SUM(S,COMMODITY_SET(T,S,AGG)) =L= commodity_set_annual_up(T,AGG);
 
 EQ_DEGREE_OF_USE(T,C,AGG)$(C_AGG(AGG,C) and (degree_of_use(t,c,agg) gt 0))..
    SUM(S,( SUM(P$P_CONS(C,P), VAR_COM(T,S,P,C)) + VAR_EXP(T,S,C)$EXPORT(C) ))
@@ -341,8 +341,8 @@ MODEL ETEM /
   EQ_CAPACITY
   EQ_ACTIVITY
   EQ_TOTAL_NET_AMOUNT
-  EQ_AGG
-  EQ_AGG_UP_T
+  EQ_COM_SET
+  EQ_COM_SET_UP_T
   EQ_DEGREE_OF_USE
   EQ_RATE_OF_PENETRATION
   EQ_MARKET_SHARE_BND_FX
@@ -465,17 +465,17 @@ out.nd = 6;
 put ','S.tl',,'IMPORT.tl','cost_imp(T,S,IMPORT)/;
 )))
 
-LOOP(T,LOOP(S,LOOP(AGG$AGGREGATE.l(T,S,AGG),
+LOOP(T,LOOP(S,LOOP(AGG$COMMODITY_SET.l(T,S,AGG),
 out.nd = 0;
-put 'AGGREGATE,'year(T);
+put 'COMMODITY_SET,'year(T);
 out.nd = 6;
-put ','S.tl',,'AGG.tl','AGGREGATE.l(T,S,AGG)/;
+put ','S.tl',,'AGG.tl','COMMODITY_SET.l(T,S,AGG)/;
 )))
-LOOP(T,LOOP(AGG$SUM(S,AGGREGATE.l(T,S,AGG)),
+LOOP(T,LOOP(AGG$SUM(S,COMMODITY_SET.l(T,S,AGG)),
 out.nd = 0;
-put 'AGGREGATE,'year(T);
+put 'COMMODITY_SET,'year(T);
 out.nd = 6;
-put ',ANNUAL,,'AGG.tl','SUM(S,AGGREGATE.l(T,S,AGG))/;
+put ',ANNUAL,,'AGG.tl','SUM(S,COMMODITY_SET.l(T,S,AGG))/;
 ))
 
 LOOP(T,LOOP(S,LOOP(C$TOTAL_NET_AMOUNT.l(T,S,C),

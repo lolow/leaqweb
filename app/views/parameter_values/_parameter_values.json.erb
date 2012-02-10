@@ -12,7 +12,7 @@
                      short_flow(c.flow),
                      short_flow(c.in_flow),
                      short_flow(c.out_flow),
-                     c.aggregate ?  c.aggregate.name : "",
+                     c.commodity_set ?  c.commodity_set.name : "",
                      c.market  ?  c.market.name : "",
                      c.sub_market  ?  c.sub_market.name : "",
                      "<span id='#{c.id}-value' class='edit'>#{c.value}</span>",

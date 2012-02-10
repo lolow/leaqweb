@@ -41,11 +41,11 @@ include ZipTools
       Parameter.delete_all
       ParameterValue.delete_all
       Market.delete_all
-      Aggregate.delete_all
+      CommoditySet.delete_all
       Scenario.delete_all
       ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
       ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
-      ActiveRecord::Base.connection.execute("DELETE FROM `aggregates_commodities`")
+      ActiveRecord::Base.connection.execute("DELETE FROM `commodity_sets_commodities`")
     ensure
       PaperTrail.enabled = paper_trail_state
     end
@@ -77,14 +77,17 @@ include ZipTools
 
       headers = ["id","type","name","definition","default_value"]
       ZipTools::write_csv_into_zip(zipfile,Parameter,headers) do |p,csv|
-        csv << p.attributes.values_at(*headers)
+        csv << p.attributes.values_at(*headers) if p.type=="DemandDriver"
       end
 
-      headers = ["parameter_id","technology_id","commodity_id","aggregate_id","flow_id",
+      headers = ["parameter_name","technology_id","commodity_id","commodity_set_id","flow_id",
                  "in_flow_id","out_flow_id","market_id","sub_market_id","time_slice",
                  "year","value","source","scenario_id"]
       ZipTools::write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
-        csv << pv.attributes.values_at(*headers)
+        csv << [pv.parameter.name,pv.technology_id,pv.commodity,pv.commodity_set,pv.flow_id,
+                pv.in_flow_id,pv.out_flow_id,pv.market_id,pv.sub_market_id,pv.time_slice,
+                pv.year,pv.value,pv.source,pv.scenario_id]
+        pv.attributes.values_at(*headers)
       end
 
       headers = ["id","name","description","technologies","sets"]
@@ -93,7 +96,7 @@ include ZipTools
       end
 
       headers = ["id","name","description","commodities","sets"]
-      ZipTools::write_csv_into_zip(zipfile,Aggregate,headers) do |a,csv|
+      ZipTools::write_csv_into_zip(zipfile,CommoditySet,headers) do |a,csv|
         csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]
       end
 
@@ -131,7 +134,7 @@ include ZipTools
         when "DemandDriver"
           param = DemandDriver.new
         else
-          param = Parameter.new
+          #param = Parameter.new
         end
         param.name = row["name"]
         param.definition = row["definition"]
@@ -174,9 +177,9 @@ include ZipTools
         h[:mkt][row["id"]] = m.id
       end
 
-      ZipTools::readline_zip(filename,Aggregate) do |row|
+      ZipTools::readline_zip(filename,CommoditySet) do |row|
         commodity_ids = row["commodities"].scan(/\d+/).collect{|c|h[:com][c]}
-        a = Aggregate.create({:name          => row["name"],
+        a = CommoditySet.create({:name          => row["name"],
                               :description   => row["description"],
                               :commodity_ids => commodity_ids},
                              :without_protection => true)
@@ -196,10 +199,10 @@ include ZipTools
 
       ZipTools::readline_zip(filename,ParameterValue) do |row|
         pv = ParameterValue.new
-        pv.parameter_id  = h[:par][row["parameter_id"]]
+        pv.parameter_id  = Parameter.where(:name=>row["parameter_id"]).id
         pv.technology_id = h[:tec][row["technology_id"]]
         pv.commodity_id  = h[:com][row["commodity_id"]]
-        pv.aggregate_id  = h[:agg][row["aggregate_id"]]
+        pv.commodity_set_id  = h[:agg][row["commodity_set_id"]]
         pv.flow_id       = h[:flo][row["flow_id"]]
         pv.in_flow_id    = h[:flo][row["in_flow_id"]]
         pv.out_flow_id   = h[:flo][row["out_flow_id"]]

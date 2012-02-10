@@ -19,7 +19,7 @@ set FLOW;                    # commodities groups labels
 set FLOW_IN{P} within FLOW;  # incoming flows 
 set FLOW_OUT{P} within FLOW; # outcoming flows
 set C_ITEMS{FLOW} within C;  # set of commodities
-set AGG;                     # aggregates
+set AGG;                     # commodity_sets
 set C_AGG{AGG} within C;     # set of aggregated commodities
 set MARKET;                  # markets
 set P_MARKET{MARKET} within P;
@@ -33,7 +33,7 @@ set P_CONS{c in C} within P := setof{p in P, f in FLOW_IN[p]: c in C_ITEMS[f]}(p
 param discount_rate;
 param first_year;
 param act_flo{P,C};                 # conversion factor from flow to activity.
-param agg_coef{C,AGG};              # coefficient factor in aggregate
+param agg_coef{C,AGG};    # coefficient factor in aggregate
 param avail_factor{S,P};            # availability factor
 param avail{P};                     # availability period.
 param cap_act{P};                   # conversion factor from capacity to activity
@@ -77,9 +77,7 @@ param icap_bnd_up{T,P};             # upper bound on new capacity
 param imp_bnd_fx{T,S,IMPORT};       # fixed importation
 param imp_bnd_lo{T,S,IMPORT};       # lower bound on importation
 param imp_bnd_up{T,S,IMPORT};       # upper bound on importation
-param aggregate_annual_up{T,AGG};
-param aggregate_annual_lo{T,AGG};
-param aggregate_annual_fx{T,AGG};
+param commodity_set_annual_up{T,AGG};
 param degree_of_use{T,C,AGG};
 param rate_of_penetration{T,C};
 param market_share_bnd_up{T,MARKET,MARKET};
@@ -112,7 +110,7 @@ var VAR_ICAP{T,P}   >=0;               # investment capacity
 var VAR_IMP{T,S,IMPORT}  >=0;             # import activities
 var VAR_EXP{T,S,EXPORT}  >=0;             # export activities
 var VAR_COM{T,S,p in P,C_MAP[p]}>=0;   # commodity flow
-var VAR_AGG{T,S,AGG}>=0;               # aggregate activities
+var VAR_COM_SET{T,S,AGG}>=0;               # aggregate activities
 
 ###
 ### Objective function
@@ -292,14 +290,14 @@ subject to EQ_COM_NET_UP_T {t in T, c in C : com_net_bnd_up_t[t,c]>=0} :
 	 (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
 	) <= com_net_bnd_up_t[t,c];
 
-# aggregate commodities
-subject to EQ_AGG{t in T, s in S, agg in AGG} :
-    VAR_AGG[t,s,agg] = sum{c in C_AGG[agg]} agg_coef[c,agg] *(
+# commodity_set commodities
+subject to EQ_COM_SET{t in T, s in S, agg in AGG} :
+    VAR_COM_SET[t,s,agg] = sum{c in C_AGG[agg]} agg_coef[c,agg] *(
 	 (sum{p in P_PROD[c]} VAR_COM[t,s,p,c] + if c in IMPORT then VAR_IMP[t,s,c] else 0) # procurement
 	);
 
-subject to EQ_AGG_UP_T{t in T, agg in AGG : aggregate_annual_up[t,agg]>=0} :
-    sum{s in S} VAR_AGG[t,s,agg] <= aggregate_annual_up[t,agg];
+subject to EQ_COM_SET_UP_T{t in T, agg in AGG : commodity_set_annual_up[t,agg]>=0} :
+    sum{s in S} VAR_AGG[t,s,agg] <= commodity_set_annual_up[t,agg];
 
 subject to EQ_DEGREE_OF_USE{t in T, agg in AGG, c in C_AGG[agg] : degree_of_use[t,c,agg] > 0 } :
     agg_coef[c,agg] * (sum{s in S}
@@ -441,11 +439,11 @@ for {t in T, s in S, c in IMPORT}{
 
 #T, S, AGG
 for {t in T, s in S, agg in AGG : VAR_AGG[t,s,agg] <>0}{
-  printf "AGGREGATE,%s,%s,,%s,%f\n", year[t], s, agg, VAR_AGG[t,s,agg];
+  printf "COMMODITY_SET,%s,%s,,%s,%f\n", year[t], s, agg, VAR_AGG[t,s,agg];
 }
 #T, AGG
 for {t in T, agg in AGG:(sum{s in S} VAR_AGG[t,s,agg]) <> 0}{
-  printf "AGGREGATE,%s,ANNUAL,,%s,%f\n", year[t], agg, sum{s in S} VAR_AGG[t,s,agg];
+  printf "COMMODITY_SET,%s,ANNUAL,,%s,%f\n", year[t], agg, sum{s in S} VAR_AGG[t,s,agg];
 }
 
 #T, S, C

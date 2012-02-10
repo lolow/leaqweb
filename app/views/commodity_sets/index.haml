@@ -12,7 +12,7 @@
         "sPaginationType": "full_numbers",
         "iDisplayLength" : 25,
         "bAutoWidth"     : false,
-  		"sAjaxSource"    : #{list_aggregates_path.to_json},
+  		"sAjaxSource"    : #{list_commodity_sets_path.to_json},
   	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
             aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
             $.getJSON( sSource, aoData, function (json) {
@@ -30,14 +30,14 @@
     %h2 Actions
     %br
     %p
-      = link_to 'New Aggregate', new_aggregate_path, :class => "action new"
+      = link_to 'New Commodity set', new_commodity_set_path, :class => "action new"
 
 .grid_10
   .box
-    %h2 Browse aggregates
+    %h2 Browse commodity sets
     %p
-    = form_tag(destroy_all_aggregates_path,:method => "delete") do
-      %table(id="list_table" summary="Aggregate list")
+    = form_tag(destroy_all_commodity_sets_path,:method => "delete") do
+      %table(id="list_table" summary="Commodity set list")
         %thead
           %th(class='check')
             = check_box_tag("click_check",nil,nil,:class=>"check_all")

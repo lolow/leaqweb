@@ -48,7 +48,7 @@ class ParameterValuesController < ApplicationController
     params[:pv][:in_flow]  = InFlow.find_by_id(params[:pv][:in_flow])
     params[:pv][:out_flow] = OutFlow.find_by_id(params[:pv][:out_flow])
 
-    params[:pv][:aggregate] = Aggregate.find_by_name(params[:pv][:aggregate])
+    params[:pv][:commodity_set] = CommoditySet.find_by_name(params[:pv][:commodity_set])
 
     params[:pv][:market] = Market.find_by_name(params[:pv][:market])
     params[:pv][:sub_market] = Market.find_by_name(params[:pv][:sub_market])
@@ -67,14 +67,14 @@ class ParameterValuesController < ApplicationController
 
   def list
     columns = [nil,"parameters.name","year","time_slice","technologies.name","commodities.name",
-               nil,nil,nil,"aggregates.name","markets.name",nil,"value","source",
+               nil,nil,nil,"commodity_sets.name","markets.name",nil,"value","source",
                "scenarios.name"]
     order        = params[:iSortCol_0] ? columns[params[:iSortCol_0].to_i] : nil
     parameter_values = ParameterValue.includes(:parameter).where("parameters.type"=>nil)
     @totalpv = parameter_values.count # Exclude demand_drivers
     parameter_values = parameter_values.includes(:technology)
     parameter_values = parameter_values.includes(:commodity)
-    parameter_values = parameter_values.includes(:aggregate)
+    parameter_values = parameter_values.includes(:commodity_set)
     parameter_values = parameter_values.includes(:scenario)
     columns.each_index do |i|
       if columns[i] && params["sSearch_#{i}"] && params["sSearch_#{i}"].size > 1

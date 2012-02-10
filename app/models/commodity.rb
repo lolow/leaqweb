@@ -37,7 +37,7 @@ class Commodity < ActiveRecord::Base
   belongs_to :demand_driver
   has_many :combustions, :dependent => :destroy, :foreign_key => :fuel_id
   has_many :combustions, :dependent => :destroy, :foreign_key => :pollutant_id
-  has_and_belongs_to_many :aggregates
+  has_and_belongs_to_many :commodity_sets
 
   #Validations
   validates :name, :presence => true,

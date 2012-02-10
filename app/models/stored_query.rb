@@ -74,7 +74,7 @@ class StoredQuery < ActiveRecord::Base
   def duplicate_as_new
     StoredQuery.new(
         :name => next_available_name(StoredQuery, name),
-        :aggregate => aggregate,
+        :commodity_set => aggregate,
         :variable => variable,
         :columns => columns,
         :rows => rows,

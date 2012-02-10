@@ -21,50 +21,50 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class AggregatesController < ApplicationController
+class CommoditySetsController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html
   respond_to :json, :only => [:show, :suggest]
 
   def index
-    @aggregates = Aggregate.order(:name)
+    @commodity_sets = CommoditySet.order(:name)
   end
 
   def list
-    @aggregates, @total_aggregates  = filter_list(Aggregate,["name","description"])
+    @commodity_sets, @total_commodity_sets  = filter_list(CommoditySet,["name","description"])
     render :layout => false, :partial => "list.json"
   end
 
   def show
-    @aggregate = Aggregate.find(params[:id])
+    @commodity_set = CommoditySet.find(params[:id])
     respond_to do |format|
-      format.html { redirect_to edit_aggregate_path(@aggregate) }
-      format.js { render :json => {:aggregate=>{:id=>@aggregate.id, :commodities=>@aggregate.commodities}}.to_json }
+      format.html { redirect_to edit_commodity_set_path(@commodity_set) }
+      format.js { render :json => {:commodity_set=>{:id=>@commodity_set.id, :commodities=>@commodity_set.commodities}}.to_json }
     end
   end
 
   def new
-    respond_with(@aggregate = Aggregate.new)
+    respond_with(@commodity_set = CommoditySet.new)
   end
 
   def edit
-    respond_with(@aggregate = Aggregate.find(params[:id]))
+    respond_with(@commodity_set = CommoditySet.find(params[:id]))
   end
 
   def create
-    respond_with(@aggregate = Aggregate.create(params[:aggregate]))
+    respond_with(@commodity_set = CommoditySet.create(params[:commodity_set]))
   end
 
   def update
-    @aggregate = Aggregate.find(params[:id])
+    @commodity_set = CommoditySet.find(params[:id])
     case params[:do]
       when "update_commodities"
-        @aggregate.commodities = Commodity.find_by_list_name(params[:commodities])
-        flash[:notice] = 'Aggregate was successfully created.' if @aggregate.save
+        @commodity_set.commodities = Commodity.find_by_list_name(params[:commodities])
+        flash[:notice] = 'Commodity set was successfully created.' if @commodity_set.save
       when "update"
-        @aggregate.update_attributes(params[:aggregate])
-        respond_with(@aggregate)
+        @commodity_set.update_attributes(params[:commodity_set])
+        respond_with(@commodity_set)
         return
       when "delete_pv"
         ParameterValue.destroy(checkbox_ids)
@@ -72,26 +72,26 @@ class AggregatesController < ApplicationController
         att = params[:pv]
         att[:parameter] = Parameter.find_by_name(att[:parameter])
         att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
-        att[:aggregate] = @aggregate
+        att[:commodity_set] = @commodity_set
         pv = ParameterValue.new(att)
         flash[:notice] = 'Parameter value was successfully added.' if pv.save
     end if params[:do]
-    redirect_to(edit_aggregate_path(@aggregate))
+    redirect_to(edit_commodity_set_path(@commodity_set))
   end
 
   def destroy
-    Aggregate.destroy(params[:id])
-    redirect_to(aggregates_url)
+    CommoditySet.destroy(params[:id])
+    redirect_to(commodity_sets_url)
   end
 
   def destroy_all
-    Aggregate.destroy(checkbox_ids)
-    redirect_to(aggregates_url)
+    CommoditySet.destroy(checkbox_ids)
+    redirect_to(commodity_sets_url)
   end
 
   def suggest
     text = params[:term]
-    res = Aggregate.order(:name).matching_text(text).limit(10).map(&:name)
+    res = CommoditySet.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
     render :json => res.to_json
   end

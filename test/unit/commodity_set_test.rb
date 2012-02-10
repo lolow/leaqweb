@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class AggregatesControllerTest < ActionController::TestCase
+class CommoditySetTest < ActiveSupport::TestCase
   # Replace this with your real tests.
   test "the truth" do
     assert true

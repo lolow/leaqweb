@@ -67,7 +67,7 @@ class Technology < ActiveRecord::Base
       ParameterValue.update(pv.id, :flow=>flow)
     else
       p = Parameter.find_by_name("flow_act")
-      ParameterValue.create!(:parameter=>p, :technology=>self, :flow=>flow, :value=>0)
+      ParameterValue.create!(:parameter=>p, :technology=>self, :flow=>flow, :value=>0, :scenario=>Scenario.base)
     end
   end
 
@@ -207,12 +207,12 @@ class Technology < ActiveRecord::Base
     fuels = in_flow.commodities
     pollutant = out_flow.commodities.first
     coefs = Hash.new(0)
-    Combustion.where(:pollutant_id=>pollutant).each { |c| coefs[c.fuel_id] = c.value }
+    Combustion.where(:pollutant=>pollutant.name).each { |c| coefs[c.fuel] = c.value }
     if fuels.size == 1
-      coefs[fuels.first.id]
+      coefs[fuels.first.name]
     else
       share = self.parameter_values_for("flo_share_fx").where(:flow_id=>in_flow)
-      share.collect! { |s| coefs[s.commodity_id] * s.value }
+      share.collect! { |s| coefs[s.commodity.name] * s.value }
       share.inject(0) { |sum, x| sum+x }
     end
   end

@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.2.1'
 
 # Database wrappers
-#gem 'sqlite3'
+gem 'sqlite3'
 gem 'mysql2'
 
 # Rails 3.2 - JavaScript
@@ -38,10 +38,13 @@ group :assets do
 end
 
 #test
-gem "rspec-rails", :group => [:test, :development]
+group :test, :development do
+  gem "rspec-rails", "~> 2.6"
+end
 group :test do
   gem "factory_girl_rails"
   gem "capybara"
   gem "guard-rspec"
   gem "faker"
 end
+

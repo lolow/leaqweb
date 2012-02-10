@@ -44,7 +44,7 @@ Leaqweb::Application.routes.draw do
     end
   end
 
-  resources :aggregates do
+  resources :commodity_sets do
     collection do
       get :list
       delete :destroy_all

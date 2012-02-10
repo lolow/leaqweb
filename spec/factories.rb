@@ -47,8 +47,8 @@ Factory.define :market do |f|
   f.description { Faker::Lorem.words(3) }
 end
 
-Factory.define :aggregate do |f|
-  f.sequence(:name) { |n| "AGGREGATE#{n}" }
+Factory.define :commodity_set do |f|
+  f.sequence(:name) { |n| "COMMODITY-SET-#{n}" }
   f.description { Faker::Lorem.words(3) }
 end
 

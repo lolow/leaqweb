@@ -8,11 +8,11 @@
 - :name: market_share_bnd_fx
   :definition:  minimum share of a submarket in an market
   :default_value: -1.0
-- :name: aggregate_annual_up
-  :definition: Annual upper bound on an aggregate
+- :name: commodity_set_annual_up
+  :definition: Annual upper bound on an commodity_set
   :default_value: -1.0
 - :name: agg_coef
-  :definition: Conversion coefficient from the commodity to its aggregate
+  :definition: Conversion coefficient from the commodity to its commodity_set
   :default_value: 1
 - :name: discount_rate
   :definition: Annual discount rate. currently one global parameter used to compute discounted total cost (objective function)
@@ -27,7 +27,7 @@
   :definition: Upper bound on total net amount by year
   :default_value: -1.0
 - :name: degree_of_use
-  :definition: maximum share of a commodity in an aggregate
+  :definition: maximum share of a commodity in an commodity_set
   :default_value: -1.0
 - :name: market_share_up
   :definition: maximum share of a submarket in a market

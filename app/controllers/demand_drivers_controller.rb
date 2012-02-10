@@ -50,7 +50,7 @@ class DemandDriversController < ApplicationController
   end
 
   def create
-    respond_with(@demand_driver = DemandDriver.new(params[:demand_driver]))
+    respond_with(@demand_driver = DemandDriver.create(params[:demand_driver]))
   end
 
   def destroy

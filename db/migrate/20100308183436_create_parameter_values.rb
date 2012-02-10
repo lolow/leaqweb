@@ -4,7 +4,7 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :parameter
       t.belongs_to :technology
       t.belongs_to :commodity
-      t.belongs_to :aggregate
+      t.belongs_to :commodity_set
       t.belongs_to :flow
       t.belongs_to :out_flow
       t.belongs_to :in_flow
@@ -21,7 +21,7 @@ class CreateParameterValues < ActiveRecord::Migration
     add_index :parameter_values, :parameter_id
     add_index :parameter_values, :technology_id
     add_index :parameter_values, :commodity_id
-    add_index :parameter_values, :aggregate_id
+    add_index :parameter_values, :commodity_set_id
     add_index :parameter_values, :flow_id
     add_index :parameter_values, :out_flow_id
     add_index :parameter_values, :in_flow_id
