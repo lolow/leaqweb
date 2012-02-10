@@ -50,8 +50,8 @@ class ParameterValuesController < ApplicationController
 
     params[:pv][:commodity_set] = CommoditySet.find_by_name(params[:pv][:commodity_set])
 
-    params[:pv][:market] = Market.find_by_name(params[:pv][:market])
-    params[:pv][:sub_market] = Market.find_by_name(params[:pv][:sub_market])
+    params[:pv][:technology_set] = TechnologySet.find_by_name(params[:pv][:technology_set])
+    params[:pv][:technology_subset] = TechnologySet.find_by_name(params[:pv][:technology_subset])
 
     params[:pv][:scenario] = Scenario.find_by_name(params[:pv][:scenario])
 
@@ -67,7 +67,7 @@ class ParameterValuesController < ApplicationController
 
   def list
     columns = [nil,"parameters.name","year","time_slice","technologies.name","commodities.name",
-               nil,nil,nil,"commodity_sets.name","markets.name",nil,"value","source",
+               nil,nil,nil,"commodity_sets.name","technology_sets.name",nil,"value","source",
                "scenarios.name"]
     order        = params[:iSortCol_0] ? columns[params[:iSortCol_0].to_i] : nil
     parameter_values = ParameterValue.includes(:parameter).where("parameters.type"=>nil)

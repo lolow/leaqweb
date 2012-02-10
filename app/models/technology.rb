@@ -36,7 +36,7 @@ class Technology < ActiveRecord::Base
   has_many :in_flows, :dependent => :destroy
   has_many :flows, :dependent => :destroy
   has_many :parameter_values, :dependent => :delete_all
-  has_and_belongs_to_many :markets
+  has_and_belongs_to_many :technology_sets
 
   #Validations
   validates :name, :presence => true,

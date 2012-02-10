@@ -8,8 +8,8 @@ class CreateParameterValues < ActiveRecord::Migration
       t.belongs_to :flow
       t.belongs_to :out_flow
       t.belongs_to :in_flow
-      t.belongs_to :market
-      t.belongs_to :sub_market
+      t.belongs_to :technology_set
+      t.belongs_to :technology_subset
       t.belongs_to :energy_system
       t.belongs_to :scenario, :default => 1, :null => false
       t.integer :year
@@ -25,8 +25,8 @@ class CreateParameterValues < ActiveRecord::Migration
     add_index :parameter_values, :flow_id
     add_index :parameter_values, :out_flow_id
     add_index :parameter_values, :in_flow_id
-    add_index :parameter_values, :market_id
-    add_index :parameter_values, :sub_market_id
+    add_index :parameter_values, :technology_set_id
+    add_index :parameter_values, :technology_subset_id
     add_index :parameter_values, :energy_system_id
     
   end

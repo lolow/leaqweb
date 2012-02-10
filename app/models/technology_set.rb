@@ -21,12 +21,12 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Market < ActiveRecord::Base
+class TechnologySet < ActiveRecord::Base
   has_paper_trail
   acts_as_taggable_on :sets
   has_and_belongs_to_many :technologies
   has_many :parameter_values, :dependent => :delete_all
-  scope :activated, tagged_with("MARKET")
+  scope :activated, tagged_with("TECHNOLOGY_SET")
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
   validates :name, :presence => true,
@@ -35,7 +35,7 @@ class Market < ActiveRecord::Base
                         :message => "Please use only letters, numbers or '-' in name"}
 
   def parameter_values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(:market_id=>self).order(:year)
+    ParameterValue.of(Array(parameters)).where(:technology_set_id=>self).order(:year)
   end
 
 end

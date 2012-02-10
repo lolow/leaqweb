@@ -13,8 +13,8 @@
                      short_flow(c.in_flow),
                      short_flow(c.out_flow),
                      c.commodity_set ?  c.commodity_set.name : "",
-                     c.market  ?  c.market.name : "",
-                     c.sub_market  ?  c.sub_market.name : "",
+                     c.technology_set  ?  c.technology_set.name : "",
+                     c.technology_subset  ?  c.technology_subset.name : "",
                      "<span id='#{c.id}-value' class='edit'>#{c.value}</span>",
                      "<span id='#{c.id}-source' class='edit'>#{c.source}</span>",
                      c.scenario ?  c.scenario.name : ""

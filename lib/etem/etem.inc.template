@@ -38,7 +38,7 @@ set AGG(*) /
 <?rb end ?>
 /;
 
-set MARKET(*) /
+set TECHNOLOGY_SET(*) /
 <?rb @s_m.each do |item| ?>
 #{item}
 <?rb end ?>
@@ -76,10 +76,10 @@ set C_AGG(AGG,C) /
 <?rb end ?>
 /;
 
-set P_MARKET(MARKET,P) /
-<?rb @s_p_market.each do |market,techs| ?>
+set P_TECHNOLOGY_SET(TECHNOLOGY_SET,P) /
+<?rb @s_p_technology_set.each do |technology_set,techs| ?>
 <?rb techs.each do |t| ?>
-#{market}.#{t}
+#{technology_set}.#{t}
 <?rb end ?>
 <?rb end ?>
 /;
@@ -398,23 +398,23 @@ network_efficiency(C)=#{@p_network_efficiency_d} ;
   network_efficiency('#{e.next}') = #{e.next};
 <?rb end ?>
 
-parameter market_share_bnd_up(T,MARKET,MARKET);
-market_share_bnd_up(T,MARKET,MARKET)=#{@p_market_share_bnd_up_d} ;
-<?rb e = @p_market_share_bnd_up.to_enum ?>
+parameter technology_set_share_bnd_up(T,TECHNOLOGY_SET,TECHNOLOGY_SET);
+technology_set_share_bnd_up(T,TECHNOLOGY_SET,TECHNOLOGY_SET)=#{@p_technology_set_share_bnd_up_d} ;
+<?rb e = @p_technology_set_share_bnd_up.to_enum ?>
 <?rb loop do ?>
-  market_share_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+  technology_set_share_bnd_up('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
-parameter market_share_bnd_lo(T,MARKET,MARKET);
-market_share_bnd_lo(T,MARKET,MARKET)=#{@p_market_share_bnd_lo_d} ;
-<?rb e = @p_market_share_bnd_lo.to_enum ?>
+parameter technology_set_share_bnd_lo(T,TECHNOLOGY_SET,TECHNOLOGY_SET);
+technology_set_share_bnd_lo(T,TECHNOLOGY_SET,TECHNOLOGY_SET)=#{@p_technology_set_share_bnd_lo_d} ;
+<?rb e = @p_technology_set_share_bnd_lo.to_enum ?>
 <?rb loop do ?>
-  market_share_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+  technology_set_share_bnd_lo('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>
 
-parameter market_share_bnd_fx(T,MARKET,MARKET);
-market_share_bnd_fx(T,MARKET,MARKET)=#{@p_market_share_bnd_fx_d} ;
-<?rb e = @p_market_share_bnd_fx.to_enum ?>
+parameter technology_set_share_bnd_fx(T,TECHNOLOGY_SET,TECHNOLOGY_SET);
+technology_set_share_bnd_fx(T,TECHNOLOGY_SET,TECHNOLOGY_SET)=#{@p_technology_set_share_bnd_fx_d} ;
+<?rb e = @p_technology_set_share_bnd_fx.to_enum ?>
 <?rb loop do ?>
-  market_share_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
+  technology_set_share_bnd_fx('#{e.next}','#{e.next}','#{e.next}') = #{e.next};
 <?rb end ?>

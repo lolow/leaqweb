@@ -34,8 +34,8 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :flow
   belongs_to :out_flow
   belongs_to :in_flow
-  belongs_to :market
-  belongs_to :sub_market, :class_name => "Market"
+  belongs_to :technology_set
+  belongs_to :technology_subset, :class_name => "TechnologySet"
   belongs_to :scenario
 
   #Validations

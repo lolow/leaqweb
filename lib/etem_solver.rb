@@ -144,11 +144,11 @@ class EtemSolver
       puts "Sets generation" if debug
       technologies = Technology.activated
       commodities  = Commodity.activated
-      markets = Market.activated
+      technology_sets = TechnologySet.activated
       commodity_sets = CommoditySet.activated
       c[:s_s]    = TIME_SLICES
       c[:s_p]    = id_list_name(technologies.all)
-      c[:s_m]    = id_list_name(markets.all)
+      c[:s_m]    = id_list_name(technology_sets.all)
       c[:s_c]    = id_list_name(commodities.all)
       c[:s_enc]  = id_list_name(commodities.energy_carriers)
       c[:s_imp]  = id_list_name(commodities.imports)
@@ -173,15 +173,15 @@ class EtemSolver
       c[:s_c_agg] = Hash.new
       commodity_sets.all.each{|agg| c[:s_c_agg][agg.name] = id_list_name(agg.commodities)&c[:s_c]}
 
-      c[:s_p_market] = Hash.new
-      markets.all.each{|m| c[:s_p_market][m.name] = id_list_name(m.technologies)&c[:s_p]}
+      c[:s_p_technology_set] = Hash.new
+      technology_sets.all.each{|m| c[:s_p_technology_set][m.name] = id_list_name(m.technologies)&c[:s_p]}
 
       puts "Parameters generation" if debug
 
       commodity_ids  = commodities.all.map(&:id)
       commodity_set_ids  = commodity_sets.all.map(&:id)
       flow_ids       = flows.all.map(&:id)
-      market_ids     = markets.all.map(&:id)
+      technology_set_ids     = technology_sets.all.map(&:id)
 
       #Select scenarios
       scenarios = ["BASE"] + @opts[:scenarios].scan(/[a-zA-Z\d]+/)
@@ -201,8 +201,8 @@ class EtemSolver
             pv = pv.where(:in_flow_id => flow_ids)         if signature[param].include?("in_flow")
             pv = pv.where(:out_flow_id => flow_ids)        if signature[param].include?("out_flow")
             pv = pv.where(:flow_id => flow_ids)            if signature[param].include?("flow")
-            pv = pv.where(:market_id => market_ids)        if signature[param].include?("market")
-            pv = pv.where(:sub_market_id => market_ids)    if signature[param].include?("sub_market")
+            pv = pv.where(:technology_set_id => technology_set_ids)        if signature[param].include?("technology_set")
+            pv = pv.where(:technology_subset_id => technology_set_ids)    if signature[param].include?("technology_subset")
             new_values = values_for(param,pv)
             if scenario_id == scenario_ids.first
               c["p_#{param}".to_sym] += new_values
@@ -230,7 +230,7 @@ class EtemSolver
       c[:p_period_length_d] = period_duration
       c[:p_first_year_d]    = first_year
 
-      c[:p_market] = markets.map{|m| m.technologies.activated.map{|t| "#{t.name} #{m.name} 1"}}.join(" ")
+      c[:p_technology_set] = technology_sets.map{|m| m.technologies.activated.map{|t| "#{t.name} #{m.name} 1"}}.join(" ")
 
       # frac_dem - fill the parameter if no value are available
       fill_dmd = c[:s_dem] - c[:p_frac_dem].select{|x| x =~ /\w+/ }
@@ -352,8 +352,8 @@ class EtemSolver
       when "flow"          then "f_#{row.flow.id}"
       when "in_flow"       then "f_#{row.in_flow.id}"
       when "out_flow"      then "f_#{row.out_flow.id}"
-      when "market"        then row.market.name
-      when "sub_market"    then row.sub_market.name
+      when "technology_set"        then row.technology_set.name
+      when "technology_subset"    then row.technology_subset.name
       end
     }
   end

@@ -1,0 +1,16 @@
+.grid_2
+  .box(class="action")
+    %h2 Actions
+    %br
+    %p= link_to 'Browse all', technology_sets_path, :class => "action browse"
+
+.grid_10
+  .box
+    %h2 New TechnologySet
+    .block
+      =simple_form_for @technology_set do |f|
+        =f.input :name
+        =f.input :description, :input_html => {:rows => 2}
+        =f.input :set_list, :as => :hidden, :input_html => {:value => "TECHNOLOGY_SET"}
+        =f.button :submit, :class => "aligned"
+.clear

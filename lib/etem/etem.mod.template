@@ -21,8 +21,8 @@ set FLOW_OUT{P} within FLOW; # outcoming flows
 set C_ITEMS{FLOW} within C;  # set of commodities
 set AGG;                     # commodity_sets
 set C_AGG{AGG} within C;     # set of aggregated commodities
-set MARKET;                  # markets
-set P_MARKET{MARKET} within P;
+set TECHNOLOGY_SET;                  # technology_sets
+set P_TECHNOLOGY_SET{TECHNOLOGY_SET} within P;
 
 # COMPUTED SETS
 set C_MAP{p in P}  within C := setof{f in FLOW_IN[p], c in C_ITEMS[f]}(c) union setof{f in FLOW_OUT[p], c in C_ITEMS[f]}(c); 
@@ -80,12 +80,12 @@ param imp_bnd_up{T,S,IMPORT};       # upper bound on importation
 param commodity_set_annual_up{T,AGG};
 param degree_of_use{T,C,AGG};
 param rate_of_penetration{T,C};
-param market_share_bnd_up{T,MARKET,MARKET};
-param market_share_bnd_lo{T,MARKET,MARKET};
-param market_share_bnd_fx{T,MARKET,MARKET};
+param technology_set_share_bnd_up{T,TECHNOLOGY_SET,TECHNOLOGY_SET};
+param technology_set_share_bnd_lo{T,TECHNOLOGY_SET,TECHNOLOGY_SET};
+param technology_set_share_bnd_fx{T,TECHNOLOGY_SET,TECHNOLOGY_SET};
 
-param market{P,MARKET};                  # =1 if the process p belongs to the market m
-param renewal_rate{T,MARKET};            # renewal rate in market m
+param technology_set{P,TECHNOLOGY_SET}; # =1 if the process p belongs to the technology_set m
+param renewal_rate{T,TECHNOLOGY_SET};   # renewal rate in technology_set m
 
 # COMPUTED PARAMETERS
 param nb_completed_years{t in T} := # number of completed years
@@ -181,7 +181,7 @@ subject to EQ_PTRANS {t in T, s in S, p in P, cg_in in FLOW_IN[p], cg_out in FLO
 = eff_flo[cg_in,cg_out] *
   sum{c_i in C_ITEMS[cg_in]} VAR_COM[t,s,p,c_i];
 
-# market/product share limit constraints
+# technology_set/product share limit constraints
 subject to EQ_SHR_LO {t in T, s in S, p in P, cg in FLOW_IN[p] union FLOW_OUT[p], c in C_ITEMS[cg] : flo_share_lo[cg,c]>0} :
 VAR_COM[t,s,p,c] >= flo_share_lo[cg,c]*sum{cc in C_ITEMS[cg]} VAR_COM[t,s,p,cc];
 
@@ -312,24 +312,24 @@ subject to EQ_RATE_OF_PENETRATION{t in T, c in C : t > 1 and rate_of_penetration
     (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
      );
 
-subject to EQ_MARKET_SHARE_BND_UP{t in T, sub_m in MARKET, m in MARKET : market_share_bnd_up[t,sub_m,m] > 0 }:
-    sum{p in P_MARKET[sub_m]}
+subject to EQ_TECH_SET_SHARE_BND_UP{t in T, sub_tech in TECHNOLOGY_SET, m in TECHNOLOGY_SET : technology_set_share_bnd_up[t,sub_tech,m] > 0 }:
+    sum{p in P_TECHNOLOGY_SET[sub_tech]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
-    <= market_share_bnd_up[t,sub_m,m] * sum{p in P_MARKET[m]}
-    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
-    ;
-
-subject to EQ_MARKET_SHARE_BND_LO{t in T, sub_m in MARKET, m in MARKET : market_share_bnd_lo[t,sub_m,m] > 0 }:
-    sum{p in P_MARKET[sub_m]}
-    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
-    >= market_share_bnd_lo[t,sub_m,m] * sum{p in P_MARKET[m]}
+    <= technology_set_share_bnd_up[t,sub_tech,m] * sum{p in P_TECHNOLOGY_SET[m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     ;
 
-subject to EQ_MARKET_SHARE_BND_FX{t in T, sub_m in MARKET, m in MARKET : market_share_bnd_fx[t,sub_m,m] > 0 }:
-    sum{p in P_MARKET[sub_m]}
+subject to EQ_TECH_SET_SHARE_BND_LO{t in T, sub_tech in TECHNOLOGY_SET, m in TECHNOLOGY_SET : technology_set_share_bnd_lo[t,sub_tech,m] > 0 }:
+    sum{p in P_TECHNOLOGY_SET[sub_tech]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
-    = market_share_bnd_fx[t,sub_m,m] * sum{p in P_MARKET[m]}
+    >= technology_set_share_bnd_lo[t,sub_tech,m] * sum{p in P_TECHNOLOGY_SET[m]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    ;
+
+subject to EQ_TECH_SET_SHARE_BND_FX{t in T, sub_tech in TECHNOLOGY_SET, m in TECHNOLOGY_SET : technology_set_share_bnd_fx[t,sub_tech,m] > 0 }:
+    sum{p in P_TECHNOLOGY_SET[sub_tech]}
+    (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
+    = technology_set_share_bnd_fx[t,sub_tech,m] * sum{p in P_TECHNOLOGY_SET[m]}
     (sum{t1 in 1..t : t1>=t-life[p]+1 and t1>=avail[p]}VAR_ICAP[t1,p]+fixed_cap[t,p]) # capacity[t,p]
     ;
 

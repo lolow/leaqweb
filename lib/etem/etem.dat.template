@@ -14,7 +14,7 @@ set DEM:= #{@s_dem.join(" ")};
 
 set AGG:= #{@s_agg.join(" ")};
 
-set MARKET:= #{@s_m.join(" ")};
+set TECHNOLOGY_SET:= #{@s_m.join(" ")};
 
 set FLOW:= #{@s_flow.join(" ")};
 
@@ -34,8 +34,8 @@ set C_ITEMS[#{flow}]:=#{comm.join(" ")};
 set C_AGG[#{agg}]:=#{comm.join(" ")};
 <?rb end ?>
 
-<?rb @s_p_market.each do |market,techs|  ?>
-set P_MARKET[#{market}]:=#{techs.join(" ")};
+<?rb @s_p_technology_set.each do |technology_set,techs|  ?>
+set P_TECHNOLOGY_SET[#{technology_set}]:=#{techs.join(" ")};
 <?rb end ?>
 
 param flow_act := #{@p_flow_act.join(" ")};
@@ -87,9 +87,9 @@ param imp_bnd_fx default #{@p_imp_bnd_fx_d} := #{@p_imp_bnd_fx.join(" ")};
 param imp_bnd_lo default #{@p_imp_bnd_lo_d} := #{@p_imp_bnd_lo.join(" ")};
 param imp_bnd_up default #{@p_imp_bnd_up_d} := #{@p_imp_bnd_up.join(" ")};
 param life default #{@p_life_d} := #{@p_life.join(" ")};
-param market_share_bnd_fx default #{@p_market_share_bnd_fx_d} := #{@p_market_share_bnd_fx.join(" ")};
-param market_share_bnd_lo default #{@p_market_share_bnd_lo_d} := #{@p_market_share_bnd_lo.join(" ")};
-param market_share_bnd_up default #{@p_market_share_bnd_up_d} := #{@p_market_share_bnd_up.join(" ")};
+param technology_set_share_bnd_fx default #{@p_technology_set_share_bnd_fx_d} := #{@p_technology_set_share_bnd_fx.join(" ")};
+param technology_set_share_bnd_lo default #{@p_technology_set_share_bnd_lo_d} := #{@p_technology_set_share_bnd_lo.join(" ")};
+param technology_set_share_bnd_up default #{@p_technology_set_share_bnd_up_d} := #{@p_technology_set_share_bnd_up.join(" ")};
 param network_efficiency default #{@p_network_efficiency_d} := #{@p_network_efficiency.join(" ")};
 param peak_prod default #{@p_peak_prod_d} := #{@p_peak_prod.join(" ")};
 param peak_reserve default #{@p_peak_reserve_d} := #{@p_peak_reserve.join(" ")};

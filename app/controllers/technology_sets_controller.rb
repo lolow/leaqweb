@@ -21,76 +21,76 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class MarketsController < ApplicationController
+class TechnologySetsController < ApplicationController
   before_filter :authenticate_user!
   respond_to :html
   respond_to :json, :only => [:show]
 
   def index
-    @markets = Market.order(:name)
+    @technology_sets = TechnologySet.order(:name)
   end
 
   def list
-    @markets, @total_markets  = filter_list(Market,["name","description"])
+    @technology_sets, @total_technology_sets  = filter_list(TechnologySet,["name","description"])
     render :layout => false, :partial => "list.json"
   end
 
   def show
-    @market = Market.find(params[:id])
+    @technology_set = TechnologySet.find(params[:id])
     respond_to do |format|
-      format.html { redirect_to edit_market_path(@market) }
-      format.js { render :json => {:market=>{:id=>@market.id, :technologies=>@market.technologies}}.to_json }
+      format.html { redirect_to edit_technology_set_path(@technology_set) }
+      format.js { render :json => {:technology_set=>{:id=>@technology_set.id, :technologies=>@technology_set.technologies}}.to_json }
     end
   end
 
   def new
-    respond_with(@market = Market.new)
+    respond_with(@technology_set = TechnologySet.new)
   end
 
   def edit
-    respond_with(@market = Market.find(params[:id]))
+    respond_with(@technology_set = TechnologySet.find(params[:id]))
   end
 
   def create
-    respond_with(@market = Market.create(params[:market]))
+    respond_with(@technology_set = TechnologySet.create(params[:technology_set]))
   end
 
   def update
-    @market = Market.find(params[:id])
+    @technology_set = TechnologySet.find(params[:id])
     case params[:do]
       when "update_technologies"
-        @market.technologies = Technology.find_by_list_name(params[:technologies])
-        flash[:notice] = 'Market was successfully created.' if @market.save
+        @technology_set.technologies = Technology.find_by_list_name(params[:technologies])
+        flash[:notice] = 'TechnologySet was successfully created.' if @technology_set.save
       when "update"
-        @market.update_attributes(params[:market])
-        respond_with(@market)
+        @technology_set.update_attributes(params[:technology_set])
+        respond_with(@technology_set)
         return
       when "delete_pv"
         ParameterValue.destroy(checkbox_ids)
       when "add_pv"
         att = params[:pv]
-        att[:sub_market] = Market.find(att[:sub_market].to_i) if att[:sub_market]
+        att[:technology_subset] = TechnologySet.find(att[:technology_subset].to_i) if att[:technology_subset]
         att[:parameter] = Parameter.find_by_name(att[:parameter])
-        att[:market] = @market
+        att[:technology_set] = @technology_set
         pv = ParameterValue.new(att)
         flash[:notice] = 'Parameter value was successfully added.' if pv.save
     end if params[:do]
-    redirect_to(edit_market_path(@market))
+    redirect_to(edit_technology_set_path(@technology_set))
   end
 
   def destroy
-    Market.destroy(params[:id])
-    redirect_to(markets_url)
+    TechnologySet.destroy(params[:id])
+    redirect_to(technology_sets_url)
   end
 
   def destroy_all
-    Market.destroy(checkbox_ids)
-    redirect_to(markets_url)
+    TechnologySet.destroy(checkbox_ids)
+    redirect_to(technology_sets_url)
   end
 
   def suggest
     text = params[:term]
-    res = Market.order(:name).matching_text(text).limit(10).map(&:name)
+    res = TechnologySet.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
     render :json => res.to_json
   end

@@ -48,7 +48,7 @@ salvage(T,P) = (1-(1+discount_rate)**(-period_length*(ord(T)+life(P)-nb_periods-
 parameter year(T);
 year(T) = first_year + (ord(T)-1) * period_length;
 
-ALIAS(MARKET,SUBMARKET);
+ALIAS(TECHNOLOGY_SET,TECHNOLOGY_SUBSET);
 ALIAS(T,T1);
 ALIAS(P,P1);
 ALIAS(C,C1);
@@ -118,9 +118,9 @@ Equations
   EQ_COM_SET_UP_T
   EQ_DEGREE_OF_USE       Maximum share of a commodity in a commodity_set
   EQ_RATE_OF_PENETRATION Rate of penetration of a commodity in a commodity_set
-  EQ_MARKET_SHARE_BND_FX
-  EQ_MARKET_SHARE_BND_LO
-  EQ_MARKET_SHARE_BND_UP
+  EQ_TECH_SET_SHARE_BND_FX
+  EQ_TECH_SET_SHARE_BND_LO
+  EQ_TECH_SET_SHARE_BND_UP
 ;
 
 EQ_OBJ..
@@ -291,17 +291,17 @@ EQ_RATE_OF_PENETRATION(T,C)$(ord(T) gt 1 and rate_of_penetration(t,c) ne 0)..
   (1+rate_of_penetration(T,C)) *
   SUM(S,SUM(P$P_CONS(C,P), VAR_COM(T-1,S,P,C)) + VAR_EXP(T-1,S,C)$EXPORT(C)) ;
 
-EQ_MARKET_SHARE_BND_UP(T,SUBMARKET,MARKET)$(market_share_bnd_up(t,submarket,market) gt 0)..
-  SUM(P$P_MARKET(SUBMARKET,P),CAPACITY(T,P))
-  =L= market_share_bnd_up(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
+EQ_TECH_SET_SHARE_BND_UP(T,TECHNOLOGY_SUBSET,TECHNOLOGY_SET)$(technology_set_share_bnd_up(t,technology_subset,technology_set) gt 0)..
+  SUM(P$P_TECHNOLOGY_SET(TECHNOLOGY_SUBSET,P),CAPACITY(T,P))
+  =L= technology_set_share_bnd_up(T,TECHNOLOGY_SUBSET,TECHNOLOGY_SET) * SUM(P1$P_TECHNOLOGY_SET(TECHNOLOGY_SET,P1),CAPACITY(T,P1));
 
-EQ_MARKET_SHARE_BND_LO(T,SUBMARKET,MARKET)$(market_share_bnd_lo(t,submarket,market) gt 0)..
-  SUM(P$P_MARKET(SUBMARKET,P),CAPACITY(T,P))
-  =G= market_share_bnd_lo(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
+EQ_TECH_SET_SHARE_BND_LO(T,TECHNOLOGY_SUBSET,TECHNOLOGY_SET)$(technology_set_share_bnd_lo(t,technology_subset,technology_set) gt 0)..
+  SUM(P$P_TECHNOLOGY_SET(TECHNOLOGY_SUBSET,P),CAPACITY(T,P))
+  =G= technology_set_share_bnd_lo(T,TECHNOLOGY_SUBSET,TECHNOLOGY_SET) * SUM(P1$P_TECHNOLOGY_SET(TECHNOLOGY_SET,P1),CAPACITY(T,P1));
 
-EQ_MARKET_SHARE_BND_FX(T,SUBMARKET,MARKET)$(market_share_bnd_fx(t,submarket,market) gt 0)..
-  SUM(P$P_MARKET(SUBMARKET,P),CAPACITY(T,P))
-  =E= market_share_bnd_fx(T,SUBMARKET,MARKET) * SUM(P1$P_MARKET(MARKET,P1),CAPACITY(T,P1));
+EQ_TECH_SET_SHARE_BND_FX(T,TECHNOLOGY_SUBSET,TECHNOLOGY_SET)$(technology_set_share_bnd_fx(t,technology_subset,technology_set) gt 0)..
+  SUM(P$P_TECHNOLOGY_SET(TECHNOLOGY_SUBSET,P),CAPACITY(T,P))
+  =E= technology_set_share_bnd_fx(T,TECHNOLOGY_SUBSET,TECHNOLOGY_SET) * SUM(P1$P_TECHNOLOGY_SET(TECHNOLOGY_SET,P1),CAPACITY(T,P1));
 
 
 MODEL ETEM /
@@ -345,9 +345,9 @@ MODEL ETEM /
   EQ_COM_SET_UP_T
   EQ_DEGREE_OF_USE
   EQ_RATE_OF_PENETRATION
-  EQ_MARKET_SHARE_BND_FX
-  EQ_MARKET_SHARE_BND_LO
-  EQ_MARKET_SHARE_BND_UP
+  EQ_TECH_SET_SHARE_BND_FX
+  EQ_TECH_SET_SHARE_BND_LO
+  EQ_TECH_SET_SHARE_BND_UP
 /;
 
 *OPTIONS

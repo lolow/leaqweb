@@ -42,8 +42,8 @@ Factory.define :combustion do |f|
   f.source { Faker::Lorem.words(3) }
 end
 
-Factory.define :market do |f|
-  f.sequence(:name) { |n| "MARKET#{n}" }
+Factory.define :technology_set do |f|
+  f.sequence(:name) { |n| "TECHNOLOGY_SET#{n}" }
   f.description { Faker::Lorem.words(3) }
 end
 

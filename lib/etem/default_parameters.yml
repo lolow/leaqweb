@@ -1,12 +1,12 @@
 ---
-- :name: market_share_bnd_up
-  :definition:  Maximum share of a submarket in an market
+- :name: technology_set_share_bnd_up
+  :definition:  Maximum share of a subtechnology_set in an technology_set
   :default_value: -1.0
-- :name: market_share_bnd_lo
-  :definition:  minimum share of a submarket in an market
+- :name: technology_set_share_bnd_lo
+  :definition:  minimum share of a subtechnology_set in an technology_set
   :default_value: 0.0
-- :name: market_share_bnd_fx
-  :definition:  minimum share of a submarket in an market
+- :name: technology_set_share_bnd_fx
+  :definition:  minimum share of a subtechnology_set in an technology_set
   :default_value: -1.0
 - :name: commodity_set_annual_up
   :definition: Annual upper bound on an commodity_set
@@ -29,8 +29,8 @@
 - :name: degree_of_use
   :definition: maximum share of a commodity in an commodity_set
   :default_value: -1.0
-- :name: market_share_up
-  :definition: maximum share of a submarket in a market
+- :name: technology_set_share_up
+  :definition: maximum share of a subtechnology_set in a technology_set
   :default_value: -1.0
 - :name: rate_of_penetration
   :definition: maximum annual rate of penetration of a commodity
@@ -170,6 +170,6 @@
 - :name: output
   :definition: output quantity
   :default_value: 0.0
-- :name: market
-  :definition: technology market (0,1)
+- :name: technology_set
+  :definition: technology technology_set (0,1)
   :default_value: 0.0

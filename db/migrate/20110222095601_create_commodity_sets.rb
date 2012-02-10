@@ -5,7 +5,7 @@ class CreateCommoditySets < ActiveRecord::Migration
       t.text :description
       t.timestamps
     end
-    create_table :commodity_sets_commodities, :id => false do |t|
+    create_table :commodities_commodity_sets, :id => false do |t|
       t.belongs_to :commodity_set
       t.belongs_to :commodity
     end

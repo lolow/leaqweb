@@ -1,4 +1,4 @@
 require 'test_helper'
 
-class MarketsHelperTest < ActionView::TestCase
+class TechnologySetsHelperTest < ActionView::TestCase
 end

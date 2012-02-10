@@ -12,7 +12,7 @@
         "sPaginationType": "full_numbers",
         "iDisplayLength" : 25,
         "bAutoWidth"     : false,
-  		"sAjaxSource"    : #{list_markets_path.to_json},
+  		"sAjaxSource"    : #{list_technology_sets_path.to_json},
   	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
             aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
             $.getJSON( sSource, aoData, function (json) {
@@ -31,14 +31,14 @@
     %h2 Actions
     %br
     %p
-      = link_to 'New Market', new_market_path, :class => "action new"
+      = link_to 'New Technology set', new_technology_set_path, :class => "action new"
 
 .grid_10
   .box
-    %h2 Browse markets
+    %h2 Browse technology sets
     %p
-      = form_tag(destroy_all_markets_path,:method => "delete") do
-        %table(class="list_table" summary="Market list")
+      = form_tag(destroy_all_technology_sets_path,:method => "delete") do
+        %table(class="list_table" summary="Technology set list")
           %thead
             %th(class='check')
               = check_box_tag("click_check",nil,nil,:class=>"check_all")

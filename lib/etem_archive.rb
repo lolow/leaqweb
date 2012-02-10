@@ -40,11 +40,11 @@ include ZipTools
       Flow.delete_all
       Parameter.delete_all
       ParameterValue.delete_all
-      Market.delete_all
+      TechnologySet.delete_all
       CommoditySet.delete_all
       Scenario.delete_all
       ActiveRecord::Base.connection.execute("DELETE FROM `commodities_flows`")
-      ActiveRecord::Base.connection.execute("DELETE FROM `markets_technologies`")
+      ActiveRecord::Base.connection.execute("DELETE FROM `technology_sets_technologies`")
       ActiveRecord::Base.connection.execute("DELETE FROM `commodity_sets_commodities`")
     ensure
       PaperTrail.enabled = paper_trail_state
@@ -81,17 +81,17 @@ include ZipTools
       end
 
       headers = ["parameter_name","technology_id","commodity_id","commodity_set_id","flow_id",
-                 "in_flow_id","out_flow_id","market_id","sub_market_id","time_slice",
+                 "in_flow_id","out_flow_id","technology_set_id","technology_subset_id","time_slice",
                  "year","value","source","scenario_id"]
       ZipTools::write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
         csv << [pv.parameter.name,pv.technology_id,pv.commodity,pv.commodity_set,pv.flow_id,
-                pv.in_flow_id,pv.out_flow_id,pv.market_id,pv.sub_market_id,pv.time_slice,
+                pv.in_flow_id,pv.out_flow_id,pv.technology_set_id,pv.technology_subset_id,pv.time_slice,
                 pv.year,pv.value,pv.source,pv.scenario_id]
         pv.attributes.values_at(*headers)
       end
 
       headers = ["id","name","description","technologies","sets"]
-      ZipTools::write_csv_into_zip(zipfile,Market,headers) do |m,csv|
+      ZipTools::write_csv_into_zip(zipfile,TechnologySet,headers) do |m,csv|
         csv << [m.id,m.name,m.description,m.technology_ids.join(' '),m.set_list.join(',')]
       end
 
@@ -166,9 +166,9 @@ include ZipTools
         end
       end
 
-      ZipTools::readline_zip(filename,Market) do |row|
+      ZipTools::readline_zip(filename,TechnologySet) do |row|
         technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tec][c]}
-        m = Market.create({:name            => row["name"],
+        m = TechnologySet.create({:name            => row["name"],
                            :description     => row["description"],
                            :technology_ids  => technology_ids},
                           :without_protection => true)
@@ -206,8 +206,8 @@ include ZipTools
         pv.flow_id       = h[:flo][row["flow_id"]]
         pv.in_flow_id    = h[:flo][row["in_flow_id"]]
         pv.out_flow_id   = h[:flo][row["out_flow_id"]]
-        pv.market_id     = h[:mkt][row["market_id"]]
-        pv.sub_market_id = h[:mkt][row["sub_market_id"]]
+        pv.technology_set_id     = h[:mkt][row["technology_set_id"]]
+        pv.technology_subset_id = h[:mkt][row["technology_subset_id"]]
         pv.scenario_id   = h[:sce][row["scenario_id"]]
         pv.time_slice    = row["time_slice"]
         pv.year          = row["year"]

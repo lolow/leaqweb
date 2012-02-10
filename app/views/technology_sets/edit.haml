@@ -9,22 +9,22 @@
         $('#avail_technology').html(options);
     })
   }
-  function fill_market(market_path){
-    $.getJSON(market_path + '.js', function(j){
+  function fill_technology_set(technology_set_path){
+    $.getJSON(technology_set_path + '.js', function(j){
       var options = "";
-      var c = j.market.technologies;
+      var c = j.technology_set.technologies;
       for(var i = 0; i < c.length; i++) {
         options += '<option>' + c[i].name + '</option>';
       }
-      $('#market_technology').html(options);
+      $('#technology_set_technology').html(options);
       nb_tech_selected();
-      $("#market_technology").html($("#market_technology option").sort(function (a, b) {
+      $("#technology_set_technology").html($("#technology_set_technology option").sort(function (a, b) {
         return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
       }));
     });
   }
   function nb_tech_selected(){
-    $("#nb_technology").html("Technology selected ("+$('#market_technology option').size()+")");
+    $("#nb_technology").html("Technology selected ("+$('#technology_set_technology option').size()+")");
     return true;
   }
   $(function(){
@@ -32,12 +32,12 @@
       fill_avail_technologies('#{technologies_path}',$('#filter_technology').val());
     });
     fill_avail_technologies('#{technologies_path}',$('#filter_technology').val());
-    fill_market('#{market_path(@market)}');
-    $('#add_technology_market').click(function() {
-        $('#avail_technology option:selected').clone().appendTo('#market_technology');
+    fill_technology_set('#{technology_set_path(@technology_set)}');
+    $('#add_technology_technology_set').click(function() {
+        $('#avail_technology option:selected').clone().appendTo('#technology_set_technology');
         //remove duplicates
         map = {};
-        $('#market_technology option').each(function(){
+        $('#technology_set_technology option').each(function(){
             var value = $(this).text();
             if (map[value] == null){
                 map[value] = true;
@@ -47,22 +47,22 @@
         });
         nb_tech_selected();
         // Sort by name
-        $("#market_technology").html($("#market_technology option").sort(function (a, b) {
+        $("#technology_set_technology").html($("#technology_set_technology option").sort(function (a, b) {
           return a.text == b.text ? 0 : a.text < b.text ? -1 : 1;
         }));
     });
-    $('#remove_technology_market').click(function() {
-        !$('#market_technology option:selected').remove();
+    $('#remove_technology_technology_set').click(function() {
+        !$('#technology_set_technology option:selected').remove();
         return nb_tech_selected();
     });
     $('#apply').click(function() {
-        var item = $('#market_technology option');
+        var item = $('#technology_set_technology option');
         var s = "";
         for(var i = 0; i < item.length; i++) {
             s += item[i].text + ",";
         }
         $.ajax({
-            url:#{market_path(@market).to_json},
+            url:#{technology_set_path(@technology_set).to_json},
             type:'PUT',
             data:{
                 'technologies':s.substring(0,s.length-1),
@@ -80,15 +80,15 @@
     %h2 Actions
     %br
     %p
-      = link_to 'Browse all', markets_path, :class => "action browse"
-      = link_to 'New Market', new_market_path, :class => "action new"
+      = link_to 'Browse all', technology_sets_path, :class => "action browse"
+      = link_to 'New TechnologySet', new_technology_set_path, :class => "action new"
     %p
-      = link_to 'Delete', @market, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
+      = link_to 'Delete', @technology_set, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
 
   .box
-    %h2 Market
+    %h2 TechnologySet
     .block(id="idcard")
-      = render :partial => 'shared/id_card', :locals => {:object => @market , :categories => nil}
+      = render :partial => 'shared/id_card', :locals => {:object => @technology_set , :categories => nil}
 .grid_9
   .box
     %h2 Technologies
@@ -106,28 +106,28 @@
             %td.col50
               %select(multiple size="10" id="avail_technology" class="flow_list")
               %p(style="text-align: center")
-                %a(href="#" id="add_technology_market")
+                %a(href="#" id="add_technology_technology_set")
                   & add >>
             %td.col50
-              %select(multiple size="10" id="market_technology" class="flow_list")
+              %select(multiple size="10" id="technology_set_technology" class="flow_list")
               %p(style="text-align: center")
-                %a(href="#" id="remove_technology_market")
+                %a(href="#" id="remove_technology_technology_set")
                   & << remove
       = link_to 'Apply', '', :id => "apply", :class => "action"
-      = link_to 'Undo', market_path(@market), :class => "action"
+      = link_to 'Undo', technology_set_path(@technology_set), :class => "action"
 
   .box
     %h2 Parameters
     .block
       :erb
         <%= render :partial => 'shared/parameter_table',
-                  :locals => { :object => @market,
+                  :locals => { :object => @technology_set,
                                :pid => "param",
                                :length_change => "false",
                                :filter => "false",
-                               :request_path => market_path(@market),
-                               :parameters => %w{market_share_bnd_lo market_share_bnd_up market_share_bnd_fx},
-                               :cols => %w{parameter sub_market year value source},
+                               :request_path => technology_set_path(@technology_set),
+                               :parameters => %w{technology_set_share_bnd_lo technology_set_share_bnd_up technology_set_share_bnd_fx},
+                               :cols => %w{parameter technology_subset year value source},
                                :editable => %w{value source},
                                :rules => {} }%>
 .clear

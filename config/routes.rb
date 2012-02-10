@@ -36,7 +36,7 @@ Leaqweb::Application.routes.draw do
     end
   end
 
-  resources :markets do
+  resources :technology_sets do
     collection do
       get :list
       delete :destroy_all

@@ -2,18 +2,18 @@
 commodity_set_annual_up:
 - period
 - commodity_set
-market_share_bnd_up:
+technology_set_share_bnd_up:
 - period
-- sub_market
-- market
-market_share_bnd_fx:
+- technology_subset
+- technology_set
+technology_set_share_bnd_fx:
 - period
-- sub_market
-- market
-market_share_bnd_lo:
+- technology_subset
+- technology_set
+technology_set_share_bnd_lo:
 - period
-- sub_market
-- market
+- technology_subset
+- technology_set
 rate_of_penetration:
 - period
 - commodity
@@ -24,9 +24,9 @@ degree_of_use:
 agg_coef:
 - commodity
 - commodity_set
-market:
+technology_set:
 - technology
-- market
+- technology_set
 com_net_bnd_up_t:
 - period
 - commodity
