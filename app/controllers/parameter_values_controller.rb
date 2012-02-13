@@ -61,7 +61,7 @@ class ParameterValuesController < ApplicationController
   end
 
   def destroy_all
-    ParameterValue.destroy(checkbox_ids)
+    ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
     render :json => "ok"
   end
 

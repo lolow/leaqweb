@@ -31,10 +31,10 @@ class Solver < ActiveRecord::Base
 
   LANGUAGES = %w{GAMS GMPL}
 
-  validates :nb_periods,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
-  validates :period_duration, :presence => true, :numericality => {:only_integer => true, :minimum => -1}
-  validates :first_year,      :presence => true, :numericality => {:only_integer => true, :minimum => -1}
-  validates :language,        :presence => true, :inclusion => {:in => LANGUAGES}
+  validates :nb_periods,      presence: true, numericality: true, only_integer: true, minimum: -1
+  validates :period_duration, presence: true, numericality: true, only_integer: true, minimum: -1
+  validates :first_year,      presence: true, numericality: true, only_integer: true, minimum: -1
+  validates :language,        presence: true, inclusion: {in: LANGUAGES}
 
   scope :matching_text, lambda {|text| where(['workflow_state LIKE ?'] + ["%#{text}%"]) }
   scope :matching_tag #empty
@@ -42,11 +42,11 @@ class Solver < ActiveRecord::Base
   # State Machine
   workflow do
     state :new do
-      event :solve, :transitions_to => :solving
+      event :solve, transitions_to: :solving
     end
 
     state :solving do
-      event :complete, :transitions_to => :solved
+      event :complete, transitions_to: :solved
     end
 
     state :solved
@@ -83,11 +83,11 @@ class Solver < ActiveRecord::Base
 
   def opts
     {
-      :first_year => first_year.to_i,
-      :nb_periods => nb_periods.to_i,
-      :period_duration => period_duration.to_i,
-      :language => language,
-      :scenarios => scenarios
+      first_year: first_year.to_i,
+      nb_periods: nb_periods.to_i,
+      period_duration: period_duration.to_i,
+      language: language,
+      scenarios: scenarios
     }
   end
 

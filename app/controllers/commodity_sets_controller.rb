@@ -67,7 +67,7 @@ class CommoditySetsController < ApplicationController
         respond_with(@commodity_set)
         return
       when "delete_pv"
-        ParameterValue.destroy(checkbox_ids)
+        ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:parameter] = Parameter.find_by_name(att[:parameter])
@@ -80,12 +80,12 @@ class CommoditySetsController < ApplicationController
   end
 
   def destroy
-    CommoditySet.destroy(params[:id])
+    CommoditySet.find(params[:id]).destroy
     redirect_to(commodity_sets_url)
   end
 
   def destroy_all
-    CommoditySet.destroy(checkbox_ids)
+    CommoditySet.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(commodity_sets_url)
   end
 

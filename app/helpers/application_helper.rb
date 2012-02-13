@@ -40,4 +40,9 @@ module ApplicationHelper
     s += ")" if flow.commodities.size > 0
     s
   end
+
+  def title(page_title)
+    content_for(:title) { page_title }
+  end
+
 end

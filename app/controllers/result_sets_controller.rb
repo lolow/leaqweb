@@ -84,12 +84,12 @@ class ResultSetsController < ApplicationController
   end
 
   def destroy
-    ResultSet.destroy(params[:id])
+    ResultSet.find(params[:id]).destroy
     redirect_to(result_sets_url)
   end
 
   def destroy_all
-    ResultSet.destroy(checkbox_ids)
+    ResultSet.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(result_sets_url)
   end
 

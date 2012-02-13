@@ -35,17 +35,17 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :out_flow
   belongs_to :in_flow
   belongs_to :technology_set
-  belongs_to :technology_subset, :class_name => "TechnologySet"
+  belongs_to :technology_subset, class_name: "TechnologySet"
   belongs_to :scenario
 
   #Validations
-  validates :value, :presence => true, :numericality => true
-  validates :parameter, :presence => true
-  validates :year, :numericality => {:only_integer => true, :minimum => -1}, :allow_nil => true
-  validates :time_slice, :inclusion => {:in => %w(AN IN ID SN SD WN WD)}, :allow_nil => true
-  validates :scenario, :presence => true
+  validates :value, presence: true, numericality: true
+  validates :parameter, presence: true
+  validates :time_slice, inclusion: {in: %w(AN IN ID SN SD WN WD)}
+  validates :scenario, presence: true
+  validates_numericality_of :year, :greater_than_or_equal_to => 0, :only_integer => true
 
   scope :of, lambda { |names| joins(:parameter).where("parameters.name"=>names).order("parameters.name") }
-  scope :technology, lambda { |tech| where(:technology_id=>tech) }
+  scope :technology, lambda { |tech| where(technology_id: tech) }
 
 end

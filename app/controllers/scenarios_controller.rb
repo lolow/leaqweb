@@ -62,12 +62,12 @@ class ScenariosController < ApplicationController
   end
 
   def destroy
-    Scenario.destroy(params[:id])
+    Scenario.find(params[:id]).destroy
     redirect_to(scenarios_url)
   end
 
   def destroy_all
-    Scenario.destroy(checkbox_ids)
+    Scenario.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(scenarios_url)
   end
 

@@ -24,8 +24,8 @@
 class EnergySystem < ActiveRecord::Base
 
   #Relations
-  has_many :technologies, :dependent => :destroy
-  has_many :commodities, :dependent => :destroy
-  has_many :parameter_values, :dependent => :destroy
+  has_many :technologies, dependent: :destroy
+  has_many :commodities,  dependent: :destroy
+  has_many :parameter_values, dependent: :delete_all
 
 end

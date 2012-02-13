@@ -50,7 +50,7 @@
       .block
         %p
           - @last_visited.each do |item|
-            = link_to (h item.name), edit_commodity_path(item)
+            = link_to (h item.name), commodity_path(item)
             %br
 
 .grid_10

@@ -3,7 +3,9 @@
   %meta(name="description" content=@description)
   %meta(name="keywords" content="#{@keywords.join ', '}")
   %meta(name="author" content=@author)
-  %title= @title.join ' - '
+  %title
+    = @title
+    = yield (:title) || ""
   -#= stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin'
   -#= stylesheet_link_tag 'screen.css', :media => 'screen, projection'
   -#= stylesheet_link_tag 'print.css', :media => 'print'

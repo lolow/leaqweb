@@ -54,12 +54,12 @@ class DemandDriversController < ApplicationController
   end
 
   def destroy
-    DemandDriver.destroy(params[:id])
+    DemandDriver.find(params[:id]).destroy
     redirect_to(demand_drivers_url)
   end
 
   def destroy_all
-    DemandDriver.destroy(checkbox_ids)
+    DemandDriver.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(demand_drivers_url)
   end
 
@@ -94,7 +94,7 @@ class DemandDriversController < ApplicationController
         return
       when "delete_pv"
         ids = @demand_driver.parameter_values.map(&:id).select { |i| params["cb#{i}"] }
-        ParameterValue.destroy(ids)
+        ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:parameter] = @demand_driver

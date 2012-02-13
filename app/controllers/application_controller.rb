@@ -28,14 +28,21 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_filter :layout_info
+  before_filter :save_or_clear_session
 
   protected
 
   def layout_info
-    @title       = ["ETEMboard"]
+    @title       = "ETEMboard"
     @author      = "Laurent Drouet"
-    @keywords    = %w(leaq geoecu ayltp energy air quality)
-    @description = "LEAQ web interface"
+    @keywords    = %w(energy system model optimization lp gams gmpl etem markal times)
+    @description = "ETEM web interface"
+  end
+
+  def save_or_clear_session
+    if controller_name.eql?('sessions') and action_name.eql?('destroy')
+      request.reset_session
+    end
   end
 
   def checkbox_ids
@@ -64,5 +71,13 @@ class ApplicationController < ActionController::Base
     displayed = active_record.matching_text(params[:sSearch]).matching_tag(params[:set]).paginate(info)
     return displayed, total
   end
+
+  private
+
+    # Finds the EnergySystem with the ID stored in the session
+    # with the key :current_res_id
+    def current_res
+      @current_res ||= session[:current_res_id] && EnergySystem.find(session[:current_res_id])
+    end
 
 end

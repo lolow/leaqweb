@@ -26,6 +26,10 @@ require 'etem'
 class Commodity < ActiveRecord::Base
   include Etem
 
+  #Pretty url
+  extend FriendlyId
+  friendly_id :name, use: [:slugged]
+
   #Interfaces
   has_paper_trail
   acts_as_taggable_on :sets
@@ -33,17 +37,14 @@ class Commodity < ActiveRecord::Base
   #Relations
   belongs_to :energy_system
   has_and_belongs_to_many :flows
-  has_many :parameter_values, :dependent => :delete_all
+  has_many :parameter_values, dependent: :delete_all
   belongs_to :demand_driver
-  has_many :combustions, :dependent => :destroy, :foreign_key => :fuel_id
-  has_many :combustions, :dependent => :destroy, :foreign_key => :pollutant_id
   has_and_belongs_to_many :commodity_sets
 
   #Validations
-  validates :name, :presence => true,
-            :uniqueness => true,
-            :format => {:with => /\A[a-zA-Z\d-]+\z/,
-                        :message => "Please use only letters, numbers or '-' in name"}
+  validates :name, presence: true,
+                   uniqueness: true,
+                   format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
 
   # Categories [name,value]
   # sets in value has to be sorted by alphabetical order!!
@@ -65,6 +66,7 @@ class Commodity < ActiveRecord::Base
   scope :exports, tagged_with("EXP")
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
+  scope :find_by_list_name, lambda{|list| where(name: list.split(","))}
 
   def out_flows
     OutFlow.joins(:commodities).where("commodities.id"=>id)
@@ -109,7 +111,7 @@ class Commodity < ActiveRecord::Base
   def demand_values(first_year)
     return [] unless demand?
     if demand_driver
-      dv = parameter_values.of("demand").where(:year=>first_year).first
+      dv = parameter_values.of("demand").where(year: first_year).first
       base_year_value = dv ? dv.value : 0
       driver_values = ParameterValue.of(demand_driver.to_s).order(:year)
       driver_values.collect! { |pv| [pv.year, pv.value] }
@@ -128,11 +130,7 @@ class Commodity < ActiveRecord::Base
   end
 
   def parameter_values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(:commodity_id=>self).order(:year)
-  end
-
-  def self.find_by_list_name(list)
-    Commodity.where(:name=>list.split(","))
+    ParameterValue.of(Array(parameters)).where(commodity_id: self).order(:year)
   end
 
   def to_s
@@ -164,7 +162,5 @@ class Commodity < ActiveRecord::Base
     end
     s
   end
-
-
 
 end

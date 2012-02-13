@@ -66,7 +66,7 @@ class TechnologySetsController < ApplicationController
         respond_with(@technology_set)
         return
       when "delete_pv"
-        ParameterValue.destroy(checkbox_ids)
+        ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:technology_subset] = TechnologySet.find(att[:technology_subset].to_i) if att[:technology_subset]
@@ -79,12 +79,12 @@ class TechnologySetsController < ApplicationController
   end
 
   def destroy
-    TechnologySet.destroy(params[:id])
+    TechnologySet.find(params[:id]).destroy
     redirect_to(technology_sets_url)
   end
 
   def destroy_all
-    TechnologySet.destroy(checkbox_ids)
+    TechnologySet.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(technology_sets_url)
   end
 

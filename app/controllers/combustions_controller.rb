@@ -49,7 +49,7 @@ class CombustionsController < ApplicationController
           return
         end
       when "delete_pv"
-        Combustion.destroy(checkbox_ids)
+        Combustion.where(:id=>checkbox_ids).map(&:destroy)
         flash[:notice]='Combustion coefficients have been deleted.'
     end
     redirect_to(combustions_path)

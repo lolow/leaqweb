@@ -38,16 +38,14 @@ class StoredQuery < ActiveRecord::Base
                %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
                %w{C_PRICE AGGREGATE COST_IMP}
 
-
   validates_presence_of :name
-  validates_uniqueness_of :name, :scope => :display
-  validates_inclusion_of :display, :in => DISPLAY, :message => "not valid"
+  validates_uniqueness_of :name, scope: :display
+  validates_inclusion_of :display, in: DISPLAY, message: "not valid"
 
-  scope :pivot_tables, where(:display=>"pivot_table")
-  scope :line_graphs, where(:display=>"line_graph")
+  scope :pivot_tables, where(display: "pivot_table")
+  scope :line_graphs, where(display: "line_graph")
   scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
-  scope :matching_tag, lambda {|tag| where(:display=>tag) if (tag && tag!="" && tag != "null") }
-
+  scope :matching_tag, lambda {|tag| where(display: tag) if (tag && tag!="" && tag != "null") }
 
   def digest_filter
     filters.split('&').collect { |term|
@@ -73,32 +71,32 @@ class StoredQuery < ActiveRecord::Base
 
   def duplicate_as_new
     StoredQuery.new(
-        :name => next_available_name(StoredQuery, name),
-        :commodity_set => aggregate,
-        :variable => variable,
-        :columns => columns,
-        :rows => rows,
-        :filters => filters,
-        :display => display,
-        :options => options)
+        name:      next_available_name(StoredQuery, name),
+        aggregate: aggregate,
+        variable:  variable,
+        columns:   columns,
+        rows:      rows,
+        filters:   filters,
+        display:   display,
+        options:   options)
   end
 
   def self.import(filename)
     ZipTools::readline_zip(filename,StoredQuery) do |row|
-      StoredQuery.create({:name      => row["name"],
-                          :aggregate => row["aggregate"],
-                          :variable  => row["variable"],
-                          :rows      => row["rows"],
-                          :columns   => row["columns"],
-                          :filters   => row["filters"],
-                          :display   => row["display"],
-                          :options   => row["options"]})
+      StoredQuery.create(name:      row["name"],
+                         aggregate: row["aggregate"],
+                         variable:  row["variable"],
+                         rows:      row["rows"],
+                         columns:   row["columns"],
+                         filters:   row["filters"],
+                         display:   row["display"],
+                         options:   row["options"])
     end
   end
 
   def self.zip(filename,subset_ids=nil)
     Zip::ZipOutputStream.open(filename) do |zipfile|
-      headers = ["name","aggregate","variable","rows","columns","filters","display","options"]
+      headers = %w{name aggregate variable rows columns filters display options}
       ZipTools::write_csv_into_zip(zipfile,StoredQuery,headers,subset_ids) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end

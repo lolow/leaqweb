@@ -84,7 +84,7 @@ class TechnologiesController < ApplicationController
         return
       when "delete_pv"
         ids = @technology.parameter_values.map(&:id).select { |i| params["cb#{i}"] }
-        ParameterValue.destroy(ids)
+        ParameterValue.where(:id=>ids).map(&:destroy)
       when "combustion_flo"
         in_flow_ids = @technology.in_flows.map(&:id).select { |i| params["f#{i}"] }
         in_flow_ids << @technology.in_flows.first.id
@@ -123,18 +123,18 @@ class TechnologiesController < ApplicationController
         @technology.flow_act=Flow.find(ids[0]) if ids.size>0
       when "delete_flo"
         ids = @technology.flows.map(&:id).select { |i| params["f#{i}"] }
-        Flow.destroy(ids)
+        Flow.where(:id=>ids).map(&:destroy)
     end if params[:do]
     redirect_to(edit_technology_path(@technology))
   end
 
   def destroy_all
-    Technology.destroy(checkbox_ids)
+    Technology.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(technologies_url)
   end
 
   def destroy
-    Technology.destroy(params[:id])
+    Technology.find(params[:id]).destroy
     redirect_to(technologies_url)
   end
 

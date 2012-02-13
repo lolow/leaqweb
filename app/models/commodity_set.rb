@@ -23,19 +23,22 @@
 
 class CommoditySet < ActiveRecord::Base
 
+  #Pretty url
+  extend FriendlyId
+  friendly_id :name, use: [:slugged]
+
   #Interfaces
   has_paper_trail
   acts_as_taggable_on :sets
 
   #Relations
   has_and_belongs_to_many :commodities
-  has_many :parameter_values, :dependent => :delete_all
+  has_many :parameter_values, dependent: :delete_all
 
   #Validations
-  validates :name, :presence => true,
-            :uniqueness => true,
-            :format => {:with => /\A[a-zA-Z\d-]+\z/,
-                        :message => "Please use only letters, numbers or '-' in name"}
+  validates :name, presence: true,
+                   uniqueness: true,
+                   format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
 
   #Scopes
   scope :activated, tagged_with("AGG")
@@ -43,7 +46,7 @@ class CommoditySet < ActiveRecord::Base
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
   def parameter_values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(:commodity_set_id=>self).order(:year)
+    ParameterValue.of(Array(parameters)).where(commodity_set_id: self.id).order(:year)
   end
 
 end

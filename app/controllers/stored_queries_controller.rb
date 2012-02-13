@@ -91,12 +91,12 @@ class StoredQueriesController < ApplicationController
   end
 
   def destroy
-    StoredQuery.destroy(params[:id])
+    StoredQuery.find(params[:id]).destroy
     redirect_to(stored_queries_url)
   end
 
   def destroy_all
-    StoredQuery.destroy(checkbox_ids)
+    StoredQuery.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(stored_queries_url)
   end
 

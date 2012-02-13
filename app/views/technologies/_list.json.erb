@@ -4,7 +4,7 @@
   "iTotalDisplayRecords":<%= @total_technologies.to_json.html_safe %>,
   "aaData":<%= @technologies.collect do |c|
            [ check_box_tag("cb#{c.id}"),
-             link_to(c.name, edit_technology_path(c)),
+             link_to(c.name, technology_path(c)),
              truncate(c.description, :omission => "...", :length => 100)]
                                      end.to_json.html_safe %>
 }

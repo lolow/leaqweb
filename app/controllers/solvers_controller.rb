@@ -71,12 +71,12 @@ class SolversController < ApplicationController
   end
 
   def destroy
-    Solver.destroy(params[:id])
+    Solver.find(params[:id]).destroy
     redirect_to(solvers_path)
   end
 
   def destroy_all
-    Solver.destroy(checkbox_ids)
+    Solver.where(:id=>checkbox_ids).map(&:destroy)
     redirect_to(solvers_path)
   end
 

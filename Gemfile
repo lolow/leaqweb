@@ -14,6 +14,7 @@ gem 'jquery-rails'
 # HTML engine/template
 gem 'haml'
 gem 'simple_form'
+gem 'friendly_id'
 
 # User identification
 gem 'devise'

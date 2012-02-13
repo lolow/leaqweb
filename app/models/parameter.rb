@@ -27,9 +27,9 @@ class Parameter < ActiveRecord::Base
 
   has_many :parameter_values
 
-  validates :name, :presence => true, :uniqueness => true
+  validates :name, presence: true, uniqueness: true
 
-  scope :named, lambda {|name| where(:name=>name)}
+  scope :named, lambda {|name| where(name: name)}
   scope :matching_text, lambda {|text| where(['name LIKE ? OR definition LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag
 

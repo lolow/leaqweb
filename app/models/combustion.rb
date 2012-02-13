@@ -29,7 +29,7 @@ class Combustion < ActiveRecord::Base
   has_paper_trail
 
   #Validations
-  validates :value, :presence => true, :numericality => true
+  validates :value, presence: true, numericality: true
 
   #Scopes
   scope :matching_text, lambda {|text| where(['combustions.pollutant LIKE ? OR combustions.fuel LIKE ? OR combustions.source LIKE ?'] + ["%#{text}%"] * 3 ) }
@@ -46,7 +46,7 @@ class Combustion < ActiveRecord::Base
 
   def self.zip(filename,subset_ids=nil)
     Zip::ZipOutputStream.open(filename) do |zipfile|
-      headers = ["fuel","pollutant","value","source"]
+      headers = %w{fuel pollutant value source}
       ZipTools::write_csv_into_zip(zipfile,Combustion,headers,subset_ids) do |pv,csv|
         csv << pv.attributes.values_at(*headers)
       end
