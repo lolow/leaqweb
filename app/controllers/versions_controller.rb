@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -32,7 +32,7 @@ class VersionsController < ApplicationController
 
   def list
     @versions, @total_versions = filter_versions(params)
-    render :layout => false, :partial => "list.json"
+    render layout: false, partial: "list.json"
   end
 
   def show
@@ -50,8 +50,8 @@ class VersionsController < ApplicationController
       @version.item.destroy
     end
     link_name = params[:redo] == "true" ? "(undo)" : "(redo)"
-    link = view_context.link_to(link_name, revert_version_path(@version.next, :redo => !params[:redo]), :method => :post)
-    redirect_to :back, :notice => "Undid #{@version.event}. #{link}"
+    link = view_context.link_to(link_name, revert_version_path(@version.next, redo: !params[:redo]), method: :post)
+    redirect_to :back, notice: "Undid #{@version.event}. #{link}"
   end
 
   private
@@ -65,12 +65,12 @@ class VersionsController < ApplicationController
     if params[:sSearch] && params[:sSearch]!=""
       conditions = ['event LIKE ? OR item_type LIKE ? OR item_id LIKE ?'] + ["%#{params[:sSearch]}%"] * 3
     end
-    filter = {:page => current_page,
-              :order => "#{order}",
-              :conditions => conditions,
-              :per_page => params[:iDisplayLength]}
+    filter = {page: current_page,
+              order: "#{order}",
+              conditions: conditions,
+              per_page: params[:iDisplayLength]}
     displayed = Version.paginate filter
-    total = Version.count :conditions => conditions
+    total = Version.count conditions: conditions
     return displayed, total
   end
 

@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,8 +25,8 @@ class CombustionsController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => [:update_value,:list]
-  respond_to :json, :only => [:update_value,:list]
+  respond_to :html, except: [:update_value,:list]
+  respond_to :json, only:   [:update_value,:list]
 
   def index
     @combustion = Combustion.new
@@ -34,8 +34,8 @@ class CombustionsController < ApplicationController
 
   def list
     combustions = Combustion
-    @combustions, @total_combustions  = filter_list(combustions,["fuel","pollutant","value","source"])
-    render :layout => false, :partial => "list.json"
+    @combustions, @total_combustions = filter_list(combustions,%w(fuel pollutant value source))
+    render layout: false, partial: "list.json"
   end
 
   def create
@@ -45,11 +45,11 @@ class CombustionsController < ApplicationController
         if @combustion.save
           flash[:notice]='Combustion coefficient was successfully added.'
         else
-          render :action => "index"
+          render action: "index"
           return
         end
       when "delete_pv"
-        Combustion.where(:id=>checkbox_ids).map(&:destroy)
+        Combustion.where(id: checkbox_ids).map(&:destroy)
         flash[:notice]='Combustion coefficients have been deleted.'
     end
     redirect_to(combustions_path)
@@ -64,17 +64,17 @@ class CombustionsController < ApplicationController
   def upload
     if params[:import] && File.exist?(params[:import]["combustion"].tempfile.path)
       Combustion.import(params[:import]["combustion"].tempfile.path)
-      redirect_to(combustions_url, :notice => 'File has been imported.')
+      redirect_to(combustions_url, notice: 'File has been imported.')
     else
-      redirect_to(combustions_url, :notice => 'No file to upload.')
+      redirect_to(combustions_url, notice: 'No file to upload.')
     end
   end
 
   def zip
     f = Tempfile.new("combustions")
     Combustion.zip(f.path,params[:combustions_id])
-    send_file f.path, :type => "application/zip",
-                      :filename => "combustions.zip"
+    send_file f.path, type: "application/zip",
+                      filename: "combustions.zip"
   end
 
 end

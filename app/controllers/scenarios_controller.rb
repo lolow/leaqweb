@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,8 +25,8 @@ class ScenariosController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => [:suggest,:list]
-  respond_to :json, :only => [:suggest,:list]
+  respond_to :html, except: [:suggest,:list]
+  respond_to :json, only:   [:suggest,:list]
 
   def index
   end
@@ -41,7 +41,7 @@ class ScenariosController < ApplicationController
 
   def list
     @scenarios, @total_scenarios = filter_list(Scenario,["name"])
-    render :layout => false, :partial => "list.json"
+    render layout: false, partial: "list.json"
   end
 
   def edit
@@ -55,9 +55,9 @@ class ScenariosController < ApplicationController
   def update
     @scenario = Scenario.find(params[:id])
     if @scenario.update_attributes(params[:scenario])
-      redirect_to(@scenario, :notice => 'Scenario was successfully updated.')
+      redirect_to(@scenario, notice: 'Scenario was successfully updated.')
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 
@@ -67,15 +67,15 @@ class ScenariosController < ApplicationController
   end
 
   def destroy_all
-    Scenario.where(:id=>checkbox_ids).map(&:destroy)
+    Scenario.where(id: checkbox_ids).map(&:destroy)
     redirect_to(scenarios_url)
   end
 
   def suggest
     text = params[:term]
     res = Scenario.order(:name).matching_text(text).limit(10).map(&:name)
-    res << "..." if res.size==10
-    render :json => res.to_json
+    res << "..." if res.size == 10
+    render json: res.to_json
   end
 
 end

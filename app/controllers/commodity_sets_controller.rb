@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,22 +25,22 @@ class CommoditySetsController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html
-  respond_to :json, :only => [:show, :suggest]
+  respond_to :json, only: [:show, :suggest]
 
   def index
     @commodity_sets = CommoditySet.order(:name)
   end
 
   def list
-    @commodity_sets, @total_commodity_sets  = filter_list(CommoditySet,["name","description"])
-    render :layout => false, :partial => "list.json"
+    @commodity_sets, @total_commodity_sets  = filter_list(CommoditySet,%w(name description))
+    render layout: false, partial: "list.json"
   end
 
   def show
     @commodity_set = CommoditySet.find(params[:id])
     respond_to do |format|
       format.html { redirect_to edit_commodity_set_path(@commodity_set) }
-      format.js { render :json => {:commodity_set=>{:id=>@commodity_set.id, :commodities=>@commodity_set.commodities}}.to_json }
+      format.js { render json: {commodity_set: {id: @commodity_set.id, commodities: @commodity_set.commodities}}.to_json }
     end
   end
 
@@ -67,7 +67,7 @@ class CommoditySetsController < ApplicationController
         respond_with(@commodity_set)
         return
       when "delete_pv"
-        ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
+        ParameterValue.where(id: checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:parameter] = Parameter.find_by_name(att[:parameter])
@@ -93,7 +93,7 @@ class CommoditySetsController < ApplicationController
     text = params[:term]
     res = CommoditySet.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
-    render :json => res.to_json
+    render json: res.to_json
   end
 
 end

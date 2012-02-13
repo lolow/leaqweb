@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -43,7 +43,7 @@ class QueryController < ApplicationController
   end
 
   def result_plot
-    send_file(user_session[:query]["result_file"], :disposition => 'inline', :type => 'image/png',:filename=>"plot.png")
+    send_file(user_session[:query]["result_file"], disposition: 'inline', type: 'image/png', filename: "plot.png")
   end
 
   private
@@ -53,7 +53,7 @@ class QueryController < ApplicationController
     File.delete(result_file) if File.exists?(result_file)
 
     query[:result_file] = result_file
-    query[:input_files] = ResultSet.where(:id=>query[:result_set_ids]).collect{|r|r.file("csv")}
+    query[:input_files] = ResultSet.where(id: query[:result_set_ids]).collect{|r|r.file("csv")}
     @query = query
 
     template = File.read(File.join(Rails.root, 'lib', SCRIPT[query[:display]]))

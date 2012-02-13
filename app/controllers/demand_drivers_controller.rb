@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,15 +25,15 @@ class DemandDriversController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => :list
-  respond_to :json, :only => :list
+  respond_to :html, except: :list
+  respond_to :json, only:   :list
 
   def index
   end
 
   def list
-    @demand_drivers, @total_demand_drivers  = filter_list(DemandDriver,["name","definition"])
-    render :layout => false, :partial => "list.json"
+    @demand_drivers, @total_demand_drivers  = filter_list(DemandDriver,%w(name definition))
+    render layout: false, partial: "list.json"
   end
 
   def show
@@ -59,7 +59,7 @@ class DemandDriversController < ApplicationController
   end
 
   def destroy_all
-    DemandDriver.where(:id=>checkbox_ids).map(&:destroy)
+    DemandDriver.where(id: checkbox_ids).map(&:destroy)
     redirect_to(demand_drivers_url)
   end
 
@@ -76,7 +76,7 @@ class DemandDriversController < ApplicationController
         value = ''
       end
       respond_to do |format|
-        format.js { render :json => value }
+        format.js { render json: value }
       end
       return
     end
@@ -88,13 +88,13 @@ class DemandDriversController < ApplicationController
             flash[:notice] = 'Demand driver was successfully updated.'
             format.html { redirect_to(edit_demand_driver_path(@technology)) }
           else
-            format.html { render :action => "edit" }
+            format.html { render action: "edit" }
           end
         end
         return
       when "delete_pv"
         ids = @demand_driver.parameter_values.map(&:id).select { |i| params["cb#{i}"] }
-        ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
+        ParameterValue.where(id: checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:parameter] = @demand_driver

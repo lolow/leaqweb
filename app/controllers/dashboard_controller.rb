@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -50,8 +50,8 @@ class DashboardController < ApplicationController
   def backup
     f = Tempfile.new("backup")
     EtemArchive.backup(f.path)
-    send_file f.path, :type => "application/zip",
-              :url_based_filename => true
+    send_file f.path, type: "application/zip",
+                      url_based_filename: true
     f.close
   end
 
@@ -75,9 +75,8 @@ class DashboardController < ApplicationController
 
   # Select an energy system and store it in the session
   def select_res
-    if energy_system = EnergySystem.find_by_id(params[:id])
-      session[:current_res_id] = energy_system.id
-    end
+    energy_system = EnergySystem.find_by_id(params[:id])
+    session[:current_res_id] = energy_system.id if energy_system
     redirect_to root_path
   end
 

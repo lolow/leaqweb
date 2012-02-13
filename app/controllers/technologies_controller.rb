@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,8 +25,8 @@ class TechnologiesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => :list
-  respond_to :json, :only => [:list, :index, :suggest]
+  respond_to :html, except: :list
+  respond_to :json, only:   [:list, :index, :suggest]
 
   def index
     respond_to do |format|
@@ -36,15 +36,14 @@ class TechnologiesController < ApplicationController
         if params[:filter] && params[:filter]!=""
           technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
         end
-        render :json => {"tech"  => technologies.map(&:name)
-                        }.to_json
+        render json: {"tech"  => technologies.map(&:name)}.to_json
       end
     end
   end
 
   def list
-    @technologies, @total_technologies  = filter_list(Technology,["name","description"])
-    render :layout => false, :partial => "list.json"
+    @technologies, @total_technologies  = filter_list(Technology,%w(name description))
+    render layout: false, partial: "list.json"
   end
 
   def show
@@ -96,16 +95,15 @@ class TechnologiesController < ApplicationController
           param = Parameter.find_by_name("eff_flo")
           pv = ParameterValue.where("parameter_id=? AND in_flow_id=? AND out_flow_id=?", param, in_flow.id, out_flow.id).first
           if pv
-            pv.update_attributes(:value=>coef,
-                                 :source=>"Combustion coefficients")
+            pv.update_attributes(value: coef, source: "Combustion coefficients")
           else
-            ParameterValue.create!(:parameter=>param,
-                                   :technology=>@technology,
-                                   :in_flow=>in_flow,
-                                   :out_flow=>out_flow,
-                                   :value=>coef,
-                                   :source=>"Combustion coefficients",
-                                   :scenario=>Scenario.base)
+            ParameterValue.create!(parameter:  param,
+                                   technology: @technology,
+                                   in_flow:    in_flow,
+                                   out_flow:   out_flow,
+                                   value:      coef,
+                                   source:     "Combustion coefficients",
+                                   scenario:   Scenario.base)
           end
         end
       when "add_pv"
@@ -120,16 +118,16 @@ class TechnologiesController < ApplicationController
         flash[:notice] = "Parameter value was successfully added. #{undo_link(pv)}" if pv.save
       when "set_act_flo"
         ids = @technology.flows.map(&:id).select { |i| params["f#{i}"] }
-        @technology.flow_act=Flow.find(ids[0]) if ids.size>0
+        @technology.flow_act = Flow.find(ids[0]) if ids.size>0
       when "delete_flo"
         ids = @technology.flows.map(&:id).select { |i| params["f#{i}"] }
-        Flow.where(:id=>ids).map(&:destroy)
+        Flow.find_all_by_id(ids).map(&:destroy)
     end if params[:do]
     redirect_to(edit_technology_path(@technology))
   end
 
   def destroy_all
-    Technology.where(:id=>checkbox_ids).map(&:destroy)
+    Technology.where(id: checkbox_ids).map(&:destroy)
     redirect_to(technologies_url)
   end
 
@@ -142,7 +140,7 @@ class TechnologiesController < ApplicationController
     text = params[:term]
     res = Technology.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
-    render :json => res.to_json
+    render json: res.to_json
   end
 
   private

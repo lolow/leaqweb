@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,8 +25,8 @@ class ResultSetsController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => :list
-  respond_to :json, :only => :list
+  respond_to :html, except: :list
+  respond_to :json, only:   :list
   
   def index
   end
@@ -42,22 +42,22 @@ class ResultSetsController < ApplicationController
 
   def list
     @result_sets, @total_result_sets = filter_list(ResultSet)
-    render :layout => false, :partial => "list.json"
+    render layout: false, partial: "list.json"
   end
 
   def update
     @result_set = ResultSet.find(params[:id])
     if @result_set.update_attributes(params[:result_set])
-      redirect_to(@result_set, :notice => 'Result set was successfully updated.')
+      redirect_to(@result_set, notice: 'Result set was successfully updated.')
     else
-      render :action => "edit"
+      render action: "edit"
     end
   end
 
   def file
     @result_set = ResultSet.find(params[:id])
     file = @result_set.file(params[:format])
-    render :text => (File.exist?(file) ?  File.read(file) : "error" )
+    render text: (File.exist?(file) ?  File.read(file) : "error" )
   end
 
   def import
@@ -65,7 +65,7 @@ class ResultSetsController < ApplicationController
     @result_set.store_solver(Solver.find(params[:solver_id]))
     respond_to do |format|
       format.html { redirect_to(@result_set) }
-      format.js { render :json => "" }
+      format.js { render json: "" }
     end
   end
 
@@ -79,7 +79,7 @@ class ResultSetsController < ApplicationController
       flash[:notice] = 'ResultSet was successfully created.'
       redirect_to(@result_set)
     else
-      render :action => "new"
+      render action: "new"
     end
   end
 
@@ -89,7 +89,7 @@ class ResultSetsController < ApplicationController
   end
 
   def destroy_all
-    ResultSet.where(:id=>checkbox_ids).map(&:destroy)
+    ResultSet.where(id: checkbox_ids).map(&:destroy)
     redirect_to(result_sets_url)
   end
 

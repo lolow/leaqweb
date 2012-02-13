@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,8 +25,8 @@ class CommoditiesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => [:list, :suggest]
-  respond_to :json, :only => [:list, :suggest]
+  respond_to :html, except: [:list, :suggest]
+  respond_to :json, only:   [:list, :suggest]
 
   def index
     respond_to do |format|
@@ -42,8 +42,8 @@ class CommoditiesController < ApplicationController
   end
 
   def list
-    @commodities, @total_commodities  = filter_list(Commodity,["name","description"])
-    render :layout => false, :partial => "list.json"
+    @commodities, @total_commodities  = filter_list(Commodity,%w(name description))
+    render layout: false, partial: "list.json"
   end
 
   def show
@@ -101,27 +101,27 @@ class CommoditiesController < ApplicationController
     text = params[:term]
     res = Commodity.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
-    render :json => res.to_json
+    render json: res.to_json
   end
 
   def suggest_pollutant
     text = params[:term]
     res = Commodity.pollutants.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
-    render :json => res.to_json
+    render json: res.to_json
   end
 
   def suggest_fuel
     text = params[:term]
     res = Commodity.energy_carriers.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
-    render :json => res.to_json
+    render json: res.to_json
   end
 
   private
 
   def undo_link(object)
-    view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
+    view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), method: :post)
   end
 
 end

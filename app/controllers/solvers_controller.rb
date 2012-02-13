@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -28,8 +28,8 @@ class SolversController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :except => :list
-  respond_to :json, :only => :list
+  respond_to :html, except: :list
+  respond_to :json, only:   :list
 
   USER_OPTION = [:nb_periods, :period_duration, :first_year, :language, :scenarios]
 
@@ -41,7 +41,7 @@ class SolversController < ApplicationController
 
   def list
     @solvers, @total_solvers = filter_list(Solver)
-    render :layout => false, :partial => "list.json"
+    render layout: false, partial: "list.json"
   end
 
   def new
@@ -52,7 +52,7 @@ class SolversController < ApplicationController
   end
 
   def create
-    @solver = Solver.create(params[:solver])
+    @solver = Solver.new(params[:solver])
     if @solver.save
       flash[:notice] = 'Solver has successfully started.'
       @solver.solve!
@@ -76,7 +76,7 @@ class SolversController < ApplicationController
   end
 
   def destroy_all
-    Solver.where(:id=>checkbox_ids).map(&:destroy)
+    Solver.where(id: checkbox_ids).map(&:destroy)
     redirect_to(solvers_path)
   end
 

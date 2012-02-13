@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,13 +25,13 @@ class ParametersController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :json, :only => [:suggest]
+  respond_to :json, only: [:suggest]
 
   def suggest
     text = params[:term]
     res = Parameter.where(:type=>nil).order(:name).matching_text(text).limit(10).map(&:name)
-    res << "..." if res.size==10
-    render :json => res.to_json
+    res << "..." if res.size == 10
+    render json: res.to_json
   end
 
 end

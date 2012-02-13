@@ -15,7 +15,7 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,18 +25,15 @@ class ParameterValuesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  respond_to :html, :only => [:index]
-  respond_to :json, :only => [:update_pv,:destroy_all,:create]
+  respond_to :html, only: [:index]
+  respond_to :json, only: [:update_pv,:destroy_all,:create]
 
   def index
   end
 
   def create
 
-    render :json => "wrong data" unless params[:pv]
-
-    # Clean the fields if necessary
-    params[:pv].keys.each{|k|params[:pv][k]=params[:pv][k].strip}
+    params[:pv].keys.each{|k| params[:pv][k] = params[:pv][k].strip }
     params[:pv][:parameter] = Parameter.find_by_name(params[:pv][:parameter])
 
     params[:pv][:year] = nil unless params[:pv][:year] && params[:pv][:year].size > 0
@@ -61,8 +58,8 @@ class ParameterValuesController < ApplicationController
   end
 
   def destroy_all
-    ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
-    render :json => "ok"
+    ParameterValue.where(id: checkbox_ids).map(&:destroy)
+    render json: "ok"
   end
 
   def list
@@ -82,20 +79,20 @@ class ParameterValuesController < ApplicationController
       end
     end
     current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0) + 1
-    info = {:page => current_page, :per_page => params[:iDisplayLength]}
+    info = {page: current_page, per_page: params[:iDisplayLength]}
     info[:order] = "#{order} #{params[:sSortDir_0] || "DESC"}" if order
     @total = parameter_values.count
     if (current_page - 1 ) * params[:iDisplayLength].to_i > @total
         info[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
       end
     @displayed = parameter_values.paginate(info)
-    render :layout => false, :partial => "parameter_values.json"
+    render layout: false, partial: "parameter_values.json"
   end
 
   def update_value
     f = params[:field].split("-")
-    value = ParameterValue.update( f.first.to_i, f.last=>params[:value]) ? params[:value] : ""
-    render :json => value
+    value = ParameterValue.update( f.first.to_i, f.last => params[:value]) ? params[:value] : ""
+    render json: value
   end
 
 end

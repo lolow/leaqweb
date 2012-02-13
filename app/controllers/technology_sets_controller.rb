@@ -15,31 +15,33 @@
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# NON INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
 class TechnologySetsController < ApplicationController
+
   before_filter :authenticate_user!
+
   respond_to :html
-  respond_to :json, :only => [:show]
+  respond_to :json, only: [:show]
 
   def index
     @technology_sets = TechnologySet.order(:name)
   end
 
   def list
-    @technology_sets, @total_technology_sets  = filter_list(TechnologySet,["name","description"])
-    render :layout => false, :partial => "list.json"
+    @technology_sets, @total_technology_sets  = filter_list(TechnologySet,%w(name description))
+    render layout: false, partial: "list.json"
   end
 
   def show
     @technology_set = TechnologySet.find(params[:id])
     respond_to do |format|
       format.html { redirect_to edit_technology_set_path(@technology_set) }
-      format.js { render :json => {:technology_set=>{:id=>@technology_set.id, :technologies=>@technology_set.technologies}}.to_json }
+      format.js { render json: {technology_set: {id: @technology_set.id, technologies: @technology_set.technologies}}.to_json }
     end
   end
 
@@ -66,7 +68,7 @@ class TechnologySetsController < ApplicationController
         respond_with(@technology_set)
         return
       when "delete_pv"
-        ParameterValue.where(:id=>checkbox_ids).map(&:destroy)
+        ParameterValue.where(id: checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:technology_subset] = TechnologySet.find(att[:technology_subset].to_i) if att[:technology_subset]
@@ -84,7 +86,7 @@ class TechnologySetsController < ApplicationController
   end
 
   def destroy_all
-    TechnologySet.where(:id=>checkbox_ids).map(&:destroy)
+    TechnologySet.where(id: checkbox_ids).map(&:destroy)
     redirect_to(technology_sets_url)
   end
 
@@ -92,7 +94,7 @@ class TechnologySetsController < ApplicationController
     text = params[:term]
     res = TechnologySet.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
-    render :json => res.to_json
+    render json: res.to_json
   end
 
 end
