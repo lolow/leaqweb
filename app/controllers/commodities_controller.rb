@@ -24,6 +24,7 @@
 class CommoditiesController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html, except: [:list, :suggest]
   respond_to :json, only:   [:list, :suggest]
@@ -32,17 +33,17 @@ class CommoditiesController < ApplicationController
     respond_to do |format|
       format.html { @last_visited = last_visited(Commodity) }
       format.js do
-        commodities = Commodity.matching_text(params[:filter]).order(:name).select(:name)
-        render :json => {"enc"  => commodities.energy_carriers.map(&:name),
-                         "poll" => commodities.pollutants.map(&:name),
-                         "dem"  => commodities.demands.map(&:name)
+        c = commodities.matching_text(params[:filter]).order(:name)
+        render :json => {"enc"  => c.energy_carriers.map(&:name),
+                         "poll" => c.pollutants.map(&:name),
+                         "dem"  => c.demands.map(&:name)
                         }.to_json
       end
     end
   end
 
   def list
-    @commodities, @total_commodities  = filter_list(Commodity,%w(name description))
+    @commodities, @total_commodities  = filter_list(commodities,%w(name description))
     render layout: false, partial: "list.json"
   end
 
@@ -74,7 +75,7 @@ class CommoditiesController < ApplicationController
   end
 
   def duplicate
-    @commodity = Commodity.find(params[:id]).duplicate
+    @commodity = Commodity.find_by_id(params[:id]).duplicate
     redirect_to(edit_commodity_path(@commodity))
   end
 
@@ -98,30 +99,31 @@ class CommoditiesController < ApplicationController
   end
 
   def suggest
-    text = params[:term]
-    res = Commodity.order(:name).matching_text(text).limit(10).map(&:name)
-    res << "..." if res.size==10
-    render json: res.to_json
+    render json: query_suggest(params[:term], commodities).to_json
   end
 
   def suggest_pollutant
-    text = params[:term]
-    res = Commodity.pollutants.order(:name).matching_text(text).limit(10).map(&:name)
-    res << "..." if res.size==10
-    render json: res.to_json
+    render json: query_suggest(params[:term], commodities.pollutants).to_json
   end
 
   def suggest_fuel
-    text = params[:term]
-    res = Commodity.energy_carriers.order(:name).matching_text(text).limit(10).map(&:name)
-    res << "..." if res.size==10
-    render json: res.to_json
+    render json: query_suggest(params[:term], commodities.energy_carriers).to_json
   end
 
   private
 
+  def query_suggest(text, commodities)
+    res = commodities.pollutants.order(:name).matching_text(text).limit(10).map(&:name)
+    res << "..." if res.size==10
+    res
+  end
+
   def undo_link(object)
     view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), method: :post)
+  end
+
+  def commodities
+    Commodity.where(:energy_system_id=>@current_res)
   end
 
 end

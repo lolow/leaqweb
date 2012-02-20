@@ -1,26 +1,31 @@
 .grid_12
   %ul.nav.main
     %li
-      = link_to 'Overview', root_path, {:class=>"left_side"}
+      = link_to 'Energy System', root_path, {:class=>"left_side"}
+    - if @current_res
+      %li
+        = link_to 'Components', '#'
+        %ul
+          %li= link_to 'Commodities', commodities_path
+          %li= link_to 'Technologies', technologies_path
+          %li= link_to "Demand drivers", demand_drivers_path
+          %li= link_to "Combustion coefficients", combustions_path
+          %li= link_to "Technology sets", technology_sets_path
+          %li= link_to "Commodity sets", commodity_sets_path
+          %li= link_to "Scenarios", scenarios_path
+    - if @current_res
+      %li
+        = link_to 'ETEM', '#'
+        %ul
+          %li= link_to 'Solver jobs', solvers_path
     %li
-      = link_to 'Energy System', '#'
+      = link_to 'Results explorer', '#'
       %ul
-        %li= link_to 'Commodities', commodities_path
-        %li= link_to 'Technologies', technologies_path
-        %li= link_to "Demand drivers", demand_drivers_path
-        %li= link_to "Combustion coefficients", combustions_path
-        %li= link_to "Technology sets", technology_sets_path
-        %li= link_to "Commodity sets", commodity_sets_path
-        %li= link_to "Scenarios", scenarios_path
-
-    %li
-      = link_to 'ETEM', '#'
-      %ul
-        %li= link_to 'Solver jobs', solvers_path
-        %li= link_to 'Result sets', result_sets_path
         %li= link_to 'Query', query_path
+        %li= link_to 'Result sets', result_sets_path
         %li= link_to 'Stored queries', stored_queries_path
-    %li
+    /
+      %li
       = link_to 'Advanced tools', '#'
       %ul
         %li= link_to "Parameter Values", parameter_values_path

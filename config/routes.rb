@@ -128,6 +128,11 @@ Leaqweb::Application.routes.draw do
   end
 
   resources :flows
+  resources :energy_systems do
+    collection do
+      post :select
+    end
+  end
 
   match '/backup.zip'        => 'dashboard#backup',   :as => 'backup_db'
   match '/restore'           => 'dashboard#restore',  :as => 'restore_db'

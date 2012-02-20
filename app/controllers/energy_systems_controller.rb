@@ -21,15 +21,13 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class EnergySystem < ActiveRecord::Base
+class EnergySystemsController < ApplicationController
 
-  #Relations
-  has_many :technologies, dependent: :destroy
-  has_many :commodities,  dependent: :destroy
-  has_many :parameter_values, dependent: :delete_all
+  before_filter :authenticate_user!
 
-  def to_s
-    self.name
+  def select
+    user_session[:current_res_id] = EnergySystem.find_by_id(params["energy_system"]["id"])
+    redirect_to root_path
   end
 
 end

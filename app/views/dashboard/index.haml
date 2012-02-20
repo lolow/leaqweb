@@ -1,10 +1,17 @@
 - title " - Dashboard"
-.grid_4(style="display:none;")
+.grid_4
   .box
     %h2 Energy System
     .block(id="action")
+      - if @energy_systems.size > 0
+        = form_tag select_energy_systems_path, :method => :post do
+          = @energy_system ? "Change current Energy System:" : "Select an Energy System:"
+          = select("energy_system", "id", options_from_collection_for_select(@energy_systems, 'id', 'name', @energy_system ))
+          = submit_tag 'Select', :class => "button new"
+        %hr
       %p
-        = "Please select an Energy System"
+        Create a
+        = link_to "New Energy System...", new_energy_system_path, :class => "action new"
 
 .grid_4(style="display:none;")
   .box
@@ -19,40 +26,29 @@
       %p
 
 .clear
-.grid_3
-  .box
-    %h2 Database Content
-    .block
-      %p
-        = link_to "#{@nb_commodities} commodities", commodities_path
-        %br
-        = link_to "#{@nb_technologies} technologies", technologies_path
-        %br
-        #{@nb_flows} flows
-        %br
-        #{@nb_parameter_values}  parameter values
-        %br
-        = link_to "#{@nb_demand_drivers} demand drivers", demand_drivers_path
-        %br
-        = link_to "#{@nb_combustions} combustion factors", combustions_path
-      %p
-        - if @last_change
-          = link_to "Last change: #{distance_of_time_in_words(Time.now,@last_change.created_at)} ago", versions_path
-        - else
-          Last change: never
+/
+  .grid_3
+    .box
+      %h2 Database Content
+      .block
+        %p
+          - if @last_change
+            - link_to "Last change: #{distance_of_time_in_words(Time.now,@last_change.created_at)} ago", versions_path
+          - else
+            Last change: never
 
-.grid_5
-  .box
-    %h2 Database Actions
-    .block(id="action")
-      = link_to "Check Energy System database", check_db_path, :class => "action check_db"
-      %br
-      = link_to "Empty database", reset_db_path, :confirm => 'Are you sure?', :class => "action reset_db"
-      %br
-      = link_to "Backup", backup_db_path, :class => "action backup_db"
-      %br
-      = form_tag(restore_db_path, :multipart => true) do
-        = submit_tag "Restore", :disable_with => "Please wait...", :class => "button restore_db"
-        = file_field 'upload', 'db', :class => "db_file"
+  .grid_5
+    .box
+      %h2 Database Actions
+      .block(id="action")
+        - link_to "Check Energy System database", check_db_path, :class => "action check_db"
+        %br
+        - link_to "Empty database", reset_db_path, :confirm => 'Are you sure?', :class => "action reset_db"
+        %br
+        - link_to "Backup", backup_db_path, :class => "action backup_db"
+        %br
+        = form_tag(restore_db_path, :multipart => true) do
+          - submit_tag "Restore", :disable_with => "Please wait...", :class => "button restore_db"
+          - file_field 'upload', 'db', :class => "db_file"
 
-.clear
+  .clear

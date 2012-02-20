@@ -29,6 +29,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :layout_info
   before_filter :save_or_clear_session
+  before_filter :current_res
 
   protected
 
@@ -50,13 +51,13 @@ class ApplicationController < ActionController::Base
   end
 
   def last_visited(active_model)
-    active_model.where(:id=>Array(session["last-#{active_model}"]))
+    active_model.where(id: Array(user_session["last-#{active_model}"]))
   end
 
   def new_visit(active_model, id)
-    list = Array(session["last-#{active_model}"])
+    list = Array(user_session["last-#{active_model}"])
     list.unshift(id) unless list.include? id
-    session["last-#{active_model}"] = list[0, 10]
+    user_session["last-#{active_model}"] = list[0, 10]
   end
 
   def filter_list(active_record,columns=[])
@@ -77,7 +78,15 @@ class ApplicationController < ActionController::Base
     # Finds the EnergySystem with the ID stored in the session
     # with the key :current_res_id
     def current_res
-      @current_res ||= user_session[:current_res_id] && EnergySystem.find(user_session[:current_res_id])
+      @current_res ||= user_session && user_session[:current_res_id] && EnergySystem.find(user_session[:current_res_id])
+    end
+
+    # Check presence of selected EnergySystem
+    def check_res!
+      unless EnergySystem.find_by_id(@current_res)
+        flash[:alert] = "Please select an energy system."
+        redirect_to(root_path)
+      end
     end
 
 end

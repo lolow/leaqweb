@@ -30,13 +30,14 @@ class DashboardController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    @nb_commodities = Commodity.count
-    @nb_technologies = Technology.count
-    @nb_flows = Flow.count
-    @nb_combustions = Combustion.count
-    @nb_demand_drivers = DemandDriver.count
-    @nb_parameter_values = ParameterValue.count
-    @last_change = Version.order(:created_at).last
+    #@nb_commodities = Commodity.count
+    #@nb_technologies = Technology.count
+    #@nb_flows = Flow.count
+    #@nb_combustions = Combustion.count
+    #@nb_demand_drivers = DemandDriver.count
+    #@nb_parameter_values = ParameterValue.count
+    #@last_change = Version.order(:created_at).last
+    @energy_systems = EnergySystem.order(:name).all
     #Cleaning
     if Version.all.size > 100
       Version.delete_all ["created_at < ?", 1.week.ago]

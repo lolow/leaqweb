@@ -31,10 +31,11 @@ class Solver < ActiveRecord::Base
 
   LANGUAGES = %w{GAMS GMPL}
 
-  validates :nb_periods,      presence: true, numericality: true, only_integer: true, minimum: -1
-  validates :period_duration, presence: true, numericality: true, only_integer: true, minimum: -1
-  validates :first_year,      presence: true, numericality: true, only_integer: true, minimum: -1
-  validates :language,        presence: true, inclusion: {in: LANGUAGES}
+  validates :language, presence: true, inclusion: {in: LANGUAGES}
+  validates_numericality_of :nb_periods, :greater_than_or_equal_to => 1, :only_integer => true
+  validates_numericality_of :period_duration, :greater_than_or_equal_to => 1, :only_integer => true
+  validates_numericality_of :first_year, :greater_than_or_equal_to => 0, :only_integer => true
+
 
   scope :matching_text, lambda {|text| where(['workflow_state LIKE ?'] + ["%#{text}%"]) }
   scope :matching_tag #empty
