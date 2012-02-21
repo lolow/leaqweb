@@ -1,5 +1,5 @@
 .grid_2
-  .box(class="action")
+  %div(class="box action")
     %h2 Actions
     %br
     %p= link_to 'Browse all', technology_sets_path, :class => "action browse"
@@ -13,4 +13,5 @@
         =f.input :description, :input_html => {:rows => 2}
         =f.input :set_list, :as => :hidden, :input_html => {:value => "TECHNOLOGY_SET"}
         =f.button :submit, :class => "aligned"
+        = f.hidden_field :energy_system_id, value: @current_res.id
 .clear

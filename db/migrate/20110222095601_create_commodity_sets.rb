@@ -3,6 +3,7 @@ class CreateCommoditySets < ActiveRecord::Migration
     create_table :commodity_sets do |t|
       t.string :name, :slug
       t.text :description
+      t.belongs_to :energy_system
       t.timestamps
     end
     create_table :commodities_commodity_sets, :id => false do |t|

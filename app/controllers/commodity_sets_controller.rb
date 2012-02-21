@@ -22,17 +22,18 @@
 #++
 
 class CommoditySetsController < ApplicationController
+
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html
   respond_to :json, only: [:show, :suggest]
 
   def index
-    @commodity_sets = CommoditySet.order(:name)
   end
 
   def list
-    @commodity_sets, @total_commodity_sets  = filter_list(CommoditySet,%w(name description))
+    @commodity_sets, @total_commodity_sets  = filter_list(commodity_sets,%w(name description))
     render layout: false, partial: "list.json"
   end
 
@@ -94,6 +95,12 @@ class CommoditySetsController < ApplicationController
     res = CommoditySet.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size==10
     render json: res.to_json
+  end
+
+  private
+
+  def commodity_sets
+    CommoditySet.where(:energy_system_id=>@current_res)
   end
 
 end

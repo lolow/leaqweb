@@ -21,33 +21,18 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class EnergySystemsController < ApplicationController
+class DemandDriverValue < ActiveRecord::Base
 
-  before_filter :authenticate_user!
+  has_paper_trail
 
-  respond_to :html
+  #Relations
+  belongs_to :demand_driver
 
-  # Select an energy system and store it in the session
-  def select
-    user_session[:current_res_id] = EnergySystem.find_by_id(params["energy_system"]["id"])
-    redirect_to root_path
-  end
+  #Validations
+  validates :value, presence: true, numericality: true
+  validates :demand_driver, presence: true
+  validates_numericality_of :year, :greater_than_or_equal_to => 0, :only_integer => true
 
-  def new
-    respond_with(@energy_system = EnergySystem.new)
-  end
-
-  def create
-    respond_with(@energy_system = EnergySystem.create(params[:energy_system]))
-  end
-
-  def show
-    redirect_to root_path
-  end
-
-  def destroy
-    EnergySystem.find(params[:id]).destroy
-    redirect_to root_path
-  end
+  scope :of, lambda { |names| joins(:demand_driver).where("demand_drivers.name"=>names).order("demand_drivers.name") }
 
 end

@@ -1,0 +1,15 @@
+.grid_2
+  %div(class="box action")
+    %h2 Action
+    %br
+    %p= link_to 'Energy System', root_path, :class => "action browse"
+
+.grid_10
+  .box
+    %h2 New energy system
+    .block
+      = simple_form_for @energy_system do |f|
+        = f.input :name
+        = f.input :description, input_html: {rows: 5}
+        = f.button :submit, :class => "aligned"
+.clear

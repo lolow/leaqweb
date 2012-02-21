@@ -31,7 +31,7 @@ class CommoditiesController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html { @last_visited = last_visited(Commodity) }
+      format.html { @last_visited = commodities.where(id: last_visited(Commodity)) }
       format.js do
         c = commodities.matching_text(params[:filter]).order(:name)
         render :json => {"enc"  => c.energy_carriers.map(&:name),

@@ -93,31 +93,6 @@ h1#logo {
     @include corner(5px);
 }
 
-/* LEFT LIST MENU SELECTION */
-ul.menu {
-  list-style:none;
-  border-top:1px solid #bbb;
-
-  li {
-    margin:0;
-  }
-
-  li a {
-    display:block;
-    padding:4px 10px;
-    border-bottom:1px solid #ccc;
-
-    &:hover {
-      background:#eee;
-    }
-
-    &.active {
-      background:#ccc;
-    }
-
-  }
-}
-
 /* table
 ----------------------------------------------- */
 table {

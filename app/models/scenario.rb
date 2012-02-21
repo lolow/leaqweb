@@ -29,14 +29,12 @@ class Scenario < ActiveRecord::Base
 
   before_destroy :reject_if_base
 
+  belongs_to :energy_system
+
   #Validations
   validates :name, presence: true,
                    uniqueness: true,
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
-
-  def self.base
-    Scenario.where(name: "BASE").first
-  end
 
   private
 

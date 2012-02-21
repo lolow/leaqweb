@@ -5,6 +5,10 @@
     .container
       = render 'layouts/header'
       = render 'layouts/menu'
+      = render 'layouts/info_bar'
+      .grid_12
+        %p
+      .clear
       - [:alert, :notice].each do |type|
         - if flash[type]
           .grid_2

@@ -57,7 +57,7 @@
           %th= c.humanize
         %th(class='add')
     %tbody
-      - object.parameter_values_for(parameters).each do |v|
+      - object.values_for(parameters).each do |v|
         %tr
           %td(class="check")
             %input(type="checkbox" name="cb#{v.id}")
@@ -150,5 +150,5 @@
   - if parameters.size==1
     %input(type="hidden" id="#{pid}_parameter" name="pv[parameter]" value="#{parameters.first}")
   %input(type="hidden" id="do" name="do" value="")
-  %input(type="hidden" name="pv[scenario_id]" value="#{params[:scenario_id] || Scenario.base.id}")
+  %input(type="hidden" name="pv[scenario_id]" value="#{params[:scenario_id] || @current_res.base_scenario.id}")
 .clear

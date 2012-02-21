@@ -56,58 +56,8 @@ include ZipTools
   end
 
   # Backup data in a zipped file containing csv files.
-  def self.backup(filename)
-
-    Zip::ZipOutputStream.open(filename) do |zipfile|
-
-      headers = ["id","name","description","sets"]
-      ZipTools::write_csv_into_zip(zipfile,Technology, headers) do |t,csv|
-        csv << [t.id,t.name,t.description,t.set_list.join(',')]
-      end
-
-      headers = ["id","name","description","sets","demand_driver_id","default_demand_elasticity"]
-      ZipTools::write_csv_into_zip(zipfile,Commodity, headers) do |c,csv|
-        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.default_demand_elasticity]
-      end
-
-      headers = ["id","type","technology_id","commodities"]
-      ZipTools::write_csv_into_zip(zipfile,Flow, headers) do |f,csv|
-        csv << [f.id,f.class,f.technology_id,f.commodity_ids.join(' ')]
-      end
-
-      headers = ["id","type","name","definition","default_value"]
-      ZipTools::write_csv_into_zip(zipfile,Parameter,headers) do |p,csv|
-        csv << p.attributes.values_at(*headers) if p.type=="DemandDriver"
-      end
-
-      headers = ["parameter_name","technology_id","commodity_id","commodity_set_id","flow_id",
-                 "in_flow_id","out_flow_id","technology_set_id","technology_subset_id","time_slice",
-                 "year","value","source","scenario_id"]
-      ZipTools::write_csv_into_zip(zipfile,ParameterValue,headers) do |pv,csv|
-        csv << [pv.parameter.name,pv.technology_id,pv.commodity,pv.commodity_set,pv.flow_id,
-                pv.in_flow_id,pv.out_flow_id,pv.technology_set_id,pv.technology_subset_id,pv.time_slice,
-                pv.year,pv.value,pv.source,pv.scenario_id]
-        pv.attributes.values_at(*headers)
-      end
-
-      headers = ["id","name","description","technologies","sets"]
-      ZipTools::write_csv_into_zip(zipfile,TechnologySet,headers) do |m,csv|
-        csv << [m.id,m.name,m.description,m.technology_ids.join(' '),m.set_list.join(',')]
-      end
-
-      headers = ["id","name","description","commodities","sets"]
-      ZipTools::write_csv_into_zip(zipfile,CommoditySet,headers) do |a,csv|
-        csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]
-      end
-
-      headers = ["id","name"]
-      ZipTools::write_csv_into_zip(zipfile,Scenario,headers) do |a,csv|
-        csv << [a.id,a.name]
-      end
-
-    end
-
-  end
+  #def self.backup(filename)
+  #end
 
   # Restore data from a backup
   def self.restore(filename)

@@ -32,6 +32,7 @@ class CommoditySet < ActiveRecord::Base
   acts_as_taggable_on :sets
 
   #Relations
+  belongs_to :energy_system
   has_and_belongs_to_many :commodities
   has_many :parameter_values, dependent: :delete_all
 
@@ -45,7 +46,7 @@ class CommoditySet < ActiveRecord::Base
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
-  def parameter_values_for(parameters)
+  def values_for(parameters)
     ParameterValue.of(Array(parameters)).where(commodity_set_id: self.id).order(:year)
   end
 

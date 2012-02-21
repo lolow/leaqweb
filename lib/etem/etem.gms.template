@@ -354,7 +354,7 @@ MODEL ETEM /
 option limrow = 0;
 option limcol = 0;
 option solprint = off;
-ETEM.optfile = 1;
+ETEM.optfile = 0;
 
 SOLVE ETEM USING LP MINIMIZING VAR_OBJ;
 

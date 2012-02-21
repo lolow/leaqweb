@@ -24,6 +24,7 @@
 class DemandDriversController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html, except: :list
   respond_to :json, only:   :list
@@ -32,7 +33,7 @@ class DemandDriversController < ApplicationController
   end
 
   def list
-    @demand_drivers, @total_demand_drivers  = filter_list(DemandDriver,%w(name definition))
+    @demand_drivers, @total_demand_drivers  = filter_list(demand_drivers,%w(name definition))
     render layout: false, partial: "list.json"
   end
 
@@ -104,6 +105,12 @@ class DemandDriversController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(edit_demand_driver_path(@demand_driver)) }
     end
+  end
+
+  private
+
+  def demand_drivers
+    DemandDriver.where(:energy_system_id=>@current_res)
   end
 
 end

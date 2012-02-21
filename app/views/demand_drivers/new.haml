@@ -1,5 +1,5 @@
 .grid_3
-  .box(class="action")
+  %div(class="box action")
     %h2 Actions
     %br
     %p= link_to 'Browse all', demand_drivers_path, :class => "action browse"
@@ -10,5 +10,7 @@
     .block
       = simple_form_for @demand_driver do |f|
         = f.input :name
+        = f.input :description, input_html: {rows: 5}
         = f.button :submit, :class => "aligned"
+        = f.hidden_field :energy_system_id, value: @current_res.id
 .clear

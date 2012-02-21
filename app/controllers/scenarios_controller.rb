@@ -24,6 +24,7 @@
 class ScenariosController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html, except: [:suggest,:list]
   respond_to :json, only:   [:suggest,:list]
@@ -40,7 +41,7 @@ class ScenariosController < ApplicationController
   end
 
   def list
-    @scenarios, @total_scenarios = filter_list(Scenario,["name"])
+    @scenarios, @total_scenarios = filter_list(scenarios,["name"])
     render layout: false, partial: "list.json"
   end
 
@@ -76,6 +77,12 @@ class ScenariosController < ApplicationController
     res = Scenario.order(:name).matching_text(text).limit(10).map(&:name)
     res << "..." if res.size == 10
     render json: res.to_json
+  end
+
+  private
+
+  def scenarios
+    Scenario.where(:energy_system_id=>@current_res)
   end
 
 end

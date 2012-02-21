@@ -11,7 +11,7 @@
   }
 
 .grid_3
-  .box(class="action")
+  %div(class="box action")
     %h2 Actions
     %br
     %p= link_to 'Browse all', demand_drivers_path, :class => "action browse"
@@ -24,7 +24,7 @@
     .block(id="idcard")
       = simple_form_for @demand_driver do |f|
         =f.input :name, :input_html => { :size => nil }
-        =f.input :definition, :as => :text, :input_html => { :rows => 3, :cols=>nil }
+        =f.input :description, :as => :text, :input_html => { :rows => 3, :cols=>nil }
         =f.button :submit
         %input(type="hidden" name="do" value="update")
 

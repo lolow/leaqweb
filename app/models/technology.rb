@@ -44,7 +44,7 @@ class Technology < ActiveRecord::Base
 
   #Validations
   validates :name, presence: true,
-                   uniqueness: true,
+                   uniqueness:  {scope: :energy_system_id},
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
 
   # Categories [name,value]
@@ -71,7 +71,8 @@ class Technology < ActiveRecord::Base
       ParameterValue.update(pv.id, flow: flow)
     else
       p = Parameter.find_by_name("flow_act")
-      ParameterValue.create!(parameter: p, technology: self, flow: flow, value: 0, scenario: Scenario.base)
+      #TODO create with a valid scenario
+      ParameterValue.create!(parameter: p, technology: self, flow: flow, value: 0, scenario: 0)
     end
   end
 
@@ -91,7 +92,7 @@ class Technology < ActiveRecord::Base
     Commodity.joins(:flows).where("flows.id"=>flows.map(&:id))
   end
 
-  def parameter_values_for(parameters)
+  def values_for(parameters)
     ParameterValue.of(Array(parameters)).where(technology_id: self).order(:year)
   end
 
@@ -121,7 +122,7 @@ class Technology < ActiveRecord::Base
     parameters = signature.keys.select{|k| signature[k] &&
             (signature[k].include?("technology")||signature[k].include?("flow")||signature[k].include?("in_flow"))} +
             %w(input output)
-    parameter_values_for(parameters).each { |pv|
+    values_for(parameters).each { |pv|
       attributes = pv.attributes
       %w{flow_id in_flow_id out_flow_id}.each do |att|
         attributes[att] = flow_hash[attributes[att]]
@@ -137,7 +138,7 @@ class Technology < ActiveRecord::Base
   def preprocess_input_output
 
     #Read all input/output parameters
-    io = %w(input output).collect { |p| parameter_values_for(p) }
+    io = %w(input output).collect { |p| values_for(p) }
     return if (io[0].size*io[1].size)==0
 
     #Classify inflow-outflow
@@ -170,7 +171,7 @@ class Technology < ActiveRecord::Base
                                 in_flow_id: kk[0],
                                 out_flow_id: kk[1],
                                 value: efficiency,
-                                scenario: Scenario.base,
+                                scenario: 0,
                                 source: "Preprocessed")
         end
 
@@ -194,7 +195,7 @@ class Technology < ActiveRecord::Base
                                     flow_id: kk[x],
                                     commodity_id: j.id,
                                     value: coef[j.id],
-                                    scenario: Scenario.base,
+                                    scenario: 0,
                                     source: "Preprocessed")
             end
           end
@@ -214,7 +215,7 @@ class Technology < ActiveRecord::Base
     if fuels.size == 1
       coefs[fuels.first.name]
     else
-      share = self.parameter_values_for("flo_share_fx").where(flow_id: in_flow)
+      share = self.values_for("flo_share_fx").where(flow_id: in_flow)
       share.collect! { |s| coefs[s.commodity.name] * s.value }
       share.inject(0) { |sum, x| sum+x }
     end

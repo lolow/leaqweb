@@ -24,16 +24,16 @@
 class TechnologySetsController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html
   respond_to :json, only: [:show]
 
   def index
-    @technology_sets = TechnologySet.order(:name)
   end
 
   def list
-    @technology_sets, @total_technology_sets  = filter_list(TechnologySet,%w(name description))
+    @technology_sets, @total_technology_sets  = filter_list(technology_sets,%w(name description))
     render layout: false, partial: "list.json"
   end
 
@@ -97,4 +97,9 @@ class TechnologySetsController < ApplicationController
     render json: res.to_json
   end
 
+  private
+
+  def technology_sets
+    TechnologySet.where(:energy_system_id=>@current_res)
+  end
 end

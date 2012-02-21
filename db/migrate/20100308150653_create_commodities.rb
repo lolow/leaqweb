@@ -3,6 +3,7 @@ class CreateCommodities < ActiveRecord::Migration
     create_table :commodities do |t|
       t.string     :name, :description, :slug
       t.belongs_to :demand_driver
+      t.belongs_to :energy_systems
       t.decimal    :default_demand_elasticity, :precision => 20, :scale => 10, :default => 1.0
       t.timestamps
     end

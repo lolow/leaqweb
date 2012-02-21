@@ -36,14 +36,14 @@ class Commodity < ActiveRecord::Base
 
   #Relations
   belongs_to :energy_system
-  has_and_belongs_to_many :flows
-  has_many :parameter_values, dependent: :delete_all
   belongs_to :demand_driver
+  has_and_belongs_to_many :flows
   has_and_belongs_to_many :commodity_sets
+  has_many :parameter_values, dependent: :delete_all
 
   #Validations
   validates :name, presence: true,
-                   uniqueness: true,
+                   uniqueness:  {scope: :energy_system_id},
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
 
   # Categories [name,value]
@@ -87,29 +87,16 @@ class Commodity < ActiveRecord::Base
   end
 
   def activated?
-    self.set_list.include? "C"
+    set_list.include? "C"
   end
 
   def demand?
-    self.set_list.include? "DEM"
-  end
-
-  def pollutant?
-    self.set_list.include? "POLL"
-  end
-
-  def type_name
-    return "Demand" if set_list.include? "DEM"
-    return "Pollutant" if set_list.include? "POLLS"
-    return "Import+Export" if set_list.include?("IMP") && set_list.include?("EXP")
-    return "Import" if set_list.include? "IMP"
-    return "Export" if set_list.include? "EXP"
-    return "Energy Carrier"
+    set_list.include? "DEM"
   end
 
   #return demand_values
   def demand_values(first_year)
-    return [] unless demand?
+    return [] unless set_list.include? "DEM"
     if demand_driver
       dv = parameter_values.of("demand").where(year: first_year).first
       base_year_value = dv ? dv.value : 0
@@ -123,13 +110,13 @@ class Commodity < ActiveRecord::Base
 
   def demand_elasticity
     elas = Hash.new(self.default_demand_elasticity)
-    parameter_values_for('demand_elasticity').each do |pv|
+    values_for('demand_elasticity').each do |pv|
       elas[pv.year.to_i] = pv.value
     end
     elas
   end
 
-  def parameter_values_for(parameters)
+  def values_for(parameters)
     ParameterValue.of(Array(parameters)).where(commodity_id: self).order(:year)
   end
 

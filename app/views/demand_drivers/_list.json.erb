@@ -5,6 +5,6 @@
     "aaData":<%= @demand_drivers.collect do |c|
                    [ check_box_tag("cb#{c.id}"),
                      link_to(c.name, edit_demand_driver_path(c)),
-                     truncate(c.definition, :omission => "...", :length => 100)]
+                     truncate(c.description, :omission => "...", :length => 100)]
                  end.to_json.html_safe %>
 }

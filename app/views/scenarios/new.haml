@@ -9,6 +9,7 @@
     %h2 New Scenario
     .block
       = simple_form_for @scenario do |f|
-        =f.input :name
-        =f.button :submit, :class => "aligned"
+        = f.input :name
+        = f.button :submit, :class => "aligned"
+        = f.hidden_field :energy_system_id, value: @current_res.id
 .clear

@@ -9,7 +9,6 @@
           %li= link_to 'Commodities', commodities_path
           %li= link_to 'Technologies', technologies_path
           %li= link_to "Demand drivers", demand_drivers_path
-          %li= link_to "Combustion coefficients", combustions_path
           %li= link_to "Technology sets", technology_sets_path
           %li= link_to "Commodity sets", commodity_sets_path
           %li= link_to "Scenarios", scenarios_path
@@ -19,35 +18,23 @@
         %ul
           %li= link_to 'Solver jobs', solvers_path
     %li
-      = link_to 'Results explorer', '#'
+      = link_to 'Results', '#'
       %ul
-        %li= link_to 'Query', query_path
         %li= link_to 'Result sets', result_sets_path
+        %li= link_to 'Query', query_path
+    %li
+      = link_to 'Catalog', '#'
+      %ul
+        %li= link_to "Combustion coefficients", combustions_path
         %li= link_to 'Stored queries', stored_queries_path
     /
       %li
       = link_to 'Advanced tools', '#'
       %ul
         %li= link_to "Parameter Values", parameter_values_path
-    /
-      %li
-        = link_to 'Emissions allocation', "#"
-        %ul
-          %li= link_to 'Sectoral maps', "#"
-          %li= link_to 'Sectoral load profiles', "#"
-    /
-      %li
-        = link_to 'AYLTP', "#"
-        %ul
-          %li= link_to 'Pollution episodes', "#"
-          %li= link_to 'Simulation', "#"
     %li.secondary
       - if user_signed_in?
         = link_to "Sign out (#{current_user.email})", destroy_user_session_path, {:class=>"right_side"}
       - else
         = link_to 'Sign in', new_user_session_path, {:class=>"right_side"}
-.clear
-
-.grid_12
-  %p
 .clear

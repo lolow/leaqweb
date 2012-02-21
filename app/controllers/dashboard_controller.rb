@@ -74,11 +74,4 @@ class DashboardController < ApplicationController
     redirect_to root_path
   end
 
-  # Select an energy system and store it in the session
-  def select_res
-    energy_system = EnergySystem.find_by_id(params[:id])
-    session[:current_res_id] = energy_system.id if energy_system
-    redirect_to root_path
-  end
-
 end

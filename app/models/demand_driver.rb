@@ -21,8 +21,26 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class DemandDriver < Parameter
+class DemandDriver < ActiveRecord::Base
 
-  has_many :commodities
+  has_paper_trail
+
+  belongs_to :energy_system
+  has_many   :demand_driver_values
+  has_many   :commodities
+
+  validates :name, presence: true, uniqueness: true
+
+  scope :named, lambda {|name| where(name: name)}
+  scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
+  scope :matching_tag
+
+  def to_s
+    name
+  end
+
+  def values_for(drivers)
+    demand_driver_values.order(:year)
+  end
 
 end

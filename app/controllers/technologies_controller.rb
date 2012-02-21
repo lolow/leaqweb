@@ -24,25 +24,23 @@
 class TechnologiesController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html, except: :list
   respond_to :json, only:   [:list, :index, :suggest]
 
   def index
     respond_to do |format|
-      format.html { @last_visited = last_visited(Technology) }
+      format.html { @last_visited = technologies.where(id: last_visited(Technology)) }
       format.js do
-        technologies = Technology.order(:name).select(:name)
-        if params[:filter] && params[:filter]!=""
-          technologies = technologies.where(["name LIKE ?", "%#{params[:filter]}%"])
-        end
-        render json: {"tech"  => technologies.map(&:name)}.to_json
+        t = technologies.order(:name).where(["name like ?","%#{params[:filter]}%"])
+        render json: {"tech"  => t.map(&:name)}.to_json
       end
     end
   end
 
   def list
-    @technologies, @total_technologies  = filter_list(Technology,%w(name description))
+    @technologies, @total_technologies  = filter_list(technologies,%w(name description))
     render layout: false, partial: "list.json"
   end
 
@@ -103,7 +101,7 @@ class TechnologiesController < ApplicationController
                                    out_flow:   out_flow,
                                    value:      coef,
                                    source:     "Combustion coefficients",
-                                   scenario:   Scenario.base)
+                                   scenario:   @current_res.base_scenario)
           end
         end
       when "add_pv"
@@ -147,6 +145,10 @@ class TechnologiesController < ApplicationController
 
   def undo_link(object)
     view_context.link_to("(undo)", revert_version_path(object.versions.scoped.last), :method => :post)
+  end
+
+  def technologies
+    Technology.where(:energy_system_id=>@current_res)
   end
 
 end
