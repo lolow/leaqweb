@@ -52,7 +52,7 @@ a {
 /* LOGO */
 h1#logo {
   font-weight:normal;
-  font-size:3em;
+  font-size:2em;
   text-align:left;
   background:$logo_background;
   padding:.25em 1em;
@@ -91,6 +91,31 @@ h1#logo {
   margin-bottom:20px;
   padding:10px 10px 1px 10px;
     @include corner(5px);
+}
+
+/* LEFT LIST MENU SELECTION */
+ul.menu {
+  list-style:none;
+  border-top:1px solid #bbb;
+
+  li {
+    margin:0;
+  }
+
+  li a {
+    display:block;
+    padding:4px 10px;
+    border-bottom:1px solid #ccc;
+
+    &:hover {
+      background:#eee;
+    }
+
+    &.active {
+      background:#ccc;
+    }
+
+  }
 }
 
 /* table
@@ -295,7 +320,7 @@ input.aligned {
 
 .simple_form .hint {
   clear: left;
-  margin-left: 120px;
+  margin-left: 10px;
   color: $grey;
   font-style: italic;
 }

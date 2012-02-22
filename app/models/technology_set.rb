@@ -40,6 +40,7 @@ class TechnologySet < ActiveRecord::Base
   validates :name, presence: true,
                    uniqueness: true,
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
+  validates :energy_system, presence: true
 
   scope :activated, tagged_with("MARKET")
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }

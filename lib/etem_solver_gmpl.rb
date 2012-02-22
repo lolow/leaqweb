@@ -21,26 +21,29 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Scenario < ActiveRecord::Base
-  has_many :parameter_values, dependent: :delete_all
+class EtemSolverGmpl < EtemSolver
 
-  scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
-  scope :matching_tag
+  #Return the file extensions of the template
+  def template_extensions
+    %w(mod dat)
+  end
 
-  before_destroy :reject_if_base
+  def finished?
+    log.index("End:") if File.exists?(file("log"))
+  end
 
-  belongs_to :energy_system
+  def optimal?
+    log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
+  end
 
-  #Validations
-  validates :name, presence: true,
-                   uniqueness: true,
-                   format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
-  validates :energy_system, presence: true
+  def log
+    File.exists?(file("log")) ? File.open(file("log")).read : ""
+  end
 
-  private
-
-  def reject_if_base
-    raise "Cannot destroy BASE scenario" if name=="BASE"
+  def command_line
+    "echo Start: `date` | tee #{file("log")} " +
+    "&& nice glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("csv")}  | tee -a #{file("log")} " +
+    "&& echo End: `date`| tee -a #{file("log")} "
   end
 
 end

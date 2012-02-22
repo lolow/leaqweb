@@ -1,0 +1,10 @@
+{
+    "sEcho":<%= params[:sEcho].to_json.html_safe || -1.to_json.html_safe %>,
+    "iTotalRecords":<%= SolverJob.count.to_json.html_safe %>,
+    "iTotalDisplayRecords":<%= @total_solver_jobs.to_json.html_safe %>,
+    "aaData":<%= @solver_jobs.collect do |solver|
+                   [ check_box_tag("cb#{solver.id}"),
+                     link_to(solver.created_at, solver),
+                     link_to(solver.current_state, solver)]
+                 end.to_json.html_safe %>
+}

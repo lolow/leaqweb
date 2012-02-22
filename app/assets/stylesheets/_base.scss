@@ -3,6 +3,7 @@ $red: #D00;
 $green: #0D0;
 $grey: #555;
 $light_green:#d5e69c;
+$light_green2:lighten($light_green,5%);
 $background_color: #ececec;
 $body-font-size: 70%;
 
@@ -16,6 +17,9 @@ $notice: darken($light_green,40%);
 
 $h2_background: lighten(#3A2823,10%);
 $h2_color: lighten(#A7948F,25%);
+
+$info_background: $light_green2;
+$info_color: lighten(#000,20%);
 
 $nav_background: $light_green;
 $nav_color: #3e6e10;

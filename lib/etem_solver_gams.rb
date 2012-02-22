@@ -21,26 +21,33 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class Scenario < ActiveRecord::Base
-  has_many :parameter_values, dependent: :delete_all
+class EtemSolverGams < EtemSolver
 
-  scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
-  scope :matching_tag
+  #Return the file extensions of the template
+  def template_extensions
+    %w(gms inc)
+  end
 
-  before_destroy :reject_if_base
+  def finished?
+    File.exists?(file("status"))
+  end
 
-  belongs_to :energy_system
+  def optimal?
+    File.read(file("status")).to_i == 1 if File.exists?(file("status"))
+  end
 
-  #Validations
-  validates :name, presence: true,
-                   uniqueness: true,
-                   format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
-  validates :energy_system, presence: true
+  def command_line
+    "echo Start: `date` | tee #{file("log")} " +
+    "&& gams #{file("gms")} -o #{file("lst")} lo=3 ll=0 | tee -a #{file("log")} " +
+    "&& echo End: `date` | tee -a #{file("log")} "
+  end
 
-  private
-
-  def reject_if_base
-    raise "Cannot destroy BASE scenario" if name=="BASE"
+  def create_context
+    context = super
+    context[:f_inc]    = file("inc")
+    context[:f_csv]    = file("csv")
+    context[:f_status] = file("status")
+    context
   end
 
 end

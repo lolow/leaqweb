@@ -1,9 +1,0 @@
-.box(id="action")
-  .block(id="action")
-    %p
-      - unless page == :index
-        = link_to 'Browse', solvers_path, :class => "action browse"
-        &nbsp;
-      - unless page == :new
-        = link_to 'New', new_solver_path, :class => "action new"
-        &nbsp;

@@ -24,11 +24,14 @@ gem 'warden'
 gem 'acts-as-taggable-on', :git => 'https://github.com/mbleigh/acts-as-taggable-on'
 gem 'will_paginate'
 gem 'paper_trail'
+gem 'daemons'
+gem 'delayed_job_active_record'
 
 # Backup + Template engine + State Machine
 gem 'rubyzip', :require => 'zip/zip'
 gem 'tenjin'
 gem 'workflow'
+
 
 # Gems used only for assets and not required
 # in production environments by default.

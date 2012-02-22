@@ -1,0 +1,27 @@
+:javascript
+  function start_solver() {
+    $.blockUI({ message: '<b>Generating problem...</b>',
+      css: { border: 'none',
+        padding: '15px',
+        backgroundColor: '#000',
+        opacity: .5,
+        color: '#fff'
+      }});
+    $('#new_solver').submit();
+  }
+.grid_2
+  .box
+    %h2 Action
+    .block
+      %p= link_to 'Browse all', solver_jobs_path, :class => "action browse"
+.grid_10
+  .box
+    %h2 New Solver job
+    .block
+      = simple_form_for @solver_job do |f|
+        = f.input :scenarios
+        = f.input :language, :collection => %w{GAMS GMPL}, :include_blank => false
+        = f.button :submit, class: "aligned"
+        /= button_to_function "Launch solver", "start_solver()", :class => "button aligned"
+        = f.hidden_field :energy_system_id, value: @current_res.id
+.clear

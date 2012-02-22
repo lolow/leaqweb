@@ -1,6 +1,12 @@
-- if @current_res
-  .grid_12
-    %ul.info.main
+
+.grid_12
+  %ul.info.main
+    %li
+      Energy System:
+      = select("energy_system", "id", options_from_collection_for_select(EnergySystem.all, 'id', 'name', @current_res), include_blank: true)
+      /= @current_res.name
+    - if @current_res
       %li
-        = @current_res.name
+        Scenario:
+        BASE
 .clear

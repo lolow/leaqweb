@@ -64,7 +64,7 @@ Leaqweb::Application.routes.draw do
     end
   end
 
-  resources :solvers do
+  resources :solver_jobs do
     collection do
       get :list
       delete :destroy_all

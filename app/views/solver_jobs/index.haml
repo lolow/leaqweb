@@ -12,7 +12,7 @@
         "sPaginationType": "full_numbers",
         "iDisplayLength" : 25,
         "bAutoWidth"     : false,
-  		"sAjaxSource"    : #{list_solvers_path.to_json},
+  		"sAjaxSource"    : #{list_solver_jobs_path.to_json},
   	    "fnServerData"   : function ( sSource, aoData, fnCallback ) {
             aoData.push( { "name": "set", "value": #{params[:set].to_json} } );
             $.getJSON( sSource, aoData, function (json) {
@@ -30,13 +30,13 @@
   .box
     %h2 Action
     .block
-      %p= link_to('New solver job', new_solver_path, :class => 'action new')
+      %p= link_to('New solver job', new_solver_job_path, :class => 'action new')
 
 .grid_10
   .box
     %h2 Browse solver jobs
     %p
-      = form_tag(destroy_all_solvers_path,:method => "delete") do
+      = form_tag(destroy_all_solver_jobs_path,:method => "delete") do
         %table(class="list_table" summary="Technology list")
           %thead
             %th(class='check')

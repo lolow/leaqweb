@@ -21,66 +21,67 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-require 'etem_debug'
-require 'yaml'
+require 'etem_solver'
 
-class SolversController < ApplicationController
+class SolverJob < ActiveRecord::Base
+  #include Workflow
 
-  before_filter :authenticate_user!
+  #TODO clean files
+  #before_destroy :reset
 
-  respond_to :html, except: :list
-  respond_to :json, only:   :list
+  LANGUAGES = %w{GAMS GMPL}
 
-  USER_OPTION = [:nb_periods, :period_duration, :first_year, :language, :scenarios]
+  belongs_to :energy_system
 
-  respond_to :html
+  validates :language, presence: true, inclusion: {in: LANGUAGES}
+  validates :energy_system, presence: true
 
-  def index
-    Solver.all.map(&:update_status)
+  scope :matching_text
+  scope :matching_tag
+
+  def solve
+    etem.solve
+    self.save
   end
 
-  def list
-    @solvers, @total_solvers = filter_list(Solver)
-    render layout: false, partial: "list.json"
+  def log
+    etem.log
   end
 
-  def new
-    @solver = Solver.new
-    USER_OPTION.each do |attr|
-      @solver[attr] = Etem::DEF_OPTS[attr]
-    end
+  def file(ext)
+    etem.file(ext)
   end
 
-  def create
-    @solver = Solver.new(params[:solver])
-    if @solver.save
-      flash[:notice] = 'Solver has successfully started.'
-      @solver.solve!
-      redirect_to(@solver)
-    else
-      render :action => "new"
-    end
+  def time_used
+    etem.time_used
   end
 
-  def show
-    @result_sets = ResultSet.all
-    @solver = Solver.find(params[:id])
-    @solver.update_status
-    @refresh = @solver.solving?
-    respond_with(@solver)
+  def optimal?
+    etem.optimal?
   end
 
-  def destroy
-    Solver.find(params[:id]).destroy
-    redirect_to(solvers_path)
+  def has_files?
+    etem.has_files?
   end
 
-  def destroy_all
-    Solver.where(id: checkbox_ids).map(&:destroy)
-    redirect_to(solvers_path)
+  def update_status
+    complete! if solving? && etem.solved?
   end
 
-  def run
+  def opts
+    {
+      first_year: first_year.to_i,
+      nb_periods: nb_periods.to_i,
+      period_duration: period_duration.to_i,
+      language: language,
+      scenarios: scenarios
+    }
   end
+
+  private
+
+  #def etem
+  #  @etem ||= EtemSolver.new(opts=self.opts, token=self.id)
+  #end
 
 end

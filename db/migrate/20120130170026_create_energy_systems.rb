@@ -3,6 +3,7 @@ class CreateEnergySystems < ActiveRecord::Migration
     create_table :energy_systems do |t|
       t.string :name
       t.text :description
+      t.integer :first_year, :nb_periods, :period_duration
       t.timestamps
     end
   end

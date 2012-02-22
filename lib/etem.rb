@@ -27,10 +27,6 @@ module Etem
 
   DEF_OPTS = {:temp_path => Dir.tmpdir,
               :model_path => File.join(Rails.root,'lib','etem'),
-              :wait_solver => false,
-              :language => "GAMS", # or "GMPL"
-              :debug => true,
-              :log_file => true,
               :write_output => true,
               :period_duration => 1,
               :nb_periods => 26,

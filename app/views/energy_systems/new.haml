@@ -11,5 +11,8 @@
       = simple_form_for @energy_system do |f|
         = f.input :name
         = f.input :description, input_html: {rows: 5}
+        = f.input :first_year,      as: :integer
+        = f.input :nb_periods,      as: :integer
+        = f.input :period_duration, as: :integer, hint: "expressed in year"
         = f.button :submit, :class => "aligned"
 .clear

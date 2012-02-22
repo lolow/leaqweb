@@ -1,29 +1,40 @@
 - title " - Dashboard"
-.grid_4
-  .box
-    %h2 Energy System
-    .block(id="action")
-      - if @energy_systems.size > 0
-        = form_tag select_energy_systems_path, :method => :post do
-          = @energy_system ? "Change current Energy System:" : "Select an Energy System:"
-          = select("energy_system", "id", options_from_collection_for_select(@energy_systems, 'id', 'name', @energy_system ))
-          = submit_tag 'Select', :class => "button new"
-        %hr
+.grid_3
+  %div(class="box action")
+    %h2 Action
+    .block
+      /- if @energy_systems.size > 0
+      /  = form_tag select_energy_systems_path, :method => :post do
+      /    = @current_res ? "Change Energy System:" : "Select an Energy System:"
+      /    %br
+      /    = select("energy_system", "id", options_from_collection_for_select(EnergySystem.all, 'id', 'name', @current_res ))
+      /    = submit_tag 'Select', :class => "button new"
+      /  %hr
       %p
-        Create a
         = link_to "New Energy System...", new_energy_system_path, :class => "action new"
 
-.grid_4(style="display:none;")
-  .box
-    %h2 ETEM Model
-    .block
-      %p
+- if @current_res
+  .grid_4
+    .box
+      %h2 General Parameters
+      .block
+        %p
+          = "Name: #{@current_res.name}"
+          %br
+          = "Description: #{@current_res.description}"
+          %br
+        %p
+          = "First Year: #{@current_res.first_year}"
+          %br
+          = "Number of periods: #{@current_res.nb_periods}"
+          %br
+          = "Period duration: #{pluralize(@current_res.period_duration,'year')}"
 
-.grid_4(style="display:none;")
-  .box
-    %h2 Results
-    .block
-      %p
+  .grid_5
+    .box
+      %h2 Content
+      .block
+        %p
 
 .clear
 /

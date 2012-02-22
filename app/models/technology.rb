@@ -46,6 +46,7 @@ class Technology < ActiveRecord::Base
   validates :name, presence: true,
                    uniqueness:  {scope: :energy_system_id},
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
+  validates :energy_system, presence: true
 
   # Categories [name,value]
   # sets in value has to be sorted by alphabetical order!!
