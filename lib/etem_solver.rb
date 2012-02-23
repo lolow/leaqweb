@@ -30,6 +30,8 @@ require 'fileutils'
 class EtemSolver
   include Etem
 
+  attr_accessor :token
+
   POSSIBLE_SUFFIXES = %w{gms inc mod dat out log csv status lst txt}
 
   # Create a new environment
@@ -37,6 +39,11 @@ class EtemSolver
     @token = token || (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
     @opts = opts.reverse_merge(DEF_OPTS)
     @logger = Logger.new(STDOUT)
+    clean
+  end
+
+  # clean files
+  def clean
     POSSIBLE_SUFFIXES.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}
   end
 
@@ -310,10 +317,7 @@ class EtemSolver
   end
 
   def run(cmd)
-    fork do
-      exec(*cmd)
-      exit! 1
-    end
+    system(*cmd)
   end
 
   def first_year

@@ -38,10 +38,14 @@ class EnergySystem < ActiveRecord::Base
   validates                 :name, presence: true, uniqueness: true
   validates_numericality_of :nb_periods, :greater_than_or_equal_to => 1, :only_integer => true
   validates_numericality_of :period_duration, :greater_than_or_equal_to => 1, :only_integer => true
-  validates_numericality_of :first_year, :greater_than_or_equal_to => 0, :only_integer => true
+  validates_numericality_of :first_year, :greater_than_or_equal_to => 1, :only_integer => true
 
   def to_s
     self.name
+  end
+
+  def last_year
+    first_year - 1 + (nb_periods * period_duration)
   end
 
   def base_scenario

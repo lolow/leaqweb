@@ -33,7 +33,7 @@ class Scenario < ActiveRecord::Base
 
   #Validations
   validates :name, presence: true,
-                   uniqueness: true,
+                   uniqueness:  {scope: :energy_system_id},
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
   validates :energy_system, presence: true
 

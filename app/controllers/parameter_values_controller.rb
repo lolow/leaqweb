@@ -86,7 +86,7 @@ class ParameterValuesController < ApplicationController
         info[:page] = (total/params[:iDisplayLength].to_i rescue 0) + 1
       end
     @displayed = parameter_values.paginate(info)
-    render layout: false, partial: "parameter_values.json"
+    render layout: false, :formats => [:json], partial: "parameter_values"
   end
 
   def update_value

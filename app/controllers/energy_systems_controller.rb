@@ -26,11 +26,16 @@ class EnergySystemsController < ApplicationController
   before_filter :authenticate_user!
 
   respond_to :html
+  respond_to :json, only: [:select]
 
   # Select an energy system and store it in the session
   def select
-    user_session[:current_res_id] = EnergySystem.find_by_id(params["energy_system"]["id"])
-    redirect_to root_path
+    user_session[:current_res_id] = EnergySystem.find_by_id(params["energy_system"]).id
+    user_session[:current_sce_id] = nil
+    respond_to do |format|
+      format.html {redirect_to root_path}
+      format.js {render :json => user_session[:current_res_id].to_json}
+    end
   end
 
   def new

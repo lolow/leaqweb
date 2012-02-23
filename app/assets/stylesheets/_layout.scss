@@ -408,6 +408,10 @@ a.action {
   background-image:url("a_sign_in.png");
  }
 
+a.restore_db {
+ background-image:url("a_restore_db.png");
+}
+
  input.restore_db {
   padding: 4px 9px 4px 25px;
   background-image:url("a_restore_db.png");
@@ -445,7 +449,7 @@ table.dataTable input, .dataTables_filter input {
     padding: 1px;
 }
 
-input[type="textcell"] {
+input.textcell {
     width: 100%;
 }
 

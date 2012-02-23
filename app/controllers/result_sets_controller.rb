@@ -42,7 +42,7 @@ class ResultSetsController < ApplicationController
 
   def list
     @result_sets, @total_result_sets = filter_list(ResultSet)
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def update

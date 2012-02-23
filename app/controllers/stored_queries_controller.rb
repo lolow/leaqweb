@@ -21,7 +21,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-
 class StoredQueriesController < ApplicationController
 
   before_filter :authenticate_user!
@@ -35,7 +34,7 @@ class StoredQueriesController < ApplicationController
 
   def list
     @stored_queries, @total_stored_queries = filter_list(StoredQuery,%w(name))
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def show

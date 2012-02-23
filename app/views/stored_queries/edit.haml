@@ -116,8 +116,8 @@
           = f.label  :display
           = f.select :display, StoredQuery::DISPLAY.collect{ |a| [a.humanize,a]  }
         %p
-          = f.label  :commodity_set
-          = f.select :commodity_set, StoredQuery::AGGREGATES.collect{ |a| [a,a.downcase]  }
+          = f.label  :aggregate
+          = f.select :aggregate, StoredQuery::AGGREGATES.collect{ |a| [a,a.downcase]  }
           = f.label  :variable
           = f.select :variable, StoredQuery::VARIABLES.collect{ |a| [a,a] }
         %p

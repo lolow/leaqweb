@@ -34,7 +34,7 @@ class DemandDriversController < ApplicationController
 
   def list
     @demand_drivers, @total_demand_drivers  = filter_list(demand_drivers,%w(name definition))
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def show

@@ -32,6 +32,15 @@ class ScenariosController < ApplicationController
   def index
   end
 
+  # Select an energy system and store it in the session
+  def select
+    user_session[:current_sce_id] = Scenario.find_by_id(params["scenario"]).id
+    respond_to do |format|
+      format.html {redirect_to scenarios_path}
+      format.js {render :json => user_session[:current_sce_id].to_json}
+    end
+  end
+
   def new
     respond_with(@scenario = Scenario.new)
   end
@@ -42,7 +51,7 @@ class ScenariosController < ApplicationController
 
   def list
     @scenarios, @total_scenarios = filter_list(scenarios,["name"])
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def edit

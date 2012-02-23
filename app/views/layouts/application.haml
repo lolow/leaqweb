@@ -4,8 +4,9 @@
   %body
     .container
       = render 'layouts/header'
-      = render 'layouts/menu'
-      = render 'layouts/info_bar'
+      - if user_signed_in?
+        = render 'layouts/menu'
+        = render 'layouts/info_bar'
       .grid_12
         %p
       .clear

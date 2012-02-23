@@ -1,6 +1,6 @@
 :javascript
   $(document).ready(function() {
-    xticks = #{2005.step(2030,5).to_json};
+    xticks = #{(@current_res.first_year).step(@current_res.last_year,@current_res.period_duration).to_json};
     $.jqplot('chartdiv', #{[@commodity.demand_values(2005)].to_json},
       {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
     });

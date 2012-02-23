@@ -38,13 +38,13 @@ class TechnologySet < ActiveRecord::Base
 
   #Validations
   validates :name, presence: true,
-                   uniqueness: true,
-                   format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
+            uniqueness: true,
+            format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
   validates :energy_system, presence: true
 
   scope :activated, tagged_with("MARKET")
-  scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
-  scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
+  scope :matching_text, lambda { |text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
+  scope :matching_tag, lambda { |tag| tagged_with(tag) if (tag && tag!="" && tag != "null") }
 
 
   def values_for(parameters)

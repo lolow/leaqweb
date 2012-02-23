@@ -29,59 +29,65 @@ class SolverJob < ActiveRecord::Base
   #TODO clean files
   #before_destroy :reset
 
-  LANGUAGES = %w{GAMS GMPL}
+  #LANGUAGES = %w{GAMS GMPL}
 
   belongs_to :energy_system
 
-  validates :language, presence: true, inclusion: {in: LANGUAGES}
+  validates :language, presence: true, inclusion: {in: %w{GAMS GMPL}}
   validates :energy_system, presence: true
 
   scope :matching_text
   scope :matching_tag
 
-  def solve
-    etem.solve
-    self.save
+  def run
+    #etem.solve
   end
 
-  def log
-    etem.log
-  end
+  #def log
+  #  etem.log
+  #end
 
-  def file(ext)
-    etem.file(ext)
-  end
+  #def file(ext)
+  #  etem.file(ext)
+  #end
 
-  def time_used
-    etem.time_used
-  end
+  #def time_used
+  #  etem.time_used
+  #end
 
-  def optimal?
-    etem.optimal?
-  end
+  #def optimal?
+  #  etem.optimal?
+  #end
 
-  def has_files?
-    etem.has_files?
-  end
+  #def has_files?
+  #  etem.has_files?
+  #end
 
-  def update_status
-    complete! if solving? && etem.solved?
-  end
+  #def update_status
+  #  complete! if solving? && etem.solved?
+  #end
 
-  def opts
-    {
-      first_year: first_year.to_i,
-      nb_periods: nb_periods.to_i,
-      period_duration: period_duration.to_i,
-      language: language,
-      scenarios: scenarios
-    }
-  end
+  #def opts
+  #  {
+  #    first_year: first_year.to_i,
+  #    nb_periods: nb_periods.to_i,
+  #    period_duration: period_duration.to_i,
+  #    language: language,
+  #    scenarios: scenarios
+  #  }
+  #end
 
   private
 
-  #def etem
-  #  @etem ||= EtemSolver.new(opts=self.opts, token=self.id)
-  #end
+  def etem_solver
+    case self.language
+      when "GAMS"
+        EtemSolverGams.new(opts={}, token=self.id)
+      when "GMPL"
+        EtemSolverGmpl.new(opts={}, token=self.id)
+      else
+        EtemSolver.new(opts={}, token=self.id)
+    end
+  end
 
 end

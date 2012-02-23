@@ -30,6 +30,7 @@ class ApplicationController < ActionController::Base
   before_filter :layout_info
   before_filter :save_or_clear_session
   before_filter :current_res
+  before_filter :current_sce
 
   protected
 
@@ -79,6 +80,12 @@ class ApplicationController < ActionController::Base
     # with the key :current_res_id
     def current_res
       @current_res ||= user_session && user_session[:current_res_id] && EnergySystem.find(user_session[:current_res_id])
+    end
+
+    # Finds the Scenario with the ID stored in the session
+    # with the key :current_sce_id
+    def current_sce
+      @current_sce ||= user_session && user_session[:current_sce_id] && Scenario.find(user_session[:current_sce_id])
     end
 
     # Check presence of selected EnergySystem

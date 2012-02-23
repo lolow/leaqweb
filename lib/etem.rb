@@ -68,7 +68,7 @@ module Etem
     else
       # Projection des valeurs toute les années
       val = hash[hash.keys.min]
-      v = (first_year..last_year).collect{|y|
+      v = (first_year...(first_year+nb_periods*period_duration)).collect{|y|
         if hash[y]
           val = hash[y]
         else

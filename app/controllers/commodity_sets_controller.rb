@@ -34,7 +34,7 @@ class CommoditySetsController < ApplicationController
 
   def list
     @commodity_sets, @total_commodity_sets  = filter_list(commodity_sets,%w(name description))
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def show

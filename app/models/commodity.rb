@@ -24,7 +24,6 @@
 require 'etem'
 
 class Commodity < ActiveRecord::Base
-  include Etem
 
   #Pretty url
   extend FriendlyId
@@ -100,9 +99,9 @@ class Commodity < ActiveRecord::Base
     if demand_driver
       dv = parameter_values.of("demand").where(year: first_year).first
       base_year_value = dv ? dv.value : 0
-      driver_values = ParameterValue.of(demand_driver.to_s).order(:year)
+      driver_values = demand_driver.demand_driver_values.order(:year)
       driver_values.collect! { |pv| [pv.year, pv.value] }
-      demand_projection(driver_values, base_year_value, self.demand_elasticity)
+      Etem::demand_projection(driver_values, base_year_value, demand_elasticity)
     else
       parameter_values.of("demand").order(:year).collect { |pv| [pv.year, pv.value] }
     end
@@ -117,7 +116,7 @@ class Commodity < ActiveRecord::Base
   end
 
   def values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(commodity_id: self).order(:year)
+    parameter_values.of(Array(parameters)).order(:year)
   end
 
   def to_s

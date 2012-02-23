@@ -35,7 +35,7 @@ class CombustionsController < ApplicationController
   def list
     combustions = Combustion
     @combustions, @total_combustions = filter_list(combustions,%w(fuel pollutant value source))
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def create

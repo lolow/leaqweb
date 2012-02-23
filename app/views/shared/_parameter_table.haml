@@ -27,10 +27,10 @@
   } );
 
 - if rules
-  %script{:type => "text/javascript", :charset => "utf-8"}
+  %script(type="text/javascript" charset="utf-8")
     //<![CDATA[
     $(document).ready(function() {
-    - columns = cols - ["parameter"]
+    - columns = cols - %W(parameter)
     $("##{pid}_parameter").change(function () {
     - columns.each do |c|
       $("##{pid}_#{c}").removeAttr("disabled");
@@ -138,13 +138,13 @@
                 = options_for_select(%w{AN SD SN ID IN WN WD})
           - elsif c=="year"
             %th
-              %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]" size="5")
+              %input(class="textcell" id="#{pid}_#{c}" name="pv[#{c}]" size="5")
           - elsif c=="value"
             %th
-              %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]" size="10")
+              %input(class="textcell" id="#{pid}_#{c}" name="pv[#{c}]" size="10")
           - else
             %th
-              %input(type="textcell" id="#{pid}_#{c}" name="pv[#{c}]")
+              %input(class="textcell" id="#{pid}_#{c}" name="pv[#{c}]")
         %th
           = link_to "Add", '#', :class => "action add_pv"
   - if parameters.size==1

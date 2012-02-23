@@ -21,7 +21,6 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-#require 'etem_debug'
 require 'yaml'
 
 class SolverJobsController < ApplicationController
@@ -32,8 +31,6 @@ class SolverJobsController < ApplicationController
   respond_to :html, except: :list
   respond_to :json, only:   :list
 
-  USER_OPTION = [:nb_periods, :period_duration, :first_year, :language, :scenarios]
-
   respond_to :html
 
   def index
@@ -41,7 +38,7 @@ class SolverJobsController < ApplicationController
 
   def list
     @solver_jobs, @total_solver_jobs = filter_list(solver_jobs)
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def new
@@ -52,6 +49,7 @@ class SolverJobsController < ApplicationController
     @solver_job = SolverJob.new(params[:solver_job])
     if @solver.save
       flash[:notice] = 'Solver has successfully started.'
+      @solver_job.launch
       #@solver.solve!
       redirect_to(@solver_job)
     else

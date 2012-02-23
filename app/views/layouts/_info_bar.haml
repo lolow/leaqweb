@@ -1,12 +1,29 @@
+:javascript
+  $(document).ready(function() {
+    $('#select_energy_system').change(function(){
+      var v = $('#select_energy_system').val();
+      $.ajax({
+        type: "POST",
+        url: #{select_energy_systems_path.to_json},
+        data: { energy_system: v },
+        dataType: 'json',
+        success: function(){
+          window.location.reload();
+        }
+      })
+    });
+  });
 
 .grid_12
   %ul.info.main
     %li
       Energy System:
-      = select("energy_system", "id", options_from_collection_for_select(EnergySystem.all, 'id', 'name', @current_res), include_blank: true)
-      /= @current_res.name
+      = select_tag("select_energy_system", |
+        options_from_collection_for_select(EnergySystem.all, 'id', 'name', (@current_res ? @current_res.id : nil)), |
+        prompt: 'Select...') |
     - if @current_res
       %li
         Scenario:
-        BASE
+        = select_tag("scenario", |
+          options_from_collection_for_select(@current_res.scenarios, 'id', 'name', (@current_sce ? @current_sce.id : nil)))                                                          |
 .clear

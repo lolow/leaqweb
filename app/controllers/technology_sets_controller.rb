@@ -34,7 +34,7 @@ class TechnologySetsController < ApplicationController
 
   def list
     @technology_sets, @total_technology_sets  = filter_list(technology_sets,%w(name description))
-    render layout: false, partial: "list.json"
+    render layout: false, :formats => [:json], partial: "list"
   end
 
   def show

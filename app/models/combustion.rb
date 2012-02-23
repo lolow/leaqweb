@@ -32,22 +32,22 @@ class Combustion < ActiveRecord::Base
   validates :value, presence: true, numericality: true
 
   #Scopes
-  scope :matching_text, lambda {|text| where(['combustions.pollutant LIKE ? OR combustions.fuel LIKE ? OR combustions.source LIKE ?'] + ["%#{text}%"] * 3 ) }
+  scope :matching_text, lambda { |text| where(['combustions.pollutant LIKE ? OR combustions.fuel LIKE ? OR combustions.source LIKE ?'] + ["%#{text}%"] * 3) }
   scope :matching_tag #empty because not taggable
 
   def self.import(filename)
-    ZipTools::readline_zip(filename,StoredQuery) do |row|
-      Combustion.create({:fuel      => row["fuel"],
-                         :pollutant => row["pollutant"],
-                         :value     => row["value"],
-                         :source    => row["source"]})
+    ZipTools::readline_zip(filename, StoredQuery) do |row|
+      Combustion.create({fuel: row["fuel"],
+                         pollutant: row["pollutant"],
+                         value: row["value"],
+                         source: row["source"]})
     end
   end
 
-  def self.zip(filename,subset_ids=nil)
+  def self.zip(filename, subset_ids=nil)
     Zip::ZipOutputStream.open(filename) do |zipfile|
       headers = %w{fuel pollutant value source}
-      ZipTools::write_csv_into_zip(zipfile,Combustion,headers,subset_ids) do |pv,csv|
+      ZipTools::write_csv_into_zip(zipfile, Combustion, headers, subset_ids) do |pv, csv|
         csv << pv.attributes.values_at(*headers)
       end
     end
