@@ -69,7 +69,7 @@ class DashboardController < ApplicationController
   def reset
     #TODO use energy_system_backup
     #EtemArchive.clean_database
-    #File.open(File.join(Rails.root, 'lib', 'etem', 'default_parameters.yml')) do |f|
+    #File.open(File.join(Rails.root, 'lib', 'etem', 'parameters.yml')) do |f|
     #  YAML::load(f).each do |record|
     #    Parameter.create(record)
     #  end

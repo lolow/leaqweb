@@ -37,8 +37,4 @@ class Parameter < ActiveRecord::Base
     name
   end
 
-  def values_for(parameters)
-    parameter_values.order(:year)
-  end
-
 end

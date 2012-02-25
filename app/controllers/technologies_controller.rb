@@ -113,10 +113,29 @@ class TechnologiesController < ApplicationController
         att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
         att[:technology] = @technology
         pv = ParameterValue.new(att)
-        flash[:notice] = "Parameter value was successfully added. #{undo_link(pv)}" if pv.save
+        if pv.save
+          flash[:notice] = "Parameter value was successfully added. #{undo_link(pv)}"
+        else
+          flash[:alert]  = pv.errors.full_messages.join(", ")
+        end
       when "set_act_flo"
         ids = @technology.flows.map(&:id).select { |i| params["f#{i}"] }
-        @technology.flow_act = Flow.find(ids[0]) if ids.size>0
+        if ids.size > 0
+          flow = Flow.find(ids.first)
+          p = Parameter.find_by_name("flow_act")
+          pv = ParameterValue.where(parameter_id: p.id).technology(@technology).first
+          if pv
+            ParameterValue.update(pv.id, flow: flow)
+            flash[:notice] = "Flow act updated. #{undo_link(pv)}}"
+          else
+            pv = ParameterValue.create(energy_system: @technology.energy_system, parameter: p, technology: @technology, flow: flow, value: 0, scenario: @technology.energy_system.base_scenario)
+            if pv.save
+              flash[:notice] = "Flow act was successfully added. #{undo_link(pv)}"
+            else
+              flash[:alert]  = pv.errors.full_messages.join(", ")
+            end
+          end
+        end
       when "delete_flo"
         ids = @technology.flows.map(&:id).select { |i| params["f#{i}"] }
         Flow.find_all_by_id(ids).map(&:destroy)

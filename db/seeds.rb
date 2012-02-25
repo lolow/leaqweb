@@ -9,3 +9,12 @@ admin.confirm!
 
 #Create base scenario
 Scenario.create(:name=>"BASE")
+
+#Default parameter
+require 'yaml'
+filename = File.join(Rails.root,'lib','etem','parameters.yml')
+File.open(filename) do |f|
+  YAML::load(f).each do |record|
+    Parameter.create(record)
+  end
+end

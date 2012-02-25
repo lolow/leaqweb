@@ -91,7 +91,7 @@ class ApplicationController < ActionController::Base
     # Check presence of selected EnergySystem
     def check_res!
       unless EnergySystem.find_by_id(@current_res)
-        flash[:alert] = "Please select an energy system."
+        flash[:alert] = "Please select an energy system or create a new one."
         redirect_to(root_path)
       end
     end

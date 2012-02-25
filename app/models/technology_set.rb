@@ -44,8 +44,8 @@ class TechnologySet < ActiveRecord::Base
   scope :matching_tag, lambda { |tag| tagged_with(tag) if (tag && tag!="" && tag != "null") }
 
 
-  def values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(technology_set_id: self).order(:year)
+  def values_for(parameters,scenario_id)
+    parameter_values.of(Array(parameters)).where(scenario_id: scenario_id).order(:year)
   end
 
 end

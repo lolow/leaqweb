@@ -1,9 +1,10 @@
-:javascript
-  $(document).ready(function() {
-    xticks = #{(@current_res.first_year).step(@current_res.last_year,@current_res.period_duration).to_json};
-    $.jqplot('chartdiv', #{[@commodity.demand_values(2005)].to_json},
-      {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
-    });
+- if @demand_values.size > 0
+  :javascript
+    $(document).ready(function() {
+      xticks = #{(@current_res.first_year).step(@current_res.last_year,@current_res.period_duration).to_json};
+      $.jqplot('chartdiv', #{[@demand_values].to_json},
+        {axes:{xaxis:{ticks:xticks,tickOptions:{formatString:'%d'}}}});
+      });
 .grid_9
   .box
     %h2 Parameters
@@ -30,6 +31,7 @@
                          :disabled => (@commodity.demand_driver_id ? nil: "disabled")
           %input(type="hidden" name="do" value="update")
           = f.submit 'Update', :class => "button"
-      .block#demand_graph
-        #chartdiv{:style=>"height:200px;"}
-      .clear
+      - if @demand_values.size > 0
+        .block#demand_graph
+          #chartdiv{:style=>"height:200px;"}
+        .clear

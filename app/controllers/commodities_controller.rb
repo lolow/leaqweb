@@ -57,7 +57,9 @@ class CommoditiesController < ApplicationController
 
   def edit
     new_visit(Commodity, params[:id])
-    respond_with(@commodity = Commodity.find(params[:id]) )
+    @commodity = Commodity.find(params[:id])
+    @demand_values = @commodity.demand_values(@current_res.first_year)
+    respond_with(@commodity)
   end
 
   def create
@@ -93,7 +95,11 @@ class CommoditiesController < ApplicationController
         att[:parameter] = Parameter.find_by_name(att[:parameter])
         att[:commodity] = @commodity
         pv = ParameterValue.new(att)
-        flash[:notice] = 'Parameter value was successfully added.' if pv.save
+        if pv.save
+          flash[:notice] = "Parameter value was successfully added. #{undo_link(pv)}"
+        else
+          flash[:alert]  = pv.errors.full_messages.join(", ")
+        end
     end if params[:do]
     redirect_to(edit_commodity_path(@commodity))
   end

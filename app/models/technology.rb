@@ -64,13 +64,12 @@ class Technology < ActiveRecord::Base
   end
 
   def flow_act=(flow)
-    pv = ParameterValue.of("flow_act").technology(self).first
+    p = Parameter.find_by_name("flow_act")
+    pv = parameter_values.where(parameter_id: p.id).first
     if pv
       ParameterValue.update(pv.id, flow: flow)
     else
-      p = Parameter.find_by_name("flow_act")
-      #TODO create with a valid scenario
-      ParameterValue.create!(parameter: p, technology: self, flow: flow, value: 0, scenario: 0)
+      ParameterValue.create(energy_system: energy_system, parameter: p, technology: self, flow: flow, value: 0, scenario: energy_system.base_scenario)
     end
   end
 
@@ -90,8 +89,8 @@ class Technology < ActiveRecord::Base
     Commodity.joins(:flows).where("flows.id"=>flows.map(&:id))
   end
 
-  def values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(technology_id: self).order(:year)
+  def values_for(parameters,scenario_id)
+    parameter_values.of(Array(parameters)).where(scenario_id: scenario_id).order(:year)
   end
 
   def to_s

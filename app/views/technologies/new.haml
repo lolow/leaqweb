@@ -1,5 +1,5 @@
 .grid_2
-  .box(class="action")
+  %div(class="box action")
     %h2 Actions
     %br
     %p= link_to 'Browse all', technologies_path, :class => "action browse"
@@ -13,4 +13,5 @@
         = f.input :set_list, :collection => [["Standard Process","P"],["Demand devices","P,DMD"]], :prompt => "Select technology type...", :label=>"Type"
         = f.button :submit, :class => "aligned"
         = f.hidden_field :description, :value => ""
+        = f.hidden_field :energy_system_id, value: @current_res.id
 .clear

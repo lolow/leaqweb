@@ -25,6 +25,8 @@ require 'zip_tools'
 
 class EnergySystem < ActiveRecord::Base
 
+  after_create :setup
+
   #Relations
   has_many :technologies,     dependent: :destroy
   has_many :commodities,      dependent: :destroy
@@ -67,12 +69,6 @@ class EnergySystem < ActiveRecord::Base
     ensure
       PaperTrail.enabled = paper_trail_state
     end
-  end
-
-  # Initialization of the energy system
-  def init
-    Scenario.create(name: "BASE", energy_system_id: self)
-    #TODO init value of parameter?
   end
 
   # Import a zipped file the description of a complete energy system (Existing energy system is erased)
@@ -243,6 +239,14 @@ class EnergySystem < ActiveRecord::Base
       end
     end
 
+  end
+
+  private
+
+  # Initialization of the energy system
+  def setup
+    Scenario.create(name: "BASE", energy_system: self)
+    #TODO init value of parameter?
   end
 
 end

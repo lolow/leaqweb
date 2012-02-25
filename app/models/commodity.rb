@@ -113,8 +113,8 @@ class Commodity < ActiveRecord::Base
     elas
   end
 
-  def values_for(parameters)
-    parameter_values.of(Array(parameters)).order(:year)
+  def values_for(parameters, scenario_id)
+    parameter_values.of(Array(parameters)).where(scenario_id: scenario_id).order(:year)
   end
 
   def to_s

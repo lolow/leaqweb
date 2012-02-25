@@ -30,8 +30,9 @@ class EnergySystemsController < ApplicationController
 
   # Select an energy system and store it in the session
   def select
-    user_session[:current_res_id] = EnergySystem.find_by_id(params["energy_system"]).id
-    user_session[:current_sce_id] = nil
+    res = EnergySystem.find_by_id(params["energy_system"])
+    user_session[:current_res_id] = res.id
+    user_session[:current_sce_id] = res.base_scenario.id
     respond_to do |format|
       format.html {redirect_to root_path}
       format.js {render :json => user_session[:current_res_id].to_json}

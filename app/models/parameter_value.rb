@@ -40,11 +40,11 @@ class ParameterValue < ActiveRecord::Base
 
   #Validations
   validates :energy_system, presence: true
-  validates :value, presence: true, numericality: true
   validates :parameter, presence: true
-  validates :time_slice, inclusion: {in: %w(AN IN ID SN SD WN WD)}
+  validates :time_slice, allow_nil: true, inclusion: {in: %w(AN IN ID SN SD WN WD)}
   validates :scenario, presence: true
-  validates_numericality_of :year, :greater_than_or_equal_to => 0, :only_integer => true
+  validates_numericality_of :year, allow_nil: true, :greater_than_or_equal_to => 0, :only_integer => true
+  validates :value, presence: true, numericality: true
 
   scope :of, lambda { |names| joins(:parameter).where("parameters.name"=>names).order("parameters.name") }
   scope :technology, lambda { |tech| where(technology_id: tech) }

@@ -43,8 +43,8 @@ class CommoditySet < ActiveRecord::Base
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}
 
-  def values_for(parameters)
-    ParameterValue.of(Array(parameters)).where(commodity_set_id: self.id).order(:year)
+  def values_for(parameters, scenario_id)
+    parameter_values.of(Array(parameters)).where(scenario_id: scenario_id).order(:year)
   end
 
 end

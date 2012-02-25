@@ -40,7 +40,7 @@ class SolverJob < ActiveRecord::Base
   scope :matching_tag
 
   def run
-    #etem.solve
+    etem_solver.solve
   end
 
   #def log
