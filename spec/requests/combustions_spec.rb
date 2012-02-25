@@ -11,8 +11,8 @@ describe "Combustions" do
     it "displays combustions" do
       combustion = Factory(:combustion)
       get combustions_path
-      page.has_content?(combustion.fuel.name)
-      page.has_content?(combustion.pollutant.name)
+      page.has_content?(combustion.fuel)
+      page.has_content?(combustion.pollutant)
     end
   end
 

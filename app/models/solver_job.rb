@@ -24,18 +24,18 @@
 require 'etem_solver'
 
 class SolverJob < ActiveRecord::Base
-  #include Workflow
 
   #TODO clean files
-  #before_destroy :reset
+  before_destroy :destroy_etem_solver
 
-  #LANGUAGES = %w{GAMS GMPL}
-
+  #Relations
   belongs_to :energy_system
 
+  #Validations
   validates :language, presence: true, inclusion: {in: %w{GAMS GMPL}}
   validates :energy_system, presence: true
 
+  #Scopes
   scope :matching_text
   scope :matching_tag
 
@@ -78,6 +78,10 @@ class SolverJob < ActiveRecord::Base
   #end
 
   private
+
+  def finalize_etem_solver
+    etem_solver.finalize
+  end
 
   def etem_solver
     case self.language

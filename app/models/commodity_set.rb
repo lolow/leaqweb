@@ -23,10 +23,6 @@
 
 class CommoditySet < ActiveRecord::Base
 
-  #Pretty url
-  extend FriendlyId
-  friendly_id :name, use: [:slugged]
-
   #Interfaces
   has_paper_trail
   acts_as_taggable_on :sets
@@ -37,6 +33,7 @@ class CommoditySet < ActiveRecord::Base
   has_many :parameter_values, dependent: :delete_all
 
   #Validations
+  validates :energy_system, presence: true
   validates :name, presence: true,
                    uniqueness: true,
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}

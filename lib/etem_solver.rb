@@ -42,6 +42,10 @@ class EtemSolver
     clean
   end
 
+  def finalize
+    clean
+  end
+
   # clean files
   def clean
     POSSIBLE_SUFFIXES.each{|ext|File.delete(file(ext)) if File.exist?(file(ext))}

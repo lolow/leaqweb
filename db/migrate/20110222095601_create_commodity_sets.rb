@@ -1,7 +1,7 @@
 class CreateCommoditySets < ActiveRecord::Migration
   def self.up
     create_table :commodity_sets do |t|
-      t.string :name, :slug
+      t.string :name
       t.text :description
       t.belongs_to :energy_system
       t.timestamps

@@ -47,6 +47,7 @@ Devise.setup do |config|
 
   # Setup a pepper to generate the encrypted password.
   config.pepper = "3339117ca7b55cdbd57e7a208b1ac5fce906241e5fb7f0235b0d19f192baba1f5c3564c00153b6dd1a654eb431b3bfe31ed63a3a8d8c12ac86b407dcd3f19074"
+  config.use_salt_as_remember_token = true
 
   # ==> Configuration for :confirmable
   # The time you want to give your user to confirm his account. During this time
@@ -55,7 +56,7 @@ Devise.setup do |config|
   # You can use this to let your user access some features of your application 
   # without confirming the account, but blocking it after a certain period 
   # (ie 2 days). 
-  config.confirm_within = 2.days
+  config.allow_unconfirmed_access_for = 2.days
 
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
@@ -142,6 +143,9 @@ Devise.setup do |config|
 
   # Speed up unit test
   config.stretches = Rails.env.test? ? 1 : 10
+
+  config.case_insensitive_keys = [:email]
+  Devise.reset_password_within = 6.hours
 
 end
 

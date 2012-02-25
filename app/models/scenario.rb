@@ -22,20 +22,22 @@
 #++
 
 class Scenario < ActiveRecord::Base
-  has_many :parameter_values, dependent: :delete_all
-
-  scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
-  scope :matching_tag
 
   before_destroy :reject_if_base
 
+  #Relations
+  has_many :parameter_values, dependent: :delete_all
   belongs_to :energy_system
 
   #Validations
-  validates :name, presence: true,
-                   uniqueness:  {scope: :energy_system_id},
-                   format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
   validates :energy_system, presence: true
+  validates :name, presence: true,
+            uniqueness:  {scope: :energy_system_id},
+            format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
+
+  #Scopes
+  scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
+  scope :matching_tag
 
   private
 

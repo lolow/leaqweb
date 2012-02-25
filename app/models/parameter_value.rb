@@ -39,6 +39,7 @@ class ParameterValue < ActiveRecord::Base
   belongs_to :scenario
 
   #Validations
+  validates :energy_system, presence: true
   validates :value, presence: true, numericality: true
   validates :parameter, presence: true
   validates :time_slice, inclusion: {in: %w(AN IN ID SN SD WN WD)}

@@ -79,13 +79,13 @@ class ApplicationController < ActionController::Base
     # Finds the EnergySystem with the ID stored in the session
     # with the key :current_res_id
     def current_res
-      @current_res ||= user_session && user_session[:current_res_id] && EnergySystem.find(user_session[:current_res_id])
+      @current_res ||= user_session && user_session[:current_res_id] && EnergySystem.find_by_id(user_session[:current_res_id])
     end
 
     # Finds the Scenario with the ID stored in the session
     # with the key :current_sce_id
     def current_sce
-      @current_sce ||= user_session && user_session[:current_sce_id] && Scenario.find(user_session[:current_sce_id])
+      @current_sce ||= user_session && user_session[:current_sce_id] && Scenario.find_by_id(user_session[:current_sce_id])
     end
 
     # Check presence of selected EnergySystem

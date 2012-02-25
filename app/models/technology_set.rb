@@ -23,10 +23,6 @@
 
 class TechnologySet < ActiveRecord::Base
 
-  #Pretty url
-  extend FriendlyId
-  friendly_id :name, use: [:slugged]
-
   #Interfaces
   has_paper_trail
   acts_as_taggable_on :sets
@@ -42,6 +38,7 @@ class TechnologySet < ActiveRecord::Base
             format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
   validates :energy_system, presence: true
 
+  #Scopes
   scope :activated, tagged_with("MARKET")
   scope :matching_text, lambda { |text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag, lambda { |tag| tagged_with(tag) if (tag && tag!="" && tag != "null") }

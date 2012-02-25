@@ -26,10 +26,6 @@ require 'etem'
 class Technology < ActiveRecord::Base
   include Etem
 
-  #pretty_url
-  extend FriendlyId
-  friendly_id :name, use: [:slugged]
-
   #Interfaces
   has_paper_trail
   acts_as_taggable_on :sets
@@ -43,10 +39,10 @@ class Technology < ActiveRecord::Base
   has_and_belongs_to_many :technology_sets
 
   #Validations
+  validates :energy_system, presence: true
   validates :name, presence: true,
                    uniqueness:  {scope: :energy_system_id},
                    format: {with: /\A[a-zA-Z\d-]+\z/, message: "Please use only letters, numbers or '-' in name"}
-  validates :energy_system, presence: true
 
   # Categories [name,value]
   # sets in value has to be sorted by alphabetical order!!
@@ -57,6 +53,7 @@ class Technology < ActiveRecord::Base
       ["Demand device", "DMD,P"]
   ]
 
+  #Scopes
   scope :activated, tagged_with("P")
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag, lambda {|tag| tagged_with(tag) if (tag && tag!="" && tag != "null")}

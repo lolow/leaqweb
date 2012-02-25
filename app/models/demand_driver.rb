@@ -23,14 +23,19 @@
 
 class DemandDriver < ActiveRecord::Base
 
+  #Interfaces
   has_paper_trail
 
+  #Relations
   belongs_to :energy_system
   has_many   :demand_driver_values
   has_many   :commodities
 
+  #Validations
+  validates :energy_system, presence: true
   validates :name, presence: true, uniqueness: true
 
+  #Scopes
   scope :named, lambda {|name| where(name: name)}
   scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
   scope :matching_tag
