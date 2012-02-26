@@ -26,12 +26,7 @@ module Etem
   VALID_NAME_MSG = "Please use only letters or numbers in name"
 
   DEF_OPTS = {:temp_path => Dir.tmpdir,
-              :model_path => File.join(Rails.root,'lib','etem'),
-              :write_output => true,
-              :period_duration => 1,
-              :nb_periods => 26,
-              :first_year => 2005,
-              :scenarios => "BASE"
+              :model_path => File.join(Rails.root,'lib','etem')
              }.freeze
 
   TIME_SLICES = %w{WD WN SD SN ID IN}

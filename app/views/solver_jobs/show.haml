@@ -1,4 +1,4 @@
-- if @refresh
+- unless @state=="solved"
   :javascript
     setTimeout(function(){location.reload();}, 15000);
 :javascript
@@ -22,9 +22,9 @@
     %h2 Action
     .block
       %p
-        = link_to 'Browse', solvers_path, :class => "action browse"
-        = link_to @solver.solved? ? "Delete" : "Kill", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
-      - if @solver.solved? && @solver.has_files?
+        = link_to 'Browse', solver_jobs_path, :class => "action browse"
+        -#= link_to @solver.solved? ? "Delete" : "Kill", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
+      -# if @solver.solved? && @solver.has_files?
         %p
           = link_to_function("Import into ResultSet",
             "import_res(#{new_result_set_path.to_json},#{@solver.id})" , :class => "action delete")
@@ -34,29 +34,21 @@
     %block
       %p
         %br
-        First year: #{@solver.first_year}
+        Language: #{@solver_job.language}
         %br
-        Nb periods: #{@solver.nb_periods}
-        %br
-        Period duration: #{@solver.period_duration}
-        %br
-        Language: #{@solver.language}
-        %br
-        Scenario(s): #{@solver.scenarios}
+        Scenario(s): #{@solver_job.scenarios}
 
 .grid_10
   .box
     %h2
-      ID: #{@solver.pid} -
-      Status: #{@solver.current_state.name}
-      - if @solver.solving?
+      Status:
+      = @state
+      - if @state=="solving"
         =  image_tag("solving.gif",:align=>:absmiddle,:height=>"9px")
     .block
-      - if (@solver.solved? && @solver.has_files?)
-        %p Total time resolution: (#{@solver.time_used} sec)
+      - if @state=="solved"
+        %p Total time resolution: (#{@solver_job.etem_solver.time_used} sec)
       #log
         %h5 Log
         #display_log
-          - if (@solver.solved? && !@solver.has_files?)
-            log file should have been deleted by the system.
-          %pre= raw log_with_link(sanitize @solver.log)
+          %pre= raw sanitize @solver_job.etem_solver.read(:log)

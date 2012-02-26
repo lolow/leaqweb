@@ -126,11 +126,11 @@ class TechnologiesController < ApplicationController
           pv = ParameterValue.where(parameter_id: p.id).technology(@technology).first
           if pv
             ParameterValue.update(pv.id, flow: flow)
-            flash[:notice] = "Flow act updated. #{undo_link(pv)}}"
+            flash[:notice] = "Flow act was successfully updated. #{undo_link(pv)}}"
           else
             pv = ParameterValue.create(energy_system: @technology.energy_system, parameter: p, technology: @technology, flow: flow, value: 0, scenario: @technology.energy_system.base_scenario)
             if pv.save
-              flash[:notice] = "Flow act was successfully added. #{undo_link(pv)}"
+              flash[:notice] = "Flow act was successfully set. #{undo_link(pv)}"
             else
               flash[:alert]  = pv.errors.full_messages.join(", ")
             end

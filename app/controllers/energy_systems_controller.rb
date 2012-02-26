@@ -30,9 +30,7 @@ class EnergySystemsController < ApplicationController
 
   # Select an energy system and store it in the session
   def select
-    res = EnergySystem.find_by_id(params["energy_system"])
-    user_session[:current_res_id] = res.id
-    user_session[:current_sce_id] = res.base_scenario.id
+    update_current_res EnergySystem.find_by_id(params["energy_system"])
     respond_to do |format|
       format.html {redirect_to root_path}
       format.js {render :json => user_session[:current_res_id].to_json}
@@ -44,7 +42,11 @@ class EnergySystemsController < ApplicationController
   end
 
   def create
-    respond_with(@energy_system = EnergySystem.create(params[:energy_system]))
+    @energy_system = EnergySystem.new(params[:energy_system])
+    if @energy_system.save
+      update_current_res(@energy_system)
+    end
+    respond_with(@energy_system)
   end
 
   def show
@@ -54,6 +56,13 @@ class EnergySystemsController < ApplicationController
   def destroy
     EnergySystem.find(params[:id]).destroy
     redirect_to root_path
+  end
+
+  private
+
+  def update_current_res(res)
+    user_session[:current_res_id] = res.id
+    user_session[:current_sce_id] = res.base_scenario.id
   end
 
 end

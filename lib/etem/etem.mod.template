@@ -33,7 +33,7 @@ set P_CONS{c in C} within P := setof{p in P, f in FLOW_IN[p]: c in C_ITEMS[f]}(p
 param discount_rate;
 param first_year;
 param act_flo{P,C};                 # conversion factor from flow to activity.
-param agg_coef{C,AGG};    # coefficient factor in aggregate
+param agg_coef{C,AGG};              # coefficient factor in aggregate
 param avail_factor{S,P};            # availability factor
 param avail{P};                     # availability period.
 param cap_act{P};                   # conversion factor from capacity to activity
@@ -106,18 +106,18 @@ var VAR_OBJVAR >=0;      # variable costs part of objective function.
 var VAR_OBJSAL >=0;      # salvage value part of objective function.
 
 # VARIABLES (decisions)
-var VAR_ICAP{T,P}   >=0;               # investment capacity
+var VAR_ICAP{T,P}   >=0;                  # investment capacity
 var VAR_IMP{T,S,IMPORT}  >=0;             # import activities
 var VAR_EXP{T,S,EXPORT}  >=0;             # export activities
-var VAR_COM{T,S,p in P,C_MAP[p]}>=0;   # commodity flow
-var VAR_COM_SET{T,S,AGG}>=0;               # aggregate activities
+var VAR_COM{T,S,p in P,C_MAP[p]}>=0;      # commodity flow
+var VAR_COM_SET{T,S,AGG}>=0;              # aggregate activities
 
 ###
 ### Objective function
 ###
 
 minimize OBJECTIVE : VAR_OBJINV + VAR_OBJFIX + VAR_OBJVAR - VAR_OBJSAL +
-0.00001 * sum{a in AGG, t in T, s in S} VAR_AGG[t,s,a];
+0.00001 * sum{a in AGG, t in T, s in S} VAR_COM_SET[t,s,a];
 
 ###
 ### Constraints
@@ -297,13 +297,13 @@ subject to EQ_COM_SET{t in T, s in S, agg in AGG} :
 	);
 
 subject to EQ_COM_SET_UP_T{t in T, agg in AGG : commodity_set_annual_up[t,agg]>=0} :
-    sum{s in S} VAR_AGG[t,s,agg] <= commodity_set_annual_up[t,agg];
+    sum{s in S} VAR_COM_SET[t,s,agg] <= commodity_set_annual_up[t,agg];
 
 subject to EQ_DEGREE_OF_USE{t in T, agg in AGG, c in C_AGG[agg] : degree_of_use[t,c,agg] > 0 } :
     agg_coef[c,agg] * (sum{s in S}
     (sum{p in P_CONS[c]} VAR_COM[t,s,p,c] + if c in EXPORT then VAR_EXP[t,s,c] else 0)   # disposal
     ) <=
-    degree_of_use[t,c,agg] * sum{s in S} VAR_AGG[t,s,agg];
+    degree_of_use[t,c,agg] * sum{s in S} VAR_COM_SET[t,s,agg];
 
 subject to EQ_RATE_OF_PENETRATION{t in T, c in C : t > 1 and rate_of_penetration[t,c] <> 0} :
     (sum{s in S}
@@ -438,12 +438,12 @@ for {t in T, s in S, c in IMPORT}{
 }
 
 #T, S, AGG
-for {t in T, s in S, agg in AGG : VAR_AGG[t,s,agg] <>0}{
-  printf "COMMODITY_SET,%s,%s,,%s,%f\n", year[t], s, agg, VAR_AGG[t,s,agg];
+for {t in T, s in S, agg in AGG : VAR_COM_SET[t,s,agg] <>0}{
+  printf "COMMODITY_SET,%s,%s,,%s,%f\n", year[t], s, agg, VAR_COM_SET[t,s,agg];
 }
 #T, AGG
-for {t in T, agg in AGG:(sum{s in S} VAR_AGG[t,s,agg]) <> 0}{
-  printf "COMMODITY_SET,%s,ANNUAL,,%s,%f\n", year[t], agg, sum{s in S} VAR_AGG[t,s,agg];
+for {t in T, agg in AGG:(sum{s in S} VAR_COM_SET[t,s,agg]) <> 0}{
+  printf "COMMODITY_SET,%s,ANNUAL,,%s,%f\n", year[t], agg, sum{s in S} VAR_COM_SET[t,s,agg];
 }
 
 #T, S, C

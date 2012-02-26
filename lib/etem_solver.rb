@@ -32,14 +32,18 @@ class EtemSolver
 
   attr_accessor :token
 
-  POSSIBLE_SUFFIXES = %w{gms inc mod dat out log csv status lst txt}
+  POSSIBLE_SUFFIXES = %w{state gms inc mod dat out log csv status lst txt}
 
   # Create a new environment
   def initialize(opts={},token=nil)
     @token = token || (1..8).collect{(i=Kernel.rand(62);i+=((i<10)?48:((i<36)?55:61))).chr}.join
     @opts = opts.reverse_merge(DEF_OPTS)
     @logger = Logger.new(STDOUT)
+  end
+
+  def setup
     clean
+    write(:state,"queuing")
   end
 
   def finalize
@@ -52,11 +56,13 @@ class EtemSolver
   end
 
   # Solve the model
-  def solve
+  def solve(energy_system,scenarios)
+
+    write(:state,"generating data")
 
     engine = Tenjin::Engine.new
 
-    context = create_context
+    context = create_context(energy_system,scenarios)
 
     template_extensions.each do |ext|
       @logger.info("Render #{ext}")
@@ -98,14 +104,17 @@ class EtemSolver
   end
   
   # Extracts the context data for the generation
-  def create_context
+  def create_context(energy_system,scenarios)
+
+    @energy_system = energy_system
+
     c = Hash.new([])
 
     @logger.info("Sets generation")
-    technologies = Technology.activated
-    commodities  = Commodity.activated
-    technology_sets = TechnologySet.activated
-    commodity_sets = CommoditySet.activated
+    technologies    = energy_system.technologies.activated
+    commodities     = energy_system.commodities.activated
+    technology_sets = energy_system.technology_sets.activated
+    commodity_sets  = energy_system.commodity_sets.activated
     c[:s_s]    = TIME_SLICES
     c[:s_p]    = id_list_name(technologies.all)
     c[:s_m]    = id_list_name(technology_sets.all)
@@ -136,14 +145,14 @@ class EtemSolver
     c[:s_p_technology_set] = Hash.new
     technology_sets.all.each{|m| c[:s_p_technology_set][m.name] = id_list_name(m.technologies)&c[:s_p]}
 
-    commodity_ids  = commodities.all.map(&:id)
+    commodity_ids      = commodities.all.map(&:id)
     commodity_set_ids  = commodity_sets.all.map(&:id)
-    flow_ids       = flows.all.map(&:id)
-    technology_set_ids     = technology_sets.all.map(&:id)
+    flow_ids           = flows.all.map(&:id)
+    technology_set_ids = technology_sets.all.map(&:id)
 
     #Select scenarios
-    scenarios = %W(BASE) + @opts[:scenarios].scan(/[a-zA-Z\d]+/)
-    scenario_ids = scenarios.collect{|s|Scenario.find_by_name(s)}.compact
+    scenarios = %W(BASE) + scenarios.scan(/[a-zA-Z\d]+/)
+    scenario_ids = scenarios.collect{|s|energy_system.scenarios.find_by_name(s)}.compact
     scenario_ids.uniq!
 
     signature.each_key do |param|
@@ -152,7 +161,7 @@ class EtemSolver
       if signature[param]
         c["p_#{param}".to_sym] = []
         scenario_ids.each do |scenario_id|
-          pv = ParameterValue.of(param.to_s).where(:scenario_id=>scenario_id)
+          pv = energy_system.parameter_values.of(param.to_s).where(:scenario_id=>scenario_id)
           pv = pv.where(:technology_id=> technology_ids)             if signature[param].include?("technology")
           pv = pv.where(:commodity_id=> commodity_ids)               if signature[param].include?("commodity")
           pv = pv.where(:commodity_set_id=> commodity_set_ids)       if signature[param].include?("commodity_set")
@@ -198,7 +207,6 @@ class EtemSolver
       end
     end
 
-
     c
   end                    
 
@@ -223,7 +231,7 @@ class EtemSolver
       # Value are gathered by indexes other than period
       case parameter
       when "demand"
-        Commodity.demands.activated.each{|dem|
+        @energy_system.commodities.demands.activated.each{|dem|
           key = "_T " + dem.name
           values[key] = Hash.new
           dem.demand_values(first_year).each{|dv|
@@ -321,19 +329,21 @@ class EtemSolver
   end
 
   def run(cmd)
+    write(:state,"solving")
     system(*cmd)
+    write(:state,"solved")
   end
 
   def first_year
-    @opts[:first_year]
+    @energy_system.first_year
   end
 
   def nb_periods
-    @opts[:nb_periods]
+    @energy_system.nb_periods
   end
 
   def period_duration
-    @opts[:period_duration]
+    @energy_system.period_duration
   end
 
   def period(year)
@@ -342,6 +352,18 @@ class EtemSolver
 
   def periods
     @etem_periods ||=  nb_periods.times.collect{|x|x*period_duration+first_year}
+  end
+
+  def read(ext)
+   if File.exist?(file(ext.to_s))
+     File.new(file(ext.to_s)).read
+   else
+     ""
+   end
+  end
+
+  def solved?
+    read(:state)=="solved"
   end
 
   #to override
@@ -361,6 +383,14 @@ class EtemSolver
 
   # return the command line
   def command_line
+  end
+
+  protected
+
+  def write(ext,content)
+    File.open(file(ext.to_s),"w") do |f|
+      f.write(content)
+    end
   end
 
 end

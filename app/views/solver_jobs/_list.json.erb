@@ -5,6 +5,6 @@
     "aaData":<%= @solver_jobs.collect do |solver|
                    [ check_box_tag("cb#{solver.id}"),
                      link_to(solver.created_at, solver),
-                     link_to(solver.current_state, solver)]
+                     link_to(solver.etem_solver.read(:state), solver)]
                  end.to_json.html_safe %>
 }

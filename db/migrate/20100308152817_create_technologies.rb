@@ -6,7 +6,7 @@ class CreateTechnologies < ActiveRecord::Migration
       t.belongs_to :energy_system
       t.timestamps
     end
-    add_index  :technologies, :name, unique: true
+    add_index  :technologies, :name
   end
 
   def self.down

@@ -26,7 +26,7 @@ require 'etem_solver'
 class SolverJob < ActiveRecord::Base
 
   #TODO clean files
-  before_destroy :destroy_etem_solver
+  before_destroy :finalize_etem_solver
 
   #Relations
   belongs_to :energy_system
@@ -39,13 +39,22 @@ class SolverJob < ActiveRecord::Base
   scope :matching_text
   scope :matching_tag
 
-  def run
-    etem_solver.solve
+  def solve
+    etem_solver.solve(self.energy_system,self.scenarios)
   end
 
-  #def log
-  #  etem.log
-  #end
+  def etem_solver
+    case self.language
+      when "GAMS"
+        require 'etem_solver_gams'
+        EtemSolverGams.new(opts={}, token=self.id)
+      when "GMPL"
+        require 'etem_solver_gmpl'
+        EtemSolverGmpl.new(opts={}, token=self.id)
+      else
+        EtemSolver.new(opts={}, token=self.id)
+    end
+  end
 
   #def file(ext)
   #  etem.file(ext)
@@ -81,17 +90,6 @@ class SolverJob < ActiveRecord::Base
 
   def finalize_etem_solver
     etem_solver.finalize
-  end
-
-  def etem_solver
-    case self.language
-      when "GAMS"
-        EtemSolverGams.new(opts={}, token=self.id)
-      when "GMPL"
-        EtemSolverGmpl.new(opts={}, token=self.id)
-      else
-        EtemSolver.new(opts={}, token=self.id)
-    end
   end
 
 end

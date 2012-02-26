@@ -20,7 +20,7 @@
     .block
       = simple_form_for @solver_job do |f|
         = f.input :scenarios
-        = f.input :language, :collection => %w{GAMS GMPL}, :include_blank => false
+        = f.input :language, :collection => %w{GMPL GAMS}, :include_blank => false
         = f.button :submit, class: "aligned"
         /= button_to_function "Launch solver", "start_solver()", :class => "button aligned"
         = f.hidden_field :energy_system_id, value: @current_res.id

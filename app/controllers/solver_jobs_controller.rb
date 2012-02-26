@@ -47,10 +47,9 @@ class SolverJobsController < ApplicationController
 
   def create
     @solver_job = SolverJob.new(params[:solver_job])
-    if @solver.save
-      flash[:notice] = 'Solver has successfully started.'
-      @solver_job.launch
-      #@solver.solve!
+    if @solver_job.save
+      @solver_job.etem_solver.setup
+      @solver_job.delay.solve
       redirect_to(@solver_job)
     else
       render :action => "new"
@@ -58,24 +57,19 @@ class SolverJobsController < ApplicationController
   end
 
   def show
-    @result_sets = ResultSet.all
-    @solver = Solver.find(params[:id])
-    @solver.update_status
-    @refresh = @solver.solving?
-    respond_with(@solver)
+    @solver_job = SolverJob.find(params[:id])
+    @state = @solver_job.etem_solver.read(:state)
+    respond_with(@solver_job)
   end
 
   def destroy
-    Solver.find(params[:id]).destroy
-    redirect_to(solvers_path)
+    SolverJob.find(params[:id]).destroy
+    redirect_to(solver_jobs_path)
   end
 
   def destroy_all
-    Solver.where(id: checkbox_ids).map(&:destroy)
-    redirect_to(solvers_path)
-  end
-
-  def run
+    SolverJob.where(id: checkbox_ids).map(&:destroy)
+    redirect_to(solver_jobs_path)
   end
 
   private

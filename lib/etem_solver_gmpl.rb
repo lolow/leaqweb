@@ -23,14 +23,11 @@
 require 'etem_solver'
 
 class EtemSolverGmpl < EtemSolver
+  GLPSOL="/usr/local/bin/glpsol"
 
   #Return the file extensions of the template
   def template_extensions
     %w(mod dat)
-  end
-
-  def finished?
-    log.index("End:") if File.exists?(file("log"))
   end
 
   def optimal?
@@ -43,7 +40,7 @@ class EtemSolverGmpl < EtemSolver
 
   def command_line
     "echo Start: `date` | tee #{file("log")} " +
-    "&& nice glpsol -m #{file("mod")} -d #{file("dat")} -y #{file("csv")}  | tee -a #{file("log")} " +
+    "&& nice #{GLPSOL} -m #{file("mod")} -d #{file("dat")} -y #{file("csv")}  | tee -a #{file("log")} " +
     "&& echo End: `date`| tee -a #{file("log")} "
   end
 

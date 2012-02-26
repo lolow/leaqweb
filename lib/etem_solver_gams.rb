@@ -29,10 +29,6 @@ class EtemSolverGams < EtemSolver
     %w(gms inc)
   end
 
-  def finished?
-    File.exists?(file("status"))
-  end
-
   def optimal?
     File.read(file("status")).to_i == 1 if File.exists?(file("status"))
   end

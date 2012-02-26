@@ -33,18 +33,24 @@ class FlowsController < ApplicationController
   end
 
   def create
+    technology = Technology.find(params[:technology_id])
     commodities = Commodity.find_by_list_name(params[:commodities])
+    commodities = commodities.where(energy_system_id: technology.energy_system.id)
     if commodities.size >0
       f = case params[:type]
         when 'In flow'
-          InFlow.new(technology_id: params[:technology_id])
+          InFlow.new(technology: technology)
         when 'Out flow'
-          OutFlow.new(technology_id: params[:technology_id])
+          OutFlow.new(technology: technology)
         else
           nil
       end
       f.commodities = commodities
-      flash[:notice] = 'Flow was successfully created.' if f.save
+      if f.save
+        flash[:notice] = 'Flow was successfully created.'
+      else
+        flash[:alert] = f.errors.full_messages.join(", ")
+      end
     end
     respond_to do |format|
       format.js { render json: "".to_json }

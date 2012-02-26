@@ -35,6 +35,7 @@ class EnergySystem < ActiveRecord::Base
   has_many :technology_sets,  dependent: :destroy
   has_many :parameter_values, dependent: :delete_all
   has_many :scenarios,        dependent: :destroy
+  has_many :solver_jobs,      dependent: :destroy
 
   #Validations
   validates                 :name, presence: true, uniqueness: true
@@ -245,8 +246,17 @@ class EnergySystem < ActiveRecord::Base
 
   # Initialization of the energy system
   def setup
-    Scenario.create(name: "BASE", energy_system: self)
-    #TODO init value of parameter?
+    # Base scenario
+    s = Scenario.create(name: "BASE", energy_system: self)
+    # Fraction Parameter
+    p = Parameter.find_by_name("fraction")
+    attr = {parameter: p, energy_system: self, scenario: s}
+    ParameterValue.create(attr.merge(time_slice: "WD", value: 0.3333333333))
+    ParameterValue.create(attr.merge(time_slice: "WN", value: 0.1666666667))
+    ParameterValue.create(attr.merge(time_slice: "SD", value: 0.3333333333))
+    ParameterValue.create(attr.merge(time_slice: "SN", value: 0.1666666667))
+    ParameterValue.create(attr.merge(time_slice: "ID", value: 0.3333333333))
+    ParameterValue.create(attr.merge(time_slice: "IN", value: 0.0833333333))
   end
 
 end
