@@ -78,9 +78,6 @@ class EnergySystem < ActiveRecord::Base
     # Erase existing energy system
     self.erase
 
-    # Initialise
-    self.init
-
     paper_trail_state  = PaperTrail.enabled?
     PaperTrail.enabled = false
 
@@ -88,42 +85,43 @@ class EnergySystem < ActiveRecord::Base
 
       #Hashes de correspondence
       h = Hash.new
-      [:loc,:tec,:com,:flo,:dmd,:mkt,:agg].each { |x| h[x] = Hash.new  }
+      [:loc,:tec,:com,:flo,:dmd,:mkt,:agg, :par].each { |x| h[x] = Hash.new  }
+
+      ZipTools::readline_zip(filename,EnergySystem) do |row|
+        #self.name            = row["name"]
+        self.description     = row["description"]
+        self.first_year      = row["first_year"]
+        self.nb_periods      = row["nb_periods"]
+        self.period_duration = row["period_duration"]
+        self.save
+      end
 
       ZipTools::readline_zip(filename,Technology) do |row|
-        t = Technology.create(name:             row["name"],
-                              description:      row["description"],
-                              energy_system_id: self)
+        t = Technology.create(name:           row["name"],
+                              description:    row["description"],
+                              energy_system: self)
         t.set_list = row["sets"]
-        t.save!
+        puts t.errors.messages.join(', ') unless t.save
         h[:tec][row["id"]] = t.id
       end
 
       ZipTools::readline_zip(filename,DemandDriver) do |row|
-        d = DemandDriver.new(name:             row["name"],
-                             definition:       row["definition"],
-                             default_value:    row["default_value"],
-                             energy_system_id: self)
+        d = DemandDriver.new(name:          row["name"],
+                             description:   row["definition"],
+                             default_value: row["default_value"],
+                             energy_system: self)
         d.save
         h[:dmd][row["id"]] = d.id
-      end
-
-      ZipTools::readline_zip(filename,DemandDriverValue) do |row|
-        d = DemandDriverValue.new(demand_driver_id: h[:dmd][row["demand_driver_id"]],
-                                  year:             row["year"],
-                                  value:            row["value"],
-                                  source:           row["source"])
-        d.save
       end
 
       ZipTools::readline_zip(filename,Commodity) do |row|
         c = Commodity.create(name:                      row["name"],
                              description:               row["description"],
-                             demand_driver_id:          h[:par][row["demand_driver_id"]],
+                             demand_driver_id:          h[:dmd][row["demand_driver_id"]],
                              default_demand_elasticity: row["default_demand_elasticity"],
-                             energy_system_id:          self)
+                             energy_system:             self)
         c.set_list = row["sets"]
-        c.save!
+        c.save
         h[:com][row["id"]] = c.id
       end
 
@@ -143,12 +141,12 @@ class EnergySystem < ActiveRecord::Base
 
       ZipTools::readline_zip(filename,TechnologySet) do |row|
         technology_ids = row["technologies"].scan(/\d+/).collect{|c|h[:tec][c]}
-        m = TechnologySet.create(name:             row["name"],
-                                 description:      row["description"],
-                                 technology_ids:   technology_ids ,
-                                 energy_system_id: self)
+        m = TechnologySet.create(name:           row["name"],
+                                 description:    row["description"],
+                                 technology_ids: technology_ids ,
+                                 energy_system:  self)
         m.set_list = row["sets"]
-        m.save!
+        m.save
         h[:mkt][row["id"]] = m.id
       end
 
@@ -156,37 +154,51 @@ class EnergySystem < ActiveRecord::Base
         commodity_ids = row["commodities"].scan(/\d+/).collect{|c|h[:com][c]}
         a = CommoditySet.create(name:          row["name"],
                                 description:   row["description"],
-                                commodity_ids: commodity_ids)
+                                commodity_ids: commodity_ids,
+                                energy_system: self)
         a.set_list = row["sets"]
-        a.save!
+        a.save
         h[:agg][row["id"]] = a.id
       end
 
-      h[:sce] = Hash.new(base_scenarios.id)
+      s = Scenario.create(name: "BASE", energy_system: self)
+      h[:sce] = Hash.new(s.id)
       ZipTools::readline_zip(filename,Scenario) do |row|
         unless row["name"]=="BASE"
-          s = Scenario.create(name: row["name"])
+          s = Scenario.create(name: row["name"], energy_system: self)
           h[:sce][row["id"]] = s.id
         end
       end
 
+      params = Parameter.all
+      params.each{|p| h[:par][p.name] = p.id}
+
       ZipTools::readline_zip(filename,ParameterValue) do |row|
         pv = ParameterValue.new
-        pv.parameter_id  = Parameter.where(name: row["parameter_name"]).id
-        pv.technology_id = h[:tec][row["technology_id"]]
-        pv.commodity_id  = h[:com][row["commodity_id"]]
-        pv.commodity_set_id  = h[:agg][row["commodity_set_id"]]
-        pv.flow_id       = h[:flo][row["flow_id"]]
-        pv.in_flow_id    = h[:flo][row["in_flow_id"]]
-        pv.out_flow_id   = h[:flo][row["out_flow_id"]]
-        pv.technology_set_id     = h[:mkt][row["technology_set_id"]]
+        pv.parameter_id         = h[:par][row["parameter_name"]]
+        pv.technology_id        = h[:tec][row["technology_id"]]
+        pv.commodity_id         = h[:com][row["commodity_id"]]
+        pv.commodity_set_id     = h[:agg][row["commodity_set_id"]]
+        pv.flow_id              = h[:flo][row["flow_id"]]
+        pv.in_flow_id           = h[:flo][row["in_flow_id"]]
+        pv.out_flow_id          = h[:flo][row["out_flow_id"]]
+        pv.technology_set_id    = h[:mkt][row["technology_set_id"]]
         pv.technology_subset_id = h[:mkt][row["technology_subset_id"]]
-        pv.scenario_id   = h[:sce][row["scenario_id"]]
-        pv.time_slice    = row["time_slice"]
-        pv.year          = row["year"]
-        pv.value         = row["value"]
-        pv.source        = row["source"]
+        pv.scenario_id          = h[:sce][row["scenario_id"]]
+        pv.time_slice           = row["time_slice"]
+        pv.year                 = row["year"]
+        pv.value                = row["value"]
+        pv.source               = row["source"]
+        pv.energy_system        = self
         pv.save
+      end
+
+      ZipTools::readline_zip(filename,DemandDriverValue) do |row|
+        d = DemandDriverValue.new(demand_driver_id: h[:dmd][row["demand_driver_id"]],
+                                  year:             row["year"],
+                                  value:            row["value"],
+                                  source:           row["source"])
+        d.save
       end
 
     ensure
@@ -199,50 +211,60 @@ class EnergySystem < ActiveRecord::Base
   def zip(filename,subset_ids=nil)
 
     Zip::ZipOutputStream.open(filename) do |zipfile|
+      headers = %W(name description first_year nb_periods period_duration)
+      ZipTools::write_csv_into_zip(zipfile,EnergySystem, headers, [self.id]) do |e,csv|
+        csv << e.attributes.values_at(*headers)
+      end
       headers = %W(id name description sets)
-      ZipTools::write_csv_into_zip(zipfile,Technology, headers, self.technologies) do |t,csv|
+      ids     = self.technologies.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile,Technology, headers, ids) do |t,csv|
         csv << [t.id,t.name,t.description,t.set_list.join(',')]
       end
       headers = %W(id name description sets demand_driver_id default_demand_elasticity)
-      ZipTools::write_csv_into_zip(zipfile,Commodity, headers, self.technologies) do |c,csv|
+      ids     = self.commodities.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile,Commodity, headers, ids) do |c,csv|
         csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.default_demand_elasticity]
       end
       headers = %W(id type technology_id commodities)
-      ZipTools::write_csv_into_zip(zipfile,Flow, headers, Flow.where(technology_id: e.technologies) ) do |f,csv|
+      ids     = Flow.where(technology_id: self.technologies).map(&:id)
+      ZipTools::write_csv_into_zip(zipfile,Flow, headers, ids ) do |f,csv|
         csv << [f.id,f.class,f.technology_id,f.commodity_ids.join(' ')]
       end
       headers = %W(id name description)
-      ZipTools::write_csv_into_zip(zipfile, DemandDriver, headers, self.demand_drivers) do |p,csv|
+      ids     = self.demand_drivers.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile, DemandDriver, headers, ids) do |p,csv|
         csv << p.attributes.values_at(*headers)
       end
       headers = %W(demand_driver_id year value source)
-      ZipTools::write_csv_into_zip(zipfile, DemandDriverValue, headers, self.demand_drivers) do |p,csv|
+      ids     = DemandDriverValue.where(demand_driver_id: self.demand_drivers).map(&:id)
+      ZipTools::write_csv_into_zip(zipfile, DemandDriverValue, headers, ids) do |p,csv|
         csv << p.attributes.values_at(*headers)
       end
       headers = %W(parameter_name technology_id commodity_id commodity_set_id flow_id in_flow_id out_flow_id technology_set_id technology_subset_id time_slice year value source scenario_id)
-      ZipTools::write_csv_into_zip(zipfile, ParameterValue, headers, self.parameter_values) do |pv,csv|
+      ids     = self.parameter_values.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile, ParameterValue, headers, ids) do |pv,csv|
         csv << [pv.parameter.name,pv.technology_id,pv.commodity,pv.commodity_set,pv.flow_id,
                 pv.in_flow_id,pv.out_flow_id,pv.technology_set_id,pv.technology_subset_id,pv.time_slice,
                 pv.year,pv.value,pv.source,pv.scenario_id]
-        pv.attributes.values_at(*headers)
       end
       headers = %W(id name description technologies sets)
-      ZipTools::write_csv_into_zip(zipfile, TechnologySet, headers, self.technology_sets) do |m,csv|
+      ids     = self.technology_sets.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile, TechnologySet, headers, ids) do |m,csv|
         csv << [m.id,m.name,m.description,m.technology_ids.join(' '),m.set_list.join(',')]
       end
       headers = %W(id name description commodities sets)
-      ZipTools::write_csv_into_zip(zipfile, CommoditySet, headers, self.commodity_sets) do |a,csv|
+      ids     = self.commodity_sets.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile, CommoditySet, headers, ids) do |a,csv|
         csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]
       end
       headers = %W(id name)
-      ZipTools::write_csv_into_zip(zipfile, Scenario, headers, self.scenarios) do |a,csv|
+      ids     = self.scenarios.map(&:id)
+      ZipTools::write_csv_into_zip(zipfile, Scenario, headers, ids) do |a,csv|
         csv << [a.id,a.name]
       end
     end
 
   end
-
-  private
 
   # Initialization of the energy system
   def setup

@@ -28,6 +28,10 @@ class EnergySystemsController < ApplicationController
   respond_to :html
   respond_to :json, only: [:select]
 
+  def index
+    redirect_to root_path
+  end
+
   # Select an energy system and store it in the session
   def select
     update_current_res EnergySystem.find_by_id(params["energy_system"])
@@ -56,6 +60,24 @@ class EnergySystemsController < ApplicationController
   def destroy
     EnergySystem.find(params[:id]).destroy
     redirect_to root_path
+  end
+
+  def backup
+    @energy_system = EnergySystem.find(params[:id])
+    f = Tempfile.new("energy_system")
+    @energy_system.zip(f.path)
+    send_file f.path, type: "application/zip",
+                      filename: "energy_system.zip"
+  end
+
+  def upload
+    @energy_system = EnergySystem.find(params[:id])
+    if params[:restore] && File.exist?(params[:restore]["energy_system"].tempfile.path)
+      @energy_system.import(params[:restore]["energy_system"].tempfile.path)
+      redirect_to(root_path, notice: 'Energy System has been restored.')
+    else
+      redirect_to(root_path, notice: 'No file to upload.')
+    end
   end
 
   private

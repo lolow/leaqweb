@@ -3,11 +3,15 @@
   %div(class="box action")
     %h2 Actions
     %br
-    %p= link_to "New Energy System...", new_energy_system_path, :class => "action new"
+    %p
+      = link_to "New Energy System...", new_energy_system_path, :class => "action new"
+      - if @current_res
+        = link_to 'Delete', @current_res, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
     - if @current_res
       %p
-        = link_to "Restore...", restore_db_path, :class => "action restore_db"
-        = link_to "Backup", new_energy_system_path, :class => "action backup_db"
+        = link_to "Restore...", restore_energy_system_path(@current_res), :class => "action restore_db"
+        = link_to "Backup", download_energy_system_path(@current_res), :class => "action backup_db"
+    - if @current_res
       %p
         = link_to "Check Energy System database", check_db_path, :class => "action check_db"
 

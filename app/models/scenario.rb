@@ -23,8 +23,6 @@
 
 class Scenario < ActiveRecord::Base
 
-  before_destroy :reject_if_base
-
   #Relations
   has_many :parameter_values, dependent: :delete_all
   belongs_to :energy_system
@@ -38,11 +36,5 @@ class Scenario < ActiveRecord::Base
   #Scopes
   scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
   scope :matching_tag
-
-  private
-
-  def reject_if_base
-    raise "Cannot destroy BASE scenario" if name=="BASE"
-  end
 
 end

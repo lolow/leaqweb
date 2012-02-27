@@ -1,0 +1,17 @@
+.grid_3
+  %div(class="box action")
+    %h2 Actions
+    %br
+    %p= link_to 'Back to Energy System...', root_path, :class => "action browse"
+.grid_9
+  .box
+    %h2 Restore the complete Energy System from a zipped file
+    .block
+      = form_tag(upload_energy_system_path(@current_res), :multipart => true) do
+        = file_field 'restore', 'energy_system', :class => "db_file"
+        = hidden_field_tag :energy_system_id, value: @current_res.id
+        %br
+        = submit_tag "Restore", :disable_with => "Please wait...", |
+                                :confirm => 'Are you sure? It will erase your current energy system', |
+                                :class => "button restore_db" |
+.clear
