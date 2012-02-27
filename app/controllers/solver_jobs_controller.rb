@@ -50,6 +50,7 @@ class SolverJobsController < ApplicationController
     if @solver_job.save
       @solver_job.etem_solver.setup
       @solver_job.delay.solve
+      #@solver_job.solve
       redirect_to(@solver_job)
     else
       render :action => "new"

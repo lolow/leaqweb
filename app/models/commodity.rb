@@ -92,25 +92,19 @@ class Commodity < ActiveRecord::Base
   end
 
   #return demand_values
-  def demand_values(first_year)
+  def demand_values(first_year,scenario_id)
     return [] unless set_list.include? "DEM"
     if demand_driver
-      dv = parameter_values.of("demand").where(year: first_year).first
+      dv = parameter_values.of("demand").where(year: first_year, scenario_id: scenario_id).first
       base_year_value = dv ? dv.value : 0
       driver_values = demand_driver.demand_driver_values.order(:year)
       driver_values.collect! { |pv| [pv.year, pv.value] }
-      Etem::demand_projection(driver_values, base_year_value, demand_elasticity)
+      demand_elasticity = Hash.new(self.default_demand_elasticity)
+      values_for('demand_elasticity', scenario_id).each { |pv| demand_elasticity[pv.year.to_i] = pv.value }
+      demand_projection(driver_values, base_year_value, demand_elasticity)
     else
       parameter_values.of("demand").order(:year).collect { |pv| [pv.year, pv.value] }
     end
-  end
-
-  def demand_elasticity
-    elas = Hash.new(self.default_demand_elasticity)
-    values_for('demand_elasticity').each do |pv|
-      elas[pv.year.to_i] = pv.value
-    end
-    elas
   end
 
   def values_for(parameters, scenario_id)
@@ -145,6 +139,15 @@ class Commodity < ActiveRecord::Base
       end
     end
     s
+  end
+
+  private
+
+    # project useful demand
+  def demand_projection(driver_hash,base_year_value,elasticity)
+    elasticity = Hash.new(1) unless elasticity
+    elasticity = Hash.new(elasticity) unless elasticity.is_a?(Hash)
+    driver_hash.collect{|year,value| [year.to_i,base_year_value.to_f*value.to_f**elasticity[year.to_i].to_f]}
   end
 
 end

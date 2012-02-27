@@ -16,7 +16,7 @@ gem 'haml'
 gem 'simple_form'
 
 # User identification
-gem 'devise'
+gem 'devise', '~> 2.0'
 gem 'warden'
 
 # Model extensions

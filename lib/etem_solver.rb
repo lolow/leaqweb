@@ -170,7 +170,7 @@ class EtemSolver
           pv = pv.where(:flow_id => flow_ids)                        if signature[param].include?("flow")
           pv = pv.where(:technology_set_id => technology_set_ids)    if signature[param].include?("technology_set")
           pv = pv.where(:technology_subset_id => technology_set_ids) if signature[param].include?("technology_subset")
-          new_values = values_for(param,pv)
+          new_values = values_for(param,pv,scenario_id)
           if scenario_id == scenario_ids.first
             c["p_#{param}".to_sym] += new_values
           else
@@ -222,7 +222,7 @@ class EtemSolver
 
   # Returns an array of the parameter values
   # Values are projected over periods if necessary.
-  def values_for(parameter,parameter_values)
+  def values_for(parameter,parameter_values,scenario_id)
     pv = parameter_values
     return [] unless pv.count > 0
     # If Values are time-dependent
@@ -234,7 +234,7 @@ class EtemSolver
         @energy_system.commodities.demands.activated.each{|dem|
           key = "_T " + dem.name
           values[key] = Hash.new
-          dem.demand_values(first_year).each{|dv|
+          dem.demand_values(first_year,scenario_id).each{|dv|
             values[key][dv[0]] = dv[1]
           }
         }

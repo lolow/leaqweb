@@ -39,8 +39,8 @@ class EtemSolverGams < EtemSolver
     "&& echo End: `date` | tee -a #{file("log")} "
   end
 
-  def create_context
-    context = super
+  def create_context(energy_system,scenarios)
+    context = super(energy_system,scenarios)
     context[:f_inc]    = file("inc")
     context[:f_csv]    = file("csv")
     context[:f_status] = file("status")

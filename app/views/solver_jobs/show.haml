@@ -43,7 +43,7 @@
     %h2
       Status:
       = @state
-      - if @state=="solving"
+      - if ( @state=="solving" || @state.start_with?("generating") )
         =  image_tag("solving.gif",:align=>:absmiddle,:height=>"9px")
     .block
       - if @state=="solved"
