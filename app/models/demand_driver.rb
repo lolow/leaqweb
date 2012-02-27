@@ -33,7 +33,7 @@ class DemandDriver < ActiveRecord::Base
 
   #Validations
   validates :energy_system, presence: true
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness:  {scope: :energy_system_id}
 
   #Scopes
   scope :named, lambda {|name| where(name: name)}

@@ -101,7 +101,7 @@ class EnergySystem < ActiveRecord::Base
                               description:    row["description"],
                               energy_system: self)
         t.set_list = row["sets"]
-        puts t.errors.messages.join(', ') unless t.save
+        t.save
         h[:tec][row["id"]] = t.id
       end
 
@@ -145,7 +145,7 @@ class EnergySystem < ActiveRecord::Base
                                  description:    row["description"],
                                  technology_ids: technology_ids ,
                                  energy_system:  self)
-        m.set_list = row["sets"]
+        m.set_list = "MARKET"
         m.save
         h[:mkt][row["id"]] = m.id
       end
@@ -156,7 +156,7 @@ class EnergySystem < ActiveRecord::Base
                                 description:   row["description"],
                                 commodity_ids: commodity_ids,
                                 energy_system: self)
-        a.set_list = row["sets"]
+        a.set_list = "AGG"
         a.save
         h[:agg][row["id"]] = a.id
       end
@@ -247,12 +247,12 @@ class EnergySystem < ActiveRecord::Base
                 pv.in_flow_id,pv.out_flow_id,pv.technology_set_id,pv.technology_subset_id,pv.time_slice,
                 pv.year,pv.value,pv.source,pv.scenario_id]
       end
-      headers = %W(id name description technologies sets)
+      headers = %W(id name description technologies)
       ids     = self.technology_sets.map(&:id)
       ZipTools::write_csv_into_zip(zipfile, TechnologySet, headers, ids) do |m,csv|
         csv << [m.id,m.name,m.description,m.technology_ids.join(' '),m.set_list.join(',')]
       end
-      headers = %W(id name description commodities sets)
+      headers = %W(id name description commodities)
       ids     = self.commodity_sets.map(&:id)
       ZipTools::write_csv_into_zip(zipfile, CommoditySet, headers, ids) do |a,csv|
         csv << [a.id,a.name,a.description,a.commodity_ids.join(' '),a.set_list.join(',')]

@@ -74,6 +74,7 @@ class EnergySystemsController < ApplicationController
     @energy_system = EnergySystem.find(params[:id])
     if params[:restore] && File.exist?(params[:restore]["energy_system"].tempfile.path)
       @energy_system.import(params[:restore]["energy_system"].tempfile.path)
+      update_current_res(@energy_system)
       redirect_to(root_path, notice: 'Energy System has been restored.')
     else
       redirect_to(root_path, notice: 'No file to upload.')

@@ -11,7 +11,7 @@
       =simple_form_for @technology_set do |f|
         =f.input :name
         =f.input :description, :input_html => {:rows => 2}
-        =f.input :set_list, :as => :hidden, :input_html => {:value => "TECHNOLOGY_SET"}
+        =f.input :set_list, :as => :hidden, :input_html => {:value => "MARKET"}
         =f.button :submit, :class => "aligned"
         = f.hidden_field :energy_system_id, value: @current_res.id
 .clear
