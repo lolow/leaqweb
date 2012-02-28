@@ -65,7 +65,8 @@ http://rubygems.org/pages/download
 8) Run it
   
     # bundle exec rails server
-    # firefox http://127.0.0.1:3000/
+    # bundle exec script/delayed_job start
+    # firefox http://127.0.0.1:3000
 
 
 Under Windows

@@ -48,10 +48,19 @@ class ResultSet < ActiveRecord::Base
   end
 
   def path
-    File.join(Rails.root, 'public', 'files', 'out', self.id.to_s)
+    File.join(ResulSet.parent_path, self.id.to_s)
+  end
+
+  def self.delete_result_set_files
+    path_content = Dir[File.join(ResulSet.parent_path,"*")]
+    path_content.each{|r| Dir.delete(r) if File.exists?(r) && File.directory?(f)}
   end
 
   private
+
+  def self.parent_path
+    File.join(Rails.root, 'public', 'files', 'out')
+  end
 
   def clear
     EXT.each { |x| File.delete(file(x)) if File.exists?(file(x)) }

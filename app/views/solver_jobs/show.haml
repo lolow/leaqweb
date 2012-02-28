@@ -2,33 +2,18 @@
   :javascript
     setTimeout(function(){location.reload();}, 15000);
 :javascript
-  function import_res(new_result_set_path,id) {
-    var sim_id = $('#sim_' +id+ ' option:selected')[0].value
-    if(sim_id=="0"){
-      location.href=new_result_set_path;
-      return false;
-    }
-    $.blockUI({ message: '<b>Please wait...</b>',
-      css: { border: 'none',
-        padding: '15px',
-        backgroundColor: '#000',
-        opacity: .5,
-        color: '#fff'
-      }});
-    location.href = '/result_sets/' + sim_id + '/import?solver_id=' + id;
-  }
+  $(document).ready(function() {
+    $( ".suggest_result_set" ).autocomplete({
+      source: #{suggest_result_sets_path.to_json},
+      minLength: 0
+    });
+   });
 .grid_2
   .box
     %h2 Action
     .block
       %p
-        = link_to 'Browse', solver_jobs_path, :class => "action browse"
-        -#= link_to @solver.solved? ? "Delete" : "Kill", @solver, :method=>:delete, :confirm => "Are you sure?", :class => "action delete"
-      -# if @solver.solved? && @solver.has_files?
-        %p
-          = link_to_function("Import into ResultSet",
-            "import_res(#{new_result_set_path.to_json},#{@solver.id})" , :class => "action delete")
-          = select_tag "sim_#{@solver.id}", options_for_select([['New ResultSet',0]]+@result_sets.map {|o| [o.name,o.id]})
+        = link_to 'Browse...', solver_jobs_path, :class => "action browse"
   .box
     %h2 parameters
     %block
@@ -43,11 +28,17 @@
     %h2
       Status:
       = @state
-      - if ( @state=="solving" || @state.start_with?("generating") )
+      - if @state=="solving" || @state.start_with?("generating")
         =  image_tag("solving.gif",:align=>:absmiddle,:height=>"9px")
     .block
       - if @state=="solved"
         %p Total time resolution: (#{@solver_job.etem_solver.time_used} sec)
+        %p
+          = form_tag import_result_sets_path do
+            Store results into an existing or a new resultset :
+            = text_field_tag 'result_set_name', nil, :placeholder => 'resultset name', class: "suggest_result_set"
+            = hidden_field_tag 'solver_job_id', @solver_job.id
+            = submit_tag 'Store'
       #log
         %h5 Log
         #display_log

@@ -29,13 +29,6 @@ class DashboardController < ApplicationController
   before_filter :authenticate_user!
 
   def index
-    #@nb_commodities = Commodity.count
-    #@nb_technologies = Technology.count
-    #@nb_flows = Flow.count
-    #@nb_combustions = Combustion.count
-    #@nb_demand_drivers = DemandDriver.count
-    #@nb_parameter_values = ParameterValue.count
-    #@last_change = Version.order(:created_at).last
     @energy_systems = EnergySystem.order(:name).all
     #Cleaning
     if Version.all.size > 100
@@ -46,35 +39,6 @@ class DashboardController < ApplicationController
   def check_db
     #TODO move debug to energy_system
     @errors = EtemDebug.new.check_everything
-  end
-
-  def backup
-    #TODO use energy_system_backup
-    #f = Tempfile.new("backup")
-    #EtemArchive.backup(f.path)
-    #send_file f.path, type: "application/zip",
-    #                  url_based_filename: true
-    #f.close
-  end
-
-  def restore
-    #TODO use energy_system_backup
-    #if params[:upload] && File.exist?(params[:upload]["db"].tempfile.path)
-    #  EtemArchive.clean_database
-    #  EtemArchive.restore(params[:upload]["db"].tempfile.path)
-    #end
-    #redirect_to root_path
-  end
-
-  def reset
-    #TODO use energy_system_backup
-    #EtemArchive.clean_database
-    #File.open(File.join(Rails.root, 'lib', 'etem', 'parameters.yml')) do |f|
-    #  YAML::load(f).each do |record|
-    #    Parameter.create(record)
-    #  end
-    #end
-    #redirect_to root_path
   end
 
 end

@@ -36,11 +36,17 @@ class Combustion < ActiveRecord::Base
   scope :matching_tag #empty because not taggable
 
   def self.import(filename)
-    ZipTools::readline_zip(filename, StoredQuery) do |row|
-      Combustion.create({fuel: row["fuel"],
-                         pollutant: row["pollutant"],
-                         value: row["value"],
-                         source: row["source"]})
+    paper_trail_state  = PaperTrail.enabled?
+    PaperTrail.enabled = false
+    begin
+      ZipTools::readline_zip(filename, Combustion) do |row|
+        Combustion.create({fuel: row["fuel"],
+                           pollutant: row["pollutant"],
+                           value: row["value"],
+                           source: row["source"]})
+      end
+    ensure
+      PaperTrail.enabled = paper_trail_state
     end
   end
 

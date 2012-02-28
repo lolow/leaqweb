@@ -82,15 +82,21 @@ class StoredQuery < ActiveRecord::Base
   end
 
   def self.import(filename)
-    ZipTools::readline_zip(filename,StoredQuery) do |row|
-      StoredQuery.create(name:      row["name"],
-                         aggregate: row["aggregate"],
-                         variable:  row["variable"],
-                         rows:      row["rows"],
-                         columns:   row["columns"],
-                         filters:   row["filters"],
-                         display:   row["display"],
-                         options:   row["options"])
+    paper_trail_state  = PaperTrail.enabled?
+    PaperTrail.enabled = false
+    begin
+      ZipTools::readline_zip(filename,StoredQuery) do |row|
+        StoredQuery.create(name:      row["name"],
+                           aggregate: row["aggregate"],
+                           variable:  row["variable"],
+                           rows:      row["rows"],
+                           columns:   row["columns"],
+                           filters:   row["filters"],
+                           display:   row["display"],
+                           options:   row["options"])
+      end
+    ensure
+      PaperTrail.enabled = paper_trail_state
     end
   end
 

@@ -1,9 +1,10 @@
 .grid_12
   %ul.nav.main
     %li
-      = link_to 'Energy System', root_path, {:class=>"left_side"}
+      = link_to 'Database', root_path, {:class=>"left_side"}
       - if @current_res
         %ul
+          %li= link_to 'Energy System', root_path
           %li= link_to 'Commodities', commodities_path
           %li= link_to 'Technologies', technologies_path
           %li= link_to "Demand drivers", demand_drivers_path
@@ -23,8 +24,9 @@
     %li
       = link_to 'Tools', '#'
       %ul
-        %li= link_to "Combustion coefficients", combustions_path
+        %li= link_to "Emission coefficients", combustions_path
         %li= link_to 'Stored queries', stored_queries_path
+        %li= link_to 'Last Changes', versions_path
     -#
       %li
       = link_to 'Advanced tools', '#'

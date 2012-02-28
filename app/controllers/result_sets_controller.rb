@@ -61,8 +61,9 @@ class ResultSetsController < ApplicationController
   end
 
   def import
-    @result_set = ResultSet.find(params[:id])
-    @result_set.store_solver(Solver.find(params[:solver_id]))
+    @result_set = ResultSet.find_by_name(params[:result_set_name])
+    @result_set = ResultSet.create(name: params[:result_set_name]) unless @result_set
+    @result_set.store_solver(SolverJob.find(params[:solver_job_id]))
     respond_to do |format|
       format.html { redirect_to(@result_set) }
       format.js { render json: "" }
@@ -91,6 +92,12 @@ class ResultSetsController < ApplicationController
   def destroy_all
     ResultSet.where(id: checkbox_ids).map(&:destroy)
     redirect_to(result_sets_url)
+  end
+
+  def suggest
+    res = ResultSet.order(:name).matching_text(params[:term]).limit(10).map(&:name)
+    res << "..." if res.size==10
+    render json: res.to_json
   end
 
 end

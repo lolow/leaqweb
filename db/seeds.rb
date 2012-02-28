@@ -3,14 +3,14 @@
 #
 # Examples:
 
+#Disable versioning
+PaperTrail.enabled = false
+
 #Create admin user
 admin = User.create(:email => "admin@domain.com", :password => "password")
 admin.confirm!
 
-#Create base scenario
-Scenario.create(:name=>"BASE")
-
-#Default parameter
+#Parameters
 require 'yaml'
 filename = File.join(Rails.root,'lib','etem','parameters.yml')
 File.open(filename) do |f|
@@ -18,3 +18,9 @@ File.open(filename) do |f|
     Parameter.create(record)
   end
 end
+
+#ResultSet Garbage
+ResultSet.delete_result_set_files
+
+#Disable versioning
+PaperTrail.enabled = true

@@ -88,10 +88,11 @@ Leaqweb::Application.routes.draw do
   resources :result_sets do
      member do
        get :file
-       get :import
      end
      collection do
+       post :import
        get :list
+       get :suggest
        delete :destroy_all
      end
   end

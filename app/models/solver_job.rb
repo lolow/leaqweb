@@ -56,36 +56,6 @@ class SolverJob < ActiveRecord::Base
     end
   end
 
-  #def file(ext)
-  #  etem.file(ext)
-  #end
-
-  #def time_used
-  #  etem.time_used
-  #end
-
-  #def optimal?
-  #  etem.optimal?
-  #end
-
-  #def has_files?
-  #  etem.has_files?
-  #end
-
-  #def update_status
-  #  complete! if solving? && etem.solved?
-  #end
-
-  #def opts
-  #  {
-  #    first_year: first_year.to_i,
-  #    nb_periods: nb_periods.to_i,
-  #    period_duration: period_duration.to_i,
-  #    language: language,
-  #    scenarios: scenarios
-  #  }
-  #end
-
   private
 
   def finalize_etem_solver
