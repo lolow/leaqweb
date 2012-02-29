@@ -102,6 +102,7 @@ Leaqweb::Application.routes.draw do
        get :duplicate
      end
      collection do
+       post :select
        get :list
        get :suggest
        delete :destroy_all

@@ -20,6 +20,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
+
 require 'etem_solver'
 
 class EtemSolverGams < EtemSolver
@@ -27,6 +28,10 @@ class EtemSolverGams < EtemSolver
   #Return the file extensions of the template
   def template_extensions
     %w(gms inc)
+  end
+
+  def extensions
+    template_extensions + %w{txt csv log}
   end
 
   def optimal?

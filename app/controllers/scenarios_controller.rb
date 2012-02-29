@@ -27,14 +27,14 @@ class ScenariosController < ApplicationController
   before_filter :check_res!
 
   respond_to :html, except: [:suggest,:list]
-  respond_to :json, only:   [:suggest,:list]
+  respond_to :json, only:   [:suggest,:list,:select]
 
   def index
   end
 
   # Select an energy system and store it in the session
   def select
-    user_session[:current_sce_id] = Scenario.find_by_id(params["scenario"]).id
+    user_session[:current_sce_id] = params["scenario"]
     respond_to do |format|
       format.html {redirect_to scenarios_path}
       format.js {render :json => user_session[:current_sce_id].to_json}

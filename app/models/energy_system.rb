@@ -85,7 +85,7 @@ class EnergySystem < ActiveRecord::Base
 
       #Hashes de correspondence
       h = Hash.new
-      [:loc,:tec,:com,:com2,:flo,:dmd,:mkt,:agg, :par].each { |x| h[x] = Hash.new  }
+      [:loc,:tec,:com,:flo,:dmd,:mkt,:agg, :par].each { |x| h[x] = Hash.new  }
 
       ZipTools::readline_zip(filename,EnergySystem) do |row|
         #self.name            = row["name"]
@@ -147,6 +147,7 @@ class EnergySystem < ActiveRecord::Base
         m.set_list = "MARKET"
         m.save
         h[:mkt][row["id"]] = m.id
+        h[:mkt2][row["id"]] = m.name
       end
 
       ZipTools::readline_zip(filename,CommoditySet) do |row|
@@ -158,6 +159,7 @@ class EnergySystem < ActiveRecord::Base
         a.set_list = "AGG"
         a.save
         h[:agg][row["id"]] = a.id
+        h[:agg2][row["id"]] = a.name
       end
 
       s = Scenario.create(name: "BASE", energy_system: self)
@@ -171,7 +173,6 @@ class EnergySystem < ActiveRecord::Base
 
       params = Parameter.all
       params.each{|p| h[:par][p.name] = p.id}
-
       ZipTools::readline_zip(filename,ParameterValue) do |row|
         pv = ParameterValue.new
         pv.parameter_id         = h[:par][row["parameter_name"]]
@@ -242,8 +243,8 @@ class EnergySystem < ActiveRecord::Base
       headers = %W(parameter_name technology_id commodity_id commodity_set_id flow_id in_flow_id out_flow_id technology_set_id technology_subset_id time_slice year value source scenario_id)
       ids     = self.parameter_values.map(&:id)
       ZipTools::write_csv_into_zip(zipfile, ParameterValue, headers, ids) do |pv,csv|
-        csv << [pv.parameter.name,pv.technology_id,pv.commodity_id,pv.commodity_set,pv.flow_id,
-                pv.in_flow_id,pv.out_flow_id,pv.technology_set_id,pv.technology_subset_id,pv.time_slice,
+        csv << [pv.parameter.name,pv.technology_id,pv.commodity_id,pv.commodity_set.id,pv.flow_id,
+                pv.in_flow_id,pv.out_flow_id,pv.technology_set.id,pv.technology_subset.id,pv.time_slice,
                 pv.year,pv.value,pv.source,pv.scenario_id]
       end
       headers = %W(id name description technologies)

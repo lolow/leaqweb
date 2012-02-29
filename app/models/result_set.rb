@@ -27,8 +27,6 @@ class ResultSet < ActiveRecord::Base
 
   before_destroy :clear
 
-  EXT = %w{txt mod dat csv log gms inc}
-
   scope :matching_text, lambda {|text| where(['name LIKE ?'] + ["%#{text}%"]) }
   scope :matching_tag #empty
 
@@ -36,7 +34,10 @@ class ResultSet < ActiveRecord::Base
     FileUtils.mkdir_p(path) unless File.exists?(path)
     path_content = Dir[File.join(path,"file.*")]
     path_content.each{|f| File.delete(f) if File.exists?(f)}
-    EXT.each { |x| FileUtils.cp(solver.file(x), file(x)) if File.exist?(solver.file(x)) }
+    s = solver.etem_solver
+    s.extensions.each do |x|
+      FileUtils.cp(s.file(x), file(x)) if File.exist?(s.file(x))
+    end
   end
 
   def has_results?
@@ -48,12 +49,13 @@ class ResultSet < ActiveRecord::Base
   end
 
   def path
-    File.join(ResulSet.parent_path, self.id.to_s)
+    File.join(ResultSet::parent_path, self.id.to_s)
   end
 
   def self.delete_result_set_files
-    path_content = Dir[File.join(ResulSet.parent_path,"*")]
-    path_content.each{|r| Dir.delete(r) if File.exists?(r) && File.directory?(f)}
+    include FileUtils
+    path_content = Dir[File.join(parent_path,"*")]
+    path_content.each{|r| FileUtils.rm_r(r) if File.exists?(r) && File.directory?(r)}
   end
 
   private

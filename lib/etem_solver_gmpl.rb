@@ -30,6 +30,10 @@ class EtemSolverGmpl < EtemSolver
     %w(mod dat)
   end
 
+  def extensions
+    template_extensions + %w{txt csv log}
+  end
+
   def optimal?
     log.index("OPTIMAL SOLUTION FOUND") if File.exists?(file("log"))
   end

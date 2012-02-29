@@ -4,6 +4,5 @@ data <- subset(data,attribute=="<%= @query[:variable] %>")
 <% if @query[:filters].size > 0 %>
 data <- subset(data,<%= @query[:filters] %>)
 <% end %>
-#data <- cast(data,<%=@query[:rows]%> ~ <%=@query[:columns]%>,fun.aggregate=<%= @query[:aggregate] %>)
-data <- cast(data,<%=@query[:rows]%> ~ <%=@query[:columns]%>,fun.aggregate=sum)
+data <- cast(data,<%=@query[:rows]%> ~ <%=@query[:columns]%>,fun.aggregate=<%= @query[:aggregate] %>)
 write.csv(data,file="<%= @query[:result_file] %>")

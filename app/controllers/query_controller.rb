@@ -34,7 +34,7 @@ class QueryController < ApplicationController
     if params[:do]=="load_stored_query"
       stored_query = StoredQuery.find(params[:stored_query_id])
       params[:query][:result_set_ids] =  params[:result_set_ids]
-      [:name,:commodity_set,:variable,:rows,:columns,:filters,:display].each do |field|
+      [:name,:aggregate,:variable,:rows,:columns,:filters,:display].each do |field|
         params[:query][field] = stored_query[field]
       end
       @query_has_results =perform_query(params[:query])

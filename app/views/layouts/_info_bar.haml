@@ -12,6 +12,18 @@
         }
       })
     });
+    $('#select_scenario').change(function(){
+      var v = $('#select_scenario').val();
+      $.ajax({
+        type: "POST",
+        url: #{select_scenarios_path.to_json},
+        data: { scenario: v },
+        dataType: 'json',
+        success: function(){
+          window.location.reload();
+        }
+      })
+    });
   });
 
 .grid_12
@@ -24,6 +36,6 @@
     - if @current_res
       %li
         Scenario:
-        = select_tag("scenario", |
+        = select_tag("select_scenario", |
           options_from_collection_for_select(@current_res.scenarios, 'id', 'name', (@current_sce ? @current_sce.id : nil)))                                                          |
 .clear
