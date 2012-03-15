@@ -69,7 +69,12 @@ class Technology < ActiveRecord::Base
     if pv
       ParameterValue.update(pv.id, flow: flow)
     else
-      ParameterValue.create(energy_system: energy_system, parameter: p, technology: self, flow: flow, value: 0, scenario: energy_system.base_scenario)
+      ParameterValue.create(energy_system: energy_system,
+                            parameter:     p,
+                            technology:    self,
+                            flow:          flow,
+                            value:         0,
+                            scenario:      energy_system.base_scenario)
     end
   end
 
@@ -100,9 +105,10 @@ class Technology < ActiveRecord::Base
   # Duplicate the technology
   def duplicate(new_name=nil)
     new_name = next_available_name(Technology, self.name) unless new_name
-    t = Technology.create(name:        new_name,
-                          description: self.description,
-                          set_list:    self.set_list.join(','))
+    t = Technology.create(name:          new_name,
+                          description:   self.description,
+                          set_list:      self.set_list.join(','),
+                          energy_system: energy_system)
     flow_hash = {}
     self.in_flows.each { |f|
       ff = InFlow.create
@@ -119,23 +125,25 @@ class Technology < ActiveRecord::Base
     parameters = signature.keys.select{|k| signature[k] &&
             (signature[k].include?("technology")||signature[k].include?("flow")||signature[k].include?("in_flow"))} +
             %w(input output)
-    values_for(parameters).each { |pv|
-      attributes = pv.attributes
-      %w{flow_id in_flow_id out_flow_id}.each do |att|
-        attributes[att] = flow_hash[attributes[att]]
+    Scenario.all.each do |scen|
+      values_for(parameters,scen.id).each do |pv|
+        attributes = pv.attributes
+        %w{flow_id in_flow_id out_flow_id}.each do |att|
+          attributes[att] = flow_hash[attributes[att]]
+        end
+        attributes.delete("technology_id")
+        t.parameter_values << ParameterValue.create(attributes)
       end
-      attributes.delete("technology_id")
-      t.parameter_values << ParameterValue.create(attributes)
-    }
+    end
     t.save
     t
   end
 
   # Read input/output parameters to create/update eff_flo / flo_shr_fx parameters
-  def preprocess_input_output
+  def preprocess_input_output(scenario_id)
 
     #Read all input/output parameters
-    io = %w(input output).collect { |p| values_for(p) }
+    io = %w(input output).collect { |p| values_for(p,scenario_id) }
     return if (io[0].size*io[1].size)==0
 
     #Classify inflow-outflow
@@ -168,7 +176,8 @@ class Technology < ActiveRecord::Base
                                 in_flow_id: kk[0],
                                 out_flow_id: kk[1],
                                 value: efficiency,
-                                scenario: 0,
+                                scenario_id: scenario_id,
+                                energy_system: energy_system,
                                 source: "Preprocessed")
         end
 
@@ -187,13 +196,15 @@ class Technology < ActiveRecord::Base
             end
             #set coefficients
             c.each do |j|
-              ParameterValue.create(parameter_id: param.id,
-                                    technology_id: self.id,
-                                    flow_id: kk[x],
-                                    commodity_id: j.id,
-                                    value: coef[j.id],
-                                    scenario: 0,
-                                    source: "Preprocessed")
+              pv = ParameterValue.create(parameter_id: param.id,
+                                         technology_id: self.id,
+                                         flow_id: kk[x],
+                                         commodity_id: j.id,
+                                         value: coef[j.id],
+                                         scenario_id: scenario_id,
+                                         energy_system: energy_system,
+                                         source: "Preprocessed")
+              pv
             end
           end
         end
@@ -212,7 +223,7 @@ class Technology < ActiveRecord::Base
     if fuels.size == 1
       coefs[fuels.first.name]
     else
-      share = self.values_for("flo_share_fx").where(flow_id: in_flow)
+      share = self.values_for("flo_share_fx",energy_system.base_scenario.id).where(flow_id: in_flow)
       share.collect! { |s| coefs[s.commodity.name] * s.value }
       share.inject(0) { |sum, x| sum+x }
     end

@@ -70,7 +70,7 @@ class TechnologiesController < ApplicationController
     @technology = Technology.find(params[:id])
     case params[:do]
       when "preprocess_input_output"
-        @technology.preprocess_input_output
+        @technology.preprocess_input_output(@current_sce.id)
       when "update"
         if @technology.update_attributes(params[:technology])
           flash[:notice] = "Technology was successfully updated. #{undo_link(@technology)}"

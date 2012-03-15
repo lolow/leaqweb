@@ -44,7 +44,7 @@ class DemandDriver < ActiveRecord::Base
     name
   end
 
-  def values_for(drivers)
+  def values_for(drivers, *kargs)
     demand_driver_values.order(:year)
   end
 

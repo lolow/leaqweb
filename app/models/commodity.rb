@@ -24,6 +24,7 @@
 require 'etem'
 
 class Commodity < ActiveRecord::Base
+  include Etem
 
   #Interfaces
   has_paper_trail
@@ -116,10 +117,12 @@ class Commodity < ActiveRecord::Base
   end
 
   def duplicate
-    c = Commodity.create(:name => next_available_name(Commodity, name),
-                         :description => description,
-                         :set_list => set_list.join(", "),
-                         :demand_driver => demand_driver)
+    c = Commodity.create(name:          next_available_name(Commodity, name),
+                         description:   description,
+                         set_list:      set_list.join(", "),
+                         demand_driver: demand_driver,
+                         default_demand_elasticity: default_demand_elasticity,
+                         energy_system: energy_system)
     parameters = signature.keys.select{|k| signature[k] && signature[k].include?("commodity")}
     parameter_values.of(parameters).each do |pv|
       c.parameter_values << ParameterValue.create(pv.attributes)

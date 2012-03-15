@@ -69,7 +69,7 @@ class DemandDriversController < ApplicationController
     # jeditable fields
     if params[:field]
       f = params[:field].split("-")
-      record = ParameterValue.find(f[1].to_i)
+      record = DemandDriverValue.find(f[1].to_i)
       attributes = {f[2]=>params[:value]}
       if record.update_attributes(attributes)
         value = params[:value]
@@ -94,12 +94,12 @@ class DemandDriversController < ApplicationController
         end
         return
       when "delete_pv"
-        ids = @demand_driver.parameter_values.map(&:id).select { |i| params["cb#{i}"] }
+        ids = @demand_driver.demand_driver_values.map(&:id).select { |i| params["cb#{i}"] }
         ParameterValue.where(id: checkbox_ids).map(&:destroy)
       when "add_pv"
         att = params[:pv]
         att[:parameter] = @demand_driver
-        pv = ParameterValue.new(att)
+        pv = DemandDriverValue.new(att)
         flash[:notice] = 'Demand driver value was successfully added.' if pv.save
     end if params[:do]
     respond_to do |format|
