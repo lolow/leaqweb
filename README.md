@@ -3,7 +3,7 @@ Leaq web application
 
 Leaqweb is a web application which manages the leaq database
 
-It is based on Rails 3.1 and can be installed on a server or a desktop machine.
+It is based on Rails 3.2 and can be installed on a server or a desktop machine.
 
 Install
 -------
@@ -11,31 +11,22 @@ Install
 The following instructions describe how to install the application 
 on an ubuntu machine (it works also on Mac OS X, for Windows see below).
 
-1) Install ruby (works with ruby 1.9.2) [it is better to use RVM]
+1) Install ruby with RVM (http://beginrescueend.com/)
 
-    # sudo apt-get install ruby ruby-dev rubygems libopenssl-ruby
-
-2) Install rubygems from source (the version will be more up-to-date)
-http://rubygems.org/pages/download
-
-3) Update rubygems to the last version
-
-    # sudo gem update --system
-
-4) Configure the database (if you want to use mysql)
+2) Configure the database (if you want to use mysql)
 
     # sudo apt-get install mysql-server mysql-client libmysqlclient-dev
-    # sudo gem install mysql2
+    # gem install mysql2
     # mysql -p -u root
     <enter your root password for mysql>
     > CREATE DATABASE leaq;
     > GRANT ALL PRIVILEGES ON leaq.* TO "leaq"@"localhost";
 
-5) Configure the database (if you want to use sqlite)
+3) Configure the database (if you want to use sqlite)
 
     # sudo apt-get install sqlite3 libsqlite3-dev
 
-6) Clone the repository, configure and install gems:
+4) Clone the repository, configure and install gems:
 
     # git clone git://github.com/lolow/leaqweb.git
     # cd leaqweb
@@ -45,14 +36,14 @@ http://rubygems.org/pages/download
     # bundle exec rake db:migrate
     # bundle exec rake db:seed
 
-7) Install R to compute result cross-tables
+5) Install R (output management)
 
     # sudo apt-get install r-base
     # R
     # install.packages('ggplot2',dependencies=TRUE)
     # install.packages('gdata',dependencies=TRUE)
 
-8) Solver requirements
+6) Solver requirements
 
    You need a GMPL or a GAMS interpreter along with a LP solver:
 
@@ -62,7 +53,7 @@ http://rubygems.org/pages/download
 
 * GAMS with LP solver (CPLEX, XPRESS, MOSEK...)
 
-8) Run it
+7) Run it
   
     # bundle exec rails server
     # bundle exec script/delayed_job start
