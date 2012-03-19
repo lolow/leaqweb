@@ -58,7 +58,7 @@ class CommoditiesController < ApplicationController
   def edit
     new_visit(Commodity, params[:id])
     @commodity = Commodity.find(params[:id])
-    @demand_values = @commodity.demand_values(@current_res.first_year,@current_res.base_scenario.id)
+    @demand_values = @commodity.demand_values(@current_res.base_scenario.id)
     respond_with(@commodity)
   end
 

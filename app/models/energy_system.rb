@@ -117,6 +117,7 @@ class EnergySystem < ActiveRecord::Base
         c = Commodity.create(name:                      row["name"],
                              description:               row["description"],
                              demand_driver_id:          h[:dmd][row["demand_driver_id"]],
+                             projection_base_year:      row["projection_base_year"],
                              default_demand_elasticity: row["default_demand_elasticity"],
                              energy_system:             self)
         c.set_list = row["sets"]
@@ -220,7 +221,7 @@ class EnergySystem < ActiveRecord::Base
       ZipTools::write_csv_into_zip(zipfile,Technology, headers, ids) do |t,csv|
         csv << [t.id,t.name,t.description,t.set_list.join(',')]
       end
-      headers = %W(id name description sets demand_driver_id default_demand_elasticity)
+      headers = %W(id name description sets demand_driver_id default_demand_elasticity projection_base_year)
       ids     = self.commodities.map(&:id)
       ZipTools::write_csv_into_zip(zipfile,Commodity, headers, ids) do |c,csv|
         csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.default_demand_elasticity]

@@ -96,7 +96,6 @@ module Etem
     proj
   end
 
-
   def interpolate(x1,x2,y1,y2,x)
     (x.to_f-x1) / (x2-x1) * (y2-y1) + y1
   end

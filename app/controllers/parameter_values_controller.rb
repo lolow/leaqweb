@@ -24,6 +24,7 @@
 class ParameterValuesController < ApplicationController
 
   before_filter :authenticate_user!
+  before_filter :check_res!
 
   respond_to :html, only: [:index]
   respond_to :json, only: [:update_pv,:destroy_all,:create]
@@ -50,9 +51,7 @@ class ParameterValuesController < ApplicationController
     params[:pv][:technology_set] = TechnologySet.find_by_name(params[:pv][:technology_set])
     params[:pv][:technology_subset] = TechnologySet.find_by_name(params[:pv][:technology_subset])
 
-    params[:pv][:scenario] = Scenario.find_by_name(params[:pv][:scenario])
-
-    pv = ParameterValue.create(params[:pv])
+    ParameterValue.create(params[:pv])
 
     render :json => "ok"
   end

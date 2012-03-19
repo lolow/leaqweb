@@ -93,18 +93,26 @@ class Commodity < ActiveRecord::Base
   end
 
   #return demand_values
-  def demand_values(first_year,scenario_id)
+  def demand_values(scenario_id)
     return [] unless set_list.include? "DEM"
+    dvs =  parameter_values.of("demand").where(scenario_id: scenario_id).order(:year).collect { |pv| [pv.year, pv.value.to_f] }
     if demand_driver
+      first_year = (projection_base_year>0 ? projection_base_year : energy_system.first_year)
       dv = parameter_values.of("demand").where(year: first_year, scenario_id: scenario_id).first
-      base_year_value = dv ? dv.value : 0
+      return dvs unless dv
+      base_year_value = dv.value
       driver_values = demand_driver.demand_driver_values.order(:year)
+      base_year_driver_value =  demand_driver.demand_driver_values.where(year: first_year).first.value
       driver_values.collect! { |pv| [pv.year, pv.value] }
       demand_elasticity = Hash.new(self.default_demand_elasticity)
       values_for('demand_elasticity', scenario_id).each { |pv| demand_elasticity[pv.year.to_i] = pv.value }
-      demand_projection(driver_values, base_year_value, demand_elasticity)
+      proj = demand_projection(driver_values, base_year_value, base_year_driver_value, demand_elasticity).flatten
+      proj = Hash[*proj]
+      dvs.flatten!
+      proj.merge!(Hash[*dvs])
+      proj.to_a
     else
-      parameter_values.of("demand").order(:year).collect { |pv| [pv.year, pv.value] }
+      dvs
     end
   end
 
@@ -147,10 +155,10 @@ class Commodity < ActiveRecord::Base
   private
 
     # project useful demand
-  def demand_projection(driver_hash,base_year_value,elasticity)
+  def demand_projection(driver_hash,base_year_value,base_year_driver_value,elasticity)
     elasticity = Hash.new(1) unless elasticity
     elasticity = Hash.new(elasticity) unless elasticity.is_a?(Hash)
-    driver_hash.collect{|year,value| [year.to_i,base_year_value.to_f*value.to_f**elasticity[year.to_i].to_f]}
+    driver_hash.collect{|year,value| [year.to_i,base_year_value.to_f*(value.to_f/base_year_driver_value.to_f)**elasticity[year.to_i].to_f]}
   end
 
 end

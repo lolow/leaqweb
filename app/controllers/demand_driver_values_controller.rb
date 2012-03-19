@@ -21,27 +21,34 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
-class DemandDriver < ActiveRecord::Base
+class DemandDriverValuesController < ApplicationController
 
-  #Interfaces
-  has_paper_trail
+  before_filter :authenticate_user!
+  before_filter :check_res!
 
-  #Relations
-  belongs_to :energy_system
-  has_many   :demand_driver_values
-  has_many   :commodities
+  respond_to :html, only: [:index]
+  respond_to :json, only: [:update_pv,:destroy_all,:create]
 
-  #Validations
-  validates :energy_system, presence: true
-  validates :name, presence: true, uniqueness:  {scope: :energy_system_id}
+  def index
+  end
 
-  #Scopes
-  scope :named, lambda {|name| where(name: name)}
-  scope :matching_text, lambda {|text| where(['name LIKE ? OR description LIKE ?'] + ["%#{text}%"] * 2) }
-  scope :matching_tag
+  def create
 
-  def to_s
-    name
+    params[:ddv].keys.each{|k| params[:ddv][k] = params[:ddv][k].strip }
+    pv = DemandDriverValue.create(params[:pv])
+
+    render :json => "ok"
+  end
+
+  def destroy_all
+    DemandDriverValue.where(id: checkbox_ids).map(&:destroy)
+    render json: "ok"
+  end
+
+  def update_value
+    f = params[:field].split("-")
+    value = DemandDriverValue.update( f.first.to_i, f.last => params[:value]) ? params[:value] : ""
+    render json: value
   end
 
 end

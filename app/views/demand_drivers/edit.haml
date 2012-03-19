@@ -33,11 +33,8 @@
     %h2 Demand driver values
     .block
       :erb
-        <%= render :partial => 'shared/parameter_table',
-               :locals => { :object =>  @demand_driver,
-                            :pid => "dd",
-                            :request_path => demand_driver_path(@demand_driver),
-                            :parameters => ["one"],
-                            :cols => %w{year value source},
-                            :editable => %w{value source},
-                            :rules => {} } %>
+        <%= render :partial => 'shared/demand_driver_table',
+               :locals => { demand_driver: @demand_driver,
+                            request_path:  demand_driver_path(@demand_driver),
+                            cols:          %w{year value source},
+                            editable:      %w{value source} } %>

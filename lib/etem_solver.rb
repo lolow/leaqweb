@@ -234,7 +234,7 @@ class EtemSolver
         @energy_system.commodities.demands.activated.each{|dem|
           key = "_T " + dem.name
           values[key] = Hash.new
-          dem.demand_values(first_year,scenario_id).each{|dv|
+          dem.demand_values(scenario_id).each{|dv|
             values[key][dv[0]] = dv[1]
           }
         }
