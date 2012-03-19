@@ -104,7 +104,7 @@ Copyright
 ---------
 
 The code is licensed to the MIT License (MIT). See the LICENSE file for the full license.
-Copyright (c) 2009-2011 Public Research Center Henri Tudor
+Copyright (c) 2009-2012 Public Research Center Henri Tudor
 
 Author
 ------

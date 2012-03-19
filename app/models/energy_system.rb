@@ -224,7 +224,8 @@ class EnergySystem < ActiveRecord::Base
       headers = %W(id name description sets demand_driver_id default_demand_elasticity projection_base_year)
       ids     = self.commodities.map(&:id)
       ZipTools::write_csv_into_zip(zipfile,Commodity, headers, ids) do |c,csv|
-        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,c.default_demand_elasticity]
+        csv << [c.id,c.name,c.description,c.set_list.join(','),c.demand_driver_id,
+                c.default_demand_elasticity,c.projection_base_year]
       end
       headers = %W(id type technology_id commodities)
       ids     = Flow.where(technology_id: self.technologies).map(&:id)
@@ -244,8 +245,8 @@ class EnergySystem < ActiveRecord::Base
       headers = %W(parameter_name technology_id commodity_id commodity_set_id flow_id in_flow_id out_flow_id technology_set_id technology_subset_id time_slice year value source scenario_id)
       ids     = self.parameter_values.map(&:id)
       ZipTools::write_csv_into_zip(zipfile, ParameterValue, headers, ids) do |pv,csv|
-        csv << [pv.parameter.name,pv.technology_id,pv.commodity_id,pv.commodity_set.id,pv.flow_id,
-                pv.in_flow_id,pv.out_flow_id,pv.technology_set.id,pv.technology_subset.id,pv.time_slice,
+        csv << [pv.parameter.name,pv.technology_id,pv.commodity_id,pv.commodity_set_id,pv.flow_id,
+                pv.in_flow_id,pv.out_flow_id,pv.technology_set_id,pv.technology_subset_id,pv.time_slice,
                 pv.year,pv.value,pv.source,pv.scenario_id]
       end
       headers = %W(id name description technologies)
