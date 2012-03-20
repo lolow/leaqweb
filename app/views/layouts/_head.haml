@@ -5,8 +5,10 @@
   %meta(name="author" content=@author)
   %title
     = @title
-    = yield (:title) || ""
-  <link rel="shortcut icon" type="images/x-icon" href="/favicon.ico" />
+    = yield(:title) || ""
+  %link(rel="shortcut icon" type="images/x-icon" href="/favicon.ico")
+  /[if lt IE 9]
+    %script(src="http://html5shim.googlecode/svn/trunk/html5.js" type="text/javascript")
   = stylesheet_link_tag    "application", media: "all"
   = javascript_include_tag "application"
   = csrf_meta_tag
