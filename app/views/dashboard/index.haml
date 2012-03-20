@@ -2,7 +2,6 @@
 .grid_3
   %div(class="box action")
     %h2 Actions
-    %br
     %p
       = link_to "New Energy System...", new_energy_system_path, :class => "action new"
       - if @current_res
@@ -26,7 +25,6 @@
           = "Name: #{@current_res.name}"
           %br
           = "Description: #{@current_res.description}"
-          %br
         %p
           = "First Year: #{@current_res.first_year}"
           %br

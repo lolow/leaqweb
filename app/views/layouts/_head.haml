@@ -6,14 +6,7 @@
   %title
     = @title
     = yield (:title) || ""
-  -#= stylesheet_link_tag 'http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin'
-  -#= stylesheet_link_tag 'screen.css', :media => 'screen, projection'
-  -#= stylesheet_link_tag 'print.css', :media => 'print'
-  -#/[if IE]
-  -#  = stylesheet_link_tag 'ie.css', :media => 'screen, projection'
-  -#= stylesheet_link_tag  "jquery-ui"
   <link rel="shortcut icon" type="images/x-icon" href="/favicon.ico" />
-  -#= javascript_include_tag 'jquery.min.js'
   = stylesheet_link_tag    "application"
   = javascript_include_tag "application"
   = csrf_meta_tag

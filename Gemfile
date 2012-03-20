@@ -31,23 +31,23 @@ gem 'rubyzip', :require => 'zip/zip'
 gem 'tenjin'
 gem 'workflow'
 
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'coffee-rails', " ~> 3.2.1"
-  gem 'sass-rails', " ~> 3.2.3"
-  gem 'uglifier', ">= 1.0.3"
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'sass-rails', '~> 3.2.3'
+  gem 'uglifier', '>= 1.0.3'
+  gem 'twitter-bootstrap-rails'
 end
 
 #test
 group :test, :development do
-  gem "rspec-rails", "~> 2.6"
+  gem 'rspec-rails', '~> 2.6'
 end
 group :test do
-  gem "factory_girl_rails"
-  gem "capybara"
-  gem "guard-rspec"
-  gem "faker"
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'guard-rspec'
+  gem 'faker'
 end
 

@@ -27,14 +27,6 @@
         %li= link_to "Emission coefficients", combustions_path
         %li= link_to 'Stored queries', stored_queries_path
         %li= link_to 'Last Changes', versions_path
-    -#
-      %li
-      = link_to 'Advanced tools', '#'
-      %ul
-        %li= link_to "Parameter Values", parameter_values_path
     %li.secondary
-      -# - if user_signed_in?
       = link_to "Sign out (#{current_user.email})", destroy_user_session_path, {:class=>"right_side", :id=>"info_user"}
-      -# - else
-      -#   = link_to 'Sign in', new_user_session_path, {:class=>"right_side"}
 .clear
