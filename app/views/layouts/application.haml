@@ -3,22 +3,23 @@
   = render 'layouts/head'
   %body
     .container
-      = render 'layouts/header'
-      - if user_signed_in?
+      -#= render 'layouts/header'
+      -# if user_signed_in?
         = render 'layouts/menu'
         = render 'layouts/info_bar'
-      .grid_12
+      -#.grid_12
         %p
-      .clear
-      - [:alert, :notice].each do |type|
-        - if flash[type]
-          .grid_2
-            .block
-          .grid_8
-            %div(class=type)
-              = raw flash[type]
-          .clear
-
-      = yield
+      -#.clear
+      .row
+        -# TODO stylish alert + notice
+        - [:alert, :notice].each do |type|
+          - if flash[type]
+            .grid_2
+              .block
+            .grid_8
+              %div(class=type)
+                = raw flash[type]
+            .clear
+        = yield
 
       = render 'layouts/footer'
