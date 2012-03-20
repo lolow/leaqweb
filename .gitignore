@@ -18,3 +18,4 @@ rails/
 .sass-cache/
 public/assets/
 .rspec
+*.sublime-workspace
