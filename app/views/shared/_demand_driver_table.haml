@@ -1,0 +1,62 @@
+:javascript
+  $(document).ready(function() {
+      $('.edit').editable(#{raw update_value_demand_driver_values_path.to_json},{
+        style   : 'inherit',
+        width   : "100%",
+        height  : 18,
+        method  : "PUT",
+        id      : 'field',
+        submitdata: {
+          authenticity_token: #{raw form_authenticity_token.to_json}
+        }
+      });
+      $('#parameter_table_dd').dataTable({
+        "bPaginate": true,
+        "bLengthChange": true,
+        "bFilter": true,
+        "sPaginationType": "full_numbers",
+        "iDisplayLength" : 10,
+        "bSort": true,
+        "aaSorting"      : [[1,'asc']],
+        "aoColumnDefs"   : [ {"bSortable" : false,   "aTargets": [0,-1] } ],
+        "bInfo": true,
+        "bAutoWidth": false,
+        "bStateSave": true,
+        "sDom": 'lfrtpi'
+      });
+  } );
+
+= form_tag(request_path,:method => "put",:id=>"form_dd") do
+  %table.dataTable(id="parameter_table_dd")
+    %thead
+      %tr
+        %th(class='check')
+          = check_box_tag("click_check",nil,nil,:class=>"check_all")
+        - cols.each do |c|
+          %th= c.humanize
+        %th(class='add')
+    %tbody
+      - demand_driver.demand_driver_values.each do |v|
+        %tr
+          %td(class="check")
+            %input(type="checkbox" name="cb#{v.id}")
+          - cols.each do |c|
+            %td
+              %span(id="#{v.id}-#{c}" class="#{"edit" if editable.include? c}")>= v.attributes[c].to_s
+          %td
+    %tfoot
+      %tr
+        %th(class="check")
+          = link_to "Delete", '#', :class => "action delete_pv", :confirm => "Are you sure?"
+        %th
+          %input(class="textcell" id="ddv_year" name="ddv[year]" size="5")
+        %th
+          %input(class="textcell" id="ddv_value" name="ddv[value]" size="10")
+        %th
+          %input(class="textcell" id="ddv_source" name="ddv[source]")
+        %th
+          = link_to "Add", '#', :class => "action add_ddv"
+  %input(type="hidden" id="do" name="do" value="")
+  %input(type="hidden" name="pv[scenario_id]" value="#{@current_sce.id}")
+  %input(type="hidden" name="pv[energy_system_id]" value="#{@current_res.id}")
+.clear

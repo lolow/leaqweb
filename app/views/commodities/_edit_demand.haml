@@ -25,6 +25,10 @@
         = form_for(@commodity) do |f|
           = f.label :demand_driver_id, 'Follow demand driver:'
           = f.collection_select(:demand_driver_id, DemandDriver.all, :id, :name, {:include_blank=>true})
+          = f.label :projection_base_year, 'Projection base year:', :disabled => (@commodity.demand_driver_id ? nil: "disabled")
+          = f.text_field :projection_base_year,
+                         :size=>nil,
+                         :disabled => (@commodity.demand_driver_id ? nil: "disabled")
           = f.label :default_demand_elasticity, 'Default demand elasticity:', :disabled => (@commodity.demand_driver_id ? nil: "disabled")
           = f.text_field :default_demand_elasticity,
                          :size=>nil,

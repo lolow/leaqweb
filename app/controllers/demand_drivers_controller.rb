@@ -93,11 +93,11 @@ class DemandDriversController < ApplicationController
           end
         end
         return
-      when "delete_pv"
+      when "delete_ddv"
         ids = @demand_driver.demand_driver_values.map(&:id).select { |i| params["cb#{i}"] }
         ParameterValue.where(id: checkbox_ids).map(&:destroy)
-      when "add_pv"
-        att = params[:pv]
+      when "add_ddv"
+        att = params[:ddv]
         att[:parameter] = @demand_driver
         pv = DemandDriverValue.new(att)
         flash[:notice] = 'Demand driver value was successfully added.' if pv.save

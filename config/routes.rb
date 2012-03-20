@@ -36,6 +36,12 @@ Leaqweb::Application.routes.draw do
     end
   end
 
+  resources :demand_driver_values do
+    collection do
+      put :update_value
+    end
+  end
+
   resources :technology_sets do
     collection do
       get :list
