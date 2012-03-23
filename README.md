@@ -102,7 +102,7 @@ Default User
 The default user, created via rake db:seed, is
 
     # email: admin@domain.com
-    # password: adminpass
+    # password: password
 
 Copyright
 ---------
