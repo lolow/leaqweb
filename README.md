@@ -11,28 +11,32 @@ Install
 The following instructions describe how to install the application 
 on an ubuntu machine (it works also on Mac OS X, for Windows see below).
 
-1) Install ruby with RVM (http://beginrescueend.com/)
+1) Install ruby 1.9.2 with RVM (http://beginrescueend.com/)
 
 2) Configure the database (if you want to use mysql)
 
     # sudo apt-get install mysql-server mysql-client libmysqlclient-dev
     # gem install mysql2
-    # mysql -p -u root
-    <enter your root password for mysql>
-    > CREATE DATABASE leaq;
-    > GRANT ALL PRIVILEGES ON leaq.* TO "leaq"@"localhost";
 
 3) Configure the database (if you want to use sqlite)
 
     # sudo apt-get install sqlite3 libsqlite3-dev
 
-4) Clone the repository, configure and install gems:
+4) Clone the repository
 
     # git clone git://github.com/lolow/leaqweb.git
     # cd leaqweb
     # cp config/database.yml{.default,}
+
+5) Adjust conf/database.yml to your configuration
+
+    # vim conf/database.yml
+
+6) Install gems and setup database
+
     # sudo gem install bundler
     # bundle install
+    # bundle exec rake db:create
     # bundle exec rake db:migrate
     # bundle exec rake db:seed
 
@@ -41,7 +45,7 @@ on an ubuntu machine (it works also on Mac OS X, for Windows see below).
     # sudo apt-get install r-base
     # R
     # install.packages('ggplot2',dependencies=TRUE)
-    # install.packages('gdata',dependencies=TRUE)
+    # install.packages('reshape',dependencies=TRUE)
 
 6) Solver requirements
 
