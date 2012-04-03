@@ -1,5 +1,6 @@
 library('ggplot2')
 library('gdata')
+library('reshape')
 d <- read.table("<%= @query[:input_files].first %>",sep=",",dec=".",h=TRUE)
 d <- subset(d,attribute=="<%= @query[:variable] %>")
 <% if @query[:filters].size > 0 %>
