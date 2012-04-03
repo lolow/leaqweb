@@ -36,7 +36,7 @@ class StoredQuery < ActiveRecord::Base
   AGGREGATES = %w{SUM MEAN}
   VARIABLES  = %w{VAR_OBJINV VAR_OBJFIX VAR_OBJVAR VAR_OBJSAL} +
                %w{CAPACITY ACTIVITY VAR_IMP VAR_EXP VAR_COM VAR_ICAP DEMAND} +
-               %w{C_PRICE AGGREGATE COST_IMP}
+               %w{C_PRICE COMMODITY_SET COST_IMP}
 
   validates_presence_of :name
   validates_uniqueness_of :name, scope: :display
