@@ -148,7 +148,6 @@ class EnergySystem < ActiveRecord::Base
         m.set_list = "MARKET"
         m.save
         h[:mkt][row["id"]] = m.id
-        h[:mkt2][row["id"]] = m.name
       end
 
       ZipTools::readline_zip(filename,CommoditySet) do |row|
@@ -160,7 +159,6 @@ class EnergySystem < ActiveRecord::Base
         a.set_list = "AGG"
         a.save
         h[:agg][row["id"]] = a.id
-        h[:agg2][row["id"]] = a.name
       end
 
       s = Scenario.create(name: "BASE", energy_system: self)
