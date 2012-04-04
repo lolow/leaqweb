@@ -165,7 +165,8 @@ class Technology < ActiveRecord::Base
         kk = key.split("-")
 
         #eff-flo
-        efficiency = value[1].values.sum/value[0].values.sum
+        tot = value[0].values.sum
+        efficiency = [value[1].values.sum/tot,0].max
         pv = ParameterValue.of("eff_flo").where("in_flow_id=? AND out_flow_id=?", kk[0], kk[1]).first
         if pv
           ParameterValue.update(pv.id, value: efficiency, source: "Preprocessed")
@@ -190,9 +191,12 @@ class Technology < ActiveRecord::Base
             total = value[x].values.sum
             #ensure sum is equal to 1
             coef = {}
-            c.each { |j| coef[j.id] = (value[x][j.id]/total*10**10).round(0).to_f/10**10 }
+            c.each { |j| coef[j.id] = [0,(value[x][j.id]/total*10**10).round(0).to_f/10**10].max }
+            # Erreur arrondi
             if coef.values.sum > 1
-              coef[coef.keys.first] -= coef.values.sum - 1
+              diff = coef.values.sum - 1
+              selected_k = coef.select{|k,v| v>diff}.first.first
+              coef[selected_k] -= diff
             end
             #set coefficients
             c.each do |j|

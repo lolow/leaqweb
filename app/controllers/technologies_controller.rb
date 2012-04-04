@@ -101,6 +101,7 @@ class TechnologiesController < ApplicationController
                                    out_flow:   out_flow,
                                    value:      coef,
                                    source:     "Combustion coefficients",
+                                   energy_system: @current_res,
                                    scenario:   @current_res.base_scenario)
           end
         end

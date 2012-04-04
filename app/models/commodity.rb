@@ -102,7 +102,8 @@ class Commodity < ActiveRecord::Base
       return dvs unless dv
       base_year_value = dv.value
       driver_values = demand_driver.demand_driver_values.order(:year)
-      base_year_driver_value =  demand_driver.demand_driver_values.where(year: first_year).first.value
+      return dvs unless demand_driver.demand_driver_values.where(year: first_year)
+      base_year_driver_value =  demand_driver.demand_driver_values.where(year: first_year).first
       driver_values.collect! { |pv| [pv.year, pv.value] }
       demand_elasticity = Hash.new(self.default_demand_elasticity)
       values_for('demand_elasticity', scenario_id).each { |pv| demand_elasticity[pv.year.to_i] = pv.value }
@@ -130,6 +131,7 @@ class Commodity < ActiveRecord::Base
                          set_list:      set_list.join(", "),
                          demand_driver: demand_driver,
                          default_demand_elasticity: default_demand_elasticity,
+                         projection_base_year: projection_base_year,
                          energy_system: energy_system)
     parameters = signature.keys.select{|k| signature[k] && signature[k].include?("commodity")}
     parameter_values.of(parameters).each do |pv|

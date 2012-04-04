@@ -275,9 +275,9 @@ class EnergySystem < ActiveRecord::Base
     attr = {parameter: p, energy_system: self, scenario: s}
     ParameterValue.create(attr.merge(time_slice: "WD", value: 0.3333333333))
     ParameterValue.create(attr.merge(time_slice: "WN", value: 0.1666666667))
-    ParameterValue.create(attr.merge(time_slice: "SD", value: 0.3333333333))
-    ParameterValue.create(attr.merge(time_slice: "SN", value: 0.1666666667))
-    ParameterValue.create(attr.merge(time_slice: "ID", value: 0.3333333333))
+    ParameterValue.create(attr.merge(time_slice: "SD", value: 0.1666666667))
+    ParameterValue.create(attr.merge(time_slice: "SN", value: 0.0833333333))
+    ParameterValue.create(attr.merge(time_slice: "ID", value: 0.1666666667))
     ParameterValue.create(attr.merge(time_slice: "IN", value: 0.0833333333))
   end
 
