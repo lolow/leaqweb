@@ -13,5 +13,6 @@
         = f.input :set_list, collection: Commodity::CATEGORIES, prompt: "Select commodity type...", label: "Type"
         = f.button :submit, class: "aligned"
         = f.hidden_field :description, value: ""
+        = f.hidden_field :projection_base_year, value: @current_res.first_year
         = f.hidden_field :energy_system_id, value: @current_res.id
 .clear
