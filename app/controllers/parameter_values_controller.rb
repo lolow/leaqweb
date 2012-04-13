@@ -40,16 +40,16 @@ class ParameterValuesController < ApplicationController
     params[:pv][:year] = nil unless params[:pv][:year] && params[:pv][:year].size > 0
     params[:pv][:time_slice] = nil unless params[:pv][:time_slice] && Etem::TIME_SLICES.include?(params[:pv][:time_slice])
 
-    params[:pv][:commodity] = Commodity.find_by_name(params[:pv][:commodity])
+    params[:pv][:commodity] = @current_res.commodities.find_by_name(params[:pv][:commodity])
 
     params[:pv][:flow]     = Flow.find_by_id(params[:pv][:flow])
     params[:pv][:in_flow]  = InFlow.find_by_id(params[:pv][:in_flow])
     params[:pv][:out_flow] = OutFlow.find_by_id(params[:pv][:out_flow])
 
-    params[:pv][:commodity_set] = CommoditySet.find_by_name(params[:pv][:commodity_set])
+    params[:pv][:commodity_set] = @current_res.commodity_sets.find_by_name(params[:pv][:commodity_set])
 
-    params[:pv][:technology_set] = TechnologySet.find_by_name(params[:pv][:technology_set])
-    params[:pv][:technology_subset] = TechnologySet.find_by_name(params[:pv][:technology_subset])
+    params[:pv][:technology_set] = @current_res.technology_sets.find_by_name(params[:pv][:technology_set])
+    params[:pv][:technology_subset] = @current_res.technology_sets.find_by_name(params[:pv][:technology_subset])
 
     ParameterValue.create(params[:pv])
 

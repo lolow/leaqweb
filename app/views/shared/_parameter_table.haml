@@ -119,15 +119,15 @@
           - elsif c=="fuel"
             %th
               %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
-                = options_for_select(Commodity.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
+                = options_for_select(@current_res.commodities.energy_carriers.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="technology_set" || c=="technology_subset"
             %th
               %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
-                = options_for_select(TechnologySet.order(:name).collect {|c| [ c.name, c.id ] })
+                = options_for_select(@current_res.technology_sets.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="pollutant"
             %th
               %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")
-                = options_for_select(Commodity.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
+                = options_for_select(@current_res.commodities.pollutants.order(:name).collect {|c| [ c.name, c.id ] })
           - elsif c=="commodity"
             %th
               %select(id="#{pid}_#{c}" name="pv[#{c}]" class="tiny")

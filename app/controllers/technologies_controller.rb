@@ -111,7 +111,7 @@ class TechnologiesController < ApplicationController
         att[:in_flow] = InFlow.find(att[:in_flow].to_i) if att[:in_flow]
         att[:out_flow] = OutFlow.find(att[:out_flow].to_i) if att[:out_flow]
         att[:parameter] = Parameter.find_by_name(att[:parameter])
-        att[:commodity] = Commodity.find_by_name(att[:commodity]) if att[:commodity]
+        att[:commodity] = @current_res.commodities.find_by_name(att[:commodity]) if att[:commodity]
         att[:technology] = @technology
         pv = ParameterValue.new(att)
         if pv.save

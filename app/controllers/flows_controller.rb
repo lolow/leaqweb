@@ -60,6 +60,7 @@ class FlowsController < ApplicationController
   def update
     @flow = Flow.find(params[:id])
     commodities = Commodity.find_by_list_name(params[:commodities])
+    commodities = commodities.where(energy_system_id: @flow.technology.energy_system.id)
     @flow.commodities = commodities if commodities.size > 0
     respond_to do |format|
       format.js { render json: "".to_json }
