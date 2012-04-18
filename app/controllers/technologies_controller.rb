@@ -45,7 +45,7 @@ class TechnologiesController < ApplicationController
   end
 
   def show
-    redirect_to edit_technology_path(Technology.find(params[:id]))
+    redirect_to edit_technology_path(technologies.find(params[:id]))
   end
 
   def new
@@ -54,7 +54,7 @@ class TechnologiesController < ApplicationController
 
   def edit
     new_visit(Technology, params[:id])
-    respond_with(@technology = Technology.find(params[:id]))
+    respond_with(@technology = technologies.find(params[:id]))
   end
 
   def create
@@ -62,7 +62,7 @@ class TechnologiesController < ApplicationController
   end
 
   def duplicate
-    @technology = Technology.find(params[:id]).duplicate
+    @technology = technologies.find(params[:id]).duplicate
     redirect_to(edit_technology_path(@technology))
   end
 

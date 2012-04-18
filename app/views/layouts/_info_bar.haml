@@ -8,7 +8,7 @@
         data: { energy_system: v },
         dataType: 'json',
         success: function(){
-          window.location.reload();
+          window.location.href = #{root_path.to_json};
         }
       })
     });

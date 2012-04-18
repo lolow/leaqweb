@@ -48,7 +48,7 @@ class CommoditiesController < ApplicationController
   end
 
   def show
-    redirect_to edit_commodity_path(Commodity.find(params[:id]))
+    redirect_to edit_commodity_path(commodities.find(params[:id]))
   end
 
   def new
@@ -57,7 +57,7 @@ class CommoditiesController < ApplicationController
 
   def edit
     new_visit(Commodity, params[:id])
-    @commodity = Commodity.find(params[:id])
+    @commodity = commodities.find(params[:id])
     @demand_values = @commodity.demand_values(@current_res.base_scenario.id)
     respond_with(@commodity)
   end
