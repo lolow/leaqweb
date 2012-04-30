@@ -103,9 +103,9 @@ class Commodity < ActiveRecord::Base
       base_year_value = dv.value
       driver_values = demand_driver.demand_driver_values.order(:year)
       return dvs unless demand_driver.demand_driver_values.where(year: first_year)
-      base_year_driver_value =  demand_driver.demand_driver_values.where(year: first_year).first
+      base_year_driver_value =  demand_driver.demand_driver_values.where(year: first_year).first.value
       driver_values.collect! { |pv| [pv.year, pv.value] }
-      demand_elasticity = Hash.new(self.default_demand_elasticity)
+      demand_elasticity = Hash.new(self.default_demand_elasticity||1)
       values_for('demand_elasticity', scenario_id).each { |pv| demand_elasticity[pv.year.to_i] = pv.value }
       proj = demand_projection(driver_values, base_year_value, base_year_driver_value, demand_elasticity).flatten
       proj = Hash[*proj]
