@@ -40,6 +40,9 @@ group :assets do
   gem 'uglifier', ">= 1.0.3"
 end
 
+# Remove extra log
+gem 'quiet_assets', :group => :development
+
 #test
 group :test, :development do
   gem "rspec-rails", "~> 2.6"
