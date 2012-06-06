@@ -49,13 +49,9 @@ on an ubuntu machine (it works also on Mac OS X, for Windows see below).
 
 6) Solver requirements
 
-   You need a GMPL or a GAMS interpreter along with a LP solver:
-
-* GLPK > 4.45
+You need GLPK > 4.45 or GAMS + an LP solver (CBC, CPLEX, XPRESS, MOSEK...):
 
     # sudo apt-get install glpk-utils
-
-* GAMS with LP solver (CPLEX, XPRESS, MOSEK...)
 
 7) Run it
   
@@ -69,32 +65,27 @@ Under Windows
 
 1) Install railsinstaller [http://railsinstaller.org]
 
-2) [OPTIONAL] Set up a MySQL database using your favorite tools
+2) Open a Terminal (Start-> Execute...-> "cmd.exe")
 
-    # gem install mysql2
-
-3) Open a Terminal (Start-> Execute...-> "cmd.exe")
-
-4) Go somewhere to download the application
+3) Go somewhere to download the application
 
     # c:
     # cd c:\Sites
 
-5) Clone the repository, configure and install gems:
+4) Clone the repository, configure and install gems (follow the post-installation instructions given by bundle install):
 
     # git clone git://github.com/lolow/leaqweb.git
     # cd leaqweb
     # cp config/database.yml.default config/database.yml
-    # gem install bundler
     # bundle install 
-    # bundle exec rake db:migrate
-    # bundle exec rake db:seed
+    # rake db:migrate
+    # rake db:seed
 
-8) Run it
+5) Run it
  
-    # bundle exec rails server
+    # rails server
 
-9) Access through the browser at http://localhost:3000/
+6) Go to http://localhost:3000 in your browser
 
 Default User
 ------------

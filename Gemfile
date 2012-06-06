@@ -17,6 +17,7 @@ gem 'simple_form'
 
 # User identification
 gem 'devise', '~> 2.0'
+gem 'devise-encryptable'
 gem 'warden'
 
 # Model extensions

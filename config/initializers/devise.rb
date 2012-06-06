@@ -47,7 +47,7 @@ Devise.setup do |config|
 
   # Setup a pepper to generate the encrypted password.
   config.pepper = "3339117ca7b55cdbd57e7a208b1ac5fce906241e5fb7f0235b0d19f192baba1f5c3564c00153b6dd1a654eb431b3bfe31ed63a3a8d8c12ac86b407dcd3f19074"
-  config.use_salt_as_remember_token = true
+  #config.use_salt_as_remember_token = true
 
   # ==> Configuration for :confirmable
   # The time you want to give your user to confirm his account. During this time
