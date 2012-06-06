@@ -53,7 +53,7 @@ on an ubuntu machine (it works also on Mac OS X, for Windows see below).
 
 * GLPK > 4.45
 
-   # sudo apt-get install glpk-utils
+    # sudo apt-get install glpk-utils
 
 * GAMS with LP solver (CPLEX, XPRESS, MOSEK...)
 

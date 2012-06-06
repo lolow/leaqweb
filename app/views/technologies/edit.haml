@@ -1,11 +1,11 @@
 .grid_3
 
-  .box(class="action")
+  %div(class="box action")
     %h2 Actions
     %br
     %p= link_to 'Browse all', technologies_path, :class => "action browse"
     %p
-      = link_to 'New commodity', new_technology_path, :class => "action new"
+      = link_to 'New technology', new_technology_path, :class => "action new"
       = link_to 'Duplicate', duplicate_technology_path, :confirm => 'Are you sure?', :method => :post, :class => "action duplicate"
       = link_to 'Delete', @technology, :confirm => 'Are you sure?', :method => :delete, :class => "action delete"
     %p
