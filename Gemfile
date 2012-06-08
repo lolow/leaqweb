@@ -1,14 +1,17 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.2'
+gem 'rails', '3.2.5'
 
-# Database wrappers
+# Server
+gem 'thin'
+
+# Database wrapper
 gem 'sqlite3'
 gem 'mysql2'
 
 # Rails 3.2 - JavaScript
 gem 'execjs'
-gem 'therubyracer' if RUBY_PLATFORM.downcase.include?("linux")
+gem 'therubyracer', :require => 'v8' if RUBY_PLATFORM.downcase.include?("linux")
 gem 'jquery-rails'
 
 # HTML engine/template
