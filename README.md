@@ -76,7 +76,7 @@ Under Windows
 
     # git clone git://github.com/lolow/leaqweb.git
     # cd leaqweb
-    # cp config/database.yml.default config/database.yml
+    # copy config/database.yml.default config/database.yml
     # bundle install 
     # rake db:migrate
     # rake db:seed

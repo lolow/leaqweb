@@ -19,3 +19,4 @@ rails/
 public/assets/
 .rspec
 *.sublime-workspace
+.DS_Store
