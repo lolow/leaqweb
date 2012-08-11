@@ -32,7 +32,7 @@ module ZipTools
     puts "-- #{active_record.name}"
     time = Benchmark.measure {
       zipfile.put_next_entry(active_record.name)
-      text = CSV.generate do |csv|
+      text = CSV.generate({encoding: "UTF-8"}) do |csv|
         csv << headers
         if subset_ids
           res = active_record.where(:id =>subset_ids)
@@ -51,14 +51,12 @@ module ZipTools
   def self.readline_zip(zipfile,active_record)
     puts "-- #{active_record.name}"
     time = Benchmark.measure {
-      active_record.transaction {
-        Zip::ZipInputStream::open(zipfile) { |file|
-        while (entry = file.get_next_entry)
-          if entry.name==active_record.name
-            CSV.parse(file.read,{:headers=>true}) {|row| yield row}
-          end
+      Zip::ZipInputStream::open(zipfile) { |file|
+      while (entry = file.get_next_entry)
+        if entry.name==active_record.name
+          CSV.parse(file.read,{:headers=>true, encoding: "UTF-8"}) {|row| yield row}
         end
-        }
+      end
       }
     }
     puts "   -> %.4fs" % time.real

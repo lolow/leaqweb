@@ -9,7 +9,7 @@ Install
 -------
 
 The following instructions describe how to install the application 
-on an ubuntu machine (it works also on Mac OS X, for Windows see below).
+on an ubuntu machine (it also works on Mac OS X with few adjustments, for Windows see below).
 
 1) Install ruby 1.9.2 with RVM (http://beginrescueend.com/)
 
