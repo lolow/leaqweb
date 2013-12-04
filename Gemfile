@@ -31,7 +31,7 @@ gem 'daemons'
 gem 'delayed_job_active_record'
 
 # Backup + Template engine + State Machine
-gem 'rubyzip', :require => 'zip/zip'
+gem 'rubyzip',  '~> 0.9.9'
 gem 'tenjin'
 gem 'workflow'
 
